@@ -1,3 +1,12 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
 # Logs
 logs
 *.log
@@ -141,3 +150,13 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Test Reports & Outputs
+test-results/
+playwright-report/
+
+# Go Binaries
+bin/
+
+
+

@@ -1,0 +1,10 @@
+{
+  "priority": 10,
+  "request": {
+    "method": "POST",
+    "urlPath": "/sms/send"
+  },
+  "response": {
+    "proxyBaseUrl": "https://api.sms-provider.example.com"
+  }
+}

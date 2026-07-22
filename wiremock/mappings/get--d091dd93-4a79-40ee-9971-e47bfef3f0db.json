@@ -1,0 +1,27 @@
+{
+  "id" : "d091dd93-4a79-40ee-9971-e47bfef3f0db",
+  "request" : {
+    "url" : "",
+    "method" : "GET",
+    "headers" : {
+      "Content-Type" : {
+        "matches" : ".*/xml"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "some" : "value"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "d091dd93-4a79-40ee-9971-e47bfef3f0db",
+  "persistent" : true,
+  "scenarioName" : "",
+  "requiredScenarioState" : "",
+  "newScenarioState" : "",
+  "insertionIndex" : 1
+}

@@ -1,0 +1,26 @@
+{
+  "priority": 1,
+  "scenarioName": "paotang-authcode-lifecycle",
+  "requiredScenarioState": "Started",
+  "newScenarioState": "code-used",
+  "request": {
+    "method": "POST",
+    "urlPath": "/oauth/token",
+    "headers": {
+      "Mock-Scenario": { "contains": "PT_PASS:SUCCESS_ONCE" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "access_token": "mock-access-token",
+      "token_type": "Bearer",
+      "expires_in": 3600
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Mock-ID": "{{request.headers.Mock-ID}}"
+    },
+    "transformers": ["response-template"]
+  }
+}

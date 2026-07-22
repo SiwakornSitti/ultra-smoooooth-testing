@@ -1,0 +1,7 @@
+go 1.25.7
+
+use (
+	./services/bank-account-service
+	./services/bff-service
+	./services/user-service
+)

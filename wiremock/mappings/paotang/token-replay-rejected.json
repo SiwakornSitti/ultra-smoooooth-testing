@@ -1,0 +1,23 @@
+{
+  "priority": 1,
+  "scenarioName": "paotang-authcode-lifecycle",
+  "requiredScenarioState": "code-used",
+  "request": {
+    "method": "POST",
+    "urlPath": "/oauth/token",
+    "headers": {
+      "Mock-Scenario": { "contains": "PT_PASS:SUCCESS_ONCE" }
+    }
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "invalid_grant"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Mock-ID": "{{request.headers.Mock-ID}}"
+    },
+    "transformers": ["response-template"]
+  }
+}

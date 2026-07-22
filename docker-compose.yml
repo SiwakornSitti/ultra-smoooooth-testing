@@ -1,0 +1,134 @@
+
+services:
+  # =========================================================================
+  # DATABASE SERVICE
+  # =========================================================================
+  db:
+    image: postgres:18-alpine
+    container_name: poc-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: temporary-password-123
+      POSTGRES_DB: app
+    volumes:
+      - ./k8s/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # =========================================================================
+  # WIREMOCK SERVICE (WireMock & WireMock UI)
+  # =========================================================================
+  wiremock:
+    image: holomekc/wiremock-gui:latest
+    container_name: poc-wiremock
+    ports:
+      - "8088:8080"
+    command:
+      - "--disable-banner"
+      - "--global-response-templating"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+
+  # =========================================================================
+  # REAL MICROSERVICES
+  # =========================================================================
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: poc-user-service
+    ports:
+      - "8081:8080"
+    environment:
+      PORT: "8080"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: app
+      DB_PASSWORD: temporary-password-123
+      DB_NAME: app
+      PAOTANG_SERVICE_URL: http://wiremock:8080
+      PAOTANG_CLIENT_ID: dummy-client-id
+      PAOTANG_CLIENT_SECRET: dummy-client-secret
+      OTP_SERVICE_URL: http://wiremock:8080
+    depends_on:
+      db:
+        condition: service_healthy
+      wiremock:
+        condition: service_started
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/user-service
+
+  bank-account-service:
+    build:
+      context: ./services/bank-account-service
+      dockerfile: Dockerfile
+    container_name: poc-bank-account-service
+    ports:
+      - "8082:8080"
+    environment:
+      PORT: "8080"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: app
+      DB_PASSWORD: temporary-password-123
+      DB_NAME: app
+      SMS_SERVICE_URL: http://wiremock:8080
+      SMS_API_KEY: dummy-sms-api-key
+    depends_on:
+      db:
+        condition: service_healthy
+      wiremock:
+        condition: service_started
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/bank-account-service
+
+  # =========================================================================
+  # BACKEND FOR FRONTEND (BFF) SERVICE
+  # =========================================================================
+  bff-service:
+    build:
+      context: ./services/bff-service
+      dockerfile: Dockerfile
+    container_name: poc-bff-service
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      USER_SERVICE_URL: ${USER_SERVICE_URL:-http://user-service:8080}
+      BANK_ACCOUNT_SERVICE_URL: ${BANK_ACCOUNT_SERVICE_URL:-http://bank-account-service:8080}
+    depends_on:
+      - user-service
+      - bank-account-service
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/bff-service
+
+  # =========================================================================
+  # QA WEBSITE (browser e2e for QA)
+  # =========================================================================
+  website:
+    build:
+      context: ./services/qa-website
+      dockerfile: Dockerfile
+    container_name: poc-website
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      BFF_URL: http://localhost:8080
+    depends_on:
+      - bff-service
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/qa-website

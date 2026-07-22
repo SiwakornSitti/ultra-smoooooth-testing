@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPath": "/oauth/token",
+    "headers": {
+      "Mock-Scenario": { "contains": "PT_PASS:INVALID_GRANT" }
+    }
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "invalid_grant"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Mock-ID": "{{request.headers.Mock-ID}}"
+    },
+    "transformers": ["response-template"]
+  }
+}

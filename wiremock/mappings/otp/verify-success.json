@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPath": "/otp/verify",
+    "headers": {
+      "Mock-Scenario": { "contains": "OTP:SUCCESS" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "verified": true
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Mock-ID": "{{request.headers.Mock-ID}}"
+    },
+    "transformers": ["response-template"]
+  }
+}

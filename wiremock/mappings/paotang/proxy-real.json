@@ -1,0 +1,10 @@
+{
+  "priority": 10,
+  "request": {
+    "method": "POST",
+    "urlPath": "/oauth/token"
+  },
+  "response": {
+    "proxyBaseUrl": "https://api.paotang.example.com"
+  }
+}
