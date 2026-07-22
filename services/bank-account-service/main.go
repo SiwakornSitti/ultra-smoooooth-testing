@@ -141,6 +141,11 @@ func handleGetAccounts(w http.ResponseWriter, r *http.Request) {
 		}
 		accountList = append(accountList, a)
 	}
+	if err := rows.Err(); err != nil {
+		slog.Error("Rows iteration failed", "error", err)
+		writeJSONError(w, "Database error", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(accountList)
 }

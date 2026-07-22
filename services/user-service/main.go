@@ -151,7 +151,7 @@ func handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	var userList []User
+	var users []User
 	for rows.Next() {
 		var u User
 		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Status); err != nil {
@@ -159,10 +159,15 @@ func handleGetUsers(w http.ResponseWriter, r *http.Request) {
 			writeJSONError(w, "Database error", http.StatusInternalServerError)
 			return
 		}
-		userList = append(userList, u)
+		users = append(users, u)
+	}
+	if err := rows.Err(); err != nil {
+		slog.Error("Rows iteration failed", "error", err)
+		writeJSONError(w, "Database error", http.StatusInternalServerError)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(userList)
+	json.NewEncoder(w).Encode(users)
 }
 
 func handleCreateUser(w http.ResponseWriter, r *http.Request) {
