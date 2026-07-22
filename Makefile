@@ -1,22 +1,41 @@
-.PHONY: all build clean test test-integration test-e2e
+.PHONY: all build clean sync tidy test test-integration test-e2e
 
 all: build
 
 build:
 	@mkdir -p bin
-	go build -o bin/bank-account-service ./services/bank-account-service
-	go build -o bin/bff-service ./services/bff-service
-	go build -o bin/user-service ./services/user-service
+	@for d in services/*; do \
+		if [ -d "$$d" ] && [ -f "$$d/go.mod" ]; then \
+			name=$$(basename "$$d"); \
+			echo "Building $$name..."; \
+			go build -o "bin/$$name" "./$$d"; \
+		fi; \
+	done
 	@echo "All binaries successfully built in ./bin/"
 
 clean:
 	rm -rf bin/
 	@echo "Cleaned up binaries."
 
+sync:
+	go work sync
+	@for d in services/*; do \
+		if [ -d "$$d" ] && [ -f "$$d/go.mod" ]; then \
+			echo "Running go mod tidy in $$d..."; \
+			(cd "$$d" && go mod tidy); \
+		fi; \
+	done
+	@echo "Workspace and module dependencies synced successfully."
+
+tidy: sync
+
 test:
-	cd services/bff-service && go test -v ./...
-	cd services/user-service && go test -v ./...
-	cd services/bank-account-service && go test -v ./...
+	@for d in services/*; do \
+		if [ -d "$$d" ] && [ -f "$$d/go.mod" ]; then \
+			echo "Testing $$d..."; \
+			(cd "$$d" && go test -v ./...); \
+		fi; \
+	done
 
 test-integration:
 	cd tests && npm install && npm run test:integration

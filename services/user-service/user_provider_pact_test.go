@@ -52,7 +52,7 @@ func TestUserServicePactProvider(t *testing.T) {
 		t.Fatalf("failed to resolve pact path: %v", err)
 	}
 
-	verifier := provider.NewHTTPVerifier()
+	verifier := provider.NewVerifier()
 	err = verifier.VerifyProvider(t, provider.VerifyRequest{
 		Provider:        "user-service",
 		ProviderBaseURL: server.URL,

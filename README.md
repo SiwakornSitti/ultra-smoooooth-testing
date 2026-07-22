@@ -56,7 +56,10 @@ All compiled binaries output exclusively to the root `./bin/` folder:
 # Build all Go services into ./bin/
 make build
 
-# Run unit tests across all services
+# Sync workspace dependencies & tidy all service go.mod files
+make sync
+
+# Run unit & contract tests across all services
 make test
 
 # Clean compiled binaries

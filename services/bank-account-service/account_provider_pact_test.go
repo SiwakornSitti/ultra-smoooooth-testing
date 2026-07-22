@@ -49,7 +49,8 @@ func TestBankAccountServicePactProvider(t *testing.T) {
 		t.Fatalf("failed to resolve pact path: %v", err)
 	}
 
-	err = provider.VerifyProvider(t, provider.VerifyRequest{
+	verifier := provider.NewVerifier()
+	err = verifier.VerifyProvider(t, provider.VerifyRequest{
 		Provider:        "bank-account-service",
 		ProviderBaseURL: server.URL,
 		PactFiles:       []string{pactPath},
