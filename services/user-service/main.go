@@ -7,14 +7,12 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
 
-	"cloud.google.com/go/cloudsqlconn"
 	"github.com/exaring/otelpgx"
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5"
@@ -87,65 +85,27 @@ func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	var dialerCleanup func() error
-
 	dbHost := os.Getenv("DB_HOST")
-	var isCloudSQL bool
-	for i := 0; i < len(dbHost); i++ {
-		if dbHost[i] == ':' {
-			isCloudSQL = true
-			break
-		}
+	if dbHost == "" {
+		dbHost = "localhost"
 	}
+	dbPort := os.Getenv("DB_PORT")
+	if dbPort == "" {
+		dbPort = "5432"
+	}
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		dbHost, dbPort, os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 
-	var config *pgx.ConnConfig
-	var err error
-
-	if isCloudSQL {
-		// Database connection setup
-		d, err := cloudsqlconn.NewDialer(context.Background())
-		if err != nil {
-			slog.Error("Failed to create Cloud SQL dialer", "error", err)
-			os.Exit(1)
-		}
-		dialerCleanup = func() error { return d.Close() }
-
-		// Omit host from connection string to avoid DNS resolution errors.
-		// The Dialer will handle the actual connection to the Cloud SQL instance.
-		connStr := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable",
-			os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
-
-		config, err = pgx.ParseConfig(connStr)
-		if err != nil {
-			slog.Error("Failed to parse connection string", "error", err)
-			os.Exit(1)
-		}
-
-		config.DialFunc = func(ctx context.Context, _, _ string) (net.Conn, error) {
-			return d.Dial(ctx, dbHost)
-		}
-	} else {
-		dbPort := os.Getenv("DB_PORT")
-		if dbPort == "" {
-			dbPort = "5432"
-		}
-		connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			dbHost, dbPort, os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
-
-		config, err = pgx.ParseConfig(connStr)
-		if err != nil {
-			slog.Error("Failed to parse connection string", "error", err)
-			os.Exit(1)
-		}
+	config, err := pgx.ParseConfig(connStr)
+	if err != nil {
+		slog.Error("Failed to parse connection string", "error", err)
+		os.Exit(1)
 	}
 
 	config.Tracer = otelpgx.NewTracer()
 
 	db = stdlib.OpenDB(*config)
 	defer db.Close()
-	if dialerCleanup != nil {
-		defer dialerCleanup()
-	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
