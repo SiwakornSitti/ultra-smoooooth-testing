@@ -41,6 +41,19 @@ flowchart TD
 
 ---
 
+## 📋 Prerequisites
+
+Before setting up and running the microservices ecosystem, ensure the following prerequisite tools are installed:
+
+| Tool | Recommended Version | Purpose |
+| :--- | :--- | :--- |
+| **Docker & Docker Compose** | Docker Desktop 4.x+ | Orchestrating containerized services (PostgreSQL, WireMock, microservices). |
+| **Burp Suite** | Community / Professional | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic between frontend, BFF, and microservices. |
+| **Go** | 1.25+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
+| **Node.js & npm** | Node v18+ / npm v9+ | Building the QA Website and running Playwright E2E & integration test suites. |
+
+---
+
 ## 🛠 Local Development & Go Workspace
 
 This repository uses **Go Workspaces (`go.work`)** to manage multiple Go modules seamlessly:
