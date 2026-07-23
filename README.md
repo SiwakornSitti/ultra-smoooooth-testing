@@ -77,44 +77,16 @@ make clean
 
 ---
 
-## 🤝 Pact Contract Testing (Consumer-Driven)
+---
 
-We use **Pact Go (v2)** for consumer-driven contract testing between services:
+## 🤝 Contract Testing
 
-```mermaid
-flowchart LR
-    bff["bff-service (Consumer)"]
-    transfer["transfer-service (Consumer & Provider)"]
-    user["user-service (Provider)"]
-    bank["bank-account-service (Provider)"]
-    ekyc["ekyc-service (Provider)"]
+Pact consumer-driven contract testing specifications and tests have been preserved in the [`feature/pact-contract-testing`](https://github.com/SiwakornSitti/ultra-smoooooth-testing/tree/feature/pact-contract-testing) branch.
 
-    bff -->|Pact: GET/POST /users| user
-    bff -->|Pact: GET/POST /accounts| bank
-    bff -->|Pact: POST /ekycs/verify| ekyc
-    bff -->|Pact: POST /transfers| transfer
-    transfer -->|Pact: GET /accounts| bank
+To run Pact contract tests, switch to the Pact testing branch:
+```bash
+git checkout feature/pact-contract-testing
 ```
-
-### Contract Specifications & Tests
-
-- **`bff-service` (Consumer)**:
-  - [`user_pact_test.go`](services/bff-service/contract-testing/user_pact_test.go): Contract expectations for `GET /users/{id}` & `POST /users`.
-  - [`account_pact_test.go`](services/bff-service/contract-testing/account_pact_test.go): Contract expectations for `GET /accounts` & `POST /accounts`.
-  - [`ekyc_pact_test.go`](services/bff-service/contract-testing/ekyc_pact_test.go): Contract expectations for `POST /ekycs/verify`.
-  - [`transfer_pact_test.go`](services/bff-service/contract-testing/transfer_pact_test.go): Contract expectations for `POST /transfers`.
-- **`ekyc-service` (Provider)**:
-  - [`ekyc_provider_pact_test.go`](services/ekyc-service/contract-testing/ekyc_provider_pact_test.go): Verifies provider contract against production `api.SetupRouter()`.
-- **`transfer-service` (Consumer & Provider)**:
-  - [`transfer_pact_test.go`](services/transfer-service/contract-testing/transfer_pact_test.go): Verifies consumer expectations and provider contract against `api.SetupRouter()`.
-- **`user-service` (Provider)**:
-  - [`user_provider_pact_test.go`](services/user-service/contract-testing/user_provider_pact_test.go): Verifies provider contract against production `api.SetupUserRouter()`.
-  - [`paotang_pact_test.go`](services/user-service/contract-testing/paotang_pact_test.go): Consumer contract test for Paotang Pass token exchange.
-- **`bank-account-service` (Provider & Consumer)**:
-  - [`account_provider_pact_test.go`](services/bank-account-service/contract-testing/account_provider_pact_test.go): Verifies provider contract against production `api.SetupAccountRouter()`.
-  - [`sms_pact_test.go`](services/bank-account-service/contract-testing/sms_pact_test.go): Consumer contract test for SMS service.
-
-Generated JSON contracts are published into the root `./pacts/` directory.
 
 ---
 
