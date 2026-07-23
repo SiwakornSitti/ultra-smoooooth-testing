@@ -1,6 +1,8 @@
 # Ultra Smoooooth Testing
 
-A microservices ecosystem POC demonstrating **Consumer-Driven Contract Testing (Pact)**, **Go Workspaces (`go.work`)**, and full-stack integration testing with **Docker Compose**, **WireMock**, and **Playwright**.
+A microservices ecosystem POC demonstrating **Go Workspaces (`go.work`)**, full-stack integration testing with **Docker Compose**, **WireMock**, and **Playwright**.
+
+👉 **Check out the full [Integration Testing Workshop Guide](WORKSHOP.md) for 10 practical thinking cases and hands-on scenarios!**
 
 ---
 
@@ -50,7 +52,7 @@ Before setting up and running the microservices ecosystem, ensure the following 
 | **Docker & Docker Compose** | Docker Desktop 4.x+ | Orchestrating containerized services (PostgreSQL, WireMock, microservices). |
 | **Burp Suite** | Community / Professional | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic between frontend, BFF, and microservices. |
 | **Playwright** | v1.40+ | **Test Runner**: Executing end-to-end (E2E) browser automation tests and API integration test suites (`specs/e2e`, `specs/integration`). |
-| **Go** | 1.25+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
+| **Go** | 1.27+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
 | **Node.js & npm** | Node v18+ / npm v9+ | Building the QA Website and running Playwright test suites. |
 
 ---
@@ -60,7 +62,7 @@ Before setting up and running the microservices ecosystem, ensure the following 
 This repository uses **Go Workspaces (`go.work`)** to manage multiple Go modules seamlessly:
 
 ```work
-go 1.25.7
+go 1.27.0
 
 use (
  ./services/bank-account-service
@@ -87,20 +89,6 @@ make test
 
 # Clean compiled binaries
 make clean
-```
-
----
-
----
-
-## 🤝 Contract Testing
-
-Pact consumer-driven contract testing specifications and tests have been preserved in the [`feature/pact-contract-testing`](https://github.com/SiwakornSitti/ultra-smoooooth-testing/tree/feature/pact-contract-testing) branch.
-
-To run Pact contract tests, switch to the Pact testing branch:
-
-```bash
-git checkout feature/pact-contract-testing
 ```
 
 ---
