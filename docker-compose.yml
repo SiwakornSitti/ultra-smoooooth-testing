@@ -91,6 +91,37 @@ services:
         - action: rebuild
           path: ./services/bank-account-service
 
+  ekyc-service:
+    build:
+      context: ./services/ekyc-service
+      dockerfile: Dockerfile
+    container_name: poc-ekyc-service
+    ports:
+      - "8084:8080"
+    environment:
+      PORT: "8080"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/ekyc-service
+
+  transfer-service:
+    build:
+      context: ./services/transfer-service
+      dockerfile: Dockerfile
+    container_name: poc-transfer-service
+    ports:
+      - "8085:8080"
+    environment:
+      PORT: "8080"
+      BANK_ACCOUNT_SERVICE_URL: http://bank-account-service:8080
+    depends_on:
+      - bank-account-service
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/transfer-service
+
   # =========================================================================
   # BACKEND FOR FRONTEND (BFF) SERVICE
   # =========================================================================

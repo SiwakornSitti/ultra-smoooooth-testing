@@ -1,4 +1,4 @@
-package main
+package contracttesting
 
 // Consumer-driven contract test for user-service's call to Paotang Pass
 // (external service, no provider verification possible since we don't
@@ -19,7 +19,7 @@ import (
 )
 
 func TestPaotangTokenExchangePact(t *testing.T) {
-	pactDir, _ := filepath.Abs("../../pacts")
+	pactDir, _ := filepath.Abs("../../../pacts")
 	mockProvider, err := consumer.NewV2Pact(consumer.MockHTTPProviderConfig{
 		Consumer: "user-service",
 		Provider: "paotang-pass",
@@ -63,10 +63,10 @@ func TestPaotangTokenExchangePact(t *testing.T) {
 			return err
 		}
 		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
 			return fmt.Errorf("expected 200, got %d", resp.StatusCode)
 		}
+
 		return nil
 	})
 	if err != nil {

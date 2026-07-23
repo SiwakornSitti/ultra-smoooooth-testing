@@ -1,4 +1,4 @@
-package main
+package contracttesting
 
 // Consumer-driven contract test for bank-account-service's call to the SMS
 // notification service (external service, no provider verification possible
@@ -18,8 +18,13 @@ import (
 	"github.com/pact-foundation/pact-go/v2/matchers"
 )
 
+type SMSRequest struct {
+	To      string `json:"to"`
+	Message string `json:"message"`
+}
+
 func TestSMSSendPact(t *testing.T) {
-	pactDir, _ := filepath.Abs("../../pacts")
+	pactDir, _ := filepath.Abs("../../../pacts")
 	mockProvider, err := consumer.NewV2Pact(consumer.MockHTTPProviderConfig{
 		Consumer: "bank-account-service",
 		Provider: "sms-service",
@@ -66,10 +71,10 @@ func TestSMSSendPact(t *testing.T) {
 			return err
 		}
 		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
 			return fmt.Errorf("expected 200, got %d", resp.StatusCode)
 		}
+
 		return nil
 	})
 	if err != nil {

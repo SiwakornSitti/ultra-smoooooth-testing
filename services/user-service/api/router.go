@@ -1,17 +1,27 @@
-package main
+package api
 
 import (
 	"encoding/json"
 	"net/http"
-	"net/http/httptest"
-	"path/filepath"
-	"testing"
 
 	"github.com/gorilla/mux"
-	"github.com/pact-foundation/pact-go/v2/provider"
 )
 
-func createTestUserRouter() http.Handler {
+type User struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Email  string `json:"email"`
+	Phone  string `json:"phone,omitempty"`
+	Status string `json:"status,omitempty"`
+}
+
+func WriteJSONError(w http.ResponseWriter, message string, statusCode int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(map[string]string{"error": message})
+}
+
+func SetupUserRouter() http.Handler {
 	r := mux.NewRouter()
 	r.HandleFunc("/users/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
@@ -28,7 +38,7 @@ func createTestUserRouter() http.Handler {
 	r.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		var u User
 		if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
-			writeJSONError(w, err.Error(), http.StatusBadRequest)
+			WriteJSONError(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		u.ID = "generated-user-id"
@@ -41,24 +51,4 @@ func createTestUserRouter() http.Handler {
 	}).Methods("POST")
 
 	return r
-}
-
-func TestUserServicePactProvider(t *testing.T) {
-	server := httptest.NewServer(createTestUserRouter())
-	defer server.Close()
-
-	pactPath, err := filepath.Abs("../../pacts/bff-service-user-service.json")
-	if err != nil {
-		t.Fatalf("failed to resolve pact path: %v", err)
-	}
-
-	verifier := provider.NewVerifier()
-	err = verifier.VerifyProvider(t, provider.VerifyRequest{
-		Provider:        "user-service",
-		ProviderBaseURL: server.URL,
-		PactFiles:       []string{pactPath},
-	})
-	if err != nil {
-		t.Fatalf("user-service provider verification failed: %v", err)
-	}
 }

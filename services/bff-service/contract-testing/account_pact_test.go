@@ -1,4 +1,4 @@
-package main
+package contracttesting
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ import (
 )
 
 func TestBFFAccountServicePact(t *testing.T) {
-	pactDir, _ := filepath.Abs("../../pacts")
+	pactDir, _ := filepath.Abs("../../../pacts")
 	mockProvider, err := consumer.NewV2Pact(consumer.MockHTTPProviderConfig{
 		Consumer: "bff-service",
 		Provider: "bank-account-service",

@@ -3,5 +3,7 @@ go 1.25.7
 use (
 	./services/bank-account-service
 	./services/bff-service
+	./services/ekyc-service
+	./services/transfer-service
 	./services/user-service
 )
