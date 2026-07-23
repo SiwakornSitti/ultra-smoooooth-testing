@@ -46,7 +46,7 @@ func TestBFFAccountServicePact(t *testing.T) {
 			b.Header("Content-Type", matchers.String("application/json"))
 			b.JSONBody(matchers.MapMatcher{
 				"user_id":  matchers.String("test-user-123"),
-				"balance":  matchers.Decimal(100.0),
+				"balance":  matchers.Like(100.0),
 				"currency": matchers.String("THB"),
 			})
 		}).
@@ -55,7 +55,7 @@ func TestBFFAccountServicePact(t *testing.T) {
 			b.JSONBody(matchers.MapMatcher{
 				"id":       matchers.Like("generated-account-id"),
 				"user_id":  matchers.String("test-user-123"),
-				"balance":  matchers.Decimal(100.0),
+				"balance":  matchers.Like(100.0),
 				"currency": matchers.String("THB"),
 			})
 		})

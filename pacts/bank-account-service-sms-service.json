@@ -1,0 +1,49 @@
+{
+  "consumer": {
+    "name": "bank-account-service"
+  },
+  "interactions": [
+    {
+      "description": "an SMS send request",
+      "providerState": "a valid phone number",
+      "request": {
+        "body": {
+          "message": "Your new USD account has been created.",
+          "to": "+66800000000"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Api-Key": "dummy-sms-api-key"
+        },
+        "method": "POST",
+        "path": "/sms/send"
+      },
+      "response": {
+        "body": {
+          "id": "mock-sms-id",
+          "status": "sent"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-go": {
+      "version": "2.5.1"
+    },
+    "pactRust": {
+      "ffi": "0.4.28",
+      "mockserver": "1.2.16",
+      "models": "1.3.5"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "provider": {
+    "name": "sms-service"
+  }
+}

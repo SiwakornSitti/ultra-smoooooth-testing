@@ -1,0 +1,51 @@
+{
+  "consumer": {
+    "name": "user-service"
+  },
+  "interactions": [
+    {
+      "description": "a token exchange request",
+      "providerState": "a valid authorization code",
+      "request": {
+        "body": "grant_type=authorization_code&code=test-authcode&client_id=dummy-client-id&client_secret=dummy-client-secret",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "method": "POST",
+        "path": "/oauth/token"
+      },
+      "response": {
+        "body": {
+          "access_token": "mock-access-token",
+          "expires_in": 3600,
+          "token_type": "Bearer"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "$.body.expires_in": {
+            "match": "integer"
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-go": {
+      "version": "2.5.1"
+    },
+    "pactRust": {
+      "ffi": "0.4.28",
+      "mockserver": "1.2.16",
+      "models": "1.3.5"
+    },
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  },
+  "provider": {
+    "name": "paotang-pass"
+  }
+}
