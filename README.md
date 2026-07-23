@@ -49,8 +49,9 @@ Before setting up and running the microservices ecosystem, ensure the following 
 | :--- | :--- | :--- |
 | **Docker & Docker Compose** | Docker Desktop 4.x+ | Orchestrating containerized services (PostgreSQL, WireMock, microservices). |
 | **Burp Suite** | Community / Professional | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic between frontend, BFF, and microservices. |
+| **Playwright** | v1.40+ | **Test Runner**: Executing end-to-end (E2E) browser automation tests and API integration test suites (`specs/e2e`, `specs/integration`). |
 | **Go** | 1.25+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
-| **Node.js & npm** | Node v18+ / npm v9+ | Building the QA Website and running Playwright E2E & integration test suites. |
+| **Node.js & npm** | Node v18+ / npm v9+ | Building the QA Website and running Playwright test suites. |
 
 ---
 
@@ -62,11 +63,11 @@ This repository uses **Go Workspaces (`go.work`)** to manage multiple Go modules
 go 1.25.7
 
 use (
-	./services/bank-account-service
-	./services/bff-service
-	./services/ekyc-service
-	./services/transfer-service
-	./services/user-service
+ ./services/bank-account-service
+ ./services/bff-service
+ ./services/ekyc-service
+ ./services/transfer-service
+ ./services/user-service
 )
 ```
 
@@ -97,6 +98,7 @@ make clean
 Pact consumer-driven contract testing specifications and tests have been preserved in the [`feature/pact-contract-testing`](https://github.com/SiwakornSitti/ultra-smoooooth-testing/tree/feature/pact-contract-testing) branch.
 
 To run Pact contract tests, switch to the Pact testing branch:
+
 ```bash
 git checkout feature/pact-contract-testing
 ```
