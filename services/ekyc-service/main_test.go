@@ -6,15 +6,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"ekyc-service/api"
 )
 
 func TestCreateEKYCHandler(t *testing.T) {
-	router := api.SetupRouter()
+	router := setupRouter()
 
 	t.Run("successful eKYC verification creation", func(t *testing.T) {
-		reqBody := api.VerificationRequest{
+		reqBody := VerificationRequest{
 			CustomerID:   "cust-100",
 			NationalID:   "1100200300401",
 			FullName:     "Jane Doe",
@@ -36,7 +34,7 @@ func TestCreateEKYCHandler(t *testing.T) {
 			t.Errorf("expected Location header in 201 response")
 		}
 
-		var res api.EKYCVerification
+		var res EKYCVerification
 		if err := json.Unmarshal(rec.Body.Bytes(), &res); err != nil {
 			t.Fatalf("failed to unmarshal response: %v", err)
 		}
@@ -50,7 +48,7 @@ func TestCreateEKYCHandler(t *testing.T) {
 	})
 
 	t.Run("missing required fields returns 400", func(t *testing.T) {
-		reqBody := api.VerificationRequest{
+		reqBody := VerificationRequest{
 			CustomerID: "cust-100",
 		}
 		bodyBytes, _ := json.Marshal(reqBody)

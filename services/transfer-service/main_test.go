@@ -6,15 +6,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"transfer-service/api"
 )
 
 func TestCreateTransferHandler(t *testing.T) {
-	router := api.SetupRouter()
+	router := setupRouter()
 
 	t.Run("successful transfer creation", func(t *testing.T) {
-		reqBody := api.CreateTransferRequest{
+		reqBody := CreateTransferRequest{
 			SourceAccountID: "acc-123",
 			TargetAccountID: "acc-456",
 			Amount:          500.0,
@@ -36,7 +34,7 @@ func TestCreateTransferHandler(t *testing.T) {
 			t.Errorf("expected Location header in 201 response")
 		}
 
-		var res api.FundTransfer
+		var res FundTransfer
 		if err := json.Unmarshal(rec.Body.Bytes(), &res); err != nil {
 			t.Fatalf("failed to unmarshal response: %v", err)
 		}
@@ -50,7 +48,7 @@ func TestCreateTransferHandler(t *testing.T) {
 	})
 
 	t.Run("invalid transfer amount returns 400", func(t *testing.T) {
-		reqBody := api.CreateTransferRequest{
+		reqBody := CreateTransferRequest{
 			SourceAccountID: "acc-123",
 			TargetAccountID: "acc-456",
 			Amount:          -50.0,
@@ -70,7 +68,7 @@ func TestCreateTransferHandler(t *testing.T) {
 }
 
 func TestGetAllTransfersHandler(t *testing.T) {
-	router := api.SetupRouter()
+	router := setupRouter()
 
 	req, _ := http.NewRequest("GET", "/transfers", nil)
 	rec := httptest.NewRecorder()
@@ -81,7 +79,7 @@ func TestGetAllTransfersHandler(t *testing.T) {
 		t.Fatalf("expected status 200, got %d", rec.Code)
 	}
 
-	var transfers []api.FundTransfer
+	var transfers []FundTransfer
 	if err := json.Unmarshal(rec.Body.Bytes(), &transfers); err != nil {
 		t.Fatalf("failed to unmarshal response: %v", err)
 	}
