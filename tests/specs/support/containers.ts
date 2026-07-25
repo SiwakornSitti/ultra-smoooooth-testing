@@ -40,7 +40,7 @@ export async function startPostgres(network: StartedNetwork): Promise<StartedPos
     .withDatabase(DB_NAME)
     .withCopyDirectoriesToContainer([
       {
-        source: path.resolve(__dirname, "../../../k8s/migrations"),
+        source: path.resolve(__dirname, "../../../migrations"),
         target: "/docker-entrypoint-initdb.d",
       },
     ])
