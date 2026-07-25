@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/gorilla/mux"
 )
 
 func TestGetEnvTableDriven(t *testing.T) {
@@ -97,3 +99,100 @@ func TestWriteJSONErrorTableDriven(t *testing.T) {
 		})
 	}
 }
+
+type mockRoundTripper struct {
+	roundTrip func(req *http.Request) (*http.Response, error)
+}
+
+func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	return m.roundTrip(req)
+}
+
+func TestProxyHandlers(t *testing.T) {
+	origClient := http.DefaultClient.Transport
+	defer func() { http.DefaultClient.Transport = origClient }()
+
+	http.DefaultClient.Transport = &mockRoundTripper{
+		roundTrip: func(req *http.Request) (*http.Response, error) {
+			rec := httptest.NewRecorder()
+			switch req.URL.Path {
+			case "/ekycs/verify":
+				rec.Header().Set("Location", "/ekycs/ekyc-123")
+				rec.WriteHeader(http.StatusCreated)
+				rec.Body.WriteString(`{"id":"ekyc-123","status":"APPROVED"}`)
+			case "/ekycs/ekyc-123":
+				rec.WriteHeader(http.StatusOK)
+				rec.Body.WriteString(`{"id":"ekyc-123","status":"APPROVED"}`)
+			case "/transfers":
+				if req.Method == http.MethodPost {
+					rec.Header().Set("Location", "/transfers/txn-123")
+					rec.WriteHeader(http.StatusCreated)
+					rec.Body.WriteString(`{"id":"txn-123","amount":100}`)
+				} else {
+					rec.WriteHeader(http.StatusOK)
+					rec.Body.WriteString(`[{"id":"txn-123","amount":100}]`)
+				}
+			case "/transfers/txn-123":
+				rec.WriteHeader(http.StatusOK)
+				rec.Body.WriteString(`{"id":"txn-123","amount":100}`)
+			default:
+				rec.WriteHeader(http.StatusNotFound)
+			}
+			return rec.Result(), nil
+		},
+	}
+
+	r := mux.NewRouter()
+	r.HandleFunc("/api/v1/ekycs/verify", handleEKYCVerify).Methods("POST")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleGetEKYC).Methods("GET")
+	r.HandleFunc("/api/v1/transfers", handleCreateTransfer).Methods("POST")
+	r.HandleFunc("/api/v1/transfers", handleGetAllTransfers).Methods("GET")
+	r.HandleFunc("/api/v1/transfers/{id}", handleGetTransfer).Methods("GET")
+
+	// 1. Test eKYC verify
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest("POST", "/api/v1/ekycs/verify", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusCreated {
+		t.Errorf("eKYC verify status = %v, want 201", rec.Code)
+	}
+	if loc := rec.Header().Get("Location"); loc != "/ekycs/ekyc-123" {
+		t.Errorf("eKYC verify Location = %v, want /ekycs/ekyc-123", loc)
+	}
+
+	// 2. Test eKYC get
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("GET", "/api/v1/ekycs/ekyc-123", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Errorf("eKYC get status = %v, want 200", rec.Code)
+	}
+
+	// 3. Test Transfer create
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("POST", "/api/v1/transfers", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusCreated {
+		t.Errorf("Transfer create status = %v, want 201", rec.Code)
+	}
+	if loc := rec.Header().Get("Location"); loc != "/transfers/txn-123" {
+		t.Errorf("Transfer create Location = %v, want /transfers/txn-123", loc)
+	}
+
+	// 4. Test Transfer get all
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("GET", "/api/v1/transfers", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Errorf("Transfer get all status = %v, want 200", rec.Code)
+	}
+
+	// 5. Test Transfer get by ID
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("GET", "/api/v1/transfers/txn-123", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Errorf("Transfer get by ID status = %v, want 200", rec.Code)
+	}
+}
+

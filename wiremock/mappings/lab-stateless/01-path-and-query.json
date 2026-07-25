@@ -1,0 +1,26 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/stateless/users",
+    "UseMock": true,
+    "headers": {
+      "Mock-Scenario": { "contains": "OTP:INVALID" }
+    },
+    "queryParameters": {
+      "role": { "equalTo": "admin" },
+      "status": { "equalTo": "active" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "users": [
+        { "id": "usr-99", "role": "admin", "status": "active" }
+      ]
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "priority": 1,
+  "scenarioName": "order-fulfillment-lifecycle",
+  "requiredScenarioState": "SHIPPED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/orders/101/ship"
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "ALREADY_SHIPPED",
+      "message": "Order 101 has already been shipped"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

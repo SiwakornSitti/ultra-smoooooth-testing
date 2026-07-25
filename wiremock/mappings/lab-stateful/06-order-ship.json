@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "scenarioName": "order-fulfillment-lifecycle",
+  "requiredScenarioState": "PAID",
+  "newScenarioState": "SHIPPED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/orders/101/ship"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "order_id": "101",
+      "status": "SHIPPED",
+      "tracking_number": "TRACK-TH-998877"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

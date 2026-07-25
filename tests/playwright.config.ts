@@ -10,6 +10,7 @@ export default defineConfig({
   workers: 1,
   reporter: "list",
   use: {
+    baseURL: process.env.BASE_URL || "http://localhost:8080",
     actionTimeout: 0,
     trace: "on-first-retry",
   },

@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, APIRequestContext } from "@playwright/test";
+import { HttpStatusCode } from "axios";
 import { StartedNetwork, StartedTestContainer } from "testcontainers";
 import { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import {
@@ -52,13 +53,21 @@ test.afterAll(async () => {
   await stopAll([bffContainer, userServiceContainer, wiremockContainer, dbContainer], network);
 });
 
+test.afterEach(async ({ request }: { request: APIRequestContext }) => {
+  if (wiremockContainer) {
+    const host = wiremockContainer.getHost();
+    const port = wiremockContainer.getMappedPort(8080);
+    await request.post(`http://${host}:${port}/__admin/scenarios/reset`);
+  }
+});
+
 test.describe("Paotang Pass integration (via bff-service)", () => {
   test("should exchange valid authcode for access token", async ({ request }) => {
     const response = await request.post(`${bffUrl}/auth/paotang/callback`, {
       headers: { "Mock-Scenario": "PT_PASS:SUCCESS" },
       data: { code: "test-authcode" },
     });
-    expect(response.status()).toBe(200);
+    expect(response.status()).toBe(HttpStatusCode.Ok);
 
     const data = await response.json();
     expect(data).toEqual({
@@ -73,7 +82,7 @@ test.describe("Paotang Pass integration (via bff-service)", () => {
       headers: { "Mock-Scenario": "PT_PASS:INVALID_GRANT" },
       data: { code: "bad-authcode" },
     });
-    expect(response.status()).toBe(400);
+    expect(response.status()).toBe(HttpStatusCode.BadRequest);
 
     const data = await response.json();
     expect(data).toEqual({ error: "invalid_grant" });
@@ -84,7 +93,7 @@ test.describe("Paotang Pass integration (via bff-service)", () => {
       headers: { "Mock-Scenario": "PT_PASS:SUCCESS_ONCE" },
       data: { code: "one-time-authcode" },
     });
-    expect(first.status()).toBe(200);
+    expect(first.status()).toBe(HttpStatusCode.Ok);
     expect(await first.json()).toEqual({
       access_token: "mock-access-token",
       token_type: "Bearer",
@@ -95,7 +104,7 @@ test.describe("Paotang Pass integration (via bff-service)", () => {
       headers: { "Mock-Scenario": "PT_PASS:SUCCESS_ONCE" },
       data: { code: "one-time-authcode" },
     });
-    expect(replay.status()).toBe(400);
+    expect(replay.status()).toBe(HttpStatusCode.BadRequest);
     expect(await replay.json()).toEqual({ error: "invalid_grant" });
   });
 });

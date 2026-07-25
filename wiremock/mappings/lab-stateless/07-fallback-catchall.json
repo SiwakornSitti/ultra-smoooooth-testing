@@ -1,0 +1,17 @@
+{
+  "priority": 10,
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/lab/api/stateless/.*"
+  },
+  "response": {
+    "status": 404,
+    "jsonBody": {
+      "error": "NOT_FOUND",
+      "message": "No specific stub matched this stateless lab route"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

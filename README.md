@@ -10,25 +10,44 @@ A microservices ecosystem POC demonstrating **Go Workspaces (`go.work`)**, full-
 
 ```mermaid
 flowchart TD
-    Website["QA Website (Next.js :3000)"]
-    BFF["bff-service (Go :8080)"]
-    UserService["user-service (Go :8081)"]
-    BankService["bank-account-service (Go :8082)"]
-    EKYCService["ekyc-service (Go :8084)"]
-    TransferService["transfer-service (Go :8085)"]
-    DB[(PostgreSQL :5432)]
-    WireMock["WireMock GUI (:8088 / :8080)"]
+    subgraph Clients["Client Layer"]
+        Website["QA Website (Next.js :3000)"]
+        Burp["Burp Suite MITM Proxy (:8080)"]
+    end
 
-    Website -->|HTTP| BFF
-    BFF -->|GET/POST users| UserService
-    BFF -->|GET/POST accounts| BankService
-    BFF -->|POST eKYC| EKYCService
-    BFF -->|POST transfers| TransferService
-    TransferService -->|GET accounts| BankService
-    UserService -->|SQL| DB
-    BankService -->|SQL| DB
-    UserService -->|OAuth / OTP| WireMock
-    BankService -->|SMS Send| WireMock
+    subgraph API_Gateway["API Gateway / Orchestration"]
+        BFF["bff-service (Go :8080)"]
+    end
+
+    subgraph Core_Services["Independent Domain Microservices (No Inter-Service Calls)"]
+        UserService["user-service (Go :8081)"]
+        BankService["bank-account-service (Go :8082)"]
+        EKYCService["ekyc-service (Go :8084)"]
+        TransferService["transfer-service (Go :8085)"]
+    end
+
+    subgraph Persistence["Persistence Layer"]
+        DB[(PostgreSQL :5432)]
+    end
+
+    subgraph External_Mocks["External Integration Mocks"]
+        WireMock["WireMock GUI (:8088 / :8080)"]
+    end
+
+    Website -->|HTTP REST| BFF
+    Website -.->|Optional Intercept| Burp
+    Burp -.->|Proxied Traffic| BFF
+
+    BFF -->|GET/POST /users| UserService
+    BFF -->|GET/POST /accounts| BankService
+    BFF -->|POST/GET /ekycs| EKYCService
+    BFF -->|POST/GET /transfers| TransferService
+
+    UserService -->|SQL Queries| DB
+    BankService -->|SQL Queries| DB
+
+    UserService -->|OAuth & OTP / WireMock| WireMock
+    BankService -->|SMS Send / WireMock| WireMock
 ```
 
 ### Microservices
@@ -38,7 +57,7 @@ flowchart TD
 - **`bank-account-service`** (`:8082`): Bank account management microservice backed by PostgreSQL.
 - **`ekyc-service`** (`:8084`): Electronic Know Your Customer identity verification service (`POST /ekycs/verify`, `GET /ekycs/{id}`).
 - **`transfer-service`** (`:8085`): Funds transfer management service (`POST /transfers`, `GET /transfers`, `GET /transfers/{id}`).
-- **`website`** (`:3000`): Next.js web client interface.
+- **`website`** (`:3000`): Next.js 16 web client interface.
 - **`wiremock`** (`:8088`): WireMock GUI mocking third-party integrations (Paotang Pass, OTP, SMS).
 
 ---
@@ -117,4 +136,30 @@ make test-integration
 
 # Run End-to-End Browser Tests (specs/e2e)
 make test-e2e
+
+# Run WireMock Stateful Stub Lab (specs/labs)
+make test-lab
 ```
+
+---
+
+## 🔬 Practical Labs
+
+- 🖥️ **[WireMock Web UI & GUI Management Guide](labs/wiremock-ui/README.md)**: Interactive guide for viewing, creating, searching, and inspecting WireMock stubs and request logs via the Web GUI (`http://localhost:8088`).
+- 🎓 **[WireMock Stateful Stubbing & Scenario State Machines](labs/wiremock-stateful/README.md)**: Hands-on guide and test suite for studying stateful stubs, state transitions, auth token replay prevention, order fulfillment state machines, and transient retry self-healing.
+- 🎓 **[WireMock Stateless Stubbing & Pattern Matching](labs/wiremock-stateless/README.md)**: Hands-on guide and test suite for studying stateless request matching (query params, headers, JSONPath body patterns), priority overrides, Handlebars response templating, and delay latency injection.
+- 🎓 **[Burp Suite MITM Proxy & API Security Inspection](labs/burp-suite/README.md)**: Hands-on guide for intercepting, inspecting, modifying, and security-testing HTTP/HTTPS microservice traffic, header injection, and Burp Repeater testing.
+
+---
+
+## 📊 Presentation Slides (Slidev)
+
+A complete Markdown presentation built with **[Slidev](https://sli.dev)** is included in the `slides/` directory:
+
+```bash
+# Launch interactive Slidev presentation deck
+make slides
+# OR
+cd slides && bunx @slidev/cli slides.md
+```
+

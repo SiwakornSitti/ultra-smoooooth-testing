@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/stateless/secure",
+    "headers": {
+      "Authorization": { "matches": "Bearer secret-token-[0-9]+" },
+      "X-Client-ID": { "equalTo": "qa-client" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "authenticated": true,
+      "scope": "read:write"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

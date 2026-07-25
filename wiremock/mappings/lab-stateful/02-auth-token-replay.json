@@ -1,0 +1,22 @@
+{
+  "priority": 1,
+  "scenarioName": "auth-token-replay-prevention",
+  "requiredScenarioState": "TOKEN_ISSUED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/oauth/token",
+    "bodyPatterns": [
+      { "contains": "grant_type=authorization_code" }
+    ]
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "invalid_grant",
+      "error_description": "Authorization code has already been used"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

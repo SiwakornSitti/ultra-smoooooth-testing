@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, APIRequestContext } from "@playwright/test";
+import { HttpStatusCode } from "axios";
 import { StartedNetwork, StartedTestContainer } from "testcontainers";
 import { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import * as path from "path";
@@ -109,6 +110,8 @@ test.beforeAll(async () => {
   bffContainer = await startBffService(network, {
     USER_SERVICE_URL: "http://user-service:8080",
     BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
+    EKYC_SERVICE_URL: "http://ekyc-service:8080",
+    TRANSFER_SERVICE_URL: "http://transfer-service:8080",
   });
 
   const host = bffContainer.getHost();
@@ -122,6 +125,14 @@ test.afterAll(async () => {
     [bffContainer, bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
     network
   );
+});
+
+test.afterEach(async ({ request }: { request: APIRequestContext }) => {
+  if (wiremockContainer) {
+    const host = wiremockContainer.getHost();
+    const port = wiremockContainer.getMappedPort(8080);
+    await request.post(`http://${host}:${port}/__admin/scenarios/reset`);
+  }
 });
 
 test.describe("BFF Service Integration Tests", () => {
@@ -165,7 +176,7 @@ test.describe("BFF Service Integration Tests", () => {
     const nonexistentId = "00000000-0000-0000-0000-000000000000";
     console.log(`Testing nonexistent user fetch: ${bffUrl}/api/v1/users/${nonexistentId}`);
     const response = await request.get(`${bffUrl}/api/v1/users/${nonexistentId}`);
-    expect(response.status()).toBe(404);
+    expect(response.status()).toBe(HttpStatusCode.NotFound);
   });
 
   test("should proxy user creation requests to user-service", async ({ request }) => {
@@ -177,7 +188,7 @@ test.describe("BFF Service Integration Tests", () => {
         phone: "+66800000002",
       },
     });
-    expect(response.status()).toBe(201);
+    expect(response.status()).toBe(HttpStatusCode.Created);
 
     const data = await response.json();
     console.log("Created user response:", JSON.stringify(data));
@@ -199,7 +210,7 @@ test.describe("BFF Service Integration Tests", () => {
         email: "bob@example.com",
       },
     });
-    expect(response.status()).toBe(400);
+    expect(response.status()).toBe(HttpStatusCode.BadRequest);
   });
 
   test("should return empty accounts array for a user with no accounts", async ({ request }) => {
@@ -211,7 +222,7 @@ test.describe("BFF Service Integration Tests", () => {
         phone: "+66800000003",
       },
     });
-    expect(createResponse.status()).toBe(201);
+    expect(createResponse.status()).toBe(HttpStatusCode.Created);
     const { id: newUserId } = await createResponse.json();
 
     const response = await request.get(`${bffUrl}/api/v1/users/${newUserId}`);
@@ -229,7 +240,7 @@ test.describe("BFF Service Integration Tests", () => {
       headers: { "Content-Type": "application/json" },
       data: "{not valid json",
     });
-    expect(response.status()).toBe(400);
+    expect(response.status()).toBe(HttpStatusCode.BadRequest);
   });
 
   test("should reject Paotang authcode replay (one-time use)", async ({ request }) => {
@@ -238,7 +249,7 @@ test.describe("BFF Service Integration Tests", () => {
       headers: { "Mock-Scenario": "PT_PASS:SUCCESS_ONCE" },
       data: { code: "one-time-authcode" },
     });
-    expect(first.status()).toBe(200);
+    expect(first.status()).toBe(HttpStatusCode.Ok);
     expect(await first.json()).toEqual({
       access_token: "mock-access-token",
       token_type: "Bearer",
@@ -249,7 +260,7 @@ test.describe("BFF Service Integration Tests", () => {
       headers: { "Mock-Scenario": "PT_PASS:SUCCESS_ONCE" },
       data: { code: "one-time-authcode" },
     });
-    expect(replay.status()).toBe(400);
+    expect(replay.status()).toBe(HttpStatusCode.BadRequest);
     expect(await replay.json()).toEqual({ error: "invalid_grant" });
   });
 
@@ -259,7 +270,7 @@ test.describe("BFF Service Integration Tests", () => {
       headers: { "Mock-Scenario": "OTP:SUCCESS" },
       data: { phone: mockUserPhone, code: "123456" },
     });
-    expect(response.status()).toBe(200);
+    expect(response.status()).toBe(HttpStatusCode.Ok);
     expect(await response.json()).toEqual({ verified: true });
   });
 
@@ -269,7 +280,38 @@ test.describe("BFF Service Integration Tests", () => {
       headers: { "Mock-Scenario": "OTP:INVALID" },
       data: { phone: mockUserPhone, code: "000000" },
     });
-    expect(response.status()).toBe(400);
+    expect(response.status()).toBe(HttpStatusCode.BadRequest);
     expect(await response.json()).toEqual({ error: "invalid_otp" });
+  });
+
+  test("should proxy eKYC verification request to ekyc-service", async ({ request }) => {
+    console.log(`Proxying eKYC verify via BFF: ${bffUrl}/api/v1/ekycs/verify`);
+    const response = await request.post(`${bffUrl}/api/v1/ekycs/verify`, {
+      data: {
+        customer_id: seededUserId,
+        national_id: "1234567890123",
+        full_name: mockUserName,
+      },
+    });
+    expect(response.status()).toBe(HttpStatusCode.Created);
+    const data = await response.json();
+    expect(data.status).toBe("APPROVED");
+    expect(data.customer_id).toBe(seededUserId);
+  });
+
+  test("should proxy transfer request to transfer-service", async ({ request }) => {
+    console.log(`Proxying transfer via BFF: ${bffUrl}/api/v1/transfers`);
+    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+      data: {
+        source_account_id: "acc-001",
+        target_account_id: "acc-002",
+        amount: 500,
+        currency: "THB",
+      },
+    });
+    expect(response.status()).toBe(HttpStatusCode.Created);
+    const data = await response.json();
+    expect(data.status).toBe("COMPLETED");
+    expect(data.amount).toBe(500);
   });
 });

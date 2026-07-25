@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "scenarioName": "order-fulfillment-lifecycle",
+  "requiredScenarioState": "Started",
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/orders/101"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "order_id": "101",
+      "status": "PENDING",
+      "amount": 1500.0,
+      "items": ["Wireless Keyboard"]
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

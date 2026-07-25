@@ -1,0 +1,19 @@
+{
+  "priority": 1,
+  "scenarioName": "retry-recovery-flow",
+  "requiredScenarioState": "FAIL_2",
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/unstable-endpoint"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "status": "SUCCESS",
+      "message": "Service recovered on attempt 3"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

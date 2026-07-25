@@ -1,0 +1,19 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/lab/api/stateless/echo/(.*)"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "extracted_path_id": "{{request.path.[4]}}",
+      "echo_header": "{{request.headers.X-Request-ID}}",
+      "query_name": "{{request.query.name}}"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"]
+  }
+}

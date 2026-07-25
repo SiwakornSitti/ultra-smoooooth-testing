@@ -1,0 +1,20 @@
+{
+  "priority": 1,
+  "scenarioName": "retry-recovery-flow",
+  "requiredScenarioState": "Started",
+  "newScenarioState": "FAIL_1",
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/unstable-endpoint"
+  },
+  "response": {
+    "status": 503,
+    "jsonBody": {
+      "error": "SERVICE_UNAVAILABLE",
+      "message": "Temporary service failure (attempt 1)"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

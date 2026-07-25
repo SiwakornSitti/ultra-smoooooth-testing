@@ -1,0 +1,17 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/stateless/products/vip"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "product": "VIP Gold Membership",
+      "discount": "50%"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

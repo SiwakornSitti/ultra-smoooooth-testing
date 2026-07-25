@@ -34,7 +34,17 @@ type UserDetail struct {
 var (
 	userServiceURL        = getEnv("USER_SERVICE_URL", "http://user-service.app.svc.cluster.local")
 	bankAccountServiceURL = getEnv("BANK_ACCOUNT_SERVICE_URL", "http://bank-account-service.app.svc.cluster.local")
+	ekycServiceURL        = getEnv("EKYC_SERVICE_URL", "http://ekyc-service.app.svc.cluster.local")
+	transferServiceURL    = getEnv("TRANSFER_SERVICE_URL", "http://transfer-service.app.svc.cluster.local")
 )
+
+func forwardMockHeaders(in *http.Request, out *http.Request) {
+	for _, h := range []string{"Use-Mock", "Mock-Scenario", "Mock-ID"} {
+		if v := in.Header.Get(h); v != "" {
+			out.Header.Set(h, v)
+		}
+	}
+}
 
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -84,6 +94,11 @@ func main() {
 	r.HandleFunc("/api/v1/users/{id}/", handleUserDetails).Methods("GET")
 	r.HandleFunc("/api/v1/users", handleCreateUser).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleCreateAccount).Methods("POST")
+	r.HandleFunc("/api/v1/ekycs/verify", handleEKYCVerify).Methods("POST")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleGetEKYC).Methods("GET")
+	r.HandleFunc("/api/v1/transfers", handleCreateTransfer).Methods("POST")
+	r.HandleFunc("/api/v1/transfers", handleGetAllTransfers).Methods("GET")
+	r.HandleFunc("/api/v1/transfers/{id}", handleGetTransfer).Methods("GET")
 	r.HandleFunc("/auth/paotang/callback", handlePaotangCallback).Methods("POST")
 	r.HandleFunc("/auth/otp/verify", handleOTPVerify).Methods("POST")
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -283,11 +298,7 @@ func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	for _, h := range []string{"Use-Mock", "Mock-Scenario", "Mock-ID"} {
-		if v := r.Header.Get(h); v != "" {
-			req.Header.Set(h, v)
-		}
-	}
+	forwardMockHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -302,3 +313,139 @@ func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
 		slog.Error("Failed to copy response body", "error", err)
 	}
 }
+
+func handleEKYCVerify(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying eKYC verify request to ekyc-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/ekycs/verify", ekycServiceURL), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardMockHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	if loc := resp.Header.Get("Location"); loc != "" {
+		w.Header().Set("Location", loc)
+	}
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleGetEKYC(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying get eKYC request to ekyc-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), "GET", fmt.Sprintf("%s/ekycs/%s", ekycServiceURL, id), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardMockHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying create transfer request to transfer-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/transfers", transferServiceURL), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardMockHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call transfer-service", "error", err)
+		writeJSONError(w, "Transfer service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	if loc := resp.Header.Get("Location"); loc != "" {
+		w.Header().Set("Location", loc)
+	}
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying get all transfers request to transfer-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), "GET", fmt.Sprintf("%s/transfers", transferServiceURL), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardMockHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call transfer-service", "error", err)
+		writeJSONError(w, "Transfer service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleGetTransfer(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying get transfer request to transfer-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), "GET", fmt.Sprintf("%s/transfers/%s", transferServiceURL, id), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardMockHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call transfer-service", "error", err)
+		writeJSONError(w, "Transfer service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+

@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "scenarioName": "order-fulfillment-lifecycle",
+  "requiredScenarioState": "Started",
+  "newScenarioState": "PAID",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/orders/101/pay"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "order_id": "101",
+      "status": "PAID",
+      "message": "Payment successful"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

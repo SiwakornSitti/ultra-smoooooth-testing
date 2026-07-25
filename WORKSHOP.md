@@ -8,25 +8,44 @@ Welcome to the **Microservices Integration Testing Workshop**! This guide provid
 
 ```mermaid
 flowchart TD
-    Website["QA Website (Next.js :3000)"]
-    BFF["bff-service (Go :8080)"]
-    UserService["user-service (Go :8081)"]
-    BankService["bank-account-service (Go :8082)"]
-    EKYCService["ekyc-service (Go :8084)"]
-    TransferService["transfer-service (Go :8085)"]
-    DB[(PostgreSQL :5432)]
-    WireMock["WireMock GUI (:8088 / :8080)"]
+    subgraph Clients["Client Layer"]
+        Website["QA Website (Next.js 16 :3000)"]
+        Burp["Burp Suite MITM Proxy (:8080)"]
+    end
 
-    Website -->|HTTP| BFF
-    BFF -->|GET/POST users| UserService
-    BFF -->|GET/POST accounts| BankService
-    BFF -->|POST eKYC| EKYCService
-    BFF -->|POST transfers| TransferService
-    TransferService -->|GET accounts| BankService
-    UserService -->|SQL| DB
-    BankService -->|SQL| DB
-    UserService -->|OAuth / OTP| WireMock
-    BankService -->|SMS Send| WireMock
+    subgraph API_Gateway["API Gateway / Orchestration"]
+        BFF["bff-service (Go :8080)"]
+    end
+
+    subgraph Core_Services["Independent Domain Microservices (No Inter-Service Calls)"]
+        UserService["user-service (Go :8081)"]
+        BankService["bank-account-service (Go :8082)"]
+        EKYCService["ekyc-service (Go :8084)"]
+        TransferService["transfer-service (Go :8085)"]
+    end
+
+    subgraph Persistence["Persistence Layer"]
+        DB[(PostgreSQL :5432)]
+    end
+
+    subgraph External_Mocks["External Integration Mocks"]
+        WireMock["WireMock GUI (:8088 / :8080)"]
+    end
+
+    Website -->|HTTP REST| BFF
+    Website -.->|Optional Intercept| Burp
+    Burp -.->|Proxied Traffic| BFF
+
+    BFF -->|GET/POST /users| UserService
+    BFF -->|GET/POST /accounts| BankService
+    BFF -->|POST/GET /ekycs| EKYCService
+    BFF -->|POST/GET /transfers| TransferService
+
+    UserService -->|SQL Queries| DB
+    BankService -->|SQL Queries| DB
+
+    UserService -->|OAuth & OTP / WireMock| WireMock
+    BankService -->|SMS Send / WireMock| WireMock
 ```
 
 ---
@@ -48,6 +67,7 @@ flowchart TD
 ### 📍 Category 1: Service-to-Service Workflow Integration
 
 #### **Case 1: End-to-End Fund Transfer Execution**
+
 - **Flow**: `Client` ➔ `BFF Service` ➔ `Transfer Service` ➔ `Bank Account Service` ➔ `PostgreSQL`
 - **Challenge**: Verify that when `POST /transfers` is called, the transfer record is created, and the source account balance decreases while the target account balance increases.
 - **Key Assertions**:
@@ -55,6 +75,7 @@ flowchart TD
   - Query `bank-account-service` before and after transfer to verify exact balance delta.
 
 #### **Case 2: eKYC-Gated Account Opening**
+
 - **Flow**: `Client` ➔ `BFF Service` ➔ `eKYC Service` & `User Service`
 - **Challenge**: A user requests a new bank account. The system must verify eKYC status (`APPROVED`) before creating the account in `bank-account-service`.
 - **Key Assertions**:
@@ -66,6 +87,7 @@ flowchart TD
 ### 📍 Category 2: Data Integrity & Database Persistence
 
 #### **Case 3: Atomic Transaction & Rollback Validation**
+
 - **Scenario**: Source account has 500 THB. User attempts to transfer 1,000 THB to Target account.
 - **Challenge**: Ensure the database operation fails atomically. Source account balance must remain 500 THB, Target account balance must remain unchanged, and no partial transfer record is committed.
 - **Key Assertions**:
@@ -73,6 +95,7 @@ flowchart TD
   - Both account balances in PostgreSQL remain untouched.
 
 #### **Case 4: Concurrent Transfers (Race Condition / Double Spend)**
+
 - **Scenario**: User has 100 THB balance. Two transfer requests of 80 THB each arrive simultaneously.
 - **Challenge**: Test database locking / optimistic concurrency control. Exactly ONE transfer must succeed (`201 Created`); the second MUST fail with insufficient balance (`400 Bad Request`).
 - **Key Assertions**:
@@ -84,6 +107,7 @@ flowchart TD
 ### 📍 Category 3: External Integrations & Stubbing (WireMock)
 
 #### **Case 5: Outbound SMS Notification Failure (Resilience / Fail-Soft)**
+
 - **Flow**: `Bank Account Service` ➔ `WireMock (SMS Gateway)`
 - **Challenge**: Configure WireMock stub to return `503 Service Unavailable` for `POST /sms/send`. Verify that bank account creation still succeeds (`201 Created`) because SMS is an asynchronous/best-effort notification service.
 - **Key Assertions**:
@@ -91,6 +115,7 @@ flowchart TD
   - Error is logged silently without crashing the HTTP response.
 
 #### **Case 6: OAuth Token Exchange (Paotang Pass)**
+
 - **Flow**: `User Service` ➔ `WireMock (Paotang Pass OAuth)`
 - **Challenge**: Test OAuth callback integration (`POST /auth/paotang/callback`) using a WireMock stub returning a mock Bearer access token.
 - **Key Assertions**:
@@ -102,6 +127,7 @@ flowchart TD
 ### 📍 Category 4: Frontend & API Aggregation (BFF)
 
 #### **Case 7: BFF Data Aggregation (User Dashboard View)**
+
 - **Flow**: `Next.js Web Frontend` ➔ `BFF Service` ➔ (`User Service` + `Bank Account Service`)
 - **Challenge**: `BFF Service` fetches user details from `user-service` and account list from `bank-account-service` concurrently, combining them into a single `UserDashboard` JSON payload.
 - **Key Assertions**:
@@ -109,6 +135,7 @@ flowchart TD
   - If `bank-account-service` returns empty list `[]`, BFF still returns user profile with empty accounts list.
 
 #### **Case 8: Strict REST Schema & Header Contract Validation**
+
 - **Challenge**: Test that all endpoints strictly follow REST standards:
   - Resource creation returns `201 Created` with `Location` header.
   - Invalid JSON payload returns `400 Bad Request` with standard error schema: `{"error": "...", "code": "..."}`.
@@ -119,9 +146,11 @@ flowchart TD
 ### 📍 Category 5: Resilience, Timeouts & Fault Injection
 
 #### **Case 9: Downstream Service Timeout (Latency Fault Injection)**
+
 - **Challenge**: Configure WireMock or proxy delay (e.g. 10-second delay) on external dependencies. Verify that the calling microservice enforces a HTTP client timeout (e.g. 3-second timeout) and returns a clean gateway timeout response (`504 Gateway Timeout`).
 
 #### **Case 10: Idempotent Payment Request Retries**
+
 - **Scenario**: Client submits a transfer, but network drops before receiving HTTP response. Client retries the identical request with the same `Idempotency-Key` or transaction reference.
 - **Challenge**: Verify that duplicate requests with the same idempotency key do not execute a second debit, but return the original transaction result.
 

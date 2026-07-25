@@ -5,7 +5,7 @@
     "urlPath": "/sms/send",
     "headers": {
       "Mock-Scenario": { "contains": "SMS:INVALID_NUMBER" }
-    }
+        }
   },
   "response": {
     "status": 400,

@@ -1,0 +1,17 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/stateless/slow-endpoint"
+  },
+  "response": {
+    "status": 200,
+    "fixedDelayMilliseconds": 500,
+    "jsonBody": {
+      "message": "Delayed response after 500ms"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

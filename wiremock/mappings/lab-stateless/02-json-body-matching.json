@@ -1,0 +1,22 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/stateless/payments",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.payment[?(@.amount > 1000)]"
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "status": "APPROVED",
+      "flag": "HIGH_VALUE_TRANSACTION"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
