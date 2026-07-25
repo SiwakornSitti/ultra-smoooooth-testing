@@ -38,10 +38,14 @@ export async function startPostgres(network: StartedNetwork): Promise<StartedPos
     .withUsername(DB_USER)
     .withPassword(DB_PASSWORD)
     .withDatabase(DB_NAME)
-    .withCopyDirectoriesToContainer([
+    .withCopyFilesToContainer([
       {
-        source: path.resolve(__dirname, "../../../migrations"),
-        target: "/docker-entrypoint-initdb.d",
+        source: path.resolve(__dirname, "../../../services/user-service/db/schema.sql"),
+        target: "/docker-entrypoint-initdb.d/01-user-service.sql",
+      },
+      {
+        source: path.resolve(__dirname, "../../../services/bank-account-service/db/schema.sql"),
+        target: "/docker-entrypoint-initdb.d/02-bank-account-service.sql",
       },
     ])
     .start();
