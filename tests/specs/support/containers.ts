@@ -47,6 +47,14 @@ export async function startPostgres(network: StartedNetwork): Promise<StartedPos
         source: path.resolve(__dirname, "../../../services/bank-account-service/db/schema.sql"),
         target: "/docker-entrypoint-initdb.d/02-bank-account-service.sql",
       },
+      {
+        source: path.resolve(__dirname, "../../../services/ekyc-service/db/schema.sql"),
+        target: "/docker-entrypoint-initdb.d/03-ekyc-service.sql",
+      },
+      {
+        source: path.resolve(__dirname, "../../../services/transfer-service/db/schema.sql"),
+        target: "/docker-entrypoint-initdb.d/04-transfer-service.sql",
+      },
     ])
     .start();
 }
@@ -97,6 +105,50 @@ export async function startBankAccountService(
   return new GenericContainer("bank-account-service:test")
     .withNetwork(network)
     .withNetworkAliases("bank-account-service")
+    .withExposedPorts(PORT)
+    .withEnvironment({
+      PORT: PORT.toString(),
+      DB_HOST: "db",
+      DB_PORT: "5432",
+      DB_USER,
+      DB_PASSWORD,
+      DB_NAME,
+      ...env,
+    })
+    .withWaitStrategy(Wait.forHttp("/health", PORT))
+    .start();
+}
+
+export async function startEkycService(
+  network: StartedNetwork,
+  env?: Record<string, string>
+): Promise<StartedTestContainer> {
+  console.log("Starting ekyc-service container...");
+  return new GenericContainer("ekyc-service:test")
+    .withNetwork(network)
+    .withNetworkAliases("ekyc-service")
+    .withExposedPorts(PORT)
+    .withEnvironment({
+      PORT: PORT.toString(),
+      DB_HOST: "db",
+      DB_PORT: "5432",
+      DB_USER,
+      DB_PASSWORD,
+      DB_NAME,
+      ...env,
+    })
+    .withWaitStrategy(Wait.forHttp("/health", PORT))
+    .start();
+}
+
+export async function startTransferService(
+  network: StartedNetwork,
+  env?: Record<string, string>
+): Promise<StartedTestContainer> {
+  console.log("Starting transfer-service container...");
+  return new GenericContainer("transfer-service:test")
+    .withNetwork(network)
+    .withNetworkAliases("transfer-service")
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
