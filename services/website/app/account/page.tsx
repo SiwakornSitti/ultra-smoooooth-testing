@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
 
@@ -19,8 +20,9 @@ export default function AccountPage() {
   // Step 2: create account (triggers SMS)
   const [balance, setBalance] = useState("1000");
   const [currency, setCurrency] = useState("USD");
-  const smsScenario = "SMS:SUCCESS";
+  const [smsScenario, setSmsScenario] = useState("SMS:SUCCESS");
   const [accountResult, setAccountResult] = useState("");
+  const [showMockControls, setShowMockControls] = useState(false);
 
   // Step 3: verify profile status not blocked
   const [profileResult, setProfileResult] = useState("");
@@ -77,9 +79,19 @@ export default function AccountPage() {
   return (
     <main className="page-shell">
       <header className="page-header">
+        <Link className="home-link" href="/">← Home</Link>
         <p className="eyebrow">Customer workspace</p>
         <h1>Create account</h1>
         <p className="subtitle">Set up a customer profile, open an account, and verify its profile status.</p>
+        <label className="toggle-field">
+          <input
+            data-testid="toggle-mock-controls"
+            type="checkbox"
+            checked={showMockControls}
+            onChange={(e) => setShowMockControls(e.target.checked)}
+          />
+          <span>Show mock controls</span>
+        </label>
       </header>
 
       <div className="page-grid">
@@ -131,6 +143,15 @@ export default function AccountPage() {
           <input data-testid="input-currency" value={currency} onChange={(e) => setCurrency(e.target.value)} />
         </label>
         <br />
+        {showMockControls && (
+          <label>
+            SMS Mock Scenario
+            <select data-testid="select-sms-scenario" value={smsScenario} onChange={(e) => setSmsScenario(e.target.value)}>
+              <option value="SMS:SUCCESS">SMS:SUCCESS</option>
+              <option value="SMS:INVALID_NUMBER">SMS:INVALID_NUMBER</option>
+            </select>
+          </label>
+        )}
         <button data-testid="btn-create-account" onClick={createAccount}>
           Create Account
         </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { AUTH_SESSION_KEY } from "../lib/auth";
 
@@ -9,14 +10,15 @@ export default function LoginPage() {
 
   // Step 1: Paotang authcode exchange
   const [authCode, setAuthCode] = useState("test-authcode");
-  const paotangScenario = "PT_PASS:SUCCESS";
+  const [paotangScenario, setPaotangScenario] = useState("PT_PASS:SUCCESS");
   const [paotangResult, setPaotangResult] = useState("");
   const [tokenExchanged, setTokenExchanged] = useState(false);
+  const [showMockControls, setShowMockControls] = useState(false);
 
   // Step 2: OTP SMS verify
   const [phone, setPhone] = useState("+66800000000");
   const [otpCode, setOtpCode] = useState("123456");
-  const otpScenario = "OTP:SUCCESS";
+  const [otpScenario, setOtpScenario] = useState("OTP:SUCCESS");
   const [otpResult, setOtpResult] = useState("");
 
   async function paotangLogin() {
@@ -54,9 +56,19 @@ export default function LoginPage() {
   return (
     <main className="page-shell">
       <header className="page-header">
+        <Link className="home-link" href="/">← Home</Link>
         <p className="eyebrow">Secure access</p>
         <h1>Sign in</h1>
         <p className="subtitle">Exchange your Paotang auth code, then verify your identity with a one-time password.</p>
+        <label className="toggle-field">
+          <input
+            data-testid="toggle-mock-controls"
+            type="checkbox"
+            checked={showMockControls}
+            onChange={(e) => setShowMockControls(e.target.checked)}
+          />
+          <span>Show mock controls</span>
+        </label>
       </header>
 
       <div className="page-grid">
@@ -67,6 +79,20 @@ export default function LoginPage() {
           <input data-testid="input-authcode" value={authCode} onChange={(e) => setAuthCode(e.target.value)} />
         </label>
         <br />
+        {showMockControls && (
+          <label>
+            Paotang Mock Scenario
+            <select
+              data-testid="select-paotang-scenario"
+              value={paotangScenario}
+              onChange={(e) => setPaotangScenario(e.target.value)}
+            >
+              <option value="PT_PASS:SUCCESS">PT_PASS:SUCCESS</option>
+              <option value="PT_PASS:INVALID_GRANT">PT_PASS:INVALID_GRANT</option>
+              <option value="PT_PASS:SUCCESS_ONCE">PT_PASS:SUCCESS_ONCE</option>
+            </select>
+          </label>
+        )}
         <button data-testid="btn-paotang-login" onClick={paotangLogin}>
           Exchange Authcode
         </button>
@@ -85,6 +111,15 @@ export default function LoginPage() {
           <input data-testid="input-otp" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} />
         </label>
         <br />
+        {showMockControls && (
+          <label>
+            OTP Mock Scenario
+            <select data-testid="select-otp-scenario" value={otpScenario} onChange={(e) => setOtpScenario(e.target.value)}>
+              <option value="OTP:SUCCESS">OTP:SUCCESS</option>
+              <option value="OTP:INVALID">OTP:INVALID</option>
+            </select>
+          </label>
+        )}
         <button data-testid="btn-verify-otp" onClick={verifyOtp} disabled={!tokenExchanged}>
           Verify OTP
         </button>

@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light dark;
   --bg: #f4f7fb;
   --surface: #ffffff;
   --ink: #172033;
@@ -35,15 +36,27 @@ a:hover {
   width: min(100% - 2rem, 960px);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 3.5rem 0;
+  padding: 2rem 0;
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.home-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.home-link:hover {
+  color: var(--primary);
 }
 
 .eyebrow {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.5rem;
   color: var(--primary);
   font-size: 0.75rem;
   font-weight: 800;
@@ -58,27 +71,27 @@ h2 {
 }
 
 h1 {
-  margin-bottom: 0.75rem;
-  font-size: clamp(2rem, 5vw, 3.4rem);
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
   line-height: 1.05;
 }
 
 h2 {
-  margin-bottom: 1.25rem;
-  font-size: 1.25rem;
+  margin-bottom: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .subtitle {
   max-width: 680px;
   margin: 0;
   color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 section[data-testid] {
-  margin-top: 1.25rem;
-  padding: 1.75rem;
+  margin-top: 0.9rem;
+  padding: 1.15rem;
   border: 1px solid var(--line);
   border-radius: 1.25rem;
   background: rgba(255, 255, 255, 0.9);
@@ -87,17 +100,34 @@ section[data-testid] {
 
 label {
   display: block;
-  margin: 1rem 0;
+  margin: 0.75rem 0;
   color: #344054;
   font-size: 0.9rem;
   font-weight: 700;
 }
 
+.toggle-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.toggle-field input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
 input,
 select {
   width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.8rem 0.9rem;
+  margin-top: 0.35rem;
+  padding: 0.65rem 0.75rem;
   border: 1px solid #d5dce8;
   border-radius: 0.7rem;
   color: var(--ink);
@@ -112,8 +142,8 @@ select:focus {
 }
 
 button {
-  margin-top: 0.75rem;
-  padding: 0.8rem 1.1rem;
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.9rem;
   border: 0;
   border-radius: 0.7rem;
   color: #fff;
@@ -134,9 +164,9 @@ button:disabled {
 }
 
 pre {
-  min-height: 2.5rem;
-  margin: 1.25rem 0 0;
-  padding: 1rem;
+  min-height: 2rem;
+  margin: 0.9rem 0 0;
+  padding: 0.75rem;
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: 0.75rem;
@@ -150,16 +180,16 @@ pre {
 
 .home-links {
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
   max-width: 680px;
-  margin: 2rem 0 0;
+  margin: 1.25rem 0 0;
   padding: 0;
   list-style: none;
 }
 
 .home-links a {
   display: block;
-  padding: 1.25rem 1.4rem;
+  padding: 1rem 1.1rem;
   border: 1px solid var(--line);
   border-radius: 1rem;
   background: var(--surface);
@@ -177,10 +207,48 @@ pre {
   .page-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
+    gap: 0.9rem;
   }
 
   .page-grid section[data-testid] {
     margin-top: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1422;
+    --surface: #171f31;
+    --ink: #edf2ff;
+    --muted: #aab5cb;
+    --line: #2a3852;
+    --primary: #7894ff;
+    --primary-dark: #9aafff;
+    --shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+  }
+
+  body {
+    background: radial-gradient(circle at top right, #1a2850 0, transparent 34rem), var(--bg);
+  }
+
+  section[data-testid],
+  .home-links a {
+    background: rgba(23, 31, 49, 0.92);
+  }
+
+  label {
+    color: #dbe4f7;
+  }
+
+  input,
+  select {
+    border-color: #3a4b6a;
+    color: var(--ink);
+    background: #101827;
+  }
+
+  pre {
+    color: #dbe4f7;
+    background: #101827;
   }
 }

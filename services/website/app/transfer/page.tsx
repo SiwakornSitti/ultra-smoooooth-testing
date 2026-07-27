@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
 
@@ -44,6 +45,7 @@ export default function TransferPage() {
   return (
     <main className="page-shell">
       <header className="page-header">
+        <Link className="home-link" href="/">← Home</Link>
         <p className="eyebrow">Payments</p>
         <h1>Transfer money</h1>
         <p className="subtitle">Move funds securely between accounts and review completed transfers.</p>
