@@ -47,9 +47,12 @@ Open **Burp Suite Community Edition** (or Professional) and select **Temporary P
 
 ### 3. Install Burp CA Certificate (for HTTPS Inspection)
 
+See the official [PortSwigger certificate setup guide](https://portswigger.net/burp/documentation/desktop/external-browser-config/certificate).
+
 1. Configure your browser or system proxy to `127.0.0.1:8080`.
 2. Visit `http://burpsuite` in your browser and click **CA Certificate** to download `cacert.der`.
-3. Import `cacert.der` into your browser's Trusted Root Certification Authorities.
+3. Or use the repository copy at [`asset/cacert.der`](../../asset/cacert.der).
+4. Import `cacert.der` into your browser's Trusted Root Certification Authorities.
 
 ---
 

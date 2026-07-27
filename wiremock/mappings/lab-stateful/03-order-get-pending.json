@@ -1,20 +1,21 @@
 {
   "id" : "a60f62de-2cd0-47a1-80dd-f4178c95006b",
   "request" : {
-    "urlPath" : "/lab/api/orders/101",
+    "urlPathPattern" : "/lab/api/orders/[^/]+",
     "method" : "GET"
   },
   "response" : {
     "status" : 200,
     "jsonBody" : {
-      "order_id" : "101",
+      "order_id" : "{{request.path.[3]}}",
       "status" : "PENDING",
       "amount" : 1500,
       "items" : [ "Wireless Keyboard" ]
     },
     "headers" : {
       "Content-Type" : "application/json"
-    }
+    },
+    "transformers" : [ "response-template" ]
   },
   "uuid" : "a60f62de-2cd0-47a1-80dd-f4178c95006b",
   "persistent" : true,

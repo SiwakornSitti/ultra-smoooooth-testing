@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   // Step 1: Paotang authcode exchange
   const [authCode, setAuthCode] = useState("test-authcode");
-  const [paotangScenario, setPaotangScenario] = useState("PT_PASS:SUCCESS");
+  const [paotangScenario, setPaotangScenario] = useState("");
   const [paotangResult, setPaotangResult] = useState("");
   const [tokenExchanged, setTokenExchanged] = useState(false);
   const [showMockControls, setShowMockControls] = useState(false);
@@ -18,8 +18,14 @@ export default function LoginPage() {
   // Step 2: OTP SMS verify
   const [phone, setPhone] = useState("+66800000000");
   const [otpCode, setOtpCode] = useState("123456");
-  const [otpScenario, setOtpScenario] = useState("OTP:SUCCESS");
+  const [otpScenario, setOtpScenario] = useState("");
   const [otpResult, setOtpResult] = useState("");
+
+  function toggleMockControls(enabled: boolean) {
+    setShowMockControls(enabled);
+    setPaotangScenario(enabled ? "PT_PASS:SUCCESS" : "");
+    setOtpScenario(enabled ? "OTP:SUCCESS" : "");
+  }
 
   async function paotangLogin() {
     setPaotangResult("Loading...");
@@ -27,7 +33,7 @@ export default function LoginPage() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Mock-Scenario": paotangScenario,
+        ...(paotangScenario ? { "Mock-Scenario": paotangScenario } : {}),
       },
       body: JSON.stringify({ code: authCode }),
     });
@@ -42,7 +48,7 @@ export default function LoginPage() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Mock-Scenario": otpScenario,
+        ...(otpScenario ? { "Mock-Scenario": otpScenario } : {}),
       },
       body: JSON.stringify({ phone, code: otpCode }),
     });
@@ -65,7 +71,7 @@ export default function LoginPage() {
             data-testid="toggle-mock-controls"
             type="checkbox"
             checked={showMockControls}
-            onChange={(e) => setShowMockControls(e.target.checked)}
+            onChange={(e) => toggleMockControls(e.target.checked)}
           />
           <span>Show mock controls</span>
         </label>

@@ -202,6 +202,21 @@ test.describe("BFF Service Integration Tests", () => {
     });
   });
 
+  test("should reject duplicate user email", async ({ request }) => {
+    const user = {
+      name: "Duplicate User",
+      email: "duplicate@example.com",
+      phone: "+66800000004",
+    };
+
+    const first = await request.post(`${bffUrl}/api/v1/users`, { data: user });
+    expect(first.status()).toBe(HttpStatusCode.Created);
+
+    const duplicate = await request.post(`${bffUrl}/api/v1/users`, { data: user });
+    expect(duplicate.status()).toBe(HttpStatusCode.Conflict);
+    expect(await duplicate.json()).toEqual({ error: "User with email already exists" });
+  });
+
   test("should return 400 when phone is missing on user creation", async ({ request }) => {
     console.log(`Creating a user without phone via BFF: ${bffUrl}/api/v1/users`);
     const response = await request.post(`${bffUrl}/api/v1/users`, {

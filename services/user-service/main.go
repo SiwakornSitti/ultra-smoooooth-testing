@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -16,6 +17,7 @@ import (
 	"github.com/exaring/otelpgx"
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -197,9 +199,24 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 	if u.Status == "" {
 		u.Status = "active"
 	}
+	var emailExists bool
+	if err := db.QueryRowContext(r.Context(), "SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)", u.Email).Scan(&emailExists); err != nil {
+		slog.Error("Duplicate user check failed", "error", err)
+		writeJSONError(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+	if emailExists {
+		writeJSONError(w, "User with email already exists", http.StatusConflict)
+		return
+	}
 	slog.Info("Creating user")
 	err := db.QueryRowContext(r.Context(), "INSERT INTO users (name, email, phone, status) VALUES ($1, $2, $3, $4) RETURNING id", u.Name, u.Email, u.Phone, u.Status).Scan(&u.ID)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			writeJSONError(w, "User with email already exists", http.StatusConflict)
+			return
+		}
 		slog.Error("Insert failed", "error", err)
 		writeJSONError(w, "Database error", http.StatusInternalServerError)
 		return

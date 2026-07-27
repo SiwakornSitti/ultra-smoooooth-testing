@@ -20,13 +20,18 @@ export default function AccountPage() {
   // Step 2: create account (triggers SMS)
   const [balance, setBalance] = useState("1000");
   const [currency, setCurrency] = useState("USD");
-  const [smsScenario, setSmsScenario] = useState("SMS:SUCCESS");
+  const [smsScenario, setSmsScenario] = useState("");
   const [accountResult, setAccountResult] = useState("");
   const [showMockControls, setShowMockControls] = useState(false);
 
   // Step 3: verify profile status not blocked
   const [profileResult, setProfileResult] = useState("");
   const [profileStatus, setProfileStatus] = useState("");
+
+  function toggleMockControls(enabled: boolean) {
+    setShowMockControls(enabled);
+    setSmsScenario(enabled ? "SMS:SUCCESS" : "");
+  }
 
   async function createUser() {
     setUserResult("Loading...");
@@ -48,7 +53,7 @@ export default function AccountPage() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Mock-Scenario": smsScenario,
+        ...(smsScenario ? { "Mock-Scenario": smsScenario } : {}),
       },
       body: JSON.stringify({
         user_id: userId,
@@ -88,7 +93,7 @@ export default function AccountPage() {
             data-testid="toggle-mock-controls"
             type="checkbox"
             checked={showMockControls}
-            onChange={(e) => setShowMockControls(e.target.checked)}
+            onChange={(e) => toggleMockControls(e.target.checked)}
           />
           <span>Show mock controls</span>
         </label>
