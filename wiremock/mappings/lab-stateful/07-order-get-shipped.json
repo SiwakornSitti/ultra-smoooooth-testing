@@ -1,21 +1,30 @@
 {
-  "priority": 1,
-  "scenarioName": "order-fulfillment-lifecycle",
-  "requiredScenarioState": "SHIPPED",
-  "request": {
-    "method": "GET",
-    "urlPath": "/lab/api/orders/101"
+  "id" : "7a0a8252-018f-4983-a001-d1251c343a56",
+  "request" : {
+    "urlPath" : "/lab/api/orders/101",
+    "method" : "GET"
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "order_id": "101",
-      "status": "SHIPPED",
-      "amount": 1500.0,
-      "tracking_number": "TRACK-TH-998877"
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "order_id" : "101",
+      "status" : "SHIPPED",
+      "amount" : 1500.0,
+      "tracking_number" : "TRACK-TH-998877"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
-  }
+  },
+  "uuid" : "7a0a8252-018f-4983-a001-d1251c343a56",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "order-fulfillment-lifecycle",
+  "requiredScenarioState" : "SHIPPED",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 9
 }

@@ -1,21 +1,30 @@
 {
-  "priority": 1,
-  "scenarioName": "order-fulfillment-lifecycle",
-  "requiredScenarioState": "PAID",
-  "request": {
-    "method": "GET",
-    "urlPath": "/lab/api/orders/101"
+  "id" : "a92ee32e-5918-4a1a-995d-6bf55e3816b4",
+  "request" : {
+    "urlPath" : "/lab/api/orders/101",
+    "method" : "GET"
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "order_id": "101",
-      "status": "PAID",
-      "amount": 1500.0,
-      "items": ["Wireless Keyboard"]
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "order_id" : "101",
+      "status" : "PAID",
+      "amount" : 1500.0,
+      "items" : [ "Wireless Keyboard" ]
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
-  }
+  },
+  "uuid" : "a92ee32e-5918-4a1a-995d-6bf55e3816b4",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "order-fulfillment-lifecycle",
+  "requiredScenarioState" : "PAID",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 1
 }

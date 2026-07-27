@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { parseResponse, useBffUrl } from "../lib/api";
+import { useRequireLogin } from "../lib/auth";
 
 export default function AccountPage() {
+  const authenticated = useRequireLogin();
   const bffUrl = useBffUrl();
 
   // Step 1: create user
@@ -17,7 +19,7 @@ export default function AccountPage() {
   // Step 2: create account (triggers SMS)
   const [balance, setBalance] = useState("1000");
   const [currency, setCurrency] = useState("USD");
-  const [smsScenario, setSmsScenario] = useState("SMS:SUCCESS");
+  const smsScenario = "SMS:SUCCESS";
   const [accountResult, setAccountResult] = useState("");
 
   // Step 3: verify profile status not blocked
@@ -68,11 +70,19 @@ export default function AccountPage() {
     }
   }
 
-  return (
-    <main style={{ fontFamily: "sans-serif", padding: "2rem", maxWidth: 640 }}>
-      <h1>Create Account</h1>
-      <p>Create user + account, then verify profile status isn&apos;t blocked.</p>
+  if (!authenticated) {
+    return null;
+  }
 
+  return (
+    <main className="page-shell">
+      <header className="page-header">
+        <p className="eyebrow">Customer workspace</p>
+        <h1>Create account</h1>
+        <p className="subtitle">Set up a customer profile, open an account, and verify its profile status.</p>
+      </header>
+
+      <div className="page-grid">
       <section data-testid="section-create-user">
         <h2>1. Create User</h2>
         <label>
@@ -121,18 +131,6 @@ export default function AccountPage() {
           <input data-testid="input-currency" value={currency} onChange={(e) => setCurrency(e.target.value)} />
         </label>
         <br />
-        <label>
-          SMS Mock Scenario{" "}
-          <select
-            data-testid="select-sms-scenario"
-            value={smsScenario}
-            onChange={(e) => setSmsScenario(e.target.value)}
-          >
-            <option value="SMS:SUCCESS">SMS:SUCCESS</option>
-            <option value="SMS:INVALID_NUMBER">SMS:INVALID_NUMBER</option>
-          </select>
-        </label>
-        <br />
         <button data-testid="btn-create-account" onClick={createAccount}>
           Create Account
         </button>
@@ -151,6 +149,7 @@ export default function AccountPage() {
         )}
         <pre data-testid="result-verify-profile">{profileResult}</pre>
       </section>
+      </div>
     </main>
   );
 }

@@ -1,21 +1,32 @@
 {
-  "priority": 1,
-  "request": {
-    "method": "POST",
-    "urlPath": "/sms/send",
-    "headers": {
-      "Mock-Scenario": { "contains": "SMS:INVALID_NUMBER" }
-        }
+  "id" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
+  "request" : {
+    "urlPath" : "/sms/send",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "SMS:INVALID_NUMBER"
+      }
+    }
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "invalid_number"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "invalid_number"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Mock-ID": "{{request.headers.Mock-ID}}"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
     },
-    "transformers": ["response-template"]
-  }
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms"
+    }
+  },
+  "insertionIndex" : 13
 }

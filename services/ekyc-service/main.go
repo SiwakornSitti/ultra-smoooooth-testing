@@ -37,6 +37,15 @@ type VerificationRequest struct {
 	DocumentType string `json:"document_type"`
 }
 
+type UpdateVerificationRequest struct {
+	CustomerID      *string  `json:"customer_id"`
+	NationalID      *string  `json:"national_id"`
+	FullName        *string  `json:"full_name"`
+	DocumentType    *string  `json:"document_type"`
+	Status          *string  `json:"status"`
+	ConfidenceScore *float64 `json:"confidence_score"`
+}
+
 type ErrorResponse struct {
 	Error string `json:"error"`
 	Code  string `json:"code"`
@@ -184,10 +193,181 @@ func getEKYCHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(record)
 }
 
+func listEKYCHandler(w http.ResponseWriter, r *http.Request) {
+	var records []EKYCVerification
+
+	if db != nil {
+		rows, err := db.QueryContext(r.Context(), `
+			SELECT id, customer_id, national_id, full_name, document_type, status, confidence_score, created_at
+			FROM ekyc_verifications ORDER BY created_at DESC`)
+		if err != nil {
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
+		}
+		defer rows.Close()
+
+		records = make([]EKYCVerification, 0)
+		for rows.Next() {
+			var record EKYCVerification
+			if err := rows.Scan(
+				&record.ID, &record.CustomerID, &record.NationalID, &record.FullName,
+				&record.DocumentType, &record.Status, &record.ConfidenceScore, &record.CreatedAt,
+			); err != nil {
+				writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+				return
+			}
+			records = append(records, record)
+		}
+		if err := rows.Err(); err != nil {
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
+		}
+	} else {
+		storeMu.RLock()
+		records = make([]EKYCVerification, 0, len(verificationsStore))
+		for _, record := range verificationsStore {
+			records = append(records, record)
+		}
+		storeMu.RUnlock()
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(records)
+}
+
+func updateEKYCHandler(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	var req UpdateVerificationRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeJSONError(w, "Invalid request payload", "INVALID_INPUT", http.StatusBadRequest)
+		return
+	}
+
+	if err := validateUpdateVerificationRequest(req); err != nil {
+		writeJSONError(w, err.Error(), "VALIDATION_FAILED", http.StatusBadRequest)
+		return
+	}
+
+	if db != nil {
+		result, err := db.ExecContext(r.Context(), `
+			UPDATE ekyc_verifications
+			SET customer_id = COALESCE($1, customer_id),
+			    national_id = COALESCE($2, national_id),
+			    full_name = COALESCE($3, full_name),
+			    document_type = COALESCE($4, document_type),
+			    status = COALESCE($5, status),
+			    confidence_score = COALESCE($6, confidence_score)
+			WHERE id = $7`,
+			req.CustomerID, req.NationalID, req.FullName, req.DocumentType,
+			req.Status, req.ConfidenceScore, id,
+		)
+		if err != nil {
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
+		}
+
+		rows, err := result.RowsAffected()
+		if err != nil {
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
+		}
+		if rows == 0 {
+			writeJSONError(w, "eKYC verification record not found", "NOT_FOUND", http.StatusNotFound)
+			return
+		}
+
+		getEKYCHandler(w, r)
+		return
+	}
+
+	storeMu.Lock()
+	record, exists := verificationsStore[id]
+	if !exists {
+		storeMu.Unlock()
+		writeJSONError(w, "eKYC verification record not found", "NOT_FOUND", http.StatusNotFound)
+		return
+	}
+
+	if req.CustomerID != nil {
+		record.CustomerID = *req.CustomerID
+	}
+	if req.NationalID != nil {
+		record.NationalID = *req.NationalID
+	}
+	if req.FullName != nil {
+		record.FullName = *req.FullName
+	}
+	if req.DocumentType != nil {
+		record.DocumentType = *req.DocumentType
+	}
+	if req.Status != nil {
+		record.Status = *req.Status
+	}
+	if req.ConfidenceScore != nil {
+		record.ConfidenceScore = *req.ConfidenceScore
+	}
+	verificationsStore[id] = record
+	storeMu.Unlock()
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(record)
+}
+
+func validateUpdateVerificationRequest(req UpdateVerificationRequest) error {
+	for name, value := range map[string]*string{
+		"customer_id":   req.CustomerID,
+		"national_id":   req.NationalID,
+		"full_name":     req.FullName,
+		"document_type": req.DocumentType,
+		"status":        req.Status,
+	} {
+		if value != nil && *value == "" {
+			return fmt.Errorf("%s cannot be empty", name)
+		}
+	}
+	return nil
+}
+
+func deleteEKYCHandler(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+
+	if db != nil {
+		result, err := db.ExecContext(r.Context(), "DELETE FROM ekyc_verifications WHERE id = $1", id)
+		if err != nil {
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
+		}
+		rows, err := result.RowsAffected()
+		if err != nil {
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
+		}
+		if rows == 0 {
+			writeJSONError(w, "eKYC verification record not found", "NOT_FOUND", http.StatusNotFound)
+			return
+		}
+	} else {
+		storeMu.Lock()
+		if _, exists := verificationsStore[id]; !exists {
+			storeMu.Unlock()
+			writeJSONError(w, "eKYC verification record not found", "NOT_FOUND", http.StatusNotFound)
+			return
+		}
+		delete(verificationsStore, id)
+		storeMu.Unlock()
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func setupRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/ekycs/verify", createEKYCHandler).Methods("POST")
+	r.HandleFunc("/ekycs", listEKYCHandler).Methods("GET")
 	r.HandleFunc("/ekycs/{id}", getEKYCHandler).Methods("GET")
+	r.HandleFunc("/ekycs/{id}", updateEKYCHandler).Methods("PATCH")
+	r.HandleFunc("/ekycs/{id}", deleteEKYCHandler).Methods("DELETE")
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))

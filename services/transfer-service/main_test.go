@@ -84,3 +84,22 @@ func TestGetAllTransfersHandler(t *testing.T) {
 		t.Fatalf("failed to unmarshal response: %v", err)
 	}
 }
+
+func TestCreateTransferRejectsSameAccount(t *testing.T) {
+	router := setupRouter()
+	body, _ := json.Marshal(CreateTransferRequest{
+		SourceAccountID: "same-account",
+		TargetAccountID: "same-account",
+		Amount:          100,
+		Currency:        "THB",
+	})
+	req := httptest.NewRequest(http.MethodPost, "/transfers", bytes.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("status = %d; want %d", rec.Code, http.StatusBadRequest)
+	}
+}

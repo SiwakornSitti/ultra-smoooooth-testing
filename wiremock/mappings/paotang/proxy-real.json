@@ -1,10 +1,20 @@
 {
-  "priority": 10,
-  "request": {
-    "method": "POST",
-    "urlPath": "/oauth/token"
+  "id" : "2d1e0068-2016-4e58-9110-7bb38c9fe364",
+  "request" : {
+    "urlPath" : "/oauth/token",
+    "method" : "POST"
   },
-  "response": {
-    "proxyBaseUrl": "https://api.paotang.example.com"
-  }
+  "response" : {
+    "status" : 200,
+    "proxyBaseUrl" : "https://api.paotang.example.com"
+  },
+  "uuid" : "2d1e0068-2016-4e58-9110-7bb38c9fe364",
+  "persistent" : true,
+  "priority" : 10,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/paotang"
+    }
+  },
+  "insertionIndex" : 19
 }

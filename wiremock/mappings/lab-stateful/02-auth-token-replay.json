@@ -1,22 +1,31 @@
 {
-  "priority": 1,
-  "scenarioName": "auth-token-replay-prevention",
-  "requiredScenarioState": "TOKEN_ISSUED",
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/oauth/token",
-    "bodyPatterns": [
-      { "contains": "grant_type=authorization_code" }
-    ]
+  "id" : "807fa9cf-a11c-488c-9773-6eb52d01d4b7",
+  "request" : {
+    "urlPath" : "/lab/api/oauth/token",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "contains" : "grant_type=authorization_code"
+    } ]
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "invalid_grant",
-      "error_description": "Authorization code has already been used"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "invalid_grant",
+      "error_description" : "Authorization code has already been used"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
-  }
+  },
+  "uuid" : "807fa9cf-a11c-488c-9773-6eb52d01d4b7",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "auth-token-replay-prevention",
+  "requiredScenarioState" : "TOKEN_ISSUED",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 7
 }

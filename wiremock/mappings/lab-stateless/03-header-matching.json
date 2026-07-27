@@ -1,21 +1,34 @@
 {
-  "priority": 1,
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/stateless/secure",
-    "headers": {
-      "Authorization": { "matches": "Bearer secret-token-[0-9]+" },
-      "X-Client-ID": { "equalTo": "qa-client" }
+  "id" : "fa60bc33-27e8-4192-ab4b-e5616ccd8aca",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/secure",
+    "method" : "POST",
+    "headers" : {
+      "Authorization" : {
+        "matches" : "Bearer secret-token-[0-9]+"
+      },
+      "X-Client-ID" : {
+        "equalTo" : "qa-client"
+      }
     }
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "authenticated": true,
-      "scope": "read:write"
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "authenticated" : true,
+      "scope" : "read:write"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
-  }
+  },
+  "uuid" : "fa60bc33-27e8-4192-ab4b-e5616ccd8aca",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
+    }
+  },
+  "insertionIndex" : 23
 }

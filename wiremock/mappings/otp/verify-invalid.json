@@ -1,21 +1,32 @@
 {
-  "priority": 1,
-  "request": {
-    "method": "POST",
-    "urlPath": "/otp/verify",
-    "headers": {
-      "Mock-Scenario": { "contains": "OTP:INVALID" }
+  "id" : "bb012a7e-d974-4818-8afc-3acc7fc0a405",
+  "request" : {
+    "urlPath" : "/otp/verify",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "OTP:INVALID"
+      }
     }
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "invalid_otp"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "invalid_otp"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Mock-ID": "{{request.headers.Mock-ID}}"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
     },
-    "transformers": ["response-template"]
-  }
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "bb012a7e-d974-4818-8afc-3acc7fc0a405",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/otp"
+    }
+  },
+  "insertionIndex" : 15
 }

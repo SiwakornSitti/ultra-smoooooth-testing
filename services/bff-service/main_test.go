@@ -120,9 +120,16 @@ func TestProxyHandlers(t *testing.T) {
 				rec.Header().Set("Location", "/ekycs/ekyc-123")
 				rec.WriteHeader(http.StatusCreated)
 				rec.Body.WriteString(`{"id":"ekyc-123","status":"APPROVED"}`)
-			case "/ekycs/ekyc-123":
+			case "/ekycs":
 				rec.WriteHeader(http.StatusOK)
-				rec.Body.WriteString(`{"id":"ekyc-123","status":"APPROVED"}`)
+				rec.Body.WriteString(`[{"id":"ekyc-123","status":"APPROVED"}]`)
+			case "/ekycs/ekyc-123":
+				if req.Method == http.MethodDelete {
+					rec.WriteHeader(http.StatusNoContent)
+				} else {
+					rec.WriteHeader(http.StatusOK)
+					rec.Body.WriteString(`{"id":"ekyc-123","status":"APPROVED"}`)
+				}
 			case "/transfers":
 				if req.Method == http.MethodPost {
 					rec.Header().Set("Location", "/transfers/txn-123")
@@ -144,7 +151,10 @@ func TestProxyHandlers(t *testing.T) {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/api/v1/ekycs/verify", handleEKYCVerify).Methods("POST")
+	r.HandleFunc("/api/v1/ekycs", handleListEKYC).Methods("GET")
 	r.HandleFunc("/api/v1/ekycs/{id}", handleGetEKYC).Methods("GET")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleUpdateEKYC).Methods("PATCH")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleDeleteEKYC).Methods("DELETE")
 	r.HandleFunc("/api/v1/transfers", handleCreateTransfer).Methods("POST")
 	r.HandleFunc("/api/v1/transfers", handleGetAllTransfers).Methods("GET")
 	r.HandleFunc("/api/v1/transfers/{id}", handleGetTransfer).Methods("GET")
@@ -160,7 +170,15 @@ func TestProxyHandlers(t *testing.T) {
 		t.Errorf("eKYC verify Location = %v, want /ekycs/ekyc-123", loc)
 	}
 
-	// 2. Test eKYC get
+	// 2. Test eKYC list
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("GET", "/api/v1/ekycs", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Errorf("eKYC list status = %v, want 200", rec.Code)
+	}
+
+	// 3. Test eKYC get
 	rec = httptest.NewRecorder()
 	req = httptest.NewRequest("GET", "/api/v1/ekycs/ekyc-123", nil)
 	r.ServeHTTP(rec, req)
@@ -168,7 +186,23 @@ func TestProxyHandlers(t *testing.T) {
 		t.Errorf("eKYC get status = %v, want 200", rec.Code)
 	}
 
-	// 3. Test Transfer create
+	// 4. Test eKYC update
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("PATCH", "/api/v1/ekycs/ekyc-123", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Errorf("eKYC update status = %v, want 200", rec.Code)
+	}
+
+	// 5. Test eKYC delete
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("DELETE", "/api/v1/ekycs/ekyc-123", nil)
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusNoContent {
+		t.Errorf("eKYC delete status = %v, want 204", rec.Code)
+	}
+
+	// 6. Test Transfer create
 	rec = httptest.NewRecorder()
 	req = httptest.NewRequest("POST", "/api/v1/transfers", nil)
 	r.ServeHTTP(rec, req)
@@ -179,7 +213,7 @@ func TestProxyHandlers(t *testing.T) {
 		t.Errorf("Transfer create Location = %v, want /transfers/txn-123", loc)
 	}
 
-	// 4. Test Transfer get all
+	// 7. Test Transfer get all
 	rec = httptest.NewRecorder()
 	req = httptest.NewRequest("GET", "/api/v1/transfers", nil)
 	r.ServeHTTP(rec, req)
@@ -187,12 +221,12 @@ func TestProxyHandlers(t *testing.T) {
 		t.Errorf("Transfer get all status = %v, want 200", rec.Code)
 	}
 
-	// 5. Test Transfer get by ID
+	// 8. Test Transfer get by ID
 	rec = httptest.NewRecorder()
 	req = httptest.NewRequest("GET", "/api/v1/transfers/txn-123", nil)
 	r.ServeHTTP(rec, req)
 	if rec.Code != http.StatusOK {
 		t.Errorf("Transfer get by ID status = %v, want 200", rec.Code)
 	}
-}
 
+}

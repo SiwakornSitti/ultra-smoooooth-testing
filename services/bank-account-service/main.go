@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -15,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib" //nolint:staticcheck
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type BankAccount struct {
@@ -25,16 +25,18 @@ type BankAccount struct {
 	Phone    string  `json:"phone,omitempty"`
 }
 
-type SMSRequest struct {
-	To      string `json:"to"`
-	Message string `json:"message"`
+type NotificationCommand struct {
+	Channel string            `json:"channel"`
+	To      string            `json:"to"`
+	Message string            `json:"message"`
+	Headers map[string]string `json:"headers,omitempty"`
 }
 
 var db *sql.DB
 
 var (
-	smsServiceURL = getEnv("SMS_SERVICE_URL", "")
-	smsAPIKey     = getEnv("SMS_API_KEY", "")
+	rabbitMQURL       = getEnv("RABBITMQ_URL", "")
+	notificationQueue = getEnv("NOTIFICATION_QUEUE", "notification.commands")
 )
 
 func getEnv(key, fallback string) string {
@@ -53,14 +55,22 @@ func writeJSONError(w http.ResponseWriter, message string, status int) {
 	json.NewEncoder(w).Encode(map[string]string{"error": message})
 }
 
-// forwardMockHeaders copies WireMock routing headers from the inbound
-// request onto the outbound request, so callers don't repeat this per call site.
-func forwardMockHeaders(in *http.Request, out *http.Request) {
-	for _, h := range []string{"Use-Mock", "Mock-Scenario", "Mock-ID"} {
-		if v := in.Header.Get(h); v != "" {
-			out.Header.Set(h, v)
+func notificationHeaders(in *http.Request) map[string]string {
+	headers := make(map[string]string, len(in.Header))
+	for name, values := range in.Header {
+		if len(values) > 0 {
+			headers[name] = values[0]
 		}
 	}
+	return headers
+}
+
+func amqpNotificationHeaders(in *http.Request) amqp.Table {
+	headers := amqp.Table{}
+	for name, value := range notificationHeaders(in) {
+		headers[name] = value
+	}
+	return headers
 }
 
 func main() {
@@ -101,7 +111,7 @@ func main() {
 	r.HandleFunc("/accounts", handleGetAccounts).Methods("GET")
 	r.HandleFunc("/accounts", handleCreateAccount).Methods("POST")
 	r.HandleFunc("/accounts/{id}", handleGetAccount).Methods("GET")
-	r.HandleFunc("/accounts/{id}", handleUpdateAccount).Methods("PUT")
+	r.HandleFunc("/accounts/{id}", handleUpdateAccount).Methods("PATCH")
 	r.HandleFunc("/accounts/{id}", handleDeleteAccount).Methods("DELETE")
 
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -165,7 +175,7 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if a.Phone != "" {
-		sendSMS(r, a.Phone, fmt.Sprintf("Your new %s account has been created.", a.Currency))
+		enqueueNotification(r, a.Phone, fmt.Sprintf("Your new %s account has been created.", a.Currency))
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -173,38 +183,51 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(a)
 }
 
-// sendSMS notifies the SMS service. Best-effort: failures are logged, not
-// surfaced to the caller, since account creation already succeeded.
-func sendSMS(r *http.Request, to, message string) {
-	body, err := json.Marshal(SMSRequest{To: to, Message: message})
-	if err != nil {
-		slog.Error("Failed to build SMS request", "error", err)
+// enqueueNotification publishes an SMS command. Best-effort: failures are
+// logged, not surfaced to the caller, since account creation already succeeded.
+func enqueueNotification(r *http.Request, to, message string) {
+	if rabbitMQURL == "" {
+		slog.Error("RABBITMQ_URL is not configured")
 		return
 	}
 
-	req, err := http.NewRequestWithContext(r.Context(), "POST", smsServiceURL+"/sms/send", bytes.NewReader(body))
+	body, err := json.Marshal(NotificationCommand{
+		Channel: "sms",
+		To:      to,
+		Message: message,
+		Headers: notificationHeaders(r),
+	})
 	if err != nil {
-		slog.Error("Failed to build SMS request", "error", err)
+		slog.Error("Failed to build notification command", "error", err)
 		return
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Api-Key", smsAPIKey)
-	if useMock := r.Header.Get("Use-Mock"); useMock != "" {
-		req.Header.Set("Use-Mock", useMock)
-	}
-	if scenario := r.Header.Get("Mock-Scenario"); scenario != "" {
-		req.Header.Set("Mock-Scenario", scenario)
-	}
 
-	resp, err := http.DefaultClient.Do(req)
+	conn, err := amqp.Dial(rabbitMQURL)
 	if err != nil {
-		slog.Error("Failed to call SMS service", "error", err)
+		slog.Error("Failed to connect to notification queue", "error", err)
 		return
 	}
-	defer resp.Body.Close()
+	defer conn.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		slog.Warn("SMS service returned non-200", "status", resp.StatusCode)
+	channel, err := conn.Channel()
+	if err != nil {
+		slog.Error("Failed to open notification queue channel", "error", err)
+		return
+	}
+	defer channel.Close()
+
+	if _, err := channel.QueueDeclare(notificationQueue, true, false, false, false, nil); err != nil {
+		slog.Error("Failed to declare notification queue", "error", err)
+		return
+	}
+
+	if err := channel.PublishWithContext(r.Context(), "", notificationQueue, false, false, amqp.Publishing{
+		ContentType:  "application/json",
+		DeliveryMode: amqp.Persistent,
+		Headers:      amqpNotificationHeaders(r),
+		Body:         body,
+	}); err != nil {
+		slog.Error("Failed to publish notification command", "error", err)
 	}
 }
 

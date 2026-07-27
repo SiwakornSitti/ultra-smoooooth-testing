@@ -13,6 +13,33 @@ export const DB_NAME = "app";
 export const PORT = 8080;
 
 const WIREMOCK_MAPPINGS_ROOT = path.resolve(__dirname, "../../../wiremock/mappings");
+const DATABASE_ROOT = path.resolve(__dirname, "../../../services");
+
+const SERVICE_NAME = {
+  DATABASE: "db",
+  USER: "user-service",
+  BANK_ACCOUNT: "bank-account-service",
+  EKYC: "ekyc-service",
+  TRANSFER: "transfer-service",
+  BFF: "bff-service",
+} as const;
+
+const DATABASE_SERVICES = [
+  { name: SERVICE_NAME.USER, hasSeed: true },
+  { name: SERVICE_NAME.BANK_ACCOUNT, hasSeed: true },
+  { name: SERVICE_NAME.EKYC, hasSeed: false },
+  { name: SERVICE_NAME.TRANSFER, hasSeed: false },
+] as const;
+
+const databaseInitDirectory = (serviceName: string, directory: "migration" | "seed") => ({
+  source: path.resolve(DATABASE_ROOT, serviceName, "db", directory),
+  target: "/docker-entrypoint-initdb.d",
+});
+
+const DATABASE_INIT_DIRECTORIES = DATABASE_SERVICES.flatMap(({ name, hasSeed }) => [
+  databaseInitDirectory(name, "migration"),
+  ...(hasSeed ? [databaseInitDirectory(name, "seed")] : []),
+]);
 
 // Builds a source/target pair for a wiremock/mappings/<name> directory, for
 // passing to startWiremock. flat=true copies into the mappings root directly
@@ -34,28 +61,11 @@ export async function startPostgres(network: StartedNetwork): Promise<StartedPos
   console.log("Starting Postgres container...");
   return new PostgreSqlContainer("postgres:18-alpine")
     .withNetwork(network)
-    .withNetworkAliases("db")
+    .withNetworkAliases(SERVICE_NAME.DATABASE)
     .withUsername(DB_USER)
     .withPassword(DB_PASSWORD)
     .withDatabase(DB_NAME)
-    .withCopyFilesToContainer([
-      {
-        source: path.resolve(__dirname, "../../../services/user-service/db/schema.sql"),
-        target: "/docker-entrypoint-initdb.d/01-user-service.sql",
-      },
-      {
-        source: path.resolve(__dirname, "../../../services/bank-account-service/db/schema.sql"),
-        target: "/docker-entrypoint-initdb.d/02-bank-account-service.sql",
-      },
-      {
-        source: path.resolve(__dirname, "../../../services/ekyc-service/db/schema.sql"),
-        target: "/docker-entrypoint-initdb.d/03-ekyc-service.sql",
-      },
-      {
-        source: path.resolve(__dirname, "../../../services/transfer-service/db/schema.sql"),
-        target: "/docker-entrypoint-initdb.d/04-transfer-service.sql",
-      },
-    ])
+    .withCopyDirectoriesToContainer(DATABASE_INIT_DIRECTORIES)
     .start();
 }
 
@@ -80,9 +90,9 @@ export async function startUserService(
   env: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting user-service container...");
-  return new GenericContainer("user-service:test")
+  return new GenericContainer(`${SERVICE_NAME.USER}:test`)
     .withNetwork(network)
-    .withNetworkAliases("user-service")
+    .withNetworkAliases(SERVICE_NAME.USER)
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
@@ -102,9 +112,9 @@ export async function startBankAccountService(
   env: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting bank-account-service container...");
-  return new GenericContainer("bank-account-service:test")
+  return new GenericContainer(`${SERVICE_NAME.BANK_ACCOUNT}:test`)
     .withNetwork(network)
-    .withNetworkAliases("bank-account-service")
+    .withNetworkAliases(SERVICE_NAME.BANK_ACCOUNT)
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
@@ -124,9 +134,9 @@ export async function startEkycService(
   env?: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting ekyc-service container...");
-  return new GenericContainer("ekyc-service:test")
+  return new GenericContainer(`${SERVICE_NAME.EKYC}:test`)
     .withNetwork(network)
-    .withNetworkAliases("ekyc-service")
+    .withNetworkAliases(SERVICE_NAME.EKYC)
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
@@ -146,9 +156,9 @@ export async function startTransferService(
   env?: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting transfer-service container...");
-  return new GenericContainer("transfer-service:test")
+  return new GenericContainer(`${SERVICE_NAME.TRANSFER}:test`)
     .withNetwork(network)
-    .withNetworkAliases("transfer-service")
+    .withNetworkAliases(SERVICE_NAME.TRANSFER)
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
@@ -170,7 +180,7 @@ export async function startBffService(
   console.log("Starting bff-service container...");
   return new GenericContainer("bff-service:test")
     .withNetwork(network)
-    .withNetworkAliases("bff-service")
+    .withNetworkAliases(SERVICE_NAME.BFF)
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
@@ -185,8 +195,10 @@ export async function stopAll(
   network?: StartedNetwork
 ): Promise<void> {
   console.log("Cleaning up test containers...");
-  for (const c of containers) {
-    if (c) await c.stop();
-  }
+  await Promise.all(
+    containers
+      .filter((container): container is StartedTestContainer => Boolean(container))
+      .map((container) => container.stop())
+  );
   if (network) await network.stop();
 }

@@ -97,3 +97,29 @@ func TestWriteJSONErrorTableDriven(t *testing.T) {
 		})
 	}
 }
+
+func TestForwardHeaders(t *testing.T) {
+	in := httptest.NewRequest(http.MethodPost, "/", nil)
+	in.Header.Set("Authorization", "Bearer token")
+	in.Header.Set("X-Request-ID", "request-123")
+	in.Header.Set("Mock-Scenario", "PT_PASS:SUCCESS")
+	in.Header.Set("Mock-ID", "mock-123")
+	in.Header.Set("Accept-Encoding", "gzip")
+	out := httptest.NewRequest(http.MethodPost, "/", nil)
+
+	forwardHeaders(in, out)
+
+	for name, want := range map[string]string{
+		"Authorization": "Bearer token",
+		"X-Request-ID":  "request-123",
+		"Mock-Scenario": "PT_PASS:SUCCESS",
+		"Mock-ID":       "mock-123",
+	} {
+		if got := out.Header.Get(name); got != want {
+			t.Errorf("forwarded %s header = %q; want %q", name, got, want)
+		}
+	}
+	if got := out.Header.Get("Accept-Encoding"); got != "" {
+		t.Errorf("transport header Accept-Encoding forwarded = %q; want empty", got)
+	}
+}

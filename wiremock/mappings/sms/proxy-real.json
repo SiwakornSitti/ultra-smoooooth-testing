@@ -1,10 +1,20 @@
 {
-  "priority": 10,
-  "request": {
-    "method": "POST",
-    "urlPath": "/sms/send"
+  "id" : "07a297da-d602-476f-9826-1b79242e2bfe",
+  "request" : {
+    "urlPath" : "/sms/send",
+    "method" : "POST"
   },
-  "response": {
-    "proxyBaseUrl": "https://api.sms-provider.example.com"
-  }
+  "response" : {
+    "status" : 200,
+    "proxyBaseUrl" : "https://api.sms-provider.example.com"
+  },
+  "uuid" : "07a297da-d602-476f-9826-1b79242e2bfe",
+  "persistent" : true,
+  "priority" : 10,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms"
+    }
+  },
+  "insertionIndex" : 11
 }

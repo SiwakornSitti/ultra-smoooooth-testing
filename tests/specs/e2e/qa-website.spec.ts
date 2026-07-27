@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 import { GenericContainer, StartedNetwork, StartedTestContainer, Wait } from "testcontainers";
 import { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import {
@@ -89,9 +89,22 @@ test.afterAll(async () => {
   );
 });
 
+async function login(page: Page) {
+  const setScenario = mockScenario(page);
+  await page.goto(`${websiteUrl}/login`);
+
+  setScenario("PT_PASS:SUCCESS");
+  await page.getByTestId("btn-paotang-login").click();
+  await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
+
+  setScenario("OTP:SUCCESS");
+  await page.getByTestId("btn-verify-otp").click();
+  await expect(page.getByTestId("result-otp")).toContainText('"verified":true');
+}
+
 test.describe("QA website full e2e flow", () => {
   test("create user, create account (SMS success), verify profile not blocked", async ({ page }) => {
-    const setScenario = mockScenario(page);
+    await login(page);
     await page.goto(`${websiteUrl}/account`);
 
     await page.getByTestId("input-name").fill("Jane Doe");
@@ -117,6 +130,7 @@ test.describe("QA website full e2e flow", () => {
   });
 
   test("verify profile shows blocked status", async ({ page }) => {
+    await login(page);
     await page.goto(`${websiteUrl}/account`);
 
     await page.getByTestId("input-name").fill("Blocked User");

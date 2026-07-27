@@ -1,20 +1,29 @@
 {
-  "priority": 1,
-  "scenarioName": "retry-recovery-flow",
-  "requiredScenarioState": "Started",
-  "newScenarioState": "FAIL_1",
-  "request": {
-    "method": "GET",
-    "urlPath": "/lab/api/unstable-endpoint"
+  "id" : "92809f93-d552-4e21-bc1e-4a91d518526a",
+  "request" : {
+    "urlPath" : "/lab/api/unstable-endpoint",
+    "method" : "GET"
   },
-  "response": {
-    "status": 503,
-    "jsonBody": {
-      "error": "SERVICE_UNAVAILABLE",
-      "message": "Temporary service failure (attempt 1)"
+  "response" : {
+    "status" : 503,
+    "jsonBody" : {
+      "error" : "SERVICE_UNAVAILABLE",
+      "message" : "Temporary service failure (attempt 1)"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
-  }
+  },
+  "uuid" : "92809f93-d552-4e21-bc1e-4a91d518526a",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "retry-recovery-flow",
+  "requiredScenarioState" : "Started",
+  "newScenarioState" : "FAIL_1",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 5
 }

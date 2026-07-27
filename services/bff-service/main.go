@@ -38,11 +38,23 @@ var (
 	transferServiceURL    = getEnv("TRANSFER_SERVICE_URL", "http://transfer-service.app.svc.cluster.local")
 )
 
-func forwardMockHeaders(in *http.Request, out *http.Request) {
-	for _, h := range []string{"Use-Mock", "Mock-Scenario", "Mock-ID"} {
-		if v := in.Header.Get(h); v != "" {
-			out.Header.Set(h, v)
+func forwardHeaders(in *http.Request, out *http.Request) {
+	for name, values := range in.Header {
+		if isTransportHeader(name) {
+			continue
 		}
+		for _, value := range values {
+			out.Header.Add(name, value)
+		}
+	}
+}
+
+func isTransportHeader(name string) bool {
+	switch http.CanonicalHeaderKey(name) {
+	case "Accept-Encoding", "Connection", "Content-Length", "Host", "Keep-Alive", "TE", "Trailer", "Transfer-Encoding", "Upgrade":
+		return true
+	default:
+		return false
 	}
 }
 
@@ -75,8 +87,8 @@ func loggingMiddleware(next http.Handler) http.Handler {
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Use-Mock, Mock-Scenario, Mock-ID")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Mock-Scenario, Mock-ID")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
@@ -95,11 +107,14 @@ func main() {
 	r.HandleFunc("/api/v1/users", handleCreateUser).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleCreateAccount).Methods("POST")
 	r.HandleFunc("/api/v1/ekycs/verify", handleEKYCVerify).Methods("POST")
+	r.HandleFunc("/api/v1/ekycs", handleListEKYC).Methods("GET")
 	r.HandleFunc("/api/v1/ekycs/{id}", handleGetEKYC).Methods("GET")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleUpdateEKYC).Methods("PATCH")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleDeleteEKYC).Methods("DELETE")
 	r.HandleFunc("/api/v1/transfers", handleCreateTransfer).Methods("POST")
 	r.HandleFunc("/api/v1/transfers", handleGetAllTransfers).Methods("GET")
 	r.HandleFunc("/api/v1/transfers/{id}", handleGetTransfer).Methods("GET")
-	r.HandleFunc("/auth/paotang/callback", handlePaotangCallback).Methods("POST")
+	r.HandleFunc("/auth/paotang/callback", proxyPaotangCallback).Methods("POST")
 	r.HandleFunc("/auth/otp/verify", handleOTPVerify).Methods("POST")
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 
@@ -238,11 +253,7 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	for _, h := range []string{"Use-Mock", "Mock-Scenario", "Mock-ID"} {
-		if v := r.Header.Get(h); v != "" {
-			req.Header.Set(h, v)
-		}
-	}
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -258,7 +269,7 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handlePaotangCallback(w http.ResponseWriter, r *http.Request) {
+func proxyPaotangCallback(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Proxying Paotang callback request to user-service")
 
 	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/auth/paotang/callback", userServiceURL), r.Body)
@@ -268,11 +279,7 @@ func handlePaotangCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	for _, h := range []string{"Use-Mock", "Mock-Scenario", "Mock-ID"} {
-		if v := r.Header.Get(h); v != "" {
-			req.Header.Set(h, v)
-		}
-	}
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -298,7 +305,7 @@ func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	forwardMockHeaders(r, req)
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -324,7 +331,7 @@ func handleEKYCVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	forwardMockHeaders(r, req)
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -353,7 +360,85 @@ func handleGetEKYC(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	forwardMockHeaders(r, req)
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleListEKYC(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying list eKYC request to ekyc-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/ekycs", ekycServiceURL), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleUpdateEKYC(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying update eKYC request to ekyc-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodPatch, fmt.Sprintf("%s/ekycs/%s", ekycServiceURL, id), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleDeleteEKYC(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying delete eKYC request to ekyc-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodDelete, fmt.Sprintf("%s/ekycs/%s", ekycServiceURL, id), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -379,7 +464,7 @@ func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	forwardMockHeaders(r, req)
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -407,7 +492,7 @@ func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	forwardMockHeaders(r, req)
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -433,7 +518,7 @@ func handleGetTransfer(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	forwardMockHeaders(r, req)
+	forwardHeaders(r, req)
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -448,4 +533,3 @@ func handleGetTransfer(w http.ResponseWriter, r *http.Request) {
 		slog.Error("Failed to copy response body", "error", err)
 	}
 }
-

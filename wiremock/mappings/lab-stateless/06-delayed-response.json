@@ -1,17 +1,26 @@
 {
-  "priority": 1,
-  "request": {
-    "method": "GET",
-    "urlPath": "/lab/api/stateless/slow-endpoint"
+  "id" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/slow-endpoint",
+    "method" : "GET"
   },
-  "response": {
-    "status": 200,
-    "fixedDelayMilliseconds": 500,
-    "jsonBody": {
-      "message": "Delayed response after 500ms"
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "message" : "Delayed response after 500ms"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "fixedDelayMilliseconds" : 500
+  },
+  "uuid" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
     }
-  }
+  },
+  "insertionIndex" : 27
 }

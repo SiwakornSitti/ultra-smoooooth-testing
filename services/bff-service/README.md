@@ -12,7 +12,10 @@ The BFF service acts as the orchestration layer for the application, aggregating
 - `POST /api/v1/users`: Proxy to create a new user.
 - `POST /api/v1/accounts`: Proxy to create a new bank account.
 - `POST /api/v1/ekycs/verify`: Proxy to perform eKYC verification.
+- `GET /api/v1/ekycs`: Proxy to list eKYC verifications.
 - `GET /api/v1/ekycs/{id}`: Proxy to fetch eKYC verification status.
+- `PATCH /api/v1/ekycs/{id}`: Proxy to update an eKYC verification.
+- `DELETE /api/v1/ekycs/{id}`: Proxy to delete an eKYC verification.
 - `POST /api/v1/transfers`: Proxy to execute fund transfers.
 - `GET /api/v1/transfers`: Proxy to list all fund transfers.
 - `GET /api/v1/transfers/{id}`: Proxy to fetch fund transfer details.

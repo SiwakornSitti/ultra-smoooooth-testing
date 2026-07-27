@@ -6,7 +6,7 @@ Welcome to the **WireMock Web UI Guide**! This document explains how to view, se
 
 ## 🎯 Purpose & Capabilities
 
-The **WireMock Web UI** (`holomekc/wiremock-gui`) provides a web-based dashboard running on port `8088` (`http://localhost:8088`).
+The **WireMock Web UI** (`holomekc/wiremock-gui`) provides a web-based dashboard at `http://localhost:8088/__admin/`.
 
 Key Features:
 
@@ -28,7 +28,7 @@ Key Features:
 2. Open your web browser and navigate to:
 
    ```
-   http://localhost:8088
+   http://localhost:8088/__admin/
    ```
 
 ---
@@ -38,7 +38,7 @@ Key Features:
 ### 1. 🔍 Stub Mappings Dashboard
 
 - View all active JSON stub mappings (stateless & stateful).
-- Filter stubs by URL path, HTTP method (`GET`, `POST`, `PUT`, `DELETE`), or scenario name.
+- Filter stubs by URL path, HTTP method (`GET`, `POST`, `PATCH`, `DELETE`), or scenario name.
 - Click any stub to inspect matching patterns (Headers, Query Params, JSONPath body expressions, and Handlebars response templates).
 
 ### 2. 📊 Request Log Journal

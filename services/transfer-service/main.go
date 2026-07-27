@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -34,6 +35,22 @@ type CreateTransferRequest struct {
 	TargetAccountID string  `json:"target_account_id"`
 	Amount          float64 `json:"amount"`
 	Currency        string  `json:"currency"`
+}
+
+type transferFailure struct {
+	message string
+	code    string
+	status  int
+}
+
+func (e *transferFailure) Error() string {
+	return e.message
+}
+
+type accountBalance struct {
+	ID       string
+	Balance  float64
+	Currency string
 }
 
 type ErrorResponse struct {
@@ -108,6 +125,10 @@ func createTransferHandler(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, "source_account_id, target_account_id, and positive amount are required", "VALIDATION_FAILED", http.StatusBadRequest)
 		return
 	}
+	if req.SourceAccountID == req.TargetAccountID {
+		writeJSONError(w, "source and target accounts must be different", "VALIDATION_FAILED", http.StatusBadRequest)
+		return
+	}
 
 	currency := req.Currency
 	if currency == "" {
@@ -125,11 +146,13 @@ func createTransferHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if db != nil {
-		query := `INSERT INTO transfers (id, source_account_id, target_account_id, amount, currency, status, created_at)
-		          VALUES ($1, $2, $3, $4, $5, $6, $7)`
-		_, err := db.ExecContext(r.Context(), query, transfer.ID, transfer.SourceAccountID, transfer.TargetAccountID, transfer.Amount, transfer.Currency, transfer.Status, transfer.CreatedAt)
-		if err != nil {
-			slog.Error("Failed to insert transfer into DB", "error", err)
+		if err := executeMoneyTransfer(r.Context(), transfer); err != nil {
+			var failure *transferFailure
+			if errors.As(err, &failure) {
+				writeJSONError(w, failure.message, failure.code, failure.status)
+				return
+			}
+			slog.Error("Failed to execute money transfer", "error", err)
 			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
 			return
 		}
@@ -145,6 +168,88 @@ func createTransferHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Location", fmt.Sprintf("/transfers/%s", transfer.ID))
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(transfer)
+}
+
+func executeMoneyTransfer(ctx context.Context, transfer FundTransfer) error {
+	if transfer.SourceAccountID == transfer.TargetAccountID {
+		return &transferFailure{
+			message: "source and target accounts must be different",
+			code:    "VALIDATION_FAILED",
+			status:  http.StatusBadRequest,
+		}
+	}
+
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	rows, err := tx.QueryContext(ctx, `
+		SELECT id, balance, currency
+		FROM accounts
+		WHERE id = $1 OR id = $2
+		ORDER BY id
+		FOR UPDATE`, transfer.SourceAccountID, transfer.TargetAccountID)
+	if err != nil {
+		return err
+	}
+
+	accounts := make(map[string]accountBalance, 2)
+	for rows.Next() {
+		var account accountBalance
+		if err := rows.Scan(&account.ID, &account.Balance, &account.Currency); err != nil {
+			rows.Close()
+			return err
+		}
+		accounts[account.ID] = account
+	}
+	if err := rows.Err(); err != nil {
+		rows.Close()
+		return err
+	}
+	rows.Close()
+
+	source, sourceOK := accounts[transfer.SourceAccountID]
+	target, targetOK := accounts[transfer.TargetAccountID]
+	if !sourceOK || !targetOK {
+		return &transferFailure{
+			message: "source or target account not found",
+			code:    "ACCOUNT_NOT_FOUND",
+			status:  http.StatusBadRequest,
+		}
+	}
+	if source.Currency != transfer.Currency || target.Currency != transfer.Currency {
+		return &transferFailure{
+			message: "source, target, and transfer currencies must match",
+			code:    "CURRENCY_MISMATCH",
+			status:  http.StatusBadRequest,
+		}
+	}
+	if source.Balance < transfer.Amount {
+		return &transferFailure{
+			message: "insufficient funds",
+			code:    "INSUFFICIENT_FUNDS",
+			status:  http.StatusBadRequest,
+		}
+	}
+
+	if _, err := tx.ExecContext(ctx, "UPDATE accounts SET balance = balance - $1 WHERE id = $2", transfer.Amount, transfer.SourceAccountID); err != nil {
+		return err
+	}
+	if _, err := tx.ExecContext(ctx, "UPDATE accounts SET balance = balance + $1 WHERE id = $2", transfer.Amount, transfer.TargetAccountID); err != nil {
+		return err
+	}
+	if _, err := tx.ExecContext(ctx, `
+		INSERT INTO transfers (id, source_account_id, target_account_id, amount, currency, status, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+		transfer.ID, transfer.SourceAccountID, transfer.TargetAccountID, transfer.Amount,
+		transfer.Currency, transfer.Status, transfer.CreatedAt,
+	); err != nil {
+		return err
+	}
+
+	return tx.Commit()
 }
 
 func getAllTransfersHandler(w http.ResponseWriter, r *http.Request) {

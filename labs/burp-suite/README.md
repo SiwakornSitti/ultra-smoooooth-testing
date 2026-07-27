@@ -10,7 +10,7 @@ In modern microservices development and QA testing, an intercepting Man-In-The-M
 
 1. **Inspect Raw HTTP Traffic**: View unencrypted headers, query strings, and payloads exchanged between clients (Web Frontend, Mobile Apps, or cURL) and backend services.
 2. **Intercept & Tamper Requests**: Modify request headers, parameters, or payloads on-the-fly before they reach the `bff-service` or downstream microservices.
-3. **Inject Mock & Test Headers**: Inject headers like `Mock-Scenario: PT_PASS:SUCCESS_ONCE` or `Use-Mock: true` into live traffic to trigger specific WireMock stubs without code changes.
+3. **Inject Mock & Test Headers**: Inject headers like `Mock-Scenario: PT_PASS:SUCCESS_ONCE` and `Mock-ID: request-123` into live traffic to trigger specific WireMock stubs without code changes.
 4. **Manual Boundary & Security Testing**: Replay API requests via **Burp Repeater** to validate error handling, input validation (`400 Bad Request`), and REST contracts.
 
 ---

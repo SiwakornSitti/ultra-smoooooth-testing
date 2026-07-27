@@ -97,3 +97,23 @@ func TestWriteJSONErrorTableDriven(t *testing.T) {
 		})
 	}
 }
+
+func TestForwardHeaders(t *testing.T) {
+	in := httptest.NewRequest(http.MethodPost, "/", nil)
+	in.Header.Set("Authorization", "Bearer token")
+	in.Header.Set("X-Request-ID", "request-123")
+	in.Header.Set("Mock-Scenario", "SMS:SUCCESS")
+	in.Header.Set("Mock-ID", "mock-123")
+	headers := notificationHeaders(in)
+
+	for name, want := range map[string]string{
+		"Authorization": "Bearer token",
+		"X-Request-Id":  "request-123",
+		"Mock-Scenario": "SMS:SUCCESS",
+		"Mock-Id":       "mock-123",
+	} {
+		if got := headers[name]; got != want {
+			t.Errorf("forwarded %s header = %q; want %q", name, got, want)
+		}
+	}
+}

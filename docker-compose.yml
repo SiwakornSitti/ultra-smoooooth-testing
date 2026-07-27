@@ -13,10 +13,13 @@ services:
       POSTGRES_PASSWORD: temporary-password-123
       POSTGRES_DB: app
     volumes:
-      - ./services/user-service/db/schema.sql:/docker-entrypoint-initdb.d/01-user-service.sql
-      - ./services/bank-account-service/db/schema.sql:/docker-entrypoint-initdb.d/02-bank-account-service.sql
-      - ./services/ekyc-service/db/schema.sql:/docker-entrypoint-initdb.d/03-ekyc-service.sql
-      - ./services/transfer-service/db/schema.sql:/docker-entrypoint-initdb.d/04-transfer-service.sql
+      - postgres-data-v18:/var/lib/postgresql
+      - ./services/user-service/db/migration/001-user-service.sql:/docker-entrypoint-initdb.d/01-user-service.sql
+      - ./services/user-service/db/seed/002-user-service-seed.sql:/docker-entrypoint-initdb.d/02-user-service-seed.sql
+      - ./services/bank-account-service/db/migration/001-bank-account-service.sql:/docker-entrypoint-initdb.d/03-bank-account-service.sql
+      - ./services/bank-account-service/db/seed/002-bank-account-service-seed.sql:/docker-entrypoint-initdb.d/04-bank-account-service-seed.sql
+      - ./services/ekyc-service/db/migration/001-ekyc-service.sql:/docker-entrypoint-initdb.d/05-ekyc-service.sql
+      - ./services/transfer-service/db/migration/001-transfer-service.sql:/docker-entrypoint-initdb.d/06-transfer-service.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U app -d app"]
       interval: 5s
@@ -36,6 +39,21 @@ services:
       - "--global-response-templating"
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings
+
+  # =========================================================================
+  # NOTIFICATION COMMAND QUEUE
+  # =========================================================================
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: poc-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   # =========================================================================
   # REAL MICROSERVICES
@@ -82,17 +100,42 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
-      SMS_SERVICE_URL: http://wiremock:8080
-      SMS_API_KEY: dummy-sms-api-key
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      NOTIFICATION_QUEUE: notification.commands
     depends_on:
       db:
         condition: service_healthy
       wiremock:
         condition: service_started
+      rabbitmq:
+        condition: service_healthy
     develop:
       watch:
         - action: rebuild
           path: ./services/bank-account-service
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+      dockerfile: Dockerfile
+    container_name: poc-notification-service
+    ports:
+      - "8086:8080"
+    environment:
+      PORT: "8080"
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      NOTIFICATION_QUEUE: notification.commands
+      SMS_SERVICE_URL: http://wiremock:8080
+      SMS_API_KEY: dummy-sms-api-key
+    depends_on:
+      wiremock:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/notification-service
 
   ekyc-service:
     build:
@@ -172,7 +215,7 @@ services:
   # =========================================================================
   website:
     build:
-      context: ./services/qa-website
+      context: ./services/website
       dockerfile: Dockerfile
     container_name: poc-website
     ports:
@@ -185,4 +228,7 @@ services:
     develop:
       watch:
         - action: rebuild
-          path: ./services/qa-website
+          path: ./services/website
+
+volumes:
+  postgres-data-v18:

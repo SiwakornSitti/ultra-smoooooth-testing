@@ -17,11 +17,12 @@ flowchart TD
         BFF["bff-service (Go :8080)"]
     end
 
-    subgraph Core_Services["Independent Domain Microservices (No Inter-Service Calls)"]
+    subgraph Core_Services["Independent Domain Microservices"]
         UserService["user-service (Go :8081)"]
         BankService["bank-account-service (Go :8082)"]
         EKYCService["ekyc-service (Go :8084)"]
         TransferService["transfer-service (Go :8085)"]
+        NotificationService["notification-service (Go :8086)"]
     end
 
     subgraph Persistence["Persistence Layer"]
@@ -30,6 +31,10 @@ flowchart TD
 
     subgraph External_Mocks["External Integration Mocks"]
         WireMock["WireMock GUI (:8088 / :8080)"]
+    end
+
+    subgraph Messaging["Messaging"]
+        RabbitMQ["RabbitMQ (:5672)"]
     end
 
     Website -->|HTTP REST| BFF
@@ -45,7 +50,9 @@ flowchart TD
     BankService -->|SQL Queries| DB
 
     UserService -->|OAuth & OTP / WireMock| WireMock
-    BankService -->|SMS Send / WireMock| WireMock
+    BankService -->|Publish notification command| RabbitMQ
+    RabbitMQ -->|Consume| NotificationService
+    NotificationService -->|SMS Send| WireMock
 ```
 
 ---
@@ -108,7 +115,7 @@ flowchart TD
 
 #### **Case 5: Outbound SMS Notification Failure (Resilience / Fail-Soft)**
 
-- **Flow**: `Bank Account Service` ➔ `WireMock (SMS Gateway)`
+- **Flow**: `Bank Account Service` ➔ `RabbitMQ` ➔ `Notification Service` ➔ `WireMock (SMS Gateway)`
 - **Challenge**: Configure WireMock stub to return `503 Service Unavailable` for `POST /sms/send`. Verify that bank account creation still succeeds (`201 Created`) because SMS is an asynchronous/best-effort notification service.
 - **Key Assertions**:
   - Account creation succeeds despite third-party SMS failure.

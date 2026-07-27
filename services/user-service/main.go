@@ -49,10 +49,10 @@ type OTPVerifyResponse struct {
 var db *sql.DB
 
 var (
-	paotangServiceURL   = getEnv("PAOTANG_SERVICE_URL", "")
+	paotangServiceURL   = getEnv("PAOTANG_SERVICE_URL", "http://localhost:8088")
 	paotangClientID     = getEnv("PAOTANG_CLIENT_ID", "")
 	paotangClientSecret = getEnv("PAOTANG_CLIENT_SECRET", "")
-	otpServiceURL       = getEnv("OTP_SERVICE_URL", "")
+	otpServiceURL       = getEnv("OTP_SERVICE_URL", "http://localhost:8088")
 )
 
 func getEnv(key, fallback string) string {
@@ -71,13 +71,25 @@ func writeJSONError(w http.ResponseWriter, message string, status int) {
 	json.NewEncoder(w).Encode(map[string]string{"error": message})
 }
 
-// forwardMockHeaders copies WireMock routing headers from the inbound
-// request onto the outbound request, so callers don't repeat this per call site.
-func forwardMockHeaders(in *http.Request, out *http.Request) {
-	for _, h := range []string{"Use-Mock", "Mock-Scenario", "Mock-ID"} {
-		if v := in.Header.Get(h); v != "" {
-			out.Header.Set(h, v)
+// forwardHeaders copies inbound headers onto the outbound request so
+// downstream services, including WireMock, receive the original context.
+func forwardHeaders(in *http.Request, out *http.Request) {
+	for name, values := range in.Header {
+		if isTransportHeader(name) {
+			continue
 		}
+		for _, value := range values {
+			out.Header.Add(name, value)
+		}
+	}
+}
+
+func isTransportHeader(name string) bool {
+	switch http.CanonicalHeaderKey(name) {
+	case "Accept-Encoding", "Connection", "Content-Length", "Host", "Keep-Alive", "TE", "Trailer", "Transfer-Encoding", "Upgrade":
+		return true
+	default:
+		return false
 	}
 }
 
@@ -119,7 +131,7 @@ func main() {
 	r.HandleFunc("/users", handleGetUsers).Methods("GET")
 	r.HandleFunc("/users", handleCreateUser).Methods("POST")
 	r.HandleFunc("/users/{id}", handleGetUser).Methods("GET")
-	r.HandleFunc("/users/{id}", handleUpdateUser).Methods("PUT")
+	r.HandleFunc("/users/{id}", handleUpdateUser).Methods("PATCH")
 	r.HandleFunc("/users/{id}", handleDeleteUser).Methods("DELETE")
 	r.HandleFunc("/auth/paotang/callback", handlePaotangCallback).Methods("POST")
 	r.HandleFunc("/auth/otp/verify", handleOTPVerify).Methods("POST")
@@ -271,12 +283,7 @@ func handlePaotangCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tokenReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	if useMock := r.Header.Get("Use-Mock"); useMock != "" {
-		tokenReq.Header.Set("Use-Mock", useMock)
-	}
-	if scenario := r.Header.Get("Mock-Scenario"); scenario != "" {
-		tokenReq.Header.Set("Mock-Scenario", scenario)
-	}
+	forwardHeaders(r, tokenReq)
 
 	resp, err := http.DefaultClient.Do(tokenReq)
 	if err != nil {
@@ -337,12 +344,7 @@ func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	otpReq.Header.Set("Content-Type", "application/json")
-	if useMock := r.Header.Get("Use-Mock"); useMock != "" {
-		otpReq.Header.Set("Use-Mock", useMock)
-	}
-	if scenario := r.Header.Get("Mock-Scenario"); scenario != "" {
-		otpReq.Header.Set("Mock-Scenario", scenario)
-	}
+	forwardHeaders(r, otpReq)
 
 	resp, err := http.DefaultClient.Do(otpReq)
 	if err != nil {

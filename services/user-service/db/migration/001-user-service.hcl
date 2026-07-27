@@ -14,6 +14,15 @@ table "users" {
     null = false
     type = varchar(255)
   }
+  column "phone" {
+    null = false
+    type = varchar(50)
+  }
+  column "status" {
+    null = false
+    type = varchar(50)
+    default = "'active'"
+  }
   primary_key {
     columns = [column.id]
   }

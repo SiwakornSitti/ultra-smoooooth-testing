@@ -1,22 +1,33 @@
 {
-  "priority": 1,
-  "request": {
-    "method": "POST",
-    "urlPath": "/sms/send",
-    "headers": {
-      "Mock-Scenario": { "contains": "SMS:SUCCESS" }
+  "id" : "8e9c9d9a-18af-4fe0-9b01-166c2a15753f",
+  "request" : {
+    "urlPath" : "/sms/send",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "SMS:SUCCESS"
+      }
     }
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "status": "sent",
-      "id": "mock-sms-id"
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "status" : "sent",
+      "id" : "mock-sms-id"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Mock-ID": "{{request.headers.Mock-ID}}"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
     },
-    "transformers": ["response-template"]
-  }
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "8e9c9d9a-18af-4fe0-9b01-166c2a15753f",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms"
+    }
+  },
+  "insertionIndex" : 12
 }

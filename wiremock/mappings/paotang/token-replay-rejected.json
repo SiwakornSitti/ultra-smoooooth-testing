@@ -1,23 +1,34 @@
 {
-  "priority": 1,
-  "scenarioName": "paotang-authcode-lifecycle",
-  "requiredScenarioState": "code-used",
-  "request": {
-    "method": "POST",
-    "urlPath": "/oauth/token",
-    "headers": {
-      "Mock-Scenario": { "contains": "PT_PASS:SUCCESS_ONCE" }
+  "id" : "6be61ef2-99df-4028-8fcd-3baedfd57794",
+  "request" : {
+    "urlPath" : "/oauth/token",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "PT_PASS:SUCCESS_ONCE"
+      }
     }
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "invalid_grant"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "invalid_grant"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Mock-ID": "{{request.headers.Mock-ID}}"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
     },
-    "transformers": ["response-template"]
-  }
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "6be61ef2-99df-4028-8fcd-3baedfd57794",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "paotang-authcode-lifecycle",
+  "requiredScenarioState" : "code-used",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/paotang"
+    }
+  },
+  "insertionIndex" : 21
 }

@@ -1,19 +1,28 @@
 {
-  "priority": 2,
-  "request": {
-    "method": "GET",
-    "urlPathPattern": "/lab/api/stateless/echo/(.*)"
+  "id" : "112cbffb-5a79-4f5f-b311-2f3ec642c9d3",
+  "request" : {
+    "urlPathPattern" : "/lab/api/stateless/echo/(.*)",
+    "method" : "GET"
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "extracted_path_id": "{{request.path.[4]}}",
-      "echo_header": "{{request.headers.X-Request-ID}}",
-      "query_name": "{{request.query.name}}"
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "extracted_path_id" : "{{request.path.[4]}}",
+      "echo_header" : "{{request.headers.X-Request-ID}}",
+      "query_name" : "{{request.query.name}}"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     },
-    "transformers": ["response-template"]
-  }
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "112cbffb-5a79-4f5f-b311-2f3ec642c9d3",
+  "persistent" : true,
+  "priority" : 2,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
+    }
+  },
+  "insertionIndex" : 22
 }

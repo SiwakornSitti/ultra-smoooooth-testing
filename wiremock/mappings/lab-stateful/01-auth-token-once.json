@@ -1,24 +1,33 @@
 {
-  "priority": 1,
-  "scenarioName": "auth-token-replay-prevention",
-  "requiredScenarioState": "Started",
-  "newScenarioState": "TOKEN_ISSUED",
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/oauth/token",
-    "bodyPatterns": [
-      { "contains": "grant_type=authorization_code" }
-    ]
+  "id" : "2613fce8-990d-4fe1-84d8-1bf750cd3c31",
+  "request" : {
+    "urlPath" : "/lab/api/oauth/token",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "contains" : "grant_type=authorization_code"
+    } ]
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "access_token": "lab-mock-token-12345",
-      "token_type": "Bearer",
-      "expires_in": 3600
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "access_token" : "lab-mock-token-12345",
+      "token_type" : "Bearer",
+      "expires_in" : 3600
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
-  }
+  },
+  "uuid" : "2613fce8-990d-4fe1-84d8-1bf750cd3c31",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "auth-token-replay-prevention",
+  "requiredScenarioState" : "Started",
+  "newScenarioState" : "TOKEN_ISSUED",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 2
 }

@@ -1,21 +1,30 @@
 {
-  "priority": 1,
-  "scenarioName": "order-fulfillment-lifecycle",
-  "requiredScenarioState": "Started",
-  "newScenarioState": "PAID",
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/orders/101/pay"
+  "id" : "f855fdab-b823-4d84-b743-6b3243228774",
+  "request" : {
+    "urlPath" : "/lab/api/orders/101/pay",
+    "method" : "POST"
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "order_id": "101",
-      "status": "PAID",
-      "message": "Payment successful"
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "order_id" : "101",
+      "status" : "PAID",
+      "message" : "Payment successful"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
-  }
+  },
+  "uuid" : "f855fdab-b823-4d84-b743-6b3243228774",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "order-fulfillment-lifecycle",
+  "requiredScenarioState" : "Started",
+  "newScenarioState" : "PAID",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 4
 }
