@@ -1,5 +1,6 @@
 {
   "id" : "69023dad-5479-42b5-9768-a57fb76e28b7",
+  "name" : "Order - Ship",
   "request" : {
     "urlPath" : "/lab/api/orders/101/ship",
     "method" : "POST"

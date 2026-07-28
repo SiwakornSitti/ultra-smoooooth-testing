@@ -1,5 +1,6 @@
 {
   "id" : "1d6966a7-7d64-4fdd-a943-21605a347b51",
+  "name" : "Paotang Token - Invalid Grant",
   "request" : {
     "urlPath" : "/oauth/token",
     "method" : "POST",

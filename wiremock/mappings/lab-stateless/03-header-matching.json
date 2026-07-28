@@ -1,5 +1,6 @@
 {
   "id" : "fa60bc33-27e8-4192-ab4b-e5616ccd8aca",
+  "name" : "Secure Endpoint - Header Match",
   "request" : {
     "urlPath" : "/lab/api/stateless/secure",
     "method" : "POST",

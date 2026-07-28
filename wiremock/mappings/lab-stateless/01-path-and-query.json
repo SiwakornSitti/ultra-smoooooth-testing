@@ -1,5 +1,6 @@
 {
   "id" : "67473987-210b-483b-b8b9-34c4aebaa73e",
+  "name" : "Users - Query Match",
   "request" : {
     "urlPath" : "/lab/api/stateless/users",
     "method" : "GET",

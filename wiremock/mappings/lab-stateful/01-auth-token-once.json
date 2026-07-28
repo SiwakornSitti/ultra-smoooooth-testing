@@ -1,5 +1,6 @@
 {
   "id" : "2613fce8-990d-4fe1-84d8-1bf750cd3c31",
+  "name" : "OAuth Token - Success Once",
   "request" : {
     "urlPath" : "/lab/api/oauth/token",
     "method" : "POST",

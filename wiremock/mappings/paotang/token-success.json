@@ -1,5 +1,6 @@
 {
   "id" : "3bb10442-83d9-445f-93de-61dbe0350348",
+  "name" : "Paotang Token - Success",
   "request" : {
     "urlPath" : "/oauth/token",
     "method" : "POST",

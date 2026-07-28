@@ -1,5 +1,6 @@
 {
   "id" : "ed568961-0cf7-41a7-a811-c3dec06a1d9f",
+  "name" : "OTP - Success",
   "request" : {
     "urlPath" : "/otp/verify",
     "method" : "POST",

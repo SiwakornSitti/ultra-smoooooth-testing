@@ -1,0 +1,37 @@
+{
+  "id" : "9b8f7e8f-c466-4d92-a3e6-9cb85c5b12fd",
+  "name" : "Payment Webhook - Replay",
+  "request" : {
+    "urlPathPattern" : "/lab/api/payments/[^/]+/webhook",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "matchesJsonPath" : {
+        "expression" : "$.event_type",
+        "equalTo" : "payment.succeeded"
+      }
+    } ]
+  },
+  "response" : {
+    "status" : 409,
+    "jsonBody" : {
+      "error" : "DUPLICATE_WEBHOOK",
+      "payment_id" : "{{request.path.[3]}}",
+      "event_id" : "{{jsonPath request.body '$.event_id'}}"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "9b8f7e8f-c466-4d92-a3e6-9cb85c5b12fd",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "payment-webhook-idempotency",
+  "requiredScenarioState" : "WEBHOOK_PROCESSED",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 13
+}

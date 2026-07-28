@@ -130,7 +130,52 @@ test.describe("Lab: WireMock Stateful Stubs & Scenario State Machine", () => {
     });
   });
 
-  test("Scenario 4: WireMock Admin API Scenario Reset", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 4: Payment Webhook Idempotency", async ({ request }: { request: APIRequestContext }) => {
+    const webhook = {
+      event_id: "evt-payment-001",
+      event_type: "payment.succeeded",
+      amount: 1500,
+      currency: "THB",
+    };
+
+    await request.delete(`${wiremockUrl}/__admin/requests`);
+    const first = await request.post(`${wiremockUrl}/lab/api/payments/pay-101/webhook`, {
+      data: webhook,
+    });
+    expect(first.status()).toBe(HttpStatusCode.Accepted);
+    expect(await first.json()).toEqual({
+      received: true,
+      payment_id: "pay-101",
+      event_id: "evt-payment-001",
+      status: "PROCESSED",
+    });
+
+    await expect
+      .poll(async () => {
+        const requestsResponse = await request.get(`${wiremockUrl}/__admin/requests`);
+        const requests = (await requestsResponse.json()).requests as Array<{
+          request?: { url?: string; body?: string };
+        }>;
+        return requests.some(
+            (servedRequest) =>
+            servedRequest.request?.url === "/lab/api/payment-events" &&
+            servedRequest.request.body?.includes("evt-payment-001"),
+        );
+      })
+      .toBe(true);
+
+    const replay = await request.post(`${wiremockUrl}/lab/api/payments/pay-101/webhook`, {
+      data: webhook,
+    });
+    expect(replay.status()).toBe(HttpStatusCode.Conflict);
+    expect(await replay.json()).toEqual({
+      error: "DUPLICATE_WEBHOOK",
+      payment_id: "pay-101",
+      event_id: "evt-payment-001",
+    });
+  });
+
+  test("Scenario 5: WireMock Admin API Scenario Reset", async ({ request }: { request: APIRequestContext }) => {
     // 1. Advance 'order-fulfillment-lifecycle' state to 'PAID'
     await request.post(`${wiremockUrl}/lab/api/orders/101/pay`);
     const checkPaid = await request.get(`${wiremockUrl}/lab/api/orders/101`);

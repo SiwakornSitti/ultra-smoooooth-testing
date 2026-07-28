@@ -1,5 +1,6 @@
 {
   "id" : "31341925-2bfc-46ca-85ab-aa8c8a65297a",
+  "name" : "Stateless Lab - Fallback",
   "request" : {
     "urlPathPattern" : "/lab/api/stateless/.*",
     "method" : "GET"

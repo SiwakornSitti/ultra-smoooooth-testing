@@ -1,5 +1,6 @@
 {
   "id" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
+  "name" : "Slow Endpoint - Fixed Delay",
   "request" : {
     "urlPath" : "/lab/api/stateless/slow-endpoint",
     "method" : "GET"

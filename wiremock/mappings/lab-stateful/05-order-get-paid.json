@@ -1,5 +1,6 @@
 {
   "id" : "a92ee32e-5918-4a1a-995d-6bf55e3816b4",
+  "name" : "Order - Get Paid",
   "request" : {
     "urlPathPattern" : "/lab/api/orders/[^/]+",
     "method" : "GET"

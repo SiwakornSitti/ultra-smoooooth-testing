@@ -1,5 +1,6 @@
 {
   "id" : "6be61ef2-99df-4028-8fcd-3baedfd57794",
+  "name" : "Paotang Token - Replay Rejected",
   "request" : {
     "urlPath" : "/oauth/token",
     "method" : "POST",

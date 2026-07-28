@@ -1,5 +1,6 @@
 {
   "id" : "112cbffb-5a79-4f5f-b311-2f3ec642c9d3",
+  "name" : "Echo - Response Template",
   "request" : {
     "urlPathPattern" : "/lab/api/stateless/echo/(.*)",
     "method" : "GET"

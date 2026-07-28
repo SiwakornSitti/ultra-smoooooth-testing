@@ -1,5 +1,6 @@
 {
   "id" : "26feef68-91a3-4fe9-a122-3fadb1029c4f",
+  "name" : "Payments - High Value Approved",
   "request" : {
     "urlPath" : "/lab/api/stateless/payments",
     "method" : "POST",

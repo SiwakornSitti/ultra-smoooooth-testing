@@ -69,7 +69,7 @@ flowchart TD
 
 ---
 
-## 🎯 10 Workshop Thinking Cases & Test Scenarios
+## 🎯 11 Workshop Thinking Cases & Test Scenarios
 
 ### 📍 Category 1: Service-to-Service Workflow Integration
 
@@ -128,6 +128,14 @@ flowchart TD
 - **Key Assertions**:
   - User Service exchanges auth code for token and logs user in successfully (`200 OK`).
   - Invalid auth code stubbed in WireMock returns `401 Unauthorized`.
+
+#### **Case 6B: Payment Webhook Idempotency**
+
+- **Flow**: `Payment Provider` ➔ `WireMock payment webhook stub`
+- **Challenge**: Deliver a successful payment webhook, then replay the same event and verify duplicate delivery is rejected.
+- **Key Assertions**:
+  - First `POST /lab/api/payments/{payment_id}/webhook` returns `202 Accepted`.
+  - Replay with the same event returns `409 Conflict` (`DUPLICATE_WEBHOOK`).
 
 ---
 

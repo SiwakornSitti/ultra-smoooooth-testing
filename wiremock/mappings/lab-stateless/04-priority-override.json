@@ -1,5 +1,6 @@
 {
   "id" : "2cd7443a-1e6d-4ba6-86a6-0153f3e179b7",
+  "name" : "VIP Products - Successful Response",
   "request" : {
     "urlPath" : "/lab/api/stateless/products/vip",
     "method" : "GET"
@@ -22,5 +23,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 28
+  "insertionIndex" : 31
 }

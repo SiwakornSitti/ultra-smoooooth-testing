@@ -1,5 +1,6 @@
 {
   "id" : "a60f62de-2cd0-47a1-80dd-f4178c95006b",
+  "name" : "Order - Get Pending",
   "request" : {
     "urlPathPattern" : "/lab/api/orders/[^/]+",
     "method" : "GET"

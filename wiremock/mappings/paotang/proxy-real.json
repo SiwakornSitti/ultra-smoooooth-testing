@@ -1,5 +1,6 @@
 {
   "id" : "2d1e0068-2016-4e58-9110-7bb38c9fe364",
+  "name" : "Paotang - Proxy Real",
   "request" : {
     "urlPath" : "/oauth/token",
     "method" : "POST"

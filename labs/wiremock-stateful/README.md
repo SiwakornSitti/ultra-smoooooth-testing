@@ -84,6 +84,16 @@ stateDiagram-v2
 
 ---
 
+### Scenario 4: Payment Webhook Idempotency
+
+- **Endpoint**: `POST /lab/api/payments/{payment_id}/webhook`
+- **Initial State (`Started`)**: A `payment.succeeded` webhook returns `202 Accepted` and transitions to `WEBHOOK_PROCESSED`.
+- **Next State (`WEBHOOK_PROCESSED`)**: Replaying the same webhook returns `409 Conflict` (`DUPLICATE_WEBHOOK`).
+- **Dynamic fields**: The response echoes `{payment_id}` from the URL and `event_id` from the webhook body.
+- **Serve event listener**: The accepted webhook triggers an internal callback to `POST /lab/api/payment-events` with templated payment and event IDs.
+
+---
+
 ## 🚀 Running the Lab
 
 ### 1. Automated Execution (Playwright & Testcontainers)
@@ -142,7 +152,10 @@ wiremock/mappings/lab-stateful/
 ├── 08-order-ship-invalid.json        # Ship order rejected when ALREADY_SHIPPED
 ├── 09-retry-fail-1.json              # 1st attempt failure (Started -> FAIL_1)
 ├── 10-retry-fail-2.json              # 2nd attempt failure (FAIL_1 -> FAIL_2)
-└── 11-retry-success.json             # 3rd attempt success (FAIL_2 -> 200)
+├── 11-retry-success.json             # 3rd attempt success (FAIL_2 -> 200)
+├── 12-payment-webhook-success.json   # Payment webhook accepted (Started -> WEBHOOK_PROCESSED)
+├── 13-payment-webhook-replay.json    # Duplicate webhook rejected (WEBHOOK_PROCESSED -> 409)
+└── 14-payment-event-receiver.json    # Callback receiver for serveEventListeners
 
 tests/specs/labs/
 └── wiremock-stateful.spec.ts         # Playwright test suite validating stateful stubs

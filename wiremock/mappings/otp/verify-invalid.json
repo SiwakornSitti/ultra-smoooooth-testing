@@ -1,5 +1,6 @@
 {
   "id" : "bb012a7e-d974-4818-8afc-3acc7fc0a405",
+  "name" : "OTP - Invalid",
   "request" : {
     "urlPath" : "/otp/verify",
     "method" : "POST",

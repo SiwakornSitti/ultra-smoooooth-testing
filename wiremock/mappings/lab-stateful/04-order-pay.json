@@ -1,5 +1,6 @@
 {
   "id" : "f855fdab-b823-4d84-b743-6b3243228774",
+  "name" : "Order - Pay",
   "request" : {
     "urlPath" : "/lab/api/orders/101/pay",
     "method" : "POST"

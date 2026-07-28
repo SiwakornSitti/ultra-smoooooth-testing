@@ -1,0 +1,50 @@
+{
+  "id" : "2d5e6d2e-2fd2-4baf-a7ce-3b1d54ac54c5",
+  "name" : "Payment Webhook - Success",
+  "request" : {
+    "urlPathPattern" : "/lab/api/payments/[^/]+/webhook",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "matchesJsonPath" : {
+        "expression" : "$.event_type",
+        "equalTo" : "payment.succeeded"
+      }
+    } ]
+  },
+  "response" : {
+    "status" : 202,
+    "jsonBody" : {
+      "received" : true,
+      "payment_id" : "{{request.path.[3]}}",
+      "event_id" : "{{jsonPath request.body '$.event_id'}}",
+      "status" : "PROCESSED"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "serveEventListeners" : [ {
+    "name" : "webhook",
+    "parameters" : {
+      "method" : "POST",
+      "url" : "http://localhost:8080/lab/api/payment-events",
+      "headers" : {
+        "Content-Type" : "application/json"
+      },
+      "body" : "{ \"event_type\": \"payment.processed\", \"payment_id\": \"{{jsonPath originalRequest.body '$.payment_id'}}\", \"event_id\": \"{{jsonPath originalRequest.body '$.event_id'}}\" }"
+    }
+  } ],
+  "uuid" : "2d5e6d2e-2fd2-4baf-a7ce-3b1d54ac54c5",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "payment-webhook-idempotency",
+  "requiredScenarioState" : "Started",
+  "newScenarioState" : "WEBHOOK_PROCESSED",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateful"
+    }
+  },
+  "insertionIndex" : 12
+}

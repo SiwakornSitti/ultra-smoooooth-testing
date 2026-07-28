@@ -1,5 +1,6 @@
 {
   "id" : "8bd6cc28-1616-4e4f-b7d3-2575ff79dd3f",
+  "name" : "Order - Ship Already Shipped",
   "request" : {
     "urlPath" : "/lab/api/orders/101/ship",
     "method" : "POST"

@@ -1,5 +1,6 @@
 {
   "id" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
+  "name" : "SMS - Invalid Number",
   "request" : {
     "urlPath" : "/sms/send",
     "method" : "POST",

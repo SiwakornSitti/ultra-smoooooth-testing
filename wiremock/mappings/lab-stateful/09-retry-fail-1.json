@@ -1,5 +1,6 @@
 {
   "id" : "92809f93-d552-4e21-bc1e-4a91d518526a",
+  "name" : "Unstable Endpoint - Failure 1",
   "request" : {
     "urlPath" : "/lab/api/unstable-endpoint",
     "method" : "GET"
