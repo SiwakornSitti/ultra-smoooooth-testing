@@ -1,0 +1,8 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 3: combined header matching
+POST {{baseUrl}}/lab/api/stateless/secure
+Authorization: Bearer secret-token-4040
+X-Client-ID: qa-client
+X-Request-ID: req-12345
+X-Client-Role: system-admin

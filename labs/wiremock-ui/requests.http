@@ -1,0 +1,37 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Browse mappings
+GET {{baseUrl}}/__admin/mappings
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Browse request history
+GET {{baseUrl}}/__admin/requests
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Reload file-backed mappings after editing them outside the UI
+POST {{baseUrl}}/__admin/mappings/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Reset stateful scenarios without deleting mappings
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Set a global fixed delay for all stubs
+POST {{baseUrl}}/__admin/settings
+Authorization: Basic {{adminUser}} {{adminPassword}}
+Content-Type: application/json
+
+{
+  "fixedDelay": 500
+}
+
+### Clear the global fixed delay
+POST {{baseUrl}}/__admin/settings
+Authorization: Basic {{adminUser}} {{adminPassword}}
+Content-Type: application/json
+
+{
+  "fixedDelay": 0
+}

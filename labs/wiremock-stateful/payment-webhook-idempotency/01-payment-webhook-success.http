@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Reset scenario state
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Mapping 01: payment webhook succeeds once
+POST {{baseUrl}}/lab/api/payments/pay-001/webhook
+Content-Type: application/json
+
+{
+  "event_type": "payment.succeeded",
+  "event_id": "evt-001"
+}

@@ -13,6 +13,7 @@ export const DB_NAME = "app";
 export const PORT = 8080;
 
 const WIREMOCK_MAPPINGS_ROOT = path.resolve(__dirname, "../../../wiremock/mappings");
+const WIREMOCK_FILES_ROOT = path.resolve(__dirname, "../../../wiremock/__files");
 const WIREMOCK_EXTENSIONS_ROOT = path.resolve(__dirname, "../../../wiremock/extensions");
 const DATABASE_ROOT = path.resolve(__dirname, "../../../services");
 
@@ -91,7 +92,13 @@ export async function startWiremock(
         target: "/var/wiremock/extensions/wiremock-faker-extension-standalone-0.2.0.jar",
       },
     ])
-    .withCopyDirectoriesToContainer(mappingDirs)
+    .withCopyDirectoriesToContainer([
+      ...mappingDirs,
+      {
+        source: WIREMOCK_FILES_ROOT,
+        target: "/home/wiremock/__files",
+      },
+    ])
     .withWaitStrategy(Wait.forHttp("/__admin/health", PORT))
     .start();
 }

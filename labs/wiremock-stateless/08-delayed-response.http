@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 8: fixed delay
+GET {{baseUrl}}/lab/api/stateless/slow-endpoint

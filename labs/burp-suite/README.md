@@ -13,6 +13,15 @@ In modern microservices development and QA testing, an intercepting Man-In-The-M
 3. **Inject Mock & Test Headers**: Inject headers like `Mock-Scenario: PT_PASS:SUCCESS_ONCE` and `Mock-ID: request-123` into live traffic to trigger specific WireMock stubs without code changes.
 4. **Manual Boundary & Security Testing**: Replay API requests via **Burp Repeater** to validate error handling, input validation (`400 Bad Request`), and REST contracts.
 
+## 🧭 How to Learn with This Lab
+
+1. Start the services and Burp Suite with the proxy listener on `127.0.0.1:8080`.
+2. Open `labs/burp-suite/requests.http` with the VS Code REST Client extension and send each request.
+3. Intercept the requests, modify headers or payloads, then forward them.
+4. Move interesting requests to Repeater and compare the response with the exercise instructions below.
+
+The lab’s REST Client examples are kept in one file: [`requests.http`](./requests.http).
+
 ---
 
 ## 🏗️ Proxy Traffic Topology
@@ -165,6 +174,7 @@ chmod +x labs/burp-suite/verify-proxy.sh
 ```
 labs/burp-suite/
 ├── README.md                         # This lab guide
+├── requests.http                     # REST Client walkthrough for all exercises
 ├── burp-config-example.json          # Example Burp Suite configuration settings
 └── verify-proxy.sh                   # Helper script to test proxy connectivity
 ```

@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 4: bodyFileName response
+GET {{baseUrl}}/lab/api/stateless/body-file

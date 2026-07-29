@@ -19,6 +19,15 @@ Key learning objectives:
 
 ---
 
+## 🧭 How to Learn with This Lab
+
+1. Start WireMock with `docker compose up --build wiremock`.
+2. Read the scenarios in order and inspect the matching JSON under `wiremock/mappings/lab-stateless/`.
+3. Open the numbered `.http` file for the scenario you want to run with the VS Code REST Client extension.
+4. Compare each response with the matcher, delay, proxy, webhook, and body-file behavior described in the scenario.
+
+Each numbered stateless scenario has its own REST Client file, matching the mapping name: [`01-path-and-query.http`](./01-path-and-query.http), [`02-json-body-matching.http`](./02-json-body-matching.http), and so on.
+
 ## 🔑 Request Matching Techniques
 
 WireMock supports multiple matching algorithms:
@@ -121,12 +130,19 @@ These functions are Jayway JsonPath extensions; they are not guaranteed to be av
 - **Endpoint**: `POST /lab/api/stateless/secure`
 - **Behavior**: Combines five header matchers: `Authorization` regex, `X-Client-ID` equality, `X-Request-ID` regex, `X-Client-Role` contains `admin`, and absent `X-Debug`. All conditions must pass.
 
-### Scenario 4: Priority-Based Overriding
+### Scenario 4: Body File Response
+
+- **Endpoint**: `GET /lab/api/stateless/body-file`
+- **Behavior**: Loads the response body from `__files/lab-stateless/body-file-response.json` using `bodyFileName`.
+
+`bodyFileName` is relative to WireMock’s `__files` directory. Docker Compose mounts `./wiremock/__files` to `/home/wiremock/__files`, and the Testcontainers runner copies the same directory into the container.
+
+### Scenario 5: Priority-Based Overriding
 
 - **Endpoint**: `GET /lab/api/stateless/products/vip`
 - **Behavior**: A specific mapping with `"priority": 1` overrides a catch-all mapping with `"priority": 10`.
 
-### Scenario 5: Response Template Echo and Helpers
+### Scenario 6: Response Template Echo and Helpers
 
 - **Endpoints**: `GET /lab/api/stateless/echo/{id}?name={name}` and `POST /lab/api/stateless/template-helpers`
 - **Behavior**: One mapping uses the `response-template` transformer to echo path/header/query values and demonstrate `jsonPath`, `randomValue`, and `now` helpers.
@@ -148,7 +164,7 @@ The lab uses the built-in transformer. Custom `ResponseDefinitionTransformer` an
 
 `ServeEventListener` and webhooks are useful for post-request side effects, but they do not transform the response returned to the caller.
 
-### Scenario 6: Faker Response Template
+### Scenario 7: Faker Response Template
 
 - **Endpoint**: `GET /lab/api/stateless/faker-user`
 - **Behavior**: Uses the Faker extension's `random` helper through `response-template` to generate a realistic name, email, phone number, company, and UUID for every response.
@@ -167,17 +183,17 @@ Common Faker types:
 
 See the [WireMock Faker Extension documentation](https://wiremock.org/docs/faker-extension/) for the complete data type list.
 
-### Scenario 7: Latency & Delay Injection
+### Scenario 8: Latency & Delay Injection
 
 - **Endpoint**: `GET /lab/api/stateless/slow-endpoint`
 - **Behavior**: Specifies `"fixedDelayMilliseconds": 500` to simulate network latency or slow backend processing.
 
-### Scenario 8: Random Delay Injection
+### Scenario 9: Random Delay Injection
 
 - **Endpoint**: `GET /lab/api/stateless/random-delay`
 - **Behavior**: Uses a uniform random delay between `100ms` and `500ms` for each response.
 
-### Scenario 9: Lognormal Delay Injection
+### Scenario 10: Lognormal Delay Injection
 
 - **Endpoint**: `GET /lab/api/stateless/lognormal-delay`
 - **Behavior**: Uses a lognormal delay with a `250ms` median, `0.4` sigma, and a `1000ms` maximum to simulate a long-tail latency distribution.
@@ -193,7 +209,7 @@ Lognormal delay properties:
 
 The `response.delayDistribution` object controls WireMock. The matching object inside `jsonBody` is only explanatory data returned by the mock.
 
-### Scenario 10: Chunked Dribble Delay
+### Scenario 11: Chunked Dribble Delay
 
 - **Endpoint**: `GET /lab/api/stateless/chunked-delay`
 - **Behavior**: Streams the response in `5` chunks over `1000ms`, simulating a slow connection that delivers data progressively.
@@ -205,14 +221,14 @@ Chunked dribble properties:
 | `numberOfChunks: 5` | Splits the response into five chunks. |
 | `totalDuration: 1000` | Delivers all chunks over approximately `1000ms`. |
 
-### Scenario 11: PokeAPI Mock or Proxy
+### Scenario 12: PokeAPI Mock or Proxy
 
 - **Endpoint**: `GET /lab/api/stateless/pokemon/{name}/`
 - **Behavior**: If `Mock-Scenario: POKEAPI:MOCK` matches, priority `1` returns a local mock. Without that header, priority `2` proxies to `https://pokeapi.co/api/v2/pokemon/{name}/` after removing the local `/lab/api/stateless` prefix.
 
 Proxy mappings keep WireMock in front of the external API while forwarding the request path. This is useful for testing a real response shape through a local mock boundary. The route depends on outbound network access from the WireMock container.
 
-### Scenario 12: Stateless Webhook Callback
+### Scenario 13: Stateless Webhook Callback
 
 - **Trigger**: `POST /lab/api/stateless/webhook-orders`
 - **Callback**: `POST /lab/api/stateless/webhook-receiver`
@@ -220,7 +236,7 @@ Proxy mappings keep WireMock in front of the external API while forwarding the r
 
 The webhook trigger and receiver are separate stateless mappings. The callback body is configured with `serveEventListeners.parameters.body` because WireMock webhook payloads use a templated string; response mappings continue to use `jsonBody`.
 
-### Scenario 13: Catch-All Fallback Stub
+### Scenario 14: Catch-All Fallback Stub
 
 - **Endpoint**: `GET /lab/api/stateless/.*`
 - **Behavior**: Final catch-all stub (`"priority": 10`) returning `404 Not Found` for any unmatched stateless lab routes.
@@ -302,30 +318,56 @@ curl -X POST \
 
 The trigger returns `202 Accepted`, then sends a callback to the local receiver. Inspect the callback under the WireMock UI **Matched** requests or through `GET /__admin/requests`.
 
+Try the body-file response:
+
+```bash
+curl http://localhost:8088/lab/api/stateless/body-file
+```
+
 ---
 
 ## 📂 File Structure
 
 ```
 labs/wiremock-stateless/
-└── README.md                         # This lab guide
+├── README.md                         # This lab guide
+├── 01-path-and-query.http             # Scenario 1: query parameter matching
+├── 02-json-body-matching.http        # Scenario 2: JSONPath body matching
+├── 03-header-matching.http           # Scenario 3: combined header matching
+├── 04-body-file.http                  # Scenario 4: body-file response
+├── 05-priority-override.http          # Scenario 5: priority override
+├── 06-response-templating.http        # Scenario 6: response templating
+├── 07-faker-response.http             # Scenario 7: Faker response
+├── 08-delayed-response.http           # Scenario 8: fixed delay
+├── 09-random-delay.http               # Scenario 9: random delay
+├── 10-lognormal-delay.http            # Scenario 10: lognormal delay
+├── 11-chunked-dribble-delay.http      # Scenario 11: chunked response delay
+├── 12-pokeapi-mock.http               # Scenario 12: local PokeAPI mock
+├── 13-proxy-pokeapi.http              # Scenario 13: PokeAPI proxy
+├── 14-webhook-trigger.http            # Scenario 14: webhook trigger
+├── 15-webhook-receiver.http           # Scenario 15: webhook receiver
+└── 16-fallback-catchall.http          # Scenario 16: fallback catch-all
 
 wiremock/mappings/lab-stateless/
 ├── 01-path-and-query.json            # Query parameter matching
 ├── 02-json-body-matching.json        # Combined JSONPath matching
 ├── 03-header-matching.json           # Combined header matching
-├── 04-priority-override.json         # Priority overriding
-├── 05-response-templating.json        # Combined echo and template helpers
-├── 06-faker-response.json             # Faker-generated response data
-├── 07-delayed-response.json           # Fixed delay latency injection
-├── 08-random-delay.json               # Uniform random delay injection
-├── 09-lognormal-delay.json            # Lognormal long-tail delay injection
-├── 10-chunked-dribble-delay.json      # Chunked response delay injection
-├── 11-pokeapi-mock.json               # Header-selected local PokeAPI mock
-├── 12-proxy-pokeapi.json              # PokeAPI proxy mapping
-├── 13-webhook-trigger.json            # Stateless webhook trigger
-├── 14-webhook-receiver.json           # Stateless webhook callback receiver
-└── 15-fallback-catchall.json          # Final priority 10 catch-all fallback
+├── 04-body-file.json                 # Body file response mapping
+├── 05-priority-override.json          # Priority overriding
+├── 06-response-templating.json       # Combined echo and template helpers
+├── 07-faker-response.json             # Faker-generated response data
+├── 08-delayed-response.json           # Fixed delay latency injection
+├── 09-random-delay.json               # Uniform random delay injection
+├── 10-lognormal-delay.json            # Lognormal long-tail delay injection
+├── 11-chunked-dribble-delay.json      # Chunked response delay injection
+├── 12-pokeapi-mock.json               # Header-selected local PokeAPI mock
+├── 13-proxy-pokeapi.json              # PokeAPI proxy mapping
+├── 14-webhook-trigger.json            # Stateless webhook trigger
+├── 15-webhook-receiver.json           # Stateless webhook callback receiver
+└── 16-fallback-catchall.json          # Final priority 10 catch-all fallback
+
+wiremock/__files/lab-stateless/
+└── body-file-response.json             # File-backed response body
 
 tests/specs/labs/
 ├── wiremock-stateful.spec.ts         # Stateful stub lab tests

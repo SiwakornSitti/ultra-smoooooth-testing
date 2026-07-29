@@ -1,0 +1,30 @@
+@proxyUrl = http://127.0.0.1:8080
+@bffUrl = http://localhost:8080
+
+# Configure the REST Client extension to use @proxyUrl before sending these requests.
+# VS Code setting: rest-client.http.proxy = http://127.0.0.1:8080
+
+### Exercise 1: request interception and parameter tampering
+POST {{bffUrl}}/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "Original Name",
+  "email": "original@example.com",
+  "phone": "+66800000001"
+}
+
+### Exercise 2: OTP request; add Mock-Scenario in Burp Intercept
+POST {{bffUrl}}/auth/otp/verify
+Content-Type: application/json
+
+{
+  "phone": "+66800000001",
+  "code": "123456"
+}
+
+### Exercise 3: malformed payload for Burp Repeater
+POST {{bffUrl}}/api/v1/users
+Content-Type: application/json
+
+{ invalid json syntax

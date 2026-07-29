@@ -1,0 +1,11 @@
+{
+  "source": "body-file",
+  "message": "This response is loaded from WireMock __files.",
+  "items": [
+    {
+      "id": "item-001",
+      "name": "File-backed item",
+      "available": true
+    }
+  ]
+}

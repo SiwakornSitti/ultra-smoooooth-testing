@@ -89,14 +89,31 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 4: Priority-Based Overriding", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 4: Body File Response", async ({ request }: { request: APIRequestContext }) => {
+    const res = await request.get(`${wiremockUrl}/lab/api/stateless/body-file`);
+
+    expect(res.status()).toBe(HttpStatusCode.Ok);
+    expect(await res.json()).toEqual({
+      source: "body-file",
+      message: "This response is loaded from WireMock __files.",
+      items: [
+        {
+          id: "item-001",
+          name: "File-backed item",
+          available: true,
+        },
+      ],
+    });
+  });
+
+  test("Scenario 5: Priority-Based Overriding", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/products/vip`);
     expect(res.status()).toBe(HttpStatusCode.Ok);
     const body = await res.json();
     expect(body.product).toBe("VIP Gold Membership");
   });
 
-  test("Scenario 5: Response Template Echo and Helpers", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 6: Response Template Echo and Helpers", async ({ request }: { request: APIRequestContext }) => {
     const echoRes = await request.get(`${wiremockUrl}/lab/api/stateless/echo/item-999?name=John`, {
       headers: {
         "X-Request-ID": "req-trace-abc-123",
@@ -129,7 +146,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(helperBody.received_at.length).toBeGreaterThan(0);
   });
 
-  test("Scenario 6: Faker Response Template", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 7: Faker Response Template", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/faker-user`);
 
     expect(res.status()).toBe(HttpStatusCode.Ok);
@@ -142,7 +159,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(body.uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
   });
 
-  test("Scenario 7: Fixed Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 8: Fixed Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const startTime = Date.now();
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/slow-endpoint`);
     const duration = Date.now() - startTime;
@@ -151,7 +168,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(duration).toBeGreaterThanOrEqual(450);
   });
 
-  test("Scenario 8: Random Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 9: Random Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const startTime = Date.now();
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/random-delay`);
     const duration = Date.now() - startTime;
@@ -163,7 +180,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(body.delayRangeMilliseconds).toEqual({ min: 100, max: 500 });
   });
 
-  test("Scenario 9: Lognormal Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 10: Lognormal Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/lognormal-delay`);
 
     expect(res.status()).toBe(HttpStatusCode.Ok);
@@ -176,7 +193,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 10: Chunked Dribble Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 11: Chunked Dribble Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const startTime = Date.now();
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/chunked-delay`);
     const duration = Date.now() - startTime;
@@ -192,7 +209,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 11: PokeAPI Mock or Proxy", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 12: PokeAPI Mock or Proxy", async ({ request }: { request: APIRequestContext }) => {
     const mockRes = await request.get(`${wiremockUrl}/lab/api/stateless/pokemon/ditto/`, {
       headers: {
         "Mock-Scenario": "POKEAPI:MOCK",
@@ -220,7 +237,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     ]));
   });
 
-  test("Scenario 12: Stateless Webhook Callback", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 13: Stateless Webhook Callback", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.post(`${wiremockUrl}/lab/api/stateless/webhook-orders`, {
       headers: {
         "Content-Type": "application/json",
@@ -266,7 +283,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 13: Catch-All Fallback Stub", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 14: Catch-All Fallback Stub", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/non-existent-route`);
     expect(res.status()).toBe(HttpStatusCode.NotFound);
     const body = await res.json();

@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Reset scenario state
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Setup: first and second attempts fail
+GET {{baseUrl}}/lab/api/unstable-endpoint
+
+### Setup: second attempt fails
+GET {{baseUrl}}/lab/api/unstable-endpoint
+
+### Mapping 03: third attempt recovers
+GET {{baseUrl}}/lab/api/unstable-endpoint

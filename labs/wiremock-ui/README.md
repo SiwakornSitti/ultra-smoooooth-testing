@@ -15,6 +15,15 @@ Key Features:
 3. **Scenario State Visualization**: Inspect current state machine states for stateful stubs (`Started`, `TOKEN_ISSUED`, `PAID`, `SHIPPED`).
 4. **One-Click Scenario Reset**: Reset all scenario state machines back to `Started` with a single click.
 
+## 🧭 How to Learn with This Lab
+
+1. Start the UI with `docker compose up -d wiremock`.
+2. Sign in at `http://localhost:8088/__admin/`.
+3. Browse mappings, test a stub, inspect matched and unmatched requests, and reset scenarios.
+4. Open `labs/wiremock-ui/requests.http` with the VS Code REST Client extension and send the Admin API examples.
+
+The lab’s REST Client examples are kept in one file: [`requests.http`](./requests.http).
+
 ---
 
 ## 🚀 Accessing the WireMock Web UI
@@ -149,6 +158,8 @@ curl -u admin:password \
 ---
 
 ## 📂 Related Resources
+
+The lab walkthrough is kept in [`requests.http`](./requests.http).
 
 - 🎓 **[WireMock Stateful Stubbing Guide](../wiremock-stateful/README.md)**
 - 🎓 **[WireMock Stateless Stubbing Guide](../wiremock-stateless/README.md)**

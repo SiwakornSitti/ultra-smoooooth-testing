@@ -1,0 +1,19 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Reset scenario state
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Setup: issue the token once
+POST {{baseUrl}}/lab/api/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code
+
+### Mapping 02: replay is rejected
+POST {{baseUrl}}/lab/api/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code

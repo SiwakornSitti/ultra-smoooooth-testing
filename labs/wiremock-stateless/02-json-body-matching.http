@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 2: JSONPath body matching
+POST {{baseUrl}}/lab/api/stateless/payments
+Content-Type: application/json
+
+{
+  "payment": {
+    "amount": 2500,
+    "currency": "THB"
+  },
+  "customer": {
+    "email": "alice@example.com",
+    "name": "Alice"
+  },
+  "items": [
+    {
+      "sku": "SKU-001"
+    }
+  ]
+}

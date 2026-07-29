@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:8088
+
+### Mapping 03: payment event callback receiver
+POST {{baseUrl}}/lab/api/payment-events
+Content-Type: application/json
+
+{
+  "event_type": "payment.succeeded",
+  "payment_id": "pay-001",
+  "event_id": "evt-001"
+}

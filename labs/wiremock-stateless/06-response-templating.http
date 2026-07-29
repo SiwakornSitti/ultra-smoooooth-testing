@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 6: response templating
+GET {{baseUrl}}/lab/api/stateless/echo/item-42?name=Alice
+X-Request-ID: req-999
+
+### Scenario 6: response template helpers
+POST {{baseUrl}}/lab/api/stateless/template-helpers
+Content-Type: application/json
+X-Request-ID: req-helper-001
+
+{
+  "customer": {
+    "email": "alice@example.com"
+  }
+}

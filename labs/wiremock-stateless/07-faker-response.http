@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 7: Faker response
+GET {{baseUrl}}/lab/api/stateless/faker-user

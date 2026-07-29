@@ -1,0 +1,10 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Reset scenario state
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Mapping 01: order is PENDING
+GET {{baseUrl}}/lab/api/orders/101

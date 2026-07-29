@@ -1,0 +1,5 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 12: header-selected local PokeAPI mock
+GET {{baseUrl}}/lab/api/stateless/pokemon/ditto/
+Mock-Scenario: POKEAPI:MOCK

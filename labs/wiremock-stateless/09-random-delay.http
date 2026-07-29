@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 9: random delay
+GET {{baseUrl}}/lab/api/stateless/random-delay

@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 11: chunked response delay
+GET {{baseUrl}}/lab/api/stateless/chunked-delay

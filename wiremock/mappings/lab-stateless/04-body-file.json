@@ -1,0 +1,24 @@
+{
+  "id" : "a1b2c3d4-e5f6-4789-ab01-23456789abcd",
+  "name" : "Body File Response",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/body-file",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName" : "lab-stateless/body-file-response.json",
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "a1b2c3d4-e5f6-4789-ab01-23456789abcd",
+  "persistent" : true,
+  "priority" : 2,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
+    }
+  },
+  "insertionIndex" : 38
+}

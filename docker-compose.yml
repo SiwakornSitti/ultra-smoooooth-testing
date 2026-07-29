@@ -44,6 +44,7 @@ services:
       - "${WIREMOCK_ADMIN_USER:-admin}:${WIREMOCK_ADMIN_PASSWORD:-password}"
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings
+      - ./wiremock/__files:/home/wiremock/__files
       - ./wiremock/extensions:/var/wiremock/extensions:ro
 
   # =========================================================================

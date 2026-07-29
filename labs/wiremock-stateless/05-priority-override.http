@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 5: priority override
+GET {{baseUrl}}/lab/api/stateless/products/vip

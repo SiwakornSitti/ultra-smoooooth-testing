@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Reset scenario state
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Setup: transition order to SHIPPED
+POST {{baseUrl}}/lab/api/orders/101/pay
+
+### Setup: ship order
+POST {{baseUrl}}/lab/api/orders/101/ship
+
+### Mapping 06: shipping an already-shipped order is rejected
+POST {{baseUrl}}/lab/api/orders/101/ship

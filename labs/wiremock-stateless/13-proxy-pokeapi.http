@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:8088
+
+### Scenario 13: live PokeAPI proxy
+GET {{baseUrl}}/lab/api/stateless/pokemon/ditto/
