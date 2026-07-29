@@ -1,0 +1,23 @@
+{
+  "name": "BFF Mock - Paotang Invalid Authcode",
+  "request": {
+    "method": "POST",
+    "urlPath": "/auth/paotang/callback",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "PT_PASS:INVALID_GRANT"
+      }
+    }
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "invalid_grant"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    }
+  },
+  "priority": 2
+}

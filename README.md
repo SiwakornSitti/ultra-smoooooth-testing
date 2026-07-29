@@ -133,6 +133,16 @@ docker compose up --build
 docker compose down
 ```
 
+To test the frontend against the BFF mappings in the existing WireMock service:
+
+```bash
+BFF_URL=http://localhost:8088 docker compose up --build
+```
+
+Open `http://localhost:3000`.
+
+Mocked BFF mappings require a `Mock-Scenario` header; requests without it fall back to the real `bff-service:8080` through WireMock.
+
 ---
 
 ## 🧪 Integration & E2E Testing

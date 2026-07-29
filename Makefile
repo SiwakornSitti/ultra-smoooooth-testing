@@ -48,5 +48,3 @@ test-lab:
 
 slides:
 	cd slides && bunx @slidev/cli slides.md
-
-

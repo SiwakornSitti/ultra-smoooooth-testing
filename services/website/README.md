@@ -31,6 +31,16 @@ npm run dev
 
 Open `http://localhost:3000` after starting the BFF and its dependencies.
 
+## Test with BFF mappings
+
+The BFF contract mappings live in the existing WireMock service under [`wiremock/mappings/bff-mock`](../../wiremock/mappings/bff-mock). Point the browser frontend at WireMock instead of the real BFF:
+
+```bash
+BFF_URL=http://localhost:8088 docker compose up --build
+```
+
+Open `http://localhost:3000`. BFF mock responses require a non-empty `Mock-Scenario` header; requests without it use the low-priority fallback proxy to the real `bff-service:8080`. The mock supports `PT_PASS:SUCCESS_ONCE` replay rejection and `SMS:INVALID_NUMBER` scenarios.
+
 For a production build:
 
 ```bash

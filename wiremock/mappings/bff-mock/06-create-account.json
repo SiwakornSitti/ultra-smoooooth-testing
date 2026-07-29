@@ -1,0 +1,26 @@
+{
+  "name": "BFF Mock - Create Account",
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/v1/accounts",
+    "headers": {
+      "Mock-Scenario": {
+        "matches": ".+"
+      }
+    }
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "id": "frontend-mock-account-001",
+      "user_id": "{{jsonPath request.body '$.user_id'}}",
+      "balance": 1000,
+      "currency": "USD"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    },
+    "transformers": ["response-template"]
+  }
+}

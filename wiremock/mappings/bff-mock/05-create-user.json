@@ -1,0 +1,27 @@
+{
+  "name": "BFF Mock - Create User",
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/v1/users",
+    "headers": {
+      "Mock-Scenario": {
+        "matches": ".+"
+      }
+    }
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "id": "frontend-mock-user-001",
+      "name": "{{jsonPath request.body '$.name'}}",
+      "email": "{{jsonPath request.body '$.email'}}",
+      "phone": "{{jsonPath request.body '$.phone'}}",
+      "status": "{{jsonPath request.body '$.status'}}"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    },
+    "transformers": ["response-template"]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "BFF Mock - CORS Preflight",
+  "request": {
+    "method": "OPTIONS",
+    "urlPathPattern": ".*"
+  },
+  "response": {
+    "status": 204,
+    "headers": {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Mock-Scenario, Mock-ID"
+    }
+  },
+  "priority": 1
+}

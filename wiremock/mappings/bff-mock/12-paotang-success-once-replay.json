@@ -1,0 +1,25 @@
+{
+  "name": "BFF Mock - Paotang Success Once Replay",
+  "scenarioName": "bff-paotang-authcode-once",
+  "requiredScenarioState": "TOKEN_ISSUED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/auth/paotang/callback",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "PT_PASS:SUCCESS_ONCE"
+      }
+    }
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "invalid_grant"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    }
+  },
+  "priority": 1
+}

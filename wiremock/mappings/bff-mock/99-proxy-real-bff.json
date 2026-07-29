@@ -1,0 +1,10 @@
+{
+  "name": "BFF Mock - Fallback Proxy to Real BFF",
+  "request": {
+    "urlPathPattern": "/(api/v1/.*|auth/.*|health)"
+  },
+  "response": {
+    "proxyBaseUrl": "http://bff-service:8080"
+  },
+  "priority": 100
+}

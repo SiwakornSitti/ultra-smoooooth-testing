@@ -1,0 +1,27 @@
+{
+  "name": "BFF Mock - Create Transfer",
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/v1/transfers",
+    "headers": {
+      "Mock-Scenario": {
+        "matches": ".+"
+      }
+    }
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "id": "frontend-mock-transfer-001",
+      "source_account_id": "frontend-mock-account-001",
+      "target_account_id": "frontend-mock-account-002",
+      "amount": 100,
+      "currency": "THB",
+      "status": "completed"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    }
+  }
+}
