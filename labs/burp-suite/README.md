@@ -51,7 +51,7 @@ See the official [PortSwigger certificate setup guide](https://portswigger.net/b
 
 1. Configure your browser or system proxy to `127.0.0.1:8080`.
 2. Visit `http://burpsuite` in your browser and click **CA Certificate** to download `cacert.der`.
-3. Or use the repository copy at [`asset/cacert.der`](../../asset/cacert.der).
+3. Or use the repository copy at [`asset/cacert.der`](./asset/cacert.der).
 4. Import `cacert.der` into your browser's Trusted Root Certification Authorities.
 
 ---
