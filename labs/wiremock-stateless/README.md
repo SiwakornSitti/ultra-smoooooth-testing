@@ -212,7 +212,15 @@ Chunked dribble properties:
 
 Proxy mappings keep WireMock in front of the external API while forwarding the request path. This is useful for testing a real response shape through a local mock boundary. The route depends on outbound network access from the WireMock container.
 
-### Scenario 12: Catch-All Fallback Stub
+### Scenario 12: Stateless Webhook Callback
+
+- **Trigger**: `POST /lab/api/stateless/webhook-orders`
+- **Callback**: `POST /lab/api/stateless/webhook-receiver`
+- **Behavior**: Returns `202 Accepted`, then asynchronously sends an `order.created` callback containing the original `order_id` and `X-Correlation-ID`.
+
+The webhook trigger and receiver are separate stateless mappings. The callback body is configured with `serveEventListeners.parameters.body` because WireMock webhook payloads use a templated string; response mappings continue to use `jsonBody`.
+
+### Scenario 13: Catch-All Fallback Stub
 
 - **Endpoint**: `GET /lab/api/stateless/.*`
 - **Behavior**: Final catch-all stub (`"priority": 10`) returning `404 Not Found` for any unmatched stateless lab routes.
@@ -282,6 +290,18 @@ Try the PokeAPI proxy:
 curl http://localhost:8088/lab/api/stateless/pokemon/ditto/
 ```
 
+Try the stateless webhook:
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -H "X-Correlation-ID: corr-webhook-001" \
+  -d '{"order_id":"ord-webhook-001"}' \
+  http://localhost:8088/lab/api/stateless/webhook-orders
+```
+
+The trigger returns `202 Accepted`, then sends a callback to the local receiver. Inspect the callback under the WireMock UI **Matched** requests or through `GET /__admin/requests`.
+
 ---
 
 ## 📂 File Structure
@@ -303,7 +323,9 @@ wiremock/mappings/lab-stateless/
 ├── 10-chunked-dribble-delay.json      # Chunked response delay injection
 ├── 11-pokeapi-mock.json               # Header-selected local PokeAPI mock
 ├── 12-proxy-pokeapi.json              # PokeAPI proxy mapping
-└── 13-fallback-catchall.json          # Final priority 10 catch-all fallback
+├── 13-webhook-trigger.json            # Stateless webhook trigger
+├── 14-webhook-receiver.json           # Stateless webhook callback receiver
+└── 15-fallback-catchall.json          # Final priority 10 catch-all fallback
 
 tests/specs/labs/
 ├── wiremock-stateful.spec.ts         # Stateful stub lab tests
