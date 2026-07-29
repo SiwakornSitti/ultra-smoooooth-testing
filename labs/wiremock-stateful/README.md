@@ -23,7 +23,7 @@ WireMock's **Scenarios** feature lets you turn simple HTTP stubs into stateful f
 3. Open the numbered `.http` file for the mapping you want to run with the VS Code REST Client extension. Each file resets state and includes the setup requests required to reach its target state.
 4. Inspect each mapping’s `scenarioName`, required state, and next state while comparing the cURL responses.
 
-Each numbered stateful mapping has its own REST Client file, grouped by scenario under `labs/wiremock-stateful/`.
+Each stateful scenario folder contains one `00-scenario-state.http` helper and one REST Client file per numbered mapping. Use its **Reset** request before replaying a flow, or its **Inspect** request to read the current state.
 
 ## 🔑 Core Concepts of WireMock Scenarios
 
@@ -154,9 +154,11 @@ make test-lab
 labs/wiremock-stateful/
 ├── README.md                         # This lab guide
 ├── auth-token-replay-prevention/
+│   ├── 00-scenario-state.http        # Reset and inspect auth scenario
 │   ├── 01-auth-token-once.http       # Mapping 01: token succeeds once
 │   └── 02-auth-token-replay.http     # Mapping 02: replay rejected
 ├── order-fulfillment-lifecycle/
+│   ├── 00-scenario-state.http        # Reset and inspect order scenario
 │   ├── 01-order-get-pending.http     # Mapping 01: PENDING order
 │   ├── 02-order-pay.http              # Mapping 02: pay order
 │   ├── 03-order-get-paid.http         # Mapping 03: PAID order
@@ -164,10 +166,12 @@ labs/wiremock-stateful/
 │   ├── 05-order-get-shipped.http      # Mapping 05: SHIPPED order
 │   └── 06-order-ship-invalid.http     # Mapping 06: duplicate ship rejected
 ├── retry-recovery-flow/
+│   ├── 00-scenario-state.http         # Reset and inspect retry scenario
 │   ├── 01-retry-fail-1.http           # Mapping 01: first failure
 │   ├── 02-retry-fail-2.http           # Mapping 02: second failure
 │   └── 03-retry-success.http          # Mapping 03: recovery
 └── payment-webhook-idempotency/
+    ├── 00-scenario-state.http        # Reset and inspect webhook scenario
     ├── 01-payment-webhook-success.http # Mapping 01: webhook accepted
     ├── 02-payment-webhook-replay.http  # Mapping 02: duplicate rejected
     └── 03-payment-event-receiver.http  # Mapping 03: callback receiver

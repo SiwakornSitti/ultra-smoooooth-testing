@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Reset: start retry-recovery-flow from the beginning
+# Resets all WireMock scenario state machines to Started.
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Inspect: current retry-recovery-flow state
+# Search the response for the scenario name and read its state field.
+GET {{baseUrl}}/__admin/scenarios
+Authorization: Basic {{adminUser}} {{adminPassword}}

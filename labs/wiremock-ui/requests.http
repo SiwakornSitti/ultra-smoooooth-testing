@@ -10,6 +10,10 @@ Authorization: Basic {{adminUser}} {{adminPassword}}
 GET {{baseUrl}}/__admin/requests
 Authorization: Basic {{adminUser}} {{adminPassword}}
 
+### Get current state for all stateful scenarios
+GET {{baseUrl}}/__admin/scenarios
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
 ### Reload file-backed mappings after editing them outside the UI
 POST {{baseUrl}}/__admin/mappings/reset
 Authorization: Basic {{adminUser}} {{adminPassword}}
