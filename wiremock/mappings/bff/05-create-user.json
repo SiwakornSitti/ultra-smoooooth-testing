@@ -5,7 +5,7 @@
     "urlPath": "/api/v1/users",
     "headers": {
       "Mock-Scenario": {
-        "matches": ".+"
+        "contains": "BFF:CREATE_USER"
       }
     }
   },
@@ -13,10 +13,10 @@
     "status": 201,
     "jsonBody": {
       "id": "frontend-mock-user-001",
-      "name": "{{jsonPath request.body '$.name'}}",
-      "email": "{{jsonPath request.body '$.email'}}",
-      "phone": "{{jsonPath request.body '$.phone'}}",
-      "status": "{{jsonPath request.body '$.status'}}"
+      "name": "{{jsonPath request.body '$.name' default='Mock User'}}",
+      "email": "{{jsonPath request.body '$.email' default='mock@example.com'}}",
+      "phone": "{{jsonPath request.body '$.phone' default='+66000000000'}}",
+      "status": "{{jsonPath request.body '$.status' default='active'}}"
     },
     "headers": {
       "Content-Type": "application/json",

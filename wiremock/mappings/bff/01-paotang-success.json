@@ -5,7 +5,7 @@
     "urlPath": "/auth/paotang/callback",
     "headers": {
       "Mock-Scenario": {
-        "matches": ".+"
+        "contains": "BFF:PT_PASS_SUCCESS"
       }
     }
   },

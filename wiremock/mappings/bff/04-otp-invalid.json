@@ -1,23 +1,23 @@
 {
-  "name": "BFF Mock - OTP Success",
+  "name": "BFF Mock - OTP Invalid",
   "request": {
     "method": "POST",
     "urlPath": "/auth/otp/verify",
     "headers": {
       "Mock-Scenario": {
-        "matches": ".+"
+        "contains": "BFF:OTP_INVALID"
       }
     }
   },
   "response": {
-    "status": 200,
+    "status": 400,
     "jsonBody": {
-      "verified": true
+      "error": "invalid_otp"
     },
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*"
     }
   },
-  "priority": 10
+  "priority": 2
 }

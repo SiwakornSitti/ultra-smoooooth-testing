@@ -2,7 +2,12 @@
   "name": "BFF Mock - CORS Preflight",
   "request": {
     "method": "OPTIONS",
-    "urlPathPattern": ".*"
+    "urlPathPattern": ".*",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "BFF:"
+      }
+    }
   },
   "response": {
     "status": 204,

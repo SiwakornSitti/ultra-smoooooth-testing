@@ -5,7 +5,7 @@
     "urlPath": "/api/v1/accounts",
     "headers": {
       "Mock-Scenario": {
-        "matches": ".+"
+        "contains": "BFF:CREATE_ACCOUNT"
       }
     }
   },

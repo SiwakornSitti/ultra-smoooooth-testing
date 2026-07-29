@@ -5,7 +5,7 @@
     "urlPathPattern": "/api/v1/users/[^/]+",
     "headers": {
       "Mock-Scenario": {
-        "matches": ".+"
+        "contains": "BFF:GET_USER"
       }
     }
   },

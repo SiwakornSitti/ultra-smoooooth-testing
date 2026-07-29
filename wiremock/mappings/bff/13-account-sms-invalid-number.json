@@ -1,23 +1,23 @@
 {
-  "name": "BFF Mock - Paotang Invalid Authcode",
+  "name": "BFF Mock - Account SMS Invalid Number",
   "request": {
     "method": "POST",
-    "urlPath": "/auth/paotang/callback",
+    "urlPath": "/api/v1/accounts",
     "headers": {
       "Mock-Scenario": {
-        "contains": "PT_PASS:INVALID_GRANT"
+        "contains": "BFF:SMS_INVALID_NUMBER"
       }
     }
   },
   "response": {
     "status": 400,
     "jsonBody": {
-      "error": "invalid_grant"
+      "error": "invalid_phone_number"
     },
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*"
     }
   },
-  "priority": 2
+  "priority": 1
 }

@@ -1,20 +1,19 @@
 {
-  "name": "BFF Mock - Paotang Success Once Replay",
-  "scenarioName": "bff-paotang-authcode-once",
-  "requiredScenarioState": "TOKEN_ISSUED",
+  "name": "BFF Mock - Transfer Insufficient Amount",
   "request": {
     "method": "POST",
-    "urlPath": "/auth/paotang/callback",
+    "urlPath": "/api/v1/transfers",
     "headers": {
       "Mock-Scenario": {
-        "contains": "PT_PASS:SUCCESS_ONCE"
+        "contains": "BFF:TRANSFER_INSUFFICIENT_AMOUNT"
       }
     }
   },
   "response": {
     "status": 400,
     "jsonBody": {
-      "error": "invalid_grant"
+      "error": "insufficient funds",
+      "code": "INSUFFICIENT_FUNDS"
     },
     "headers": {
       "Content-Type": "application/json",

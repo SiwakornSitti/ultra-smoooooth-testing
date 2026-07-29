@@ -33,7 +33,7 @@ Open `http://localhost:3000` after starting the BFF and its dependencies.
 
 ## Test with BFF mappings
 
-The BFF contract mappings live in the existing WireMock service under [`wiremock/mappings/bff-mock`](../../wiremock/mappings/bff-mock). Point the browser frontend at WireMock instead of the real BFF:
+The BFF contract mappings live in the existing WireMock service under [`wiremock/mappings/bff`](../../wiremock/mappings/bff). Point the browser frontend at WireMock instead of the real BFF:
 
 ```bash
 BFF_URL=http://localhost:8088 docker compose up --build

@@ -5,7 +5,7 @@
     "urlPath": "/api/v1/transfers",
     "headers": {
       "Mock-Scenario": {
-        "matches": ".+"
+        "contains": "BFF:LIST_TRANSFERS"
       }
     }
   },

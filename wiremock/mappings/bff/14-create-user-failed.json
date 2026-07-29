@@ -1,23 +1,23 @@
 {
-  "name": "BFF Mock - OTP Invalid",
+  "name": "BFF Mock - Create User Failed",
   "request": {
     "method": "POST",
-    "urlPath": "/auth/otp/verify",
+    "urlPath": "/api/v1/users",
     "headers": {
       "Mock-Scenario": {
-        "contains": "OTP:INVALID"
+        "contains": "BFF:CREATE_USER_FAILED"
       }
     }
   },
   "response": {
-    "status": 400,
+    "status": 409,
     "jsonBody": {
-      "error": "invalid_otp"
+      "error": "User with email already exists"
     },
     "headers": {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*"
     }
   },
-  "priority": 2
+  "priority": 1
 }
