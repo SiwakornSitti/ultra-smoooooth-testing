@@ -11,6 +11,7 @@ export const DB_USER = "app";
 export const DB_PASSWORD = "temporary-password-123";
 export const DB_NAME = "app";
 export const PORT = 8080;
+const HEALTH_PATH = "/health";
 
 const WIREMOCK_MAPPINGS_ROOT = path.resolve(__dirname, "../../../wiremock/mappings");
 const WIREMOCK_FILES_ROOT = path.resolve(__dirname, "../../../wiremock/__files");
@@ -121,7 +122,7 @@ export async function startUserService(
       DB_NAME,
       ...env,
     })
-    .withWaitStrategy(Wait.forHttp("/health", PORT))
+    .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
     .start();
 }
 
@@ -143,11 +144,11 @@ export async function startBankAccountService(
       DB_NAME,
       ...env,
     })
-    .withWaitStrategy(Wait.forHttp("/health", PORT))
+    .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
     .start();
 }
 
-export async function startEkycService(
+export async function startEKYCService(
   network: StartedNetwork,
   env?: Record<string, string>
 ): Promise<StartedTestContainer> {
@@ -165,7 +166,7 @@ export async function startEkycService(
       DB_NAME,
       ...env,
     })
-    .withWaitStrategy(Wait.forHttp("/health", PORT))
+    .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
     .start();
 }
 
@@ -187,7 +188,7 @@ export async function startTransferService(
       DB_NAME,
       ...env,
     })
-    .withWaitStrategy(Wait.forHttp("/health", PORT))
+    .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
     .start();
 }
 
@@ -204,7 +205,7 @@ export async function startBffService(
       PORT: PORT.toString(),
       ...env,
     })
-    .withWaitStrategy(Wait.forHttp("/health", PORT))
+    .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
     .start();
 }
 
