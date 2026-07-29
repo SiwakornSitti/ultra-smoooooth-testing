@@ -96,20 +96,53 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(body.product).toBe("VIP Gold Membership");
   });
 
-  test("Scenario 5: Dynamic Handlebars Response Templating", async ({ request }: { request: APIRequestContext }) => {
-    const res = await request.get(`${wiremockUrl}/lab/api/stateless/echo/item-999?name=John`, {
+  test("Scenario 5: Response Template Echo and Helpers", async ({ request }: { request: APIRequestContext }) => {
+    const echoRes = await request.get(`${wiremockUrl}/lab/api/stateless/echo/item-999?name=John`, {
       headers: {
         "X-Request-ID": "req-trace-abc-123",
       },
     });
-    expect(res.status()).toBe(HttpStatusCode.Ok);
-    const body = await res.json();
-    expect(body.extracted_path_id).toBe("item-999");
-    expect(body.echo_header).toBe("req-trace-abc-123");
-    expect(body.query_name).toBe("John");
+    expect(echoRes.status()).toBe(HttpStatusCode.Ok);
+    const echoBody = await echoRes.json();
+    expect(echoBody.extracted_path_id).toBe("item-999");
+    expect(echoBody.echo_header).toBe("req-trace-abc-123");
+    expect(echoBody.query_name).toBe("John");
+
+    const helperRes = await request.post(`${wiremockUrl}/lab/api/stateless/template-helpers`, {
+      headers: {
+        "Content-Type": "application/json",
+        "X-Request-ID": "req-helper-001",
+      },
+      data: {
+        customer: {
+          email: "alice@example.com",
+        },
+      },
+    });
+
+    expect(helperRes.status()).toBe(HttpStatusCode.Ok);
+    const helperBody = await helperRes.json();
+    expect(helperBody.request_id).toBe("req-helper-001");
+    expect(helperBody.customer_email).toBe("alice@example.com");
+    expect(helperBody.generated_token).toMatch(/^[A-Za-z0-9]{12}$/);
+    expect(helperBody.received_at).toEqual(expect.any(String));
+    expect(helperBody.received_at.length).toBeGreaterThan(0);
   });
 
-  test("Scenario 6: Fixed Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 6: Faker Response Template", async ({ request }: { request: APIRequestContext }) => {
+    const res = await request.get(`${wiremockUrl}/lab/api/stateless/faker-user`);
+
+    expect(res.status()).toBe(HttpStatusCode.Ok);
+    const body = await res.json();
+    expect(body.first_name).toEqual(expect.any(String));
+    expect(body.last_name).toEqual(expect.any(String));
+    expect(body.email).toMatch(/^[^@\s]+@[^@\s]+\.[^@\s]+$/);
+    expect(body.phone).toEqual(expect.any(String));
+    expect(body.company).toEqual(expect.any(String));
+    expect(body.uuid).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+  });
+
+  test("Scenario 7: Fixed Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const startTime = Date.now();
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/slow-endpoint`);
     const duration = Date.now() - startTime;
@@ -118,7 +151,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(duration).toBeGreaterThanOrEqual(450);
   });
 
-  test("Scenario 7: Random Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 8: Random Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const startTime = Date.now();
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/random-delay`);
     const duration = Date.now() - startTime;
@@ -130,7 +163,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(body.delayRangeMilliseconds).toEqual({ min: 100, max: 500 });
   });
 
-  test("Scenario 8: Lognormal Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 9: Lognormal Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/lognormal-delay`);
 
     expect(res.status()).toBe(HttpStatusCode.Ok);
@@ -143,7 +176,7 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 9: Chunked Dribble Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 10: Chunked Dribble Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
     const startTime = Date.now();
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/chunked-delay`);
     const duration = Date.now() - startTime;
@@ -159,7 +192,35 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 10: Catch-All Fallback Stub", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 11: PokeAPI Mock or Proxy", async ({ request }: { request: APIRequestContext }) => {
+    const mockRes = await request.get(`${wiremockUrl}/lab/api/stateless/pokemon/ditto/`, {
+      headers: {
+        "Mock-Scenario": "POKEAPI:MOCK",
+      },
+    });
+
+    expect(mockRes.status()).toBe(HttpStatusCode.Ok);
+    const mockBody = await mockRes.json();
+    expect(mockBody).toEqual(expect.objectContaining({
+      id: 132,
+      name: "ditto",
+      mocked: true,
+    }));
+
+    const proxyRes = await request.get(`${wiremockUrl}/lab/api/stateless/pokemon/ditto/`);
+
+    expect(proxyRes.status()).toBe(HttpStatusCode.Ok);
+    const proxyBody = await proxyRes.json();
+    expect(proxyBody.name).toBe("ditto");
+    expect(proxyBody.id).toBe(132);
+    expect(proxyBody.types).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        type: expect.objectContaining({ name: "normal" }),
+      }),
+    ]));
+  });
+
+  test("Scenario 12: Catch-All Fallback Stub", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/non-existent-route`);
     expect(res.status()).toBe(HttpStatusCode.NotFound);
     const body = await res.json();

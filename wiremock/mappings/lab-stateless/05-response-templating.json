@@ -1,16 +1,19 @@
 {
   "id" : "112cbffb-5a79-4f5f-b311-2f3ec642c9d3",
-  "name" : "Echo - Response Template",
+  "name" : "Response Template - Echo and Helpers",
   "request" : {
-    "urlPathPattern" : "/lab/api/stateless/echo/(.*)",
-    "method" : "GET"
+    "urlPathPattern" : "/lab/api/stateless/(echo/.*|template-helpers)"
   },
   "response" : {
     "status" : 200,
     "jsonBody" : {
       "extracted_path_id" : "{{request.path.[4]}}",
       "echo_header" : "{{request.headers.X-Request-ID}}",
-      "query_name" : "{{request.query.name}}"
+      "query_name" : "{{request.query.name}}",
+      "request_id" : "{{request.headers.X-Request-ID}}",
+      "customer_email" : "{{#if request.body}}{{jsonPath request.body '$.customer.email'}}{{/if}}",
+      "generated_token" : "{{randomValue length=12 type='ALPHANUMERIC'}}",
+      "received_at" : "{{now}}"
     },
     "headers" : {
       "Content-Type" : "application/json"

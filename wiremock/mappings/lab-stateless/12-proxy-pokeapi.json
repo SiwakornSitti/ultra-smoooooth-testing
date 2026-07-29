@@ -1,0 +1,21 @@
+{
+  "id" : "c7d8e9f0-a1b2-4c3d-8e9f-0123456789ab",
+  "name" : "Proxy PokeAPI Pokemon",
+  "request" : {
+    "urlPathPattern" : "/lab/api/stateless/pokemon/.*",
+    "method" : "GET"
+  },
+  "response" : {
+    "proxyBaseUrl" : "https://pokeapi.co/api/v2",
+    "proxyUrlPrefixToRemove" : "/lab/api/stateless"
+  },
+  "uuid" : "c7d8e9f0-a1b2-4c3d-8e9f-0123456789ab",
+  "persistent" : true,
+  "priority" : 2,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
+    }
+  },
+  "insertionIndex" : 34
+}

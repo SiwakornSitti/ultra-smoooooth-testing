@@ -38,10 +38,13 @@ services:
     command:
       - "--disable-banner"
       - "--global-response-templating"
+      - "--extensions"
+      - "org.wiremock.RandomExtension"
       - "--admin-api-basic-auth"
       - "${WIREMOCK_ADMIN_USER:-admin}:${WIREMOCK_ADMIN_PASSWORD:-password}"
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings
+      - ./wiremock/extensions:/var/wiremock/extensions:ro
 
   # =========================================================================
   # NOTIFICATION COMMAND QUEUE

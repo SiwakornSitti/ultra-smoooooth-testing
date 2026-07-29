@@ -1,0 +1,32 @@
+{
+  "id" : "f6e5d4c3-b2a1-4987-8654-3210fedcba98",
+  "name" : "Faker Response Template",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/faker-user",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "first_name" : "{{random 'Name.first_name'}}",
+      "last_name" : "{{random 'Name.last_name'}}",
+      "email" : "{{random 'Internet.email_address'}}",
+      "phone" : "{{random 'PhoneNumber.phone_number'}}",
+      "company" : "{{random 'Company.name'}}",
+      "uuid" : "{{random 'Internet.uuid'}}"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "f6e5d4c3-b2a1-4987-8654-3210fedcba98",
+  "persistent" : true,
+  "priority" : 2,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
+    }
+  },
+  "insertionIndex" : 33
+}

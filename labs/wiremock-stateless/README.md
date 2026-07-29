@@ -13,7 +13,9 @@ Key learning objectives:
 1. **Request Matching Criteria**: Matching by exact URL path (`urlPath`), query parameters (`queryParameters`), headers (`equalTo`, `matches`), and JSONPath body attributes (`matchesJsonPath`).
 2. **Priority Overrides**: Controlling stub precedence using the `priority` attribute (lower integer = higher priority).
 3. **Dynamic Response Templating**: Interpolating request data (headers, query string, path parameters) into the response using Handlebars templates (`response-template`).
-4. **Latency & Fault Simulation**: Injecting artificial delays (`fixedDelayMilliseconds`) and custom HTTP error status codes.
+4. **Transformer Helpers**: Reading JSONPath values, generating random values, and adding timestamps with the built-in `response-template` transformer.
+5. **Faker Data**: Generating realistic names, contact details, company names, and UUIDs with the WireMock Faker extension.
+6. **Latency & Fault Simulation**: Injecting artificial delays (`fixedDelayMilliseconds`) and custom HTTP error status codes.
 
 ---
 
@@ -124,22 +126,58 @@ These functions are Jayway JsonPath extensions; they are not guaranteed to be av
 - **Endpoint**: `GET /lab/api/stateless/products/vip`
 - **Behavior**: A specific mapping with `"priority": 1` overrides a catch-all mapping with `"priority": 10`.
 
-### Scenario 5: Dynamic Handlebars Response Templating
+### Scenario 5: Response Template Echo and Helpers
 
-- **Endpoint**: `GET /lab/api/stateless/echo/{id}?name={name}`
-- **Behavior**: Uses the `response-template` transformer to echo back path parameters (`{{request.path.[4]}}`), headers (`{{request.headers.X-Request-ID}}`), and query params (`{{request.query.name}}`).
+- **Endpoints**: `GET /lab/api/stateless/echo/{id}?name={name}` and `POST /lab/api/stateless/template-helpers`
+- **Behavior**: One mapping uses the `response-template` transformer to echo path/header/query values and demonstrate `jsonPath`, `randomValue`, and `now` helpers.
 
-### Scenario 6: Latency & Delay Injection
+The lab uses the built-in transformer. Custom `ResponseDefinitionTransformer` and `ResponseTransformer` implementations require a WireMock extension JAR registered with `--extensions` before a mapping can reference its transformer name. A custom mapping can then pass values through `transformerParameters`:
+
+```json
+{
+  "response": {
+    "status": 200,
+    "body": "transformed",
+    "transformers": ["my-transformer"],
+    "transformerParameters": {
+      "mode": "compact"
+    }
+  }
+}
+```
+
+`ServeEventListener` and webhooks are useful for post-request side effects, but they do not transform the response returned to the caller.
+
+### Scenario 6: Faker Response Template
+
+- **Endpoint**: `GET /lab/api/stateless/faker-user`
+- **Behavior**: Uses the Faker extension's `random` helper through `response-template` to generate a realistic name, email, phone number, company, and UUID for every response.
+
+The lab uses `wiremock-faker-extension-standalone-0.2.0.jar`, registered as `org.wiremock.RandomExtension`. The extension is mounted automatically by Docker Compose and the Testcontainers runner.
+
+Common Faker types:
+
+| Helper | Generates |
+| :--- | :--- |
+| `{{random 'Name.first_name'}}` | First name |
+| `{{random 'Internet.email_address'}}` | Email address |
+| `{{random 'PhoneNumber.phone_number'}}` | Phone number |
+| `{{random 'Company.name'}}` | Company name |
+| `{{random 'Internet.uuid'}}` | UUID |
+
+See the [WireMock Faker Extension documentation](https://wiremock.org/docs/faker-extension/) for the complete data type list.
+
+### Scenario 7: Latency & Delay Injection
 
 - **Endpoint**: `GET /lab/api/stateless/slow-endpoint`
 - **Behavior**: Specifies `"fixedDelayMilliseconds": 500` to simulate network latency or slow backend processing.
 
-### Scenario 7: Random Delay Injection
+### Scenario 8: Random Delay Injection
 
 - **Endpoint**: `GET /lab/api/stateless/random-delay`
 - **Behavior**: Uses a uniform random delay between `100ms` and `500ms` for each response.
 
-### Scenario 8: Lognormal Delay Injection
+### Scenario 9: Lognormal Delay Injection
 
 - **Endpoint**: `GET /lab/api/stateless/lognormal-delay`
 - **Behavior**: Uses a lognormal delay with a `250ms` median, `0.4` sigma, and a `1000ms` maximum to simulate a long-tail latency distribution.
@@ -155,7 +193,7 @@ Lognormal delay properties:
 
 The `response.delayDistribution` object controls WireMock. The matching object inside `jsonBody` is only explanatory data returned by the mock.
 
-### Scenario 9: Chunked Dribble Delay
+### Scenario 10: Chunked Dribble Delay
 
 - **Endpoint**: `GET /lab/api/stateless/chunked-delay`
 - **Behavior**: Streams the response in `5` chunks over `1000ms`, simulating a slow connection that delivers data progressively.
@@ -167,10 +205,17 @@ Chunked dribble properties:
 | `numberOfChunks: 5` | Splits the response into five chunks. |
 | `totalDuration: 1000` | Delivers all chunks over approximately `1000ms`. |
 
-### Scenario 10: Catch-All Fallback Stub
+### Scenario 11: PokeAPI Mock or Proxy
+
+- **Endpoint**: `GET /lab/api/stateless/pokemon/{name}/`
+- **Behavior**: If `Mock-Scenario: POKEAPI:MOCK` matches, priority `1` returns a local mock. Without that header, priority `2` proxies to `https://pokeapi.co/api/v2/pokemon/{name}/` after removing the local `/lab/api/stateless` prefix.
+
+Proxy mappings keep WireMock in front of the external API while forwarding the request path. This is useful for testing a real response shape through a local mock boundary. The route depends on outbound network access from the WireMock container.
+
+### Scenario 12: Catch-All Fallback Stub
 
 - **Endpoint**: `GET /lab/api/stateless/.*`
-- **Behavior**: Catch-all stub (`"priority": 10`) returning `404 Not Found` for any unmatched stateless lab routes.
+- **Behavior**: Final catch-all stub (`"priority": 10`) returning `404 Not Found` for any unmatched stateless lab routes.
 
 ---
 
@@ -213,6 +258,30 @@ curl -H "X-Request-ID: req-999" "http://localhost:8088/lab/api/stateless/echo/it
 }
 ```
 
+Try the response-template helpers:
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -H "X-Request-ID: req-helper-001" \
+  -d '{"customer":{"email":"alice@example.com"}}' \
+  http://localhost:8088/lab/api/stateless/template-helpers
+```
+
+The `generated_token` and `received_at` fields are generated for each response.
+
+Try the Faker response template:
+
+```bash
+curl http://localhost:8088/lab/api/stateless/faker-user
+```
+
+Try the PokeAPI proxy:
+
+```bash
+curl http://localhost:8088/lab/api/stateless/pokemon/ditto/
+```
+
 ---
 
 ## 📂 File Structure
@@ -226,12 +295,15 @@ wiremock/mappings/lab-stateless/
 ├── 02-json-body-matching.json        # Combined JSONPath matching
 ├── 03-header-matching.json           # Combined header matching
 ├── 04-priority-override.json         # Priority overriding
-├── 05-response-templating.json       # Handlebars response templating
-├── 06-delayed-response.json          # Fixed delay latency injection
-├── 07-random-delay.json              # Uniform random delay injection
-├── 08-lognormal-delay.json           # Lognormal long-tail delay injection
-├── 09-chunked-dribble-delay.json     # Chunked response delay injection
-└── 10-fallback-catchall.json         # Priority 10 catch-all fallback
+├── 05-response-templating.json        # Combined echo and template helpers
+├── 06-faker-response.json             # Faker-generated response data
+├── 07-delayed-response.json           # Fixed delay latency injection
+├── 08-random-delay.json               # Uniform random delay injection
+├── 09-lognormal-delay.json            # Lognormal long-tail delay injection
+├── 10-chunked-dribble-delay.json      # Chunked response delay injection
+├── 11-pokeapi-mock.json               # Header-selected local PokeAPI mock
+├── 12-proxy-pokeapi.json              # PokeAPI proxy mapping
+└── 13-fallback-catchall.json          # Final priority 10 catch-all fallback
 
 tests/specs/labs/
 ├── wiremock-stateful.spec.ts         # Stateful stub lab tests
