@@ -1,6 +1,6 @@
 {
   "id" : "2d5e6d2e-2fd2-4baf-a7ce-3b1d54ac54c5",
-  "name" : "Payment Webhook - Success",
+  "name" : "1. Payment Webhook - Success",
   "request" : {
     "urlPathPattern" : "/lab/api/payments/[^/]+/webhook",
     "method" : "POST",
@@ -43,7 +43,7 @@
   "newScenarioState" : "WEBHOOK_PROCESSED",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/payment-webhook-idempotency"
     }
   },
   "insertionIndex" : 12

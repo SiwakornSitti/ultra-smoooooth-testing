@@ -1,6 +1,6 @@
 {
-  "id" : "7a0a8252-018f-4983-a001-d1251c343a56",
-  "name" : "Order - Get Shipped",
+  "id" : "a92ee32e-5918-4a1a-995d-6bf55e3816b4",
+  "name" : "3. Order - Get Paid",
   "request" : {
     "urlPathPattern" : "/lab/api/orders/[^/]+",
     "method" : "GET"
@@ -9,24 +9,24 @@
     "status" : 200,
     "jsonBody" : {
       "order_id" : "{{request.path.[3]}}",
-      "status" : "SHIPPED",
+      "status" : "PAID",
       "amount" : 1500.0,
-      "tracking_number" : "TRACK-TH-998877"
+      "items" : [ "Wireless Keyboard" ]
     },
     "headers" : {
       "Content-Type" : "application/json"
     },
     "transformers" : [ "response-template" ]
   },
-  "uuid" : "7a0a8252-018f-4983-a001-d1251c343a56",
+  "uuid" : "a92ee32e-5918-4a1a-995d-6bf55e3816b4",
   "persistent" : true,
   "priority" : 1,
   "scenarioName" : "order-fulfillment-lifecycle",
-  "requiredScenarioState" : "SHIPPED",
+  "requiredScenarioState" : "PAID",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/order-fulfillment-lifecycle"
     }
   },
-  "insertionIndex" : 9
+  "insertionIndex" : 1
 }

@@ -1,6 +1,6 @@
 {
   "id" : "9b8f7e8f-c466-4d92-a3e6-9cb85c5b12fd",
-  "name" : "Payment Webhook - Replay",
+  "name" : "2. Payment Webhook - Replay",
   "request" : {
     "urlPathPattern" : "/lab/api/payments/[^/]+/webhook",
     "method" : "POST",
@@ -30,7 +30,7 @@
   "requiredScenarioState" : "WEBHOOK_PROCESSED",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/payment-webhook-idempotency"
     }
   },
   "insertionIndex" : 13

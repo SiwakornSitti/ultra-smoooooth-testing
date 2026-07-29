@@ -1,6 +1,6 @@
 {
   "id" : "2613fce8-990d-4fe1-84d8-1bf750cd3c31",
-  "name" : "OAuth Token - Success Once",
+  "name" : "1. OAuth Token - Success Once",
   "request" : {
     "urlPath" : "/lab/api/oauth/token",
     "method" : "POST",
@@ -27,7 +27,7 @@
   "newScenarioState" : "TOKEN_ISSUED",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/auth-token-replay-prevention"
     }
   },
   "insertionIndex" : 2

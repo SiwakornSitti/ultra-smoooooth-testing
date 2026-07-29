@@ -1,6 +1,6 @@
 {
   "id" : "e7a77a3e-2e36-4db0-bf82-808fa759bb0e",
-  "name" : "Payment Event - Callback Receiver",
+  "name" : "3. Payment Event - Callback Receiver",
   "request" : {
     "urlPath" : "/lab/api/payment-events",
     "method" : "POST",
@@ -16,7 +16,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/payment-webhook-idempotency"
     }
   },
   "insertionIndex" : 14

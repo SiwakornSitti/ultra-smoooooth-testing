@@ -1,6 +1,6 @@
 {
   "id" : "69023dad-5479-42b5-9768-a57fb76e28b7",
-  "name" : "Order - Ship",
+  "name" : "4. Order - Ship",
   "request" : {
     "urlPath" : "/lab/api/orders/101/ship",
     "method" : "POST"
@@ -24,7 +24,7 @@
   "newScenarioState" : "SHIPPED",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/order-fulfillment-lifecycle"
     }
   },
   "insertionIndex" : 0

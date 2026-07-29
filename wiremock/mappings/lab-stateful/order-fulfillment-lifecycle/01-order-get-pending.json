@@ -1,6 +1,6 @@
 {
   "id" : "a60f62de-2cd0-47a1-80dd-f4178c95006b",
-  "name" : "Order - Get Pending",
+  "name" : "1. Order - Get Pending",
   "request" : {
     "urlPathPattern" : "/lab/api/orders/[^/]+",
     "method" : "GET"
@@ -25,7 +25,7 @@
   "requiredScenarioState" : "Started",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/order-fulfillment-lifecycle"
     }
   },
   "insertionIndex" : 10

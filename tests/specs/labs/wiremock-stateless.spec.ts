@@ -34,7 +34,9 @@ test.afterAll(async () => {
 
 test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
   test("Scenario 1: Path & Query Parameter Matching", async ({ request }: { request: APIRequestContext }) => {
-    const res = await request.get(`${wiremockUrl}/lab/api/stateless/users?role=admin&status=active`);
+    const res = await request.get(`${wiremockUrl}/lab/api/stateless/users?role=ADMIN&status=active`, {
+      headers: { "Mock-Scenario": "OTP:INVALID" },
+    });
     expect(res.status()).toBe(HttpStatusCode.Ok);
     const body = await res.json();
     expect(body.users).toHaveLength(1);
@@ -53,6 +55,13 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
           amount: 2500,
           currency: "THB",
         },
+        customer: {
+          email: "alice@example.com",
+          name: "Alice",
+        },
+        items: [
+          { sku: "SKU-001" },
+        ],
       },
     });
     expect(res.status()).toBe(HttpStatusCode.Created);
@@ -68,6 +77,8 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
       headers: {
         "Authorization": "Bearer secret-token-4040",
         "X-Client-ID": "qa-client",
+        "X-Request-ID": "req-12345",
+        "X-Client-Role": "system-admin",
       },
     });
     expect(res.status()).toBe(HttpStatusCode.Ok);
@@ -107,10 +118,65 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     expect(duration).toBeGreaterThanOrEqual(450);
   });
 
-  test("Scenario 7: Catch-All Fallback Stub", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 7: Random Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+    const startTime = Date.now();
+    const res = await request.get(`${wiremockUrl}/lab/api/stateless/random-delay`);
+    const duration = Date.now() - startTime;
+
+    expect(res.status()).toBe(HttpStatusCode.Ok);
+    expect(duration).toBeGreaterThanOrEqual(90);
+    expect(duration).toBeLessThan(1000);
+    const body = await res.json();
+    expect(body.delayRangeMilliseconds).toEqual({ min: 100, max: 500 });
+  });
+
+  test("Scenario 8: Lognormal Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+    const res = await request.get(`${wiremockUrl}/lab/api/stateless/lognormal-delay`);
+
+    expect(res.status()).toBe(HttpStatusCode.Ok);
+    const body = await res.json();
+    expect(body.delayDistribution).toEqual({
+      type: "lognormal",
+      median: 250,
+      sigma: 0.4,
+      maxValue: 1000,
+    });
+  });
+
+  test("Scenario 9: Chunked Dribble Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
+    const startTime = Date.now();
+    const res = await request.get(`${wiremockUrl}/lab/api/stateless/chunked-delay`);
+    const duration = Date.now() - startTime;
+
+    expect(res.status()).toBe(HttpStatusCode.Ok);
+    expect(duration).toBeGreaterThanOrEqual(850);
+    expect(duration).toBeLessThan(2000);
+    expect(res.headers()["content-type"]).toMatch(/application\/json/);
+    const body = await res.json();
+    expect(body).toEqual({
+      message: "Response delivered in chunks",
+      chunks: 5,
+    });
+  });
+
+  test("Scenario 10: Catch-All Fallback Stub", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/non-existent-route`);
     expect(res.status()).toBe(HttpStatusCode.NotFound);
     const body = await res.json();
     expect(body.error).toBe("NOT_FOUND");
   });
+
+  test("Headers: Combined Match Fails When One Condition Fails", async ({ request }: { request: APIRequestContext }) => {
+    const res = await request.post(`${wiremockUrl}/lab/api/stateless/secure`, {
+      headers: {
+        "Authorization": "Bearer secret-token-4040",
+        "X-Client-ID": "qa-client",
+        "X-Request-ID": "invalid-request-id",
+        "X-Client-Role": "system-admin",
+      },
+    });
+
+    expect(res.status()).toBe(HttpStatusCode.NotFound);
+  });
+
 });

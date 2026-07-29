@@ -1,6 +1,6 @@
 {
-  "id" : "92809f93-d552-4e21-bc1e-4a91d518526a",
-  "name" : "Unstable Endpoint - Failure 1",
+  "id" : "5e4aa96d-ff9f-4027-8f4c-ffc6d34a6dc4",
+  "name" : "2. Unstable Endpoint - Failure 2",
   "request" : {
     "urlPath" : "/lab/api/unstable-endpoint",
     "method" : "GET"
@@ -9,22 +9,22 @@
     "status" : 503,
     "jsonBody" : {
       "error" : "SERVICE_UNAVAILABLE",
-      "message" : "Temporary service failure (attempt 1)"
+      "message" : "Temporary service failure (attempt 2)"
     },
     "headers" : {
       "Content-Type" : "application/json"
     }
   },
-  "uuid" : "92809f93-d552-4e21-bc1e-4a91d518526a",
+  "uuid" : "5e4aa96d-ff9f-4027-8f4c-ffc6d34a6dc4",
   "persistent" : true,
   "priority" : 1,
   "scenarioName" : "retry-recovery-flow",
-  "requiredScenarioState" : "Started",
-  "newScenarioState" : "FAIL_1",
+  "requiredScenarioState" : "FAIL_1",
+  "newScenarioState" : "FAIL_2",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful"
+      "folder" : "/lab-stateful/retry-recovery-flow"
     }
   },
-  "insertionIndex" : 5
+  "insertionIndex" : 8
 }

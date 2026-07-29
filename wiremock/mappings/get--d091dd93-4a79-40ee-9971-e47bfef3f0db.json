@@ -1,5 +1,6 @@
 {
   "id" : "d091dd93-4a79-40ee-9971-e47bfef3f0db",
+  "name" : "XML Request - JSON Response",
   "request" : {
     "url" : "",
     "method" : "GET",

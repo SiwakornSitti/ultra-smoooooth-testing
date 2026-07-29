@@ -1,43 +1,47 @@
 {
-  "id" : "67473987-210b-483b-b8b9-34c4aebaa73e",
-  "name" : "Users - Query Match",
-  "request" : {
-    "urlPath" : "/lab/api/stateless/users",
-    "method" : "GET",
-    "headers" : {
-      "Mock-Scenario" : {
-        "contains" : "OTP:INVALID"
+  "id": "67473987-210b-483b-b8b9-34c4aebaa73e",
+  "name": "Users - Query Match",
+  "request": {
+    "urlPath": "/lab/api/stateless/users",
+    "method": "GET",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "OTP:INVALID"
       }
     },
-    "queryParameters" : {
-      "role" : {
-        "equalTo" : "admin"
+    "queryParameters": {
+      "role": {
+        "equalTo": "admin",
+        "caseInsensitive": true
       },
-      "status" : {
-        "equalTo" : "active"
+      "status": {
+        "equalTo": "active",
+        "caseInsensitive": false
       }
     }
   },
-  "response" : {
-    "status" : 200,
-    "jsonBody" : {
-      "users" : [ {
-        "id" : "usr-99",
-        "role" : "admin",
-        "status" : "active"
-      } ]
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "users": [
+        {
+          "id": "usr-99",
+          "role": "admin",
+          "status": "active"
+        }
+      ]
     },
-    "headers" : {
-      "Content-Type" : "application/json"
+    "headers": {
+      "Content-Type": "application/json"
     }
   },
-  "uuid" : "67473987-210b-483b-b8b9-34c4aebaa73e",
-  "persistent" : true,
-  "priority" : 1,
-  "metadata" : {
-    "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+  "uuid": "67473987-210b-483b-b8b9-34c4aebaa73e",
+  "persistent": true,
+  "priority": 1,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/lab-stateless"
     }
   },
-  "insertionIndex" : 24
+  "insertionIndex": 24
 }

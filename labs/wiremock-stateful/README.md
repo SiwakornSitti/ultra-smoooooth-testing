@@ -26,6 +26,10 @@ WireMock manages state using three primary fields in your mapping JSON definitio
 | `requiredScenarioState` | **Yes** | The state required for this stub mapping to match. Initial default state is `"Started"`. |
 | `newScenarioState` | *Optional* | The new state to transition the scenario into after this stub matches. |
 
+### Mapping Folder and Display Convention
+
+Stateful mappings are physically grouped by scenario under `wiremock/mappings/lab-stateful/`. Mapping names use numeric prefixes such as `1.`, `2.`, and `3.` so the steps are easy to read in the GUI. The `holomekc/wiremock-gui` does not guarantee mapping sort order, so these folders and prefixes are visual organization only; scenario state and matching behavior still come from the WireMock fields above.
+
 ### Resetting Scenario States Between Tests
 
 To ensure test independence and prevent state leak across test cases, issue a `POST` request to the WireMock Admin API (`POST /__admin/scenarios/reset`) in your test suite's `afterEach` hook:
@@ -142,20 +146,24 @@ labs/wiremock-stateful/
 └── README.md                         # This lab guide
 
 wiremock/mappings/lab-stateful/
-├── 01-auth-token-once.json           # Auth code exchange success (Started -> TOKEN_ISSUED)
-├── 02-auth-token-replay.json         # Auth code exchange replay rejection (TOKEN_ISSUED -> 400)
-├── 03-order-get-pending.json         # GET order when PENDING (Started)
-├── 04-order-pay.json                 # Pay order (Started -> PAID)
-├── 05-order-get-paid.json            # GET order when PAID
-├── 06-order-ship.json                # Ship order (PAID -> SHIPPED)
-├── 07-order-get-shipped.json         # GET order when SHIPPED
-├── 08-order-ship-invalid.json        # Ship order rejected when ALREADY_SHIPPED
-├── 09-retry-fail-1.json              # 1st attempt failure (Started -> FAIL_1)
-├── 10-retry-fail-2.json              # 2nd attempt failure (FAIL_1 -> FAIL_2)
-├── 11-retry-success.json             # 3rd attempt success (FAIL_2 -> 200)
-├── 12-payment-webhook-success.json   # Payment webhook accepted (Started -> WEBHOOK_PROCESSED)
-├── 13-payment-webhook-replay.json    # Duplicate webhook rejected (WEBHOOK_PROCESSED -> 409)
-└── 14-payment-event-receiver.json    # Callback receiver for serveEventListeners
+├── auth-token-replay-prevention/
+│   ├── 01-auth-token-once.json       # Auth code exchange success (Started -> TOKEN_ISSUED)
+│   └── 02-auth-token-replay.json     # Auth code exchange replay rejection (TOKEN_ISSUED -> 400)
+├── order-fulfillment-lifecycle/
+│   ├── 01-order-get-pending.json     # GET order when PENDING (Started)
+│   ├── 02-order-pay.json             # Pay order (Started -> PAID)
+│   ├── 03-order-get-paid.json        # GET order when PAID
+│   ├── 04-order-ship.json            # Ship order (PAID -> SHIPPED)
+│   ├── 05-order-get-shipped.json     # GET order when SHIPPED
+│   └── 06-order-ship-invalid.json    # Ship order rejected when ALREADY_SHIPPED
+├── retry-recovery-flow/
+│   ├── 01-retry-fail-1.json          # 1st attempt failure (Started -> FAIL_1)
+│   ├── 02-retry-fail-2.json          # 2nd attempt failure (FAIL_1 -> FAIL_2)
+│   └── 03-retry-success.json         # 3rd attempt success (FAIL_2 -> 200)
+└── payment-webhook-idempotency/
+    ├── 01-payment-webhook-success.json # Payment webhook accepted (Started -> WEBHOOK_PROCESSED)
+    ├── 02-payment-webhook-replay.json  # Duplicate webhook rejected (WEBHOOK_PROCESSED -> 409)
+    └── 03-payment-event-receiver.json  # Callback receiver for serveEventListeners
 
 tests/specs/labs/
 └── wiremock-stateful.spec.ts         # Playwright test suite validating stateful stubs

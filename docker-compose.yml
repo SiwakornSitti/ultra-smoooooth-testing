@@ -30,13 +30,16 @@ services:
   # WIREMOCK SERVICE (WireMock & WireMock UI)
   # =========================================================================
   wiremock:
-    image: holomekc/wiremock-gui:latest
+    image: holomekc/wiremock-gui:latest-alpine
+    platform: linux/amd64
     container_name: poc-wiremock
     ports:
       - "8088:8080"
     command:
       - "--disable-banner"
       - "--global-response-templating"
+      - "--admin-api-basic-auth"
+      - "${WIREMOCK_ADMIN_USER:-admin}:${WIREMOCK_ADMIN_PASSWORD:-password}"
     volumes:
       - ./wiremock/mappings:/home/wiremock/mappings
 

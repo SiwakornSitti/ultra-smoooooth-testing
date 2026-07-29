@@ -10,6 +10,15 @@
       },
       "X-Client-ID" : {
         "equalTo" : "qa-client"
+      },
+      "X-Request-ID" : {
+        "matches" : "^req-[0-9]+$"
+      },
+      "X-Client-Role" : {
+        "contains" : "admin"
+      },
+      "X-Debug" : {
+        "absent" : true
       }
     }
   },
