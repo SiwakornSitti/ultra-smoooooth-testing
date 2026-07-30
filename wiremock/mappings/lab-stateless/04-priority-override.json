@@ -1,5 +1,5 @@
 {
-  "id" : "2cd7443a-1e6d-4ba6-86a6-0153f3e179b7",
+  "id" : "614a3234-d470-4fb5-bd06-c7af68d20fc5",
   "name" : "4. VIP Products - Successful Response",
   "request" : {
     "urlPath" : "/lab/api/stateless/products/vip",
@@ -15,7 +15,7 @@
       "Content-Type" : "application/json"
     }
   },
-  "uuid" : "2cd7443a-1e6d-4ba6-86a6-0153f3e179b7",
+  "uuid" : "614a3234-d470-4fb5-bd06-c7af68d20fc5",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {

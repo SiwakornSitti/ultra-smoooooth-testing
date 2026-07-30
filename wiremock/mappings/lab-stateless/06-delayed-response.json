@@ -1,5 +1,5 @@
 {
-  "id" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
+  "id" : "ca8c147a-9fba-4e27-96f4-04fb5e1e849a",
   "name" : "6. Slow Endpoint - Fixed Delay",
   "request" : {
     "urlPath" : "/lab/api/stateless/slow-endpoint",
@@ -15,7 +15,7 @@
     },
     "fixedDelayMilliseconds" : 500
   },
-  "uuid" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
+  "uuid" : "ca8c147a-9fba-4e27-96f4-04fb5e1e849a",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {

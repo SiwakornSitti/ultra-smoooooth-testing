@@ -1,5 +1,5 @@
 {
-  "id" : "c8b8f40c-1a41-43f2-9a7d-ef8525b3b4d5",
+  "id" : "a2a1ffb0-3bde-4b1f-a4df-7c00e3b4d7e0",
   "name" : "9. Chunked Response - 5 Chunks over 1000ms",
   "request" : {
     "urlPath" : "/lab/api/stateless/chunked-delay",
@@ -19,7 +19,7 @@
       "totalDuration" : 1000
     }
   },
-  "uuid" : "c8b8f40c-1a41-43f2-9a7d-ef8525b3b4d5",
+  "uuid" : "a2a1ffb0-3bde-4b1f-a4df-7c00e3b4d7e0",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {

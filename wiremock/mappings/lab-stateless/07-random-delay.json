@@ -1,5 +1,5 @@
 {
-  "id" : "4b98f9b2-1d1e-4d0f-a3ca-6e6b6a2db247",
+  "id" : "f51c3438-761d-41c3-9cdf-03cd305d0dc4",
   "name" : "7. Random Delay - Uniform 100-500ms",
   "request" : {
     "urlPath" : "/lab/api/stateless/random-delay",
@@ -23,7 +23,7 @@
       "upper" : 500
     }
   },
-  "uuid" : "4b98f9b2-1d1e-4d0f-a3ca-6e6b6a2db247",
+  "uuid" : "f51c3438-761d-41c3-9cdf-03cd305d0dc4",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {

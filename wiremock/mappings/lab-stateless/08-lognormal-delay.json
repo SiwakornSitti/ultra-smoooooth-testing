@@ -1,5 +1,5 @@
 {
-  "id" : "f2cbf3cf-8b9d-46e1-8be0-fd6f4a0cd78a",
+  "id" : "16be695e-9d17-453c-afc1-3383aa389957",
   "name" : "8. Lognormal Delay - Median 250ms",
   "request" : {
     "urlPath" : "/lab/api/stateless/lognormal-delay",
@@ -26,7 +26,7 @@
       "maxValue" : 1000.0
     }
   },
-  "uuid" : "f2cbf3cf-8b9d-46e1-8be0-fd6f4a0cd78a",
+  "uuid" : "16be695e-9d17-453c-afc1-3383aa389957",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {

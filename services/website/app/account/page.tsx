@@ -20,9 +20,9 @@ export default function AccountPage() {
   // Step 2: create account (triggers SMS)
   const [balance, setBalance] = useState("1000");
   const [currency, setCurrency] = useState("USD");
-  const [smsScenario, setSmsScenario] = useState("");
+  const [smsScenario, setSmsScenario] = useState("SMS:SUCCESS");
   const [accountResult, setAccountResult] = useState("");
-  const [showMockControls, setShowMockControls] = useState(false);
+  const [showMockControls, setShowMockControls] = useState(true);
 
   // Step 3: verify profile status not blocked
   const [profileResult, setProfileResult] = useState("");

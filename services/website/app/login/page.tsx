@@ -10,15 +10,15 @@ export default function LoginPage() {
 
   // Step 1: Paotang authcode exchange
   const [authCode, setAuthCode] = useState("test-authcode");
-  const [paotangScenario, setPaotangScenario] = useState("");
+  const [paotangScenario, setPaotangScenario] = useState("PT_PASS:SUCCESS");
   const [paotangResult, setPaotangResult] = useState("");
   const [tokenExchanged, setTokenExchanged] = useState(false);
-  const [showMockControls, setShowMockControls] = useState(false);
+  const [showMockControls, setShowMockControls] = useState(true);
 
   // Step 2: OTP SMS verify
   const [phone, setPhone] = useState("+66800000000");
   const [otpCode, setOtpCode] = useState("123456");
-  const [otpScenario, setOtpScenario] = useState("");
+  const [otpScenario, setOtpScenario] = useState("OTP:SUCCESS");
   const [otpResult, setOtpResult] = useState("");
 
   function toggleMockControls(enabled: boolean) {
