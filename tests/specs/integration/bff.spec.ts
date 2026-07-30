@@ -10,10 +10,12 @@ import {
   startWiremock,
   startUserService,
   startBankAccountService,
+  startTransferService,
   startBffService,
   stopAll,
   wiremockMapping,
 } from "../support/containers";
+import { MOCK_SCENARIO } from "../support/mock-scenario";
 
 // Try loading multiple possible .env locations
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -25,6 +27,7 @@ let dbContainer: StartedPostgreSqlContainer;
 let wiremockContainer: StartedTestContainer;
 let userServiceContainer: StartedTestContainer;
 let bankAccountServiceContainer: StartedTestContainer;
+let transferServiceContainer: StartedTestContainer;
 let bffContainer: StartedTestContainer;
 let bffUrl: string;
 
@@ -36,10 +39,20 @@ const mockAcc1Balance = parseFloat(process.env.MOCK_ACC_1_BALANCE || "2500.75");
 const mockAcc1Currency = process.env.MOCK_ACC_1_CURRENCY || "USD";
 
 const mockAcc2Balance = parseFloat(process.env.MOCK_ACC_2_BALANCE || "120.5");
-const mockAcc2Currency = process.env.MOCK_ACC_2_CURRENCY || "EUR";
+const mockAcc2Currency = process.env.MOCK_ACC_2_CURRENCY || "USD";
 
 // Filled in after seeding, since Postgres generates the UUIDs.
 let seededUserId: string;
+let seededSourceAccountId: string;
+let seededTargetAccountId: string;
+
+const directSeedIds = {
+  user: "00000000-0000-0000-0000-000000000021",
+  sourceAccount: "00000000-0000-0000-0000-000000000022",
+  targetAccount: "00000000-0000-0000-0000-000000000023",
+} as const;
+
+const sqlLiteral = (value: string) => `'${value.replaceAll("'", "''")}'`;
 
 async function seedTestData(userServiceUrl: string, bankAccountServiceUrl: string) {
   console.log("Seeding test data...");
@@ -52,7 +65,7 @@ async function seedTestData(userServiceUrl: string, bankAccountServiceUrl: strin
   const createdUser = await createUserRes.json();
   seededUserId = createdUser.id;
 
-  await fetch(`${bankAccountServiceUrl}/accounts`, {
+  const sourceAccountResponse = await fetch(`${bankAccountServiceUrl}/accounts`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -61,8 +74,9 @@ async function seedTestData(userServiceUrl: string, bankAccountServiceUrl: strin
       currency: mockAcc1Currency,
     }),
   });
+  seededSourceAccountId = (await sourceAccountResponse.json()).id;
 
-  await fetch(`${bankAccountServiceUrl}/accounts`, {
+  const targetAccountResponse = await fetch(`${bankAccountServiceUrl}/accounts`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -71,6 +85,48 @@ async function seedTestData(userServiceUrl: string, bankAccountServiceUrl: strin
       currency: mockAcc2Currency,
     }),
   });
+  seededTargetAccountId = (await targetAccountResponse.json()).id;
+}
+
+async function seedTestDataDirectly(database: StartedPostgreSqlContainer) {
+  console.log("Seeding test data directly into Postgres...");
+
+  const sql = `
+    INSERT INTO users (id, name, email, phone, status)
+    VALUES (
+      ${sqlLiteral(directSeedIds.user)},
+      ${sqlLiteral(mockUserName)},
+      ${sqlLiteral(mockUserEmail)},
+      ${sqlLiteral(mockUserPhone)},
+      'active'
+    )
+    ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, email = EXCLUDED.email,
+      phone = EXCLUDED.phone, status = EXCLUDED.status;
+
+    INSERT INTO accounts (id, user_id, balance, currency)
+    VALUES
+      (${sqlLiteral(directSeedIds.sourceAccount)}, ${sqlLiteral(directSeedIds.user)}, ${mockAcc1Balance}, ${sqlLiteral(mockAcc1Currency)}),
+      (${sqlLiteral(directSeedIds.targetAccount)}, ${sqlLiteral(directSeedIds.user)}, ${mockAcc2Balance}, ${sqlLiteral(mockAcc2Currency)})
+    ON CONFLICT (id) DO UPDATE SET balance = EXCLUDED.balance, currency = EXCLUDED.currency;
+  `;
+  const result = await database.exec([
+    "psql",
+    "-U",
+    database.getUsername(),
+    "-d",
+    database.getDatabase(),
+    "-v",
+    "ON_ERROR_STOP=1",
+    "-c",
+    sql,
+  ]);
+  if (result.exitCode !== 0) {
+    throw new Error(`Direct database seed failed: ${result.stderr || result.output}`);
+  }
+
+  seededUserId = directSeedIds.user;
+  seededSourceAccountId = directSeedIds.sourceAccount;
+  seededTargetAccountId = directSeedIds.targetAccount;
 }
 
 test.beforeAll(async () => {
@@ -94,18 +150,24 @@ test.beforeAll(async () => {
     wiremockMapping("otp", { flat: true }),
   ]);
 
-  userServiceContainer = await startUserService(network, {
+  userServiceContainer = await startUserService(network, dbContainer, {
     PAOTANG_SERVICE_URL: "http://paotang:8080",
     PAOTANG_CLIENT_ID: "dummy-client-id",
     PAOTANG_CLIENT_SECRET: "dummy-client-secret",
     OTP_SERVICE_URL: "http://paotang:8080",
   });
 
-  bankAccountServiceContainer = await startBankAccountService(network, {});
+  bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {});
 
-  const userServiceUrl = `http://${userServiceContainer.getHost()}:${userServiceContainer.getMappedPort(8080)}`;
-  const bankAccountServiceUrl = `http://${bankAccountServiceContainer.getHost()}:${bankAccountServiceContainer.getMappedPort(8080)}`;
-  await seedTestData(userServiceUrl, bankAccountServiceUrl);
+  if (process.env.SEED_MODE === "direct") {
+    await seedTestDataDirectly(dbContainer);
+  } else {
+    const userServiceUrl = `http://${userServiceContainer.getHost()}:${userServiceContainer.getMappedPort(8080)}`;
+    const bankAccountServiceUrl = `http://${bankAccountServiceContainer.getHost()}:${bankAccountServiceContainer.getMappedPort(8080)}`;
+    await seedTestData(userServiceUrl, bankAccountServiceUrl);
+  }
+
+  transferServiceContainer = await startTransferService(network, dbContainer);
 
   bffContainer = await startBffService(network, {
     USER_SERVICE_URL: "http://user-service:8080",
@@ -122,7 +184,7 @@ test.beforeAll(async () => {
 
 test.afterAll(async () => {
   await stopAll(
-    [bffContainer, bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
+    [bffContainer, transferServiceContainer, bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
     network
   );
 });
@@ -261,7 +323,7 @@ test.describe("BFF Service Integration Tests", () => {
   test("should reject Paotang authcode replay (one-time use)", async ({ request }) => {
     console.log(`Exchanging one-time authcode via BFF: ${bffUrl}/auth/paotang/callback`);
     const first = await request.post(`${bffUrl}/auth/paotang/callback`, {
-      headers: { "Mock-Scenario": "PT_PASS:SUCCESS_ONCE" },
+      headers: { "Mock-Scenario": MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE },
       data: { code: "one-time-authcode" },
     });
     expect(first.status()).toBe(HttpStatusCode.Ok);
@@ -272,7 +334,7 @@ test.describe("BFF Service Integration Tests", () => {
     });
 
     const replay = await request.post(`${bffUrl}/auth/paotang/callback`, {
-      headers: { "Mock-Scenario": "PT_PASS:SUCCESS_ONCE" },
+      headers: { "Mock-Scenario": MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE },
       data: { code: "one-time-authcode" },
     });
     expect(replay.status()).toBe(HttpStatusCode.BadRequest);
@@ -282,7 +344,7 @@ test.describe("BFF Service Integration Tests", () => {
   test("should verify OTP code successfully", async ({ request }) => {
     console.log(`Verifying OTP via BFF: ${bffUrl}/auth/otp/verify`);
     const response = await request.post(`${bffUrl}/auth/otp/verify`, {
-      headers: { "Mock-Scenario": "OTP:SUCCESS" },
+      headers: { "Mock-Scenario": MOCK_SCENARIO.OTP.SUCCESS },
       data: { phone: mockUserPhone, code: "123456" },
     });
     expect(response.status()).toBe(HttpStatusCode.Ok);
@@ -292,7 +354,7 @@ test.describe("BFF Service Integration Tests", () => {
   test("should reject invalid OTP code", async ({ request }) => {
     console.log(`Verifying invalid OTP via BFF: ${bffUrl}/auth/otp/verify`);
     const response = await request.post(`${bffUrl}/auth/otp/verify`, {
-      headers: { "Mock-Scenario": "OTP:INVALID" },
+      headers: { "Mock-Scenario": MOCK_SCENARIO.OTP.INVALID },
       data: { phone: mockUserPhone, code: "000000" },
     });
     expect(response.status()).toBe(HttpStatusCode.BadRequest);
@@ -318,15 +380,31 @@ test.describe("BFF Service Integration Tests", () => {
     console.log(`Proxying transfer via BFF: ${bffUrl}/api/v1/transfers`);
     const response = await request.post(`${bffUrl}/api/v1/transfers`, {
       data: {
-        source_account_id: "acc-001",
-        target_account_id: "acc-002",
+        source_account_id: seededSourceAccountId,
+        target_account_id: seededTargetAccountId,
         amount: 500,
-        currency: "THB",
+        currency: mockAcc1Currency,
       },
     });
     expect(response.status()).toBe(HttpStatusCode.Created);
     const data = await response.json();
     expect(data.status).toBe("COMPLETED");
     expect(data.amount).toBe(500);
+  });
+
+  test("should reject transfer with insufficient funds", async ({ request }) => {
+    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+      data: {
+        source_account_id: seededSourceAccountId,
+        target_account_id: seededTargetAccountId,
+        amount: mockAcc1Balance + 1,
+        currency: mockAcc1Currency,
+      },
+    });
+    expect(response.status()).toBe(HttpStatusCode.BadRequest);
+    expect(await response.json()).toEqual({
+      error: "insufficient funds",
+      code: "INSUFFICIENT_FUNDS",
+    });
   });
 });

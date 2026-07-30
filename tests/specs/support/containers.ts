@@ -11,6 +11,7 @@ export const DB_USER = "app";
 export const DB_PASSWORD = "temporary-password-123";
 export const DB_NAME = "app";
 export const PORT = 8080;
+const DATABASE_PORT = 5432;
 const HEALTH_PATH = "/health";
 
 const WIREMOCK_MAPPINGS_ROOT = path.resolve(__dirname, "../../../wiremock/mappings");
@@ -104,8 +105,19 @@ export async function startWiremock(
     .start();
 }
 
+function getDatabaseEnvironment(database: StartedPostgreSqlContainer): Record<string, string> {
+  return {
+    DB_HOST: SERVICE_NAME.DATABASE,
+    DB_PORT: DATABASE_PORT.toString(),
+    DB_USER: database.getUsername(),
+    DB_PASSWORD: database.getPassword(),
+    DB_NAME: database.getDatabase(),
+  };
+}
+
 export async function startUserService(
   network: StartedNetwork,
+  database: StartedPostgreSqlContainer,
   env: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting user-service container...");
@@ -115,11 +127,7 @@ export async function startUserService(
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
-      DB_HOST: "db",
-      DB_PORT: "5432",
-      DB_USER,
-      DB_PASSWORD,
-      DB_NAME,
+      ...getDatabaseEnvironment(database),
       ...env,
     })
     .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
@@ -128,6 +136,7 @@ export async function startUserService(
 
 export async function startBankAccountService(
   network: StartedNetwork,
+  database: StartedPostgreSqlContainer,
   env: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting bank-account-service container...");
@@ -137,11 +146,7 @@ export async function startBankAccountService(
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
-      DB_HOST: "db",
-      DB_PORT: "5432",
-      DB_USER,
-      DB_PASSWORD,
-      DB_NAME,
+      ...getDatabaseEnvironment(database),
       ...env,
     })
     .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
@@ -150,6 +155,7 @@ export async function startBankAccountService(
 
 export async function startEKYCService(
   network: StartedNetwork,
+  database: StartedPostgreSqlContainer,
   env?: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting ekyc-service container...");
@@ -159,11 +165,7 @@ export async function startEKYCService(
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
-      DB_HOST: "db",
-      DB_PORT: "5432",
-      DB_USER,
-      DB_PASSWORD,
-      DB_NAME,
+      ...getDatabaseEnvironment(database),
       ...env,
     })
     .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
@@ -172,6 +174,7 @@ export async function startEKYCService(
 
 export async function startTransferService(
   network: StartedNetwork,
+  database: StartedPostgreSqlContainer,
   env?: Record<string, string>
 ): Promise<StartedTestContainer> {
   console.log("Starting transfer-service container...");
@@ -181,11 +184,7 @@ export async function startTransferService(
     .withExposedPorts(PORT)
     .withEnvironment({
       PORT: PORT.toString(),
-      DB_HOST: "db",
-      DB_PORT: "5432",
-      DB_USER,
-      DB_PASSWORD,
-      DB_NAME,
+      ...getDatabaseEnvironment(database),
       ...env,
     })
     .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))

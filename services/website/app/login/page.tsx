@@ -4,13 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { AUTH_SESSION_KEY } from "../lib/auth";
+import { MOCK_SCENARIO } from "../lib/mock-scenario";
 
 export default function LoginPage() {
   const bffUrl = useBffUrl();
 
   // Step 1: Paotang authcode exchange
   const [authCode, setAuthCode] = useState("test-authcode");
-  const [paotangScenario, setPaotangScenario] = useState("PT_PASS:SUCCESS");
+  const [paotangScenario, setPaotangScenario] = useState<string>(MOCK_SCENARIO.PAOTANG.SUCCESS);
   const [paotangResult, setPaotangResult] = useState("");
   const [tokenExchanged, setTokenExchanged] = useState(false);
   const [showMockControls, setShowMockControls] = useState(true);
@@ -18,13 +19,13 @@ export default function LoginPage() {
   // Step 2: OTP SMS verify
   const [phone, setPhone] = useState("+66800000000");
   const [otpCode, setOtpCode] = useState("123456");
-  const [otpScenario, setOtpScenario] = useState("OTP:SUCCESS");
+  const [otpScenario, setOtpScenario] = useState<string>(MOCK_SCENARIO.OTP.SUCCESS);
   const [otpResult, setOtpResult] = useState("");
 
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
-    setPaotangScenario(enabled ? "PT_PASS:SUCCESS" : "");
-    setOtpScenario(enabled ? "OTP:SUCCESS" : "");
+    setPaotangScenario(enabled ? MOCK_SCENARIO.PAOTANG.SUCCESS : "");
+    setOtpScenario(enabled ? MOCK_SCENARIO.OTP.SUCCESS : "");
   }
 
   async function paotangLogin() {
@@ -93,9 +94,9 @@ export default function LoginPage() {
               value={paotangScenario}
               onChange={(e) => setPaotangScenario(e.target.value)}
             >
-              <option value="PT_PASS:SUCCESS">PT_PASS:SUCCESS</option>
-              <option value="PT_PASS:INVALID_GRANT">PT_PASS:INVALID_GRANT</option>
-              <option value="PT_PASS:SUCCESS_ONCE">PT_PASS:SUCCESS_ONCE</option>
+              <option value={MOCK_SCENARIO.PAOTANG.SUCCESS}>{MOCK_SCENARIO.PAOTANG.SUCCESS}</option>
+              <option value={MOCK_SCENARIO.PAOTANG.INVALID_GRANT}>{MOCK_SCENARIO.PAOTANG.INVALID_GRANT}</option>
+              <option value={MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE}>{MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE}</option>
             </select>
           </label>
         )}
@@ -121,8 +122,8 @@ export default function LoginPage() {
           <label>
             OTP Mock Scenario
             <select data-testid="select-otp-scenario" value={otpScenario} onChange={(e) => setOtpScenario(e.target.value)}>
-              <option value="OTP:SUCCESS">OTP:SUCCESS</option>
-              <option value="OTP:INVALID">OTP:INVALID</option>
+              <option value={MOCK_SCENARIO.OTP.SUCCESS}>{MOCK_SCENARIO.OTP.SUCCESS}</option>
+              <option value={MOCK_SCENARIO.OTP.INVALID}>{MOCK_SCENARIO.OTP.INVALID}</option>
             </select>
           </label>
         )}

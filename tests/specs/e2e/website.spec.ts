@@ -12,7 +12,7 @@ import {
   stopAll,
   wiremockMapping,
 } from "../support/containers";
-import { mockScenario } from "../support/mock-scenario";
+import { MOCK_SCENARIO, mockScenario } from "../support/mock-scenario";
 
 // Full-stack browser e2e: real Postgres, real user-service, bank-account-service,
 // bff-service, and the qa-website UI, all real containers. Paotang Pass and the
@@ -40,14 +40,14 @@ test.beforeAll(async () => {
     wiremockMapping("otp"),
   ]);
 
-  userServiceContainer = await startUserService(network, {
+  userServiceContainer = await startUserService(network, dbContainer, {
     PAOTANG_SERVICE_URL: "http://wiremock:8080",
     PAOTANG_CLIENT_ID: "dummy-client-id",
     PAOTANG_CLIENT_SECRET: "dummy-client-secret",
     OTP_SERVICE_URL: "http://wiremock:8080",
   });
 
-  bankAccountServiceContainer = await startBankAccountService(network, {
+  bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {
     SMS_SERVICE_URL: "http://wiremock:8080",
     SMS_API_KEY: "dummy-sms-api-key",
   });
@@ -57,10 +57,10 @@ test.beforeAll(async () => {
     BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
   });
 
-  console.log("Starting qa-website container...");
+  console.log("Starting website container...");
   websiteContainer = await new GenericContainer("qa-website:test")
     .withNetwork(network)
-    .withNetworkAliases("qa-website")
+    .withNetworkAliases("website")
     .withExposedPorts(3000)
     .withEnvironment({
       // Browser JS runs on the test host (Playwright), not inside the Docker
@@ -93,17 +93,19 @@ async function login(page: Page) {
   const setScenario = mockScenario(page);
   await page.goto(`${websiteUrl}/login`);
 
-  setScenario("PT_PASS:SUCCESS");
+  setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
   await page.getByTestId("btn-paotang-login").click();
   await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
 
-  setScenario("OTP:SUCCESS");
+  setScenario(MOCK_SCENARIO.OTP.SUCCESS);
   await page.getByTestId("btn-verify-otp").click();
   await expect(page.getByTestId("result-otp")).toContainText('"verified":true');
 }
 
 test.describe("QA website full e2e flow", () => {
   test("create user, create account (SMS success), verify profile not blocked", async ({ page }) => {
+    const setScenario = mockScenario(page);
+
     await login(page);
     await page.goto(`${websiteUrl}/account`);
 
@@ -120,7 +122,7 @@ test.describe("QA website full e2e flow", () => {
 
     await expect(page.getByTestId("input-user-id")).toHaveValue(userId);
 
-    setScenario("SMS:SUCCESS");
+    setScenario(MOCK_SCENARIO.SMS.SUCCESS);
     await page.getByTestId("btn-create-account").click();
     await expect(page.getByTestId("result-create-account")).toContainText('"currency":"USD"');
 
@@ -149,13 +151,23 @@ test.describe("QA website full e2e flow", () => {
     const setScenario = mockScenario(page);
     await page.goto(`${websiteUrl}/login`);
 
-    setScenario("PT_PASS:SUCCESS");
+    setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
     await page.getByTestId("btn-paotang-login").click();
     await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
 
-    setScenario("OTP:SUCCESS");
+    setScenario(MOCK_SCENARIO.OTP.SUCCESS);
     await page.getByTestId("btn-verify-otp").click();
     await expect(page.getByTestId("result-otp")).toContainText('"verified":true');
+  });
+
+  test("transfer rejects insufficient funds", async ({ page }) => {
+    await login(page);
+    await page.goto(`${websiteUrl}/transfer`);
+
+    await page.getByTestId("input-transfer-amount").fill("2000");
+    await page.getByTestId("btn-submit-transfer").click();
+
+    await expect(page.getByTestId("result-transfer")).toContainText('"error":"insufficient funds"');
   });
 
   test("Paotang login rejects invalid authcode", async ({ page }) => {
@@ -163,7 +175,7 @@ test.describe("QA website full e2e flow", () => {
     await page.goto(`${websiteUrl}/login`);
 
     await page.getByTestId("input-authcode").fill("bad-authcode");
-    setScenario("PT_PASS:INVALID_GRANT");
+    setScenario(MOCK_SCENARIO.PAOTANG.INVALID_GRANT);
     await page.getByTestId("btn-paotang-login").click();
     await expect(page.getByTestId("result-paotang")).toContainText("invalid_grant");
   });
@@ -172,11 +184,11 @@ test.describe("QA website full e2e flow", () => {
     const setScenario = mockScenario(page);
     await page.goto(`${websiteUrl}/login`);
 
-    setScenario("PT_PASS:SUCCESS");
+    setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
     await page.getByTestId("btn-paotang-login").click();
     await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
 
-    setScenario("OTP:INVALID");
+    setScenario(MOCK_SCENARIO.OTP.INVALID);
     await page.getByTestId("btn-verify-otp").click();
     await expect(page.getByTestId("result-otp")).toContainText("invalid_otp");
   });

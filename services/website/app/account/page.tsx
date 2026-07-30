@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
+import { MOCK_SCENARIO } from "../lib/mock-scenario";
 
 export default function AccountPage() {
   const authenticated = useRequireLogin();
@@ -20,7 +21,7 @@ export default function AccountPage() {
   // Step 2: create account (triggers SMS)
   const [balance, setBalance] = useState("1000");
   const [currency, setCurrency] = useState("USD");
-  const [smsScenario, setSmsScenario] = useState("SMS:SUCCESS");
+  const [smsScenario, setSmsScenario] = useState<string>(MOCK_SCENARIO.SMS.SUCCESS);
   const [accountResult, setAccountResult] = useState("");
   const [showMockControls, setShowMockControls] = useState(true);
 
@@ -30,7 +31,7 @@ export default function AccountPage() {
 
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
-    setSmsScenario(enabled ? "SMS:SUCCESS" : "");
+    setSmsScenario(enabled ? MOCK_SCENARIO.SMS.SUCCESS : "");
   }
 
   async function createUser() {
@@ -152,8 +153,8 @@ export default function AccountPage() {
           <label>
             SMS Mock Scenario
             <select data-testid="select-sms-scenario" value={smsScenario} onChange={(e) => setSmsScenario(e.target.value)}>
-              <option value="SMS:SUCCESS">SMS:SUCCESS</option>
-              <option value="SMS:INVALID_NUMBER">SMS:INVALID_NUMBER</option>
+              <option value={MOCK_SCENARIO.SMS.SUCCESS}>{MOCK_SCENARIO.SMS.SUCCESS}</option>
+              <option value={MOCK_SCENARIO.SMS.INVALID_NUMBER}>{MOCK_SCENARIO.SMS.INVALID_NUMBER}</option>
             </select>
           </label>
         )}

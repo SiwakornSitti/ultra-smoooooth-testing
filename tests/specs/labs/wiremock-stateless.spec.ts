@@ -7,6 +7,7 @@ import {
   stopAll,
   wiremockMapping,
 } from "../support/containers";
+import { MOCK_SCENARIO } from "../support/mock-scenario";
 
 let network: StartedNetwork;
 let wiremockContainer: StartedTestContainer;
@@ -35,7 +36,7 @@ test.afterAll(async () => {
 test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
   test("Scenario 1: Path & Query Parameter Matching", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.get(`${wiremockUrl}/lab/api/stateless/users?role=ADMIN&status=active`, {
-      headers: { "Mock-Scenario": "OTP:INVALID" },
+      headers: { "Mock-Scenario": MOCK_SCENARIO.OTP.INVALID },
     });
     expect(res.status()).toBe(HttpStatusCode.Ok);
     const body = await res.json();
