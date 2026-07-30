@@ -1,6 +1,6 @@
 {
   "id" : "4b98f9b2-1d1e-4d0f-a3ca-6e6b6a2db247",
-  "name" : "9. Random Delay - Uniform 100-500ms",
+  "name" : "7. Random Delay - Uniform 100-500ms",
   "request" : {
     "urlPath" : "/lab/api/stateless/random-delay",
     "method" : "GET"
@@ -31,5 +31,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 28
+  "insertionIndex" : 94
 }

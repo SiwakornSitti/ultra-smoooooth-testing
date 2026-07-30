@@ -1,6 +1,6 @@
 {
   "id" : "f0a1b2c3-d4e5-4f60-a123-456789abcdef",
-  "name" : "Webhook Receiver",
+  "name" : "15. Webhook Receiver",
   "request" : {
     "urlPath" : "/lab/api/stateless/webhook-receiver",
     "method" : "POST",

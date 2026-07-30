@@ -161,8 +161,8 @@ bin/
 # Agent & CLI internal files
 .agents/
 .claude/
+.tokensave/
 skills-lock.json
-
 
 
 

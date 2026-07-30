@@ -1,6 +1,6 @@
 {
   "id" : "2cd7443a-1e6d-4ba6-86a6-0153f3e179b7",
-  "name" : "5. VIP Products - Successful Response",
+  "name" : "4. VIP Products - Successful Response",
   "request" : {
     "urlPath" : "/lab/api/stateless/products/vip",
     "method" : "GET"
@@ -9,7 +9,7 @@
     "status" : 200,
     "jsonBody" : {
       "product" : "VIP Gold Membership",
-      "discount" : "50%"
+      "discount" : "20%"
     },
     "headers" : {
       "Content-Type" : "application/json"
@@ -23,5 +23,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 31
+  "insertionIndex" : 98
 }

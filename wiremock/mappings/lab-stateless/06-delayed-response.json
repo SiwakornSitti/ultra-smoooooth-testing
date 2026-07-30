@@ -1,6 +1,6 @@
 {
   "id" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
-  "name" : "8. Slow Endpoint - Fixed Delay",
+  "name" : "6. Slow Endpoint - Fixed Delay",
   "request" : {
     "urlPath" : "/lab/api/stateless/slow-endpoint",
     "method" : "GET"
@@ -23,5 +23,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 27
+  "insertionIndex" : 97
 }

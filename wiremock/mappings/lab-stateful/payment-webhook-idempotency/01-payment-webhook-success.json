@@ -24,17 +24,6 @@
     },
     "transformers" : [ "response-template" ]
   },
-  "serveEventListeners" : [ {
-    "name" : "webhook",
-    "parameters" : {
-      "method" : "POST",
-      "url" : "http://localhost:8080/lab/api/payment-events",
-      "headers" : {
-        "Content-Type" : "application/json"
-      },
-      "body" : "{ \"event_type\": \"payment.processed\", \"payment_id\": \"{{jsonPath originalRequest.body '$.payment_id'}}\", \"event_id\": \"{{jsonPath originalRequest.body '$.event_id'}}\" }"
-    }
-  } ],
   "uuid" : "2d5e6d2e-2fd2-4baf-a7ce-3b1d54ac54c5",
   "persistent" : true,
   "priority" : 1,
@@ -46,5 +35,16 @@
       "folder" : "/lab-stateful/payment-webhook-idempotency"
     }
   },
-  "insertionIndex" : 12
+  "insertionIndex" : 71,
+  "serveEventListeners" : [ {
+    "name" : "webhook",
+    "parameters" : {
+      "method" : "POST",
+      "url" : "http://localhost:8080/lab/api/payment-events",
+      "headers" : {
+        "Content-Type" : "application/json"
+      },
+      "body" : "{ \"event_type\": \"payment.processed\", \"payment_id\": \"{{jsonPath originalRequest.body '$.payment_id'}}\", \"event_id\": \"{{jsonPath originalRequest.body '$.event_id'}}\" }"
+    }
+  } ]
 }

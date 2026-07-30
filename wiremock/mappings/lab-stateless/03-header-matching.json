@@ -1,6 +1,6 @@
 {
   "id" : "fa60bc33-27e8-4192-ab4b-e5616ccd8aca",
-  "name" : "Secure Endpoint - Header Match",
+  "name" : "3. Secure Endpoint - Header Match",
   "request" : {
     "urlPath" : "/lab/api/stateless/secure",
     "method" : "POST",
@@ -10,15 +10,6 @@
       },
       "X-Client-ID" : {
         "equalTo" : "qa-client"
-      },
-      "X-Request-ID" : {
-        "matches" : "^req-[0-9]+$"
-      },
-      "X-Client-Role" : {
-        "contains" : "admin"
-      },
-      "X-Debug" : {
-        "absent" : true
       }
     }
   },
@@ -40,5 +31,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 23
+  "insertionIndex" : 91
 }

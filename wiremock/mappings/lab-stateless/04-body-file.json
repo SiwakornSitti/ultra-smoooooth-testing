@@ -1,6 +1,6 @@
 {
   "id" : "a1b2c3d4-e5f6-4789-ab01-23456789abcd",
-  "name" : "Body File Response",
+  "name" : "4. Body File Response",
   "request" : {
     "urlPath" : "/lab/api/stateless/body-file",
     "method" : "GET"

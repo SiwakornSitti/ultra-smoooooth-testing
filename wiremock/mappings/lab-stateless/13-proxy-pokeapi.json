@@ -1,6 +1,6 @@
 {
   "id" : "c7d8e9f0-a1b2-4c3d-8e9f-0123456789ab",
-  "name" : "Proxy PokeAPI Pokemon",
+  "name" : "13. Proxy PokeAPI Pokemon",
   "request" : {
     "urlPathPattern" : "/lab/api/stateless/pokemon/.*",
     "method" : "GET"

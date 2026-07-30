@@ -1,6 +1,6 @@
 {
   "id" : "c8b8f40c-1a41-43f2-9a7d-ef8525b3b4d5",
-  "name" : "11. Chunked Response - 5 Chunks over 1000ms",
+  "name" : "9. Chunked Response - 5 Chunks over 1000ms",
   "request" : {
     "urlPath" : "/lab/api/stateless/chunked-delay",
     "method" : "GET"
@@ -27,5 +27,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 30
+  "insertionIndex" : 93
 }
