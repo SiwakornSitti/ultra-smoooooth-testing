@@ -4,11 +4,6 @@
   "request" : {
     "urlPath" : "/lab/api/stateless/users",
     "method" : "GET",
-    "headers" : {
-      "Mock-Scenario" : {
-        "contains" : "OTP:INVALID"
-      }
-    },
     "queryParameters" : {
       "role" : {
         "equalTo" : "admin",
