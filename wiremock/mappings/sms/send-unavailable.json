@@ -1,0 +1,23 @@
+{
+  "name": "SMS - Service Unavailable",
+  "request": {
+    "method": "POST",
+    "urlPath": "/sms/send",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "SMS:UNAVAILABLE"
+      }
+    }
+  },
+  "response": {
+    "status": 503,
+    "jsonBody": {
+      "error": "sms_service_unavailable"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"]
+  },
+  "priority": 1
+}

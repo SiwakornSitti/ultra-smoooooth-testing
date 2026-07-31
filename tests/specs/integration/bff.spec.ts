@@ -407,4 +407,82 @@ test.describe("BFF Service Integration Tests", () => {
       code: "INSUFFICIENT_FUNDS",
     });
   });
+
+  test("should retrieve a created transfer through the BFF", async ({ request }) => {
+    const createResponse = await request.post(`${bffUrl}/api/v1/transfers`, {
+      data: {
+        source_account_id: seededSourceAccountId,
+        target_account_id: seededTargetAccountId,
+        amount: 125,
+        currency: mockAcc1Currency,
+      },
+    });
+    expect(createResponse.status()).toBe(HttpStatusCode.Created);
+
+    const created = await createResponse.json();
+    expect(createResponse.headers().location).toBe(`/transfers/${created.id}`);
+
+    const response = await request.get(`${bffUrl}/api/v1/transfers/${created.id}`);
+    expect(response.status()).toBe(HttpStatusCode.Ok);
+    expect(await response.json()).toEqual(
+      expect.objectContaining({
+        id: created.id,
+        source_account_id: seededSourceAccountId,
+        target_account_id: seededTargetAccountId,
+        amount: 125,
+        currency: mockAcc1Currency,
+        status: "COMPLETED",
+      })
+    );
+  });
+
+  test("should list transfers through the BFF", async ({ request }) => {
+    const response = await request.get(`${bffUrl}/api/v1/transfers`);
+    expect(response.status()).toBe(HttpStatusCode.Ok);
+
+    const transfers = await response.json();
+    expect(Array.isArray(transfers)).toBeTruthy();
+    expect(transfers.length).toBeGreaterThan(0);
+    expect(transfers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          source_account_id: seededSourceAccountId,
+          target_account_id: seededTargetAccountId,
+          status: "COMPLETED",
+        }),
+      ])
+    );
+  });
+
+  test("should reject a transfer between the same account", async ({ request }) => {
+    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+      data: {
+        source_account_id: seededSourceAccountId,
+        target_account_id: seededSourceAccountId,
+        amount: 100,
+        currency: mockAcc1Currency,
+      },
+    });
+    expect(response.status()).toBe(HttpStatusCode.BadRequest);
+    expect(await response.json()).toEqual({
+      error: "source and target accounts must be different",
+      code: "VALIDATION_FAILED",
+    });
+  });
+
+  test("should reject a transfer with a currency mismatch", async ({ request }) => {
+    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+      data: {
+        source_account_id: seededSourceAccountId,
+        target_account_id: seededTargetAccountId,
+        amount: 100,
+        currency: "THB",
+      },
+    });
+    expect(response.status()).toBe(HttpStatusCode.BadRequest);
+    expect(await response.json()).toEqual({
+      error: "source, target, and transfer currencies must match",
+      code: "CURRENCY_MISMATCH",
+    });
+  });
 });

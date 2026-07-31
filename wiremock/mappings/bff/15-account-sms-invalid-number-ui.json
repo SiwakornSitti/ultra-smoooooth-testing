@@ -1,0 +1,23 @@
+{
+  "name": "BFF Mock - Account SMS Invalid Number (UI)",
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/v1/accounts",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "SMS:INVALID_NUMBER"
+      }
+    }
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "invalid_phone_number"
+    },
+    "headers": {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    }
+  },
+  "priority": 1
+}

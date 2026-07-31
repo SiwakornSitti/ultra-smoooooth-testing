@@ -51,7 +51,7 @@ func TestDeliverNotification(t *testing.T) {
 	}
 
 	command := NotificationCommand{
-		Channel: "sms",
+		Channel: notificationChannelSMS,
 		To:      "+66800000000",
 		Message: "hello",
 		Headers: map[string]string{

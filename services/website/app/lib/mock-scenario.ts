@@ -11,5 +11,6 @@ export const MOCK_SCENARIO = {
   SMS: {
     SUCCESS: "SMS:SUCCESS",
     INVALID_NUMBER: "SMS:INVALID_NUMBER",
+    UNAVAILABLE: "SMS:UNAVAILABLE",
   },
 } as const;

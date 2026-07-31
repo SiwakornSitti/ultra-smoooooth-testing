@@ -26,6 +26,8 @@ type SMSRequest struct {
 	Message string `json:"message"`
 }
 
+const notificationChannelSMS = "sms"
+
 var (
 	rabbitMQURL       = getEnv("RABBITMQ_URL", "")
 	notificationQueue = getEnv("NOTIFICATION_QUEUE", "notification.commands")
@@ -42,9 +44,9 @@ func getEnv(key, fallback string) string {
 
 func deliverNotification(ctx context.Context, command NotificationCommand) error {
 	if command.Channel == "" {
-		command.Channel = "sms"
+		command.Channel = notificationChannelSMS
 	}
-	if command.Channel != "sms" {
+	if command.Channel != notificationChannelSMS {
 		return fmt.Errorf("unsupported notification channel %q", command.Channel)
 	}
 	if command.To == "" || command.Message == "" {

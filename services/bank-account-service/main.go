@@ -32,6 +32,8 @@ type NotificationCommand struct {
 	Headers map[string]string `json:"headers,omitempty"`
 }
 
+const notificationChannelSMS = "sms"
+
 var db *sql.DB
 
 var (
@@ -192,7 +194,7 @@ func enqueueNotification(r *http.Request, to, message string) {
 	}
 
 	body, err := json.Marshal(NotificationCommand{
-		Channel: "sms",
+		Channel: notificationChannelSMS,
 		To:      to,
 		Message: message,
 		Headers: notificationHeaders(r),

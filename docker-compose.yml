@@ -46,6 +46,11 @@ services:
       - ./wiremock/mappings:/home/wiremock/mappings
       - ./wiremock/__files:/home/wiremock/__files
       - ./wiremock/extensions:/var/wiremock/extensions:ro
+    develop:
+      watch:
+        - action: sync
+          path: ./wiremock/mappings
+          target: /home/wiremock/mappings
 
   # =========================================================================
   # NOTIFICATION COMMAND QUEUE
@@ -236,6 +241,9 @@ services:
       watch:
         - action: rebuild
           path: ./services/website
+        - action: sync
+          path: ./services/website/public
+          target: /app/public
 
 volumes:
   postgres-data-v18:
