@@ -16,20 +16,6 @@
     },
     "transformers" : [ "response-template" ]
   },
-  "serveEventListeners" : [
-    {
-      "name" : "webhook",
-      "parameters" : {
-        "method" : "POST",
-        "url" : "http://localhost:8080/lab/api/stateless/webhook-receiver",
-        "headers" : {
-          "Content-Type" : "application/json",
-          "X-Webhook-Source" : "wiremock"
-        },
-        "body" : "{ \"event_type\": \"order.created\", \"order_id\": \"{{jsonPath originalRequest.body '$.order_id'}}\", \"correlation_id\": \"{{originalRequest.headers.X-Correlation-ID}}\" }"
-      }
-    }
-  ],
   "uuid" : "e9f0a1b2-c3d4-4e5f-9012-3456789abcde",
   "persistent" : true,
   "priority" : 2,
@@ -38,5 +24,17 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 36
+  "insertionIndex" : 43,
+  "serveEventListeners" : [ {
+    "name" : "webhook",
+    "parameters" : {
+      "method" : "POST",
+      "url" : "http://localhost:8080/lab/api/stateless/webhook-receiver",
+      "headers" : {
+        "Content-Type" : "application/json",
+        "X-Webhook-Source" : "wiremock"
+      },
+      "body" : "{ \"event_type\": \"order.created\", \"order_id\": \"{{jsonPath originalRequest.body '$.order_id'}}\", \"correlation_id\": \"{{originalRequest.headers.X-Correlation-ID}}\" }"
+    }
+  } ]
 }

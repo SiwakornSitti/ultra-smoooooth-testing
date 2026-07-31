@@ -1,23 +1,32 @@
 {
-  "name": "BFF Mock - Account SMS Invalid Number",
-  "request": {
-    "method": "POST",
-    "urlPath": "/api/v1/accounts",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:SMS_INVALID_NUMBER"
+  "id" : "8203d5fa-62fe-4c97-9aad-6c54d8a5abc3",
+  "name" : "BFF Mock - Account SMS Invalid Number",
+  "request" : {
+    "urlPath" : "/api/v1/accounts",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:SMS_INVALID_NUMBER"
       }
     }
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "invalid_phone_number"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "invalid_phone_number"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     }
   },
-  "priority": 1
+  "uuid" : "8203d5fa-62fe-4c97-9aad-6c54d8a5abc3",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 34
 }

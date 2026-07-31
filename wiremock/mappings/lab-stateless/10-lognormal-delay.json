@@ -21,9 +21,9 @@
     },
     "delayDistribution" : {
       "type" : "lognormal",
-      "median" : 250,
+      "median" : 250.0,
       "sigma" : 0.4,
-      "maxValue" : 1000
+      "maxValue" : 1000.0
     }
   },
   "uuid" : "f2cbf3cf-8b9d-46e1-8be0-fd6f4a0cd78a",
@@ -34,5 +34,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 29
+  "insertionIndex" : 61
 }

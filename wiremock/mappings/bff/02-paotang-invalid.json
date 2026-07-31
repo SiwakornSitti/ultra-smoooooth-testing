@@ -1,23 +1,32 @@
 {
-  "name": "BFF Mock - Paotang Invalid Authcode",
-  "request": {
-    "method": "POST",
-    "urlPath": "/auth/paotang/callback",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:PT_PASS_INVALID_GRANT"
+  "id" : "ebcc7944-6da8-42f9-93fd-a54f595a99bc",
+  "name" : "BFF Mock - Paotang Invalid Authcode",
+  "request" : {
+    "urlPath" : "/auth/paotang/callback",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:PT_PASS_INVALID_GRANT"
       }
     }
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "invalid_grant"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "invalid_grant"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     }
   },
-  "priority": 2
+  "uuid" : "ebcc7944-6da8-42f9-93fd-a54f595a99bc",
+  "persistent" : true,
+  "priority" : 2,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 30
 }

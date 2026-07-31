@@ -1,24 +1,33 @@
 {
-  "name": "BFF Mock - Transfer Insufficient Amount",
-  "request": {
-    "method": "POST",
-    "urlPath": "/api/v1/transfers",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:TRANSFER_INSUFFICIENT_AMOUNT"
+  "id" : "53799845-16b9-4925-b5d8-d122bf14352d",
+  "name" : "BFF Mock - Transfer Insufficient Amount",
+  "request" : {
+    "urlPath" : "/api/v1/transfers",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:TRANSFER_INSUFFICIENT_AMOUNT"
       }
     }
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "insufficient funds",
-      "code": "INSUFFICIENT_FUNDS"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "insufficient funds",
+      "code" : "INSUFFICIENT_FUNDS"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     }
   },
-  "priority": 1
+  "uuid" : "53799845-16b9-4925-b5d8-d122bf14352d",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 31
 }

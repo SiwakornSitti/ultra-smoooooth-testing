@@ -1,23 +1,32 @@
 {
-  "name": "BFF Mock - OTP Success",
-  "request": {
-    "method": "POST",
-    "urlPath": "/auth/otp/verify",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:OTP_SUCCESS"
+  "id" : "14e0ef5e-874e-4452-8849-a55a67ef64cd",
+  "name" : "BFF Mock - OTP Success",
+  "request" : {
+    "urlPath" : "/auth/otp/verify",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:OTP_SUCCESS"
       }
     }
   },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "verified": true
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "verified" : true
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     }
   },
-  "priority": 10
+  "uuid" : "14e0ef5e-874e-4452-8849-a55a67ef64cd",
+  "persistent" : true,
+  "priority" : 10,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 35
 }

@@ -1,25 +1,34 @@
 {
-  "name": "BFF Mock - Paotang Success Once Replay",
-  "scenarioName": "bff-paotang-authcode-once",
-  "requiredScenarioState": "TOKEN_ISSUED",
-  "request": {
-    "method": "POST",
-    "urlPath": "/auth/paotang/callback",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:PT_PASS_SUCCESS_ONCE"
+  "id" : "f1af8eed-a15a-4bc4-9146-410b7e562003",
+  "name" : "BFF Mock - Paotang Success Once Replay",
+  "request" : {
+    "urlPath" : "/auth/paotang/callback",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:PT_PASS_SUCCESS_ONCE"
       }
     }
   },
-  "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "invalid_grant"
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "invalid_grant"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     }
   },
-  "priority": 1
+  "uuid" : "f1af8eed-a15a-4bc4-9146-410b7e562003",
+  "persistent" : true,
+  "priority" : 1,
+  "scenarioName" : "bff-paotang-authcode-once",
+  "requiredScenarioState" : "TOKEN_ISSUED",
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 32
 }

@@ -1,26 +1,35 @@
 {
-  "name": "BFF Mock - Create Account",
-  "request": {
-    "method": "POST",
-    "urlPath": "/api/v1/accounts",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:CREATE_ACCOUNT"
+  "id" : "46086e52-6a46-42b0-aaed-633bbe81f00e",
+  "name" : "BFF Mock - Create Account",
+  "request" : {
+    "urlPath" : "/api/v1/accounts",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:CREATE_ACCOUNT"
       }
     }
   },
-  "response": {
-    "status": 201,
-    "jsonBody": {
-      "id": "frontend-mock-account-001",
-      "user_id": "{{jsonPath request.body '$.user_id'}}",
-      "balance": 1000,
-      "currency": "USD"
+  "response" : {
+    "status" : 201,
+    "jsonBody" : {
+      "id" : "frontend-mock-account-001",
+      "user_id" : "{{jsonPath request.body '$.user_id'}}",
+      "balance" : 1000,
+      "currency" : "USD"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     },
-    "transformers": ["response-template"]
-  }
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "46086e52-6a46-42b0-aaed-633bbe81f00e",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 33
 }

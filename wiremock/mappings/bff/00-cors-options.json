@@ -1,21 +1,30 @@
 {
-  "name": "BFF Mock - CORS Preflight",
-  "request": {
-    "method": "OPTIONS",
-    "urlPathPattern": ".*",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:"
+  "id" : "272d501c-13d6-49ab-8de2-4699eb2fcfd4",
+  "name" : "BFF Mock - CORS Preflight",
+  "request" : {
+    "urlPathPattern" : ".*",
+    "method" : "OPTIONS",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:"
       }
     }
   },
-  "response": {
-    "status": 204,
-    "headers": {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Mock-Scenario, Mock-ID"
+  "response" : {
+    "status" : 204,
+    "headers" : {
+      "Access-Control-Allow-Origin" : "*",
+      "Access-Control-Allow-Methods" : "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers" : "Content-Type, Mock-Scenario, Mock-ID"
     }
   },
-  "priority": 1
+  "uuid" : "272d501c-13d6-49ab-8de2-4699eb2fcfd4",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 36
 }

@@ -6,6 +6,7 @@
     "method" : "GET"
   },
   "response" : {
+    "status" : 200,
     "proxyBaseUrl" : "https://pokeapi.co/api/v2",
     "proxyUrlPrefixToRemove" : "/lab/api/stateless"
   },
@@ -17,5 +18,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 34
+  "insertionIndex" : 52
 }

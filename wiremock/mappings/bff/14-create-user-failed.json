@@ -1,23 +1,32 @@
 {
-  "name": "BFF Mock - Create User Failed",
-  "request": {
-    "method": "POST",
-    "urlPath": "/api/v1/users",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:CREATE_USER_FAILED"
+  "id" : "b04d8824-e6af-4db6-9fae-01824bf3ba84",
+  "name" : "BFF Mock - Create User Failed",
+  "request" : {
+    "urlPath" : "/api/v1/users",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:CREATE_USER_FAILED"
       }
     }
   },
-  "response": {
-    "status": 409,
-    "jsonBody": {
-      "error": "User with email already exists"
+  "response" : {
+    "status" : 409,
+    "jsonBody" : {
+      "error" : "User with email already exists"
     },
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     }
   },
-  "priority": 1
+  "uuid" : "b04d8824-e6af-4db6-9fae-01824bf3ba84",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 26
 }

@@ -1,29 +1,36 @@
 {
-  "name": "BFF Mock - List Transfers",
-  "request": {
-    "method": "GET",
-    "urlPath": "/api/v1/transfers",
-    "headers": {
-      "Mock-Scenario": {
-        "contains": "BFF:LIST_TRANSFERS"
+  "id" : "0c9dc094-efec-43af-bbab-197910be4221",
+  "name" : "BFF Mock - List Transfers",
+  "request" : {
+    "urlPath" : "/api/v1/transfers",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:LIST_TRANSFERS"
       }
     }
   },
-  "response": {
-    "status": 200,
-    "jsonBody": [
-      {
-        "id": "frontend-mock-transfer-001",
-        "source_account_id": "frontend-mock-account-001",
-        "target_account_id": "frontend-mock-account-002",
-        "amount": 100,
-        "currency": "THB",
-        "status": "completed"
-      }
-    ],
-    "headers": {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+  "response" : {
+    "status" : 200,
+    "jsonBody" : [ {
+      "id" : "frontend-mock-transfer-001",
+      "source_account_id" : "frontend-mock-account-001",
+      "target_account_id" : "frontend-mock-account-002",
+      "amount" : 100,
+      "currency" : "THB",
+      "status" : "completed"
+    } ],
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
     }
-  }
+  },
+  "uuid" : "0c9dc094-efec-43af-bbab-197910be4221",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 27
 }

@@ -35,7 +35,7 @@
       "folder" : "/lab-stateful/payment-webhook-idempotency"
     }
   },
-  "insertionIndex" : 71,
+  "insertionIndex" : 7,
   "serveEventListeners" : [ {
     "name" : "webhook",
     "parameters" : {
