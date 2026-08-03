@@ -1,0 +1,27 @@
+{
+  "id" : "614a3234-d470-4fb5-bd06-c7af68d20fc5",
+  "name" : "4. VIP Products - Successful Response",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/products/vip",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "product" : "VIP Gold Membership",
+      "discount" : "20%"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "614a3234-d470-4fb5-bd06-c7af68d20fc5",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
+    }
+  },
+  "insertionIndex" : 64
+}

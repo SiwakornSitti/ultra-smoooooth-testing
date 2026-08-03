@@ -1,21 +1,21 @@
 {
-  "id" : "614a3234-d470-4fb5-bd06-c7af68d20fc5",
-  "name" : "4. VIP Products - Successful Response",
+  "id" : "ca8c147a-9fba-4e27-96f4-04fb5e1e849a",
+  "name" : "6. Slow Endpoint - Fixed Delay",
   "request" : {
-    "urlPath" : "/lab/api/stateless/products/vip",
+    "urlPath" : "/lab/api/stateless/slow-endpoint",
     "method" : "GET"
   },
   "response" : {
     "status" : 200,
     "jsonBody" : {
-      "product" : "VIP Gold Membership",
-      "discount" : "20%"
+      "message" : "Delayed response after 500ms"
     },
     "headers" : {
       "Content-Type" : "application/json"
-    }
+    },
+    "fixedDelayMilliseconds" : 500
   },
-  "uuid" : "614a3234-d470-4fb5-bd06-c7af68d20fc5",
+  "uuid" : "ca8c147a-9fba-4e27-96f4-04fb5e1e849a",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {
