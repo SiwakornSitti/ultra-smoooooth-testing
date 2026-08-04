@@ -185,12 +185,9 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
-      BANK_ACCOUNT_SERVICE_URL: http://bank-account-service:8080
     depends_on:
       db:
         condition: service_healthy
-      bank-account-service:
-        condition: service_started
     develop:
       watch:
         - action: rebuild

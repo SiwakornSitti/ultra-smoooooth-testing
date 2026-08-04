@@ -8,6 +8,10 @@ A microservices ecosystem POC demonstrating **Go Workspaces (`go.work`)**, full-
 
 ## 🏗 System Architecture
 
+See the detailed [system architecture document](SYSTEM-ARCHITECTURE.md) for
+component responsibilities, request flows, WireMock modes, and testing
+boundaries.
+
 ```mermaid
 flowchart TD
     subgraph Clients["Client Layer"]
