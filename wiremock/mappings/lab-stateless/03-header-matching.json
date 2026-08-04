@@ -28,8 +28,8 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/3"
     }
   },
-  "insertionIndex" : 48
+  "insertionIndex" : 227
 }
