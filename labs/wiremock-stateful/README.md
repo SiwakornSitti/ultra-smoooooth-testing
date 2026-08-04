@@ -74,10 +74,8 @@ stateDiagram-v2
 
 1. `GET /lab/api/orders/101` in state `Started` ➔ Returns `200 OK` (`status: PENDING`).
 2. `POST /lab/api/orders/101/pay` in state `Started` ➔ Returns `200 OK`, transitions state to `PAID`.
-3. `GET /lab/api/orders/101` in state `PAID` ➔ Returns `200 OK` (`status: PAID`).
-4. `POST /lab/api/orders/101/ship` in state `PAID` ➔ Returns `200 OK`, transitions state to `SHIPPED`.
-5. `GET /lab/api/orders/101` in state `SHIPPED` ➔ Returns `200 OK` (`status: SHIPPED`).
-6. `POST /lab/api/orders/101/ship` in state `SHIPPED` ➔ Returns `400 Bad Request` (`ALREADY_SHIPPED`).
+3. `POST /lab/api/orders/101/ship` in state `PAID` ➔ Returns `200 OK`, transitions state to `SHIPPED`.
+4. `POST /lab/api/orders/101/ship` in state `SHIPPED` ➔ Returns `400 Bad Request` (`ALREADY_SHIPPED`).
 
 ---
 
@@ -161,10 +159,8 @@ labs/wiremock-stateful/
 │   ├── 00-scenario-state.http        # Reset and inspect order scenario
 │   ├── 01-order-get-pending.http     # Mapping 01: PENDING order
 │   ├── 02-order-pay.http              # Mapping 02: pay order
-│   ├── 03-order-get-paid.http         # Mapping 03: PAID order
-│   ├── 04-order-ship.http             # Mapping 04: ship order
-│   ├── 05-order-get-shipped.http      # Mapping 05: SHIPPED order
-│   └── 06-order-ship-invalid.http     # Mapping 06: duplicate ship rejected
+│   ├── 03-order-ship.http              # Mapping 03: ship order
+│   └── 04-order-ship-invalid.http      # Mapping 04: duplicate ship rejected
 ├── retry-recovery-flow/
 │   ├── 00-scenario-state.http         # Reset and inspect retry scenario
 │   ├── 01-retry-fail-1.http           # Mapping 01: first failure
@@ -183,10 +179,8 @@ wiremock/mappings/lab-stateful/
 ├── order-fulfillment-lifecycle/
 │   ├── 01-order-get-pending.json     # GET order when PENDING (Started)
 │   ├── 02-order-pay.json             # Pay order (Started -> PAID)
-│   ├── 03-order-get-paid.json        # GET order when PAID
-│   ├── 04-order-ship.json            # Ship order (PAID -> SHIPPED)
-│   ├── 05-order-get-shipped.json     # GET order when SHIPPED
-│   └── 06-order-ship-invalid.json    # Ship order rejected when ALREADY_SHIPPED
+│   ├── 03-order-ship.json             # Ship order (PAID -> SHIPPED)
+│   └── 04-order-ship-invalid.json     # Ship order rejected when ALREADY_SHIPPED
 ├── retry-recovery-flow/
 │   ├── 01-retry-fail-1.json          # 1st attempt failure (Started -> FAIL_1)
 │   ├── 02-retry-fail-2.json          # 2nd attempt failure (FAIL_1 -> FAIL_2)

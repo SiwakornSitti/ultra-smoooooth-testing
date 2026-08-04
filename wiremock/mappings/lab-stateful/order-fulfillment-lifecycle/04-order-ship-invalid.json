@@ -1,31 +1,29 @@
 {
-  "id" : "69023dad-5479-42b5-9768-a57fb76e28b7",
-  "name" : "4. Order - Ship",
+  "id" : "8bd6cc28-1616-4e4f-b7d3-2575ff79dd3f",
+  "name" : "4. Order - Ship Already Shipped",
   "request" : {
     "urlPath" : "/lab/api/orders/101/ship",
     "method" : "POST"
   },
   "response" : {
-    "status" : 200,
+    "status" : 400,
     "jsonBody" : {
-      "order_id" : "101",
-      "status" : "SHIPPED",
-      "tracking_number" : "TRACK-TH-998877"
+      "error" : "ALREADY_SHIPPED",
+      "message" : "Order 101 has already been shipped"
     },
     "headers" : {
       "Content-Type" : "application/json"
     }
   },
-  "uuid" : "69023dad-5479-42b5-9768-a57fb76e28b7",
+  "uuid" : "8bd6cc28-1616-4e4f-b7d3-2575ff79dd3f",
   "persistent" : true,
   "priority" : 1,
   "scenarioName" : "order-fulfillment-lifecycle",
-  "requiredScenarioState" : "PAID",
-  "newScenarioState" : "SHIPPED",
+  "requiredScenarioState" : "SHIPPED",
   "metadata" : {
     "wiremock-gui" : {
       "folder" : "/lab-stateful/order-fulfillment-lifecycle"
     }
   },
-  "insertionIndex" : 185
+  "insertionIndex" : 183
 }

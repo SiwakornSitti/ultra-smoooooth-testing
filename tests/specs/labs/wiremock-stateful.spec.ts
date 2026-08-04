@@ -78,15 +78,7 @@ test.describe("Lab: WireMock Stateful Stubs & Scenario State Machine", () => {
       message: "Payment successful",
     });
 
-    // 3. State 'PAID' -> Get Order -> Status: PAID
-    const getPaid = await request.get(`${wiremockUrl}/lab/api/orders/101`);
-    expect(getPaid.status()).toBe(HttpStatusCode.Ok);
-    expect(await getPaid.json()).toMatchObject({
-      order_id: "101",
-      status: "PAID",
-    });
-
-    // 4. Action: Ship Order -> State transitions to 'SHIPPED'
+    // 3. Action: Ship Order -> State transitions to 'SHIPPED'
     const shipRes = await request.post(`${wiremockUrl}/lab/api/orders/101/ship`);
     expect(shipRes.status()).toBe(HttpStatusCode.Ok);
     expect(await shipRes.json()).toMatchObject({
@@ -95,16 +87,7 @@ test.describe("Lab: WireMock Stateful Stubs & Scenario State Machine", () => {
       tracking_number: "TRACK-TH-998877",
     });
 
-    // 5. State 'SHIPPED' -> Get Order -> Status: SHIPPED
-    const getShipped = await request.get(`${wiremockUrl}/lab/api/orders/101`);
-    expect(getShipped.status()).toBe(HttpStatusCode.Ok);
-    expect(await getShipped.json()).toMatchObject({
-      order_id: "101",
-      status: "SHIPPED",
-      tracking_number: "TRACK-TH-998877",
-    });
-
-    // 6. Invalid Action: Ship again while state is 'SHIPPED' -> Expected: 400 ALREADY_SHIPPED
+    // 4. Invalid Action: Ship again while state is 'SHIPPED' -> Expected: 400 ALREADY_SHIPPED
     const shipInvalid = await request.post(`${wiremockUrl}/lab/api/orders/101/ship`);
     expect(shipInvalid.status()).toBe(HttpStatusCode.BadRequest);
     expect(await shipInvalid.json()).toMatchObject({
@@ -177,9 +160,8 @@ test.describe("Lab: WireMock Stateful Stubs & Scenario State Machine", () => {
 
   test("Scenario 5: WireMock Admin API Scenario Reset", async ({ request }: { request: APIRequestContext }) => {
     // 1. Advance 'order-fulfillment-lifecycle' state to 'PAID'
-    await request.post(`${wiremockUrl}/lab/api/orders/101/pay`);
-    const checkPaid = await request.get(`${wiremockUrl}/lab/api/orders/101`);
-    expect((await checkPaid.json()).status).toBe("PAID");
+    const payRes = await request.post(`${wiremockUrl}/lab/api/orders/101/pay`);
+    expect(payRes.status()).toBe(HttpStatusCode.Ok);
 
     // 2. Reset all scenarios via WireMock Admin API
     const resetRes = await request.post(`${wiremockUrl}/__admin/scenarios/reset`);

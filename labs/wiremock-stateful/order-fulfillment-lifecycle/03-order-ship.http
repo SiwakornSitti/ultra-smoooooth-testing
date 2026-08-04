@@ -6,11 +6,8 @@
 POST {{baseUrl}}/__admin/scenarios/reset
 Authorization: Basic {{adminUser}} {{adminPassword}}
 
-### Setup: transition order to SHIPPED
+### Setup: transition order to PAID
 POST {{baseUrl}}/lab/api/orders/101/pay
 
-### Setup: ship order
+### Mapping 03: ship order and transition to SHIPPED
 POST {{baseUrl}}/lab/api/orders/101/ship
-
-### Mapping 05: order is SHIPPED
-GET {{baseUrl}}/lab/api/orders/101
