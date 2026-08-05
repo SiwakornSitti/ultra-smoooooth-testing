@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8088
 
-### Scenario 14: asynchronous webhook trigger
+### Scenario 13: webhook trigger
 POST {{baseUrl}}/lab/api/stateless/webhook-orders
 Content-Type: application/json
 X-Correlation-ID: corr-webhook-001

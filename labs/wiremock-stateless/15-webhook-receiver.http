@@ -3,9 +3,10 @@
 ### Scenario 15: webhook callback receiver
 POST {{baseUrl}}/lab/api/stateless/webhook-receiver
 Content-Type: application/json
-X-Correlation-ID: corr-webhook-001
+X-Webhook-Source: wiremock
 
 {
   "event_type": "order.created",
-  "order_id": "ord-webhook-001"
+  "order_id": "ord-webhook-001",
+  "correlation_id": "corr-webhook-001"
 }

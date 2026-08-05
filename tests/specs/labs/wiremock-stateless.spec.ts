@@ -238,11 +238,10 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     ]));
   });
 
-  test("Scenario 13: Stateless Webhook Callback", async ({ request }: { request: APIRequestContext }) => {
+  test("Scenario 13: Stateless Webhook Trigger", async ({ request }: { request: APIRequestContext }) => {
     const res = await request.post(`${wiremockUrl}/lab/api/stateless/webhook-orders`, {
       headers: {
         "Content-Type": "application/json",
-        "X-Correlation-ID": "corr-webhook-001",
       },
       data: {
         order_id: "ord-webhook-001",
@@ -254,41 +253,6 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
       accepted: true,
       order_id: "ord-webhook-001",
     });
-
-    type JournalRequest = {
-      request: {
-        method: string;
-        url: string;
-        body?: string;
-      };
-    };
-
-    let callback: JournalRequest | undefined;
-    for (let attempt = 0; attempt < 30 && !callback; attempt += 1) {
-      const journalRes = await request.get(`${wiremockUrl}/__admin/requests`);
-      const journal = await journalRes.json() as { requests: JournalRequest[] };
-      callback = journal.requests.find(({ request: journalRequest }) =>
-        journalRequest.method === "POST" &&
-        journalRequest.url === "/lab/api/stateless/webhook-receiver" &&
-        journalRequest.body?.includes("ord-webhook-001")
-      );
-
-      if (!callback) await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-
-    expect(callback).toBeDefined();
-    expect(JSON.parse(callback?.request.body ?? "{}")).toEqual({
-      event_type: "order.created",
-      order_id: "ord-webhook-001",
-      correlation_id: "corr-webhook-001",
-    });
-  });
-
-  test("Scenario 14: Catch-All Fallback Stub", async ({ request }: { request: APIRequestContext }) => {
-    const res = await request.get(`${wiremockUrl}/lab/api/stateless/non-existent-route`);
-    expect(res.status()).toBe(HttpStatusCode.NotFound);
-    const body = await res.json();
-    expect(body.error).toBe("NOT_FOUND");
   });
 
   test("Headers: Combined Match Fails When One Condition Fails", async ({ request }: { request: APIRequestContext }) => {

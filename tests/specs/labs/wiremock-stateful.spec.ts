@@ -133,20 +133,6 @@ test.describe("Lab: WireMock Stateful Stubs & Scenario State Machine", () => {
       status: "PROCESSED",
     });
 
-    await expect
-      .poll(async () => {
-        const requestsResponse = await request.get(`${wiremockUrl}/__admin/requests`);
-        const requests = (await requestsResponse.json()).requests as Array<{
-          request?: { url?: string; body?: string };
-        }>;
-        return requests.some(
-            (servedRequest) =>
-            servedRequest.request?.url === "/lab/api/payment-events" &&
-            servedRequest.request.body?.includes("evt-payment-001"),
-        );
-      })
-      .toBe(true);
-
     const replay = await request.post(`${wiremockUrl}/lab/api/payments/pay-101/webhook`, {
       data: webhook,
     });

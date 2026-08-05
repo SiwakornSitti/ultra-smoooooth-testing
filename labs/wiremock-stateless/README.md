@@ -228,18 +228,10 @@ Chunked dribble properties:
 
 Proxy mappings keep WireMock in front of the external API while forwarding the request path. This is useful for testing a real response shape through a local mock boundary. The route depends on outbound network access from the WireMock container.
 
-### Scenario 13: Stateless Webhook Callback
+### Scenario 13: Stateless Webhook Trigger
 
 - **Trigger**: `POST /lab/api/stateless/webhook-orders`
-- **Callback**: `POST /lab/api/stateless/webhook-receiver`
-- **Behavior**: Returns `202 Accepted`, then asynchronously sends an `order.created` callback containing the original `order_id` and `X-Correlation-ID`.
-
-The webhook trigger and receiver are separate stateless mappings. The callback body is configured with `serveEventListeners.parameters.body` because WireMock webhook payloads use a templated string; response mappings continue to use `jsonBody`.
-
-### Scenario 14: Catch-All Fallback Stub
-
-- **Endpoint**: `GET /lab/api/stateless/.*`
-- **Behavior**: Final catch-all stub (`"priority": 10`) returning `404 Not Found` for any unmatched stateless lab routes.
+- **Behavior**: Returns `202 Accepted` with the original `order_id`.
 
 ---
 
@@ -316,7 +308,7 @@ curl -X POST \
   http://localhost:8088/lab/api/stateless/webhook-orders
 ```
 
-The trigger returns `202 Accepted`, then sends a callback to the local receiver. Inspect the callback under the WireMock UI **Matched** requests or through `GET /__admin/requests`.
+The trigger returns `202 Accepted` with the submitted `order_id`.
 
 Try the body-file response:
 
@@ -344,9 +336,7 @@ labs/wiremock-stateless/
 ├── 11-chunked-dribble-delay.http      # Scenario 11: chunked response delay
 ├── 12-pokeapi-mock.http               # Scenario 12: local PokeAPI mock
 ├── 13-proxy-pokeapi.http              # Scenario 13: PokeAPI proxy
-├── 14-webhook-trigger.http            # Scenario 14: webhook trigger
-├── 15-webhook-receiver.http           # Scenario 15: webhook receiver
-└── 16-fallback-catchall.http          # Scenario 16: fallback catch-all
+└── 14-webhook-trigger.http            # Scenario 13: webhook trigger
 
 wiremock/mappings/lab-stateless/
 ├── 01-path-and-query.json            # Query parameter matching
@@ -362,9 +352,7 @@ wiremock/mappings/lab-stateless/
 ├── 11-chunked-dribble-delay.json      # Chunked response delay injection
 ├── 12-pokeapi-mock.json               # Header-selected local PokeAPI mock
 ├── 13-proxy-pokeapi.json              # PokeAPI proxy mapping
-├── 14-webhook-trigger.json            # Stateless webhook trigger
-├── 15-webhook-receiver.json           # Stateless webhook callback receiver
-└── 16-fallback-catchall.json          # Final priority 10 catch-all fallback
+└── 14-webhook-trigger.json            # Scenario 13: webhook trigger
 
 wiremock/__files/lab-stateless/
 └── body-file-response.json             # File-backed response body

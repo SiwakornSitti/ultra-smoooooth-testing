@@ -127,18 +127,12 @@ exercises and debugging.
             target: /app/public
       ```
 
-    - WireMock mappings are also watched and synced:
-
-      ```yaml
-      develop:
-        watch:
-          - action: sync
-            path: ./wiremock/mappings
-            target: /home/wiremock/mappings
-      ```
-
-      Reload mappings through the WireMock Admin API after a file change when
-      the running instance does not pick it up automatically.
+    - WireMock mappings are bind-mounted directly from
+      `./wiremock/mappings` to `/home/wiremock/mappings`. They do not use a
+      separate Compose Watch rule because a path cannot be monitored by Watch
+      when it is already declared as a bind mount. Reload mappings through the
+      WireMock Admin API after a file change when the running instance does not
+      pick it up automatically.
 
     - Use `rebuild` for application source changes because they require a new
       image, dependency install, compiled binary, or Dockerfile update:

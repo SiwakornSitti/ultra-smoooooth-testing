@@ -24,17 +24,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 225,
-  "serveEventListeners" : [ {
-    "name" : "webhook",
-    "parameters" : {
-      "method" : "POST",
-      "url" : "http://localhost:8080/lab/api/stateless/webhook-receiver",
-      "headers" : {
-        "Content-Type" : "application/json",
-        "X-Webhook-Source" : "wiremock"
-      },
-      "body" : "{ \"event_type\": \"order.created\", \"order_id\": \"{{jsonPath originalRequest.body '$.order_id'}}\", \"correlation_id\": \"{{originalRequest.headers.X-Correlation-ID}}\" }"
-    }
-  } ]
+  "insertionIndex" : 225
 }

@@ -1,4 +1,0 @@
-@baseUrl = http://localhost:8088
-
-### Scenario 16: fallback catch-all (expected 404)
-GET {{baseUrl}}/lab/api/stateless/non-existent-route

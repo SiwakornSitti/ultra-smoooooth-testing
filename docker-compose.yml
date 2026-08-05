@@ -46,11 +46,6 @@ services:
       - ./wiremock/mappings:/home/wiremock/mappings
       - ./wiremock/__files:/home/wiremock/__files
       - ./wiremock/extensions:/var/wiremock/extensions:ro
-    develop:
-      watch:
-        - action: sync
-          path: ./wiremock/mappings
-          target: /home/wiremock/mappings
 
   # =========================================================================
   # NOTIFICATION COMMAND QUEUE

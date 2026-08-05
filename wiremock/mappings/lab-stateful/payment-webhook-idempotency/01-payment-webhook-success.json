@@ -35,16 +35,5 @@
       "folder" : "/lab-stateful/payment-webhook-idempotency"
     }
   },
-  "insertionIndex" : 188,
-  "serveEventListeners" : [ {
-    "name" : "webhook",
-    "parameters" : {
-      "method" : "POST",
-      "url" : "http://localhost:8080/lab/api/payment-events",
-      "headers" : {
-        "Content-Type" : "application/json"
-      },
-      "body" : "{ \"event_type\": \"payment.processed\", \"payment_id\": \"{{jsonPath originalRequest.body '$.payment_id'}}\", \"event_id\": \"{{jsonPath originalRequest.body '$.event_id'}}\" }"
-    }
-  } ]
+  "insertionIndex" : 188
 }
