@@ -15,7 +15,7 @@ In modern microservices development and QA testing, an intercepting Man-In-The-M
 
 ## 🧭 How to Learn with This Lab
 
-1. Start the services and Burp Suite with the proxy listener on `127.0.0.1:8080`.
+1. Start the services and Burp Suite with the proxy listener on `0.0.0.0:8080` so clients on the local subnet can connect.
 2. Open `labs/burp-suite/requests.http` with the VS Code REST Client extension and send each request.
 3. Intercept the requests, modify headers or payloads, then forward them.
 4. Move interesting requests to Repeater and compare the response with the exercise instructions below.
@@ -29,7 +29,7 @@ The lab’s REST Client examples are kept in one file: [`requests.http`](./reque
 ```mermaid
 flowchart LR
     Client["Client (Browser / cURL / Playwright)"]
-    Burp["Burp Suite Proxy (127.0.0.1:8080)"]
+    Burp["Burp Suite Proxy (0.0.0.0:8080)"]
     BFF["bff-service (:8080)"]
     Microservices["Downstream Services (user-service, bank-account-service)"]
 
@@ -52,13 +52,15 @@ Open **Burp Suite Community Edition** (or Professional) and select **Temporary P
 ### 2. Verify Proxy Listener
 
 1. Go to **Proxy** ➔ **Proxy settings** (or **Options**).
-2. Under **Proxy Listeners**, verify that a listener is running on `127.0.0.1:8080` with the `Running` checkbox enabled.
+2. Under **Proxy Listeners**, verify that a listener is running on all interfaces at port `8080` with the `Running` checkbox enabled.
+
+The example configuration also scopes Burp to the `192.168.1.0/24` private subnet. Replace the subnet regex in `burp-config-example.json` with the LAN subnet used by your lab before importing it.
 
 ### 3. Install Burp CA Certificate (for HTTPS Inspection)
 
 See the official [PortSwigger certificate setup guide](https://portswigger.net/burp/documentation/desktop/external-browser-config/certificate).
 
-1. Configure your browser or system proxy to `127.0.0.1:8080`.
+1. Configure your browser or system proxy to the Burp host's LAN IP and port `8080` (for example, `192.168.1.10:8080`).
 2. Visit `http://burpsuite` in your browser and click **CA Certificate** to download `cacert.der`.
 3. Or use the repository copy at [`asset/cacert.der`](./asset/cacert.der).
 4. Import `cacert.der` into your browser's Trusted Root Certification Authorities.
