@@ -28,6 +28,7 @@ export default function AccountPage() {
   // Step 3: verify profile status not blocked
   const [profileResult, setProfileResult] = useState("");
   const [profileStatus, setProfileStatus] = useState("");
+  const [profileScenario, setProfileScenario] = useState("");
 
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
@@ -68,9 +69,16 @@ export default function AccountPage() {
   }
 
   async function verifyProfile() {
+    if (!userId) {
+      setProfileResult(JSON.stringify({ error: "user id is required" }));
+      return;
+    }
+
     setProfileResult("Loading...");
     setProfileStatus("");
-    const res = await fetch(`${bffUrl}/api/v1/users/${userId}`);
+    const res = await fetch(`${bffUrl}/api/v1/users/${userId}`, {
+      headers: profileScenario ? { "Mock-Scenario": profileScenario } : {},
+    });
     const data = await parseResponse(res);
     setProfileResult(JSON.stringify(data));
     if (res.ok && data.user) {
@@ -167,7 +175,19 @@ export default function AccountPage() {
 
       <section data-testid="section-verify-profile">
         <h2>3. Verify Profile</h2>
-        <button data-testid="btn-verify-profile" onClick={verifyProfile}>
+        <label>
+          Profile Mock Scenario{" "}
+          <select
+            data-testid="select-profile-scenario"
+            value={profileScenario}
+            onChange={(e) => setProfileScenario(e.target.value)}
+          >
+            <option value="">Real service</option>
+            <option value={MOCK_SCENARIO.BFF.GET_USER}>{MOCK_SCENARIO.BFF.GET_USER}</option>
+          </select>
+        </label>
+        <br />
+        <button data-testid="btn-verify-profile" onClick={verifyProfile} disabled={!bffUrl || !userId}>
           Verify Profile
         </button>
         {profileStatus && (

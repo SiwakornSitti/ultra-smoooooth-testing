@@ -13,4 +13,7 @@ export const MOCK_SCENARIO = {
     INVALID_NUMBER: "SMS:INVALID_NUMBER",
     UNAVAILABLE: "SMS:UNAVAILABLE",
   },
+  BFF: {
+    GET_USER: "BFF:GET_USER",
+  },
 } as const;
