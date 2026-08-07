@@ -23,7 +23,7 @@ export function mockScenario(page: Page) {
   const box = { value: "" };
   page.route("**/*", (route) => {
     const headers = { ...route.request().headers() };
-    if (box.value) headers["mock-scenario"] = box.value;
+    if (box.value && !headers["mock-scenario"]) headers["mock-scenario"] = box.value;
     route.continue({ headers });
   });
 

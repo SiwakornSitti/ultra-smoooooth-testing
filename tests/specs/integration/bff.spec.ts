@@ -12,6 +12,7 @@ import {
   startUserService,
   startBankAccountService,
   startTransferService,
+  startSMSService,
   startBffService,
   stopAll,
   wiremockMapping,
@@ -30,6 +31,7 @@ let wiremockContainer: StartedTestContainer;
 let userServiceContainer: StartedTestContainer;
 let bankAccountServiceContainer: StartedTestContainer;
 let transferServiceContainer: StartedTestContainer;
+let smsServiceContainer: StartedTestContainer;
 let bffContainer: StartedTestContainer;
 let bffUrl: string;
 
@@ -84,6 +86,7 @@ test.beforeAll(async () => {
   wiremockContainer = await startWiremock(network, "paotang", [
     wiremockMapping("paotang", { flat: true }),
     wiremockMapping("otp", { flat: true }),
+    wiremockMapping("sms", { flat: true }),
   ]);
 
   userServiceContainer = await startUserService(network, dbContainer, {
@@ -96,12 +99,17 @@ test.beforeAll(async () => {
   bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {});
 
   transferServiceContainer = await startTransferService(network, dbContainer);
+  smsServiceContainer = await startSMSService(network, {
+    SMS_UPSTREAM_URL: "http://paotang:8080",
+    SMS_API_KEY: "dummy-sms-api-key",
+  });
 
   bffContainer = await startBffService(network, {
     USER_SERVICE_URL: "http://user-service:8080",
     BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
     EKYC_SERVICE_URL: "http://ekyc-service:8080",
     TRANSFER_SERVICE_URL: "http://transfer-service:8080",
+    SMS_SERVICE_URL: "http://sms-service:8080",
   });
 
   const host = bffContainer.getHost();
@@ -126,7 +134,7 @@ test.beforeAll(async () => {
 
 test.afterAll(async () => {
   await stopAll(
-    [bffContainer, transferServiceContainer, bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
+    [bffContainer, smsServiceContainer, transferServiceContainer, bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
     network
   );
 });

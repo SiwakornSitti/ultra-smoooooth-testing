@@ -4,7 +4,7 @@ use (
 	./services/bank-account-service
 	./services/bff-service
 	./services/ekyc-service
-	./services/notification-service
+	./services/sms-service
 	./services/transfer-service
 	./services/user-service
 )

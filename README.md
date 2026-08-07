@@ -28,7 +28,7 @@ flowchart TD
         BankService["bank-account-service (Go :8082)"]
         EKYCService["ekyc-service (Go :8084)"]
         TransferService["transfer-service (Go :8085)"]
-        NotificationService["notification-service (Go :8086)"]
+        SMSService["sms-service (Go :8086)"]
     end
 
     subgraph Persistence["Persistence Layer"]
@@ -39,10 +39,6 @@ flowchart TD
         WireMock["WireMock GUI (:8088 / :8080)"]
     end
 
-    subgraph Messaging["Messaging"]
-        RabbitMQ["RabbitMQ (:5672)"]
-    end
-
     Website -->|HTTP REST| BFF
     Website -.->|Optional Intercept| Burp
     Burp -.->|Proxied Traffic| BFF
@@ -51,14 +47,13 @@ flowchart TD
     BFF -->|GET/POST /accounts| BankService
     BFF -->|POST/GET /ekycs| EKYCService
     BFF -->|POST/GET /transfers| TransferService
+    BFF -->|POST /sms/send| SMSService
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
 
     UserService -->|OAuth & OTP / WireMock| WireMock
-    BankService -->|Publish notification command| RabbitMQ
-    RabbitMQ -->|Consume| NotificationService
-    NotificationService -->|SMS Send| WireMock
+    SMSService -->|SMS Send| WireMock
 ```
 
 ### Microservices
@@ -68,7 +63,7 @@ flowchart TD
 - **`bank-account-service`** (`:8082`): Bank account management microservice backed by PostgreSQL.
 - **`ekyc-service`** (`:8084`): Electronic Know Your Customer identity verification service (`POST /ekycs/verify`, `GET /ekycs/{id}`).
 - **`transfer-service`** (`:8085`): Money movement and transfer history service; atomically updates source and target account balances.
-- **`notification-service`** (`:8086`): Consumes `notification.commands` from RabbitMQ and delivers SMS notifications.
+- **`sms-service`** (`:8086`): Internal HTTP SMS adapter that forwards delivery requests to WireMock.
 - **`website`** (`:3000`): Next.js 16 web client interface.
 - **`wiremock`** (`:8088`): WireMock GUI mocking third-party integrations (Paotang Pass, OTP, SMS).
 
@@ -99,7 +94,7 @@ use (
  ./services/bank-account-service
  ./services/bff-service
  ./services/ekyc-service
- ./services/notification-service
+ ./services/sms-service
  ./services/transfer-service
  ./services/user-service
 )
@@ -127,7 +122,7 @@ make clean
 
 ## 🚀 Running with Docker Compose
 
-Spin up the entire microservices environment (Postgres, RabbitMQ, WireMock, User Service, Bank Account Service, eKYC Service, Transfer Service, Notification Service, BFF Service, and Website):
+Spin up the entire microservices environment (Postgres, WireMock, User Service, Bank Account Service, eKYC Service, Transfer Service, SMS Service, BFF Service, and Website):
 
 ```bash
 # Start all services

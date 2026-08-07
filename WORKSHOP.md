@@ -22,7 +22,7 @@ flowchart TD
         BankService["bank-account-service (Go :8082)"]
         EKYCService["ekyc-service (Go :8084)"]
         TransferService["transfer-service (Go :8085)"]
-        NotificationService["notification-service (Go :8086)"]
+        SMSService["sms-service (Go :8086)"]
     end
 
     subgraph Persistence["Persistence Layer"]
@@ -33,10 +33,6 @@ flowchart TD
         WireMock["WireMock GUI (:8088 / :8080)"]
     end
 
-    subgraph Messaging["Messaging"]
-        RabbitMQ["RabbitMQ (:5672)"]
-    end
-
     Website -->|HTTP REST| BFF
     Website -.->|Optional Intercept| Burp
     Burp -.->|Proxied Traffic| BFF
@@ -45,14 +41,13 @@ flowchart TD
     BFF -->|GET/POST /accounts| BankService
     BFF -->|POST/GET /ekycs| EKYCService
     BFF -->|POST/GET /transfers| TransferService
+    BFF -->|POST /sms/send| SMSService
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
 
     UserService -->|OAuth & OTP / WireMock| WireMock
-    BankService -->|Publish notification command| RabbitMQ
-    RabbitMQ -->|Consume| NotificationService
-    NotificationService -->|SMS Send| WireMock
+    SMSService -->|SMS Send| WireMock
 ```
 
 ---
@@ -113,13 +108,13 @@ flowchart TD
 
 ### 📍 Category 3: External Integrations & Stubbing (WireMock)
 
-#### **Case 5: Outbound SMS Notification Failure (Resilience / Fail-Soft)**
+#### **Case 5: Outbound SMS Notification Failure**
 
-- **Flow**: `Bank Account Service` ➔ `RabbitMQ` ➔ `Notification Service` ➔ `WireMock (SMS Gateway)`
-- **Challenge**: Configure WireMock stub to return `503 Service Unavailable` for `POST /sms/send`. Verify that bank account creation still succeeds (`201 Created`) because SMS is an asynchronous/best-effort notification service.
+- **Flow**: `BFF Service` ➔ `Bank Account Service`, then `BFF Service` ➔ `SMS Service` ➔ `WireMock (SMS Gateway)`
+- **Challenge**: Configure WireMock stub to return `503 Service Unavailable` for `POST /sms/send`. Verify that account creation returns an SMS delivery failure.
 - **Key Assertions**:
-  - Account creation succeeds despite third-party SMS failure.
-  - Error is logged silently without crashing the HTTP response.
+  - Account creation returns a failed response when SMS delivery fails.
+  - `Mock-Scenario` and `Mock-ID` reach the SMS provider.
 
 #### **Case 6: OAuth Token Exchange (Paotang Pass)**
 

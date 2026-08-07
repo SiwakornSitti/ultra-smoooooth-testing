@@ -50,6 +50,11 @@ export default function AccountPage() {
   }
 
   async function createAccount() {
+    if (!userId) {
+      setAccountResult(JSON.stringify({ error: "user id is required" }));
+      return;
+    }
+
     setAccountResult("Loading...");
     const res = await fetch(`${bffUrl}/api/v1/accounts`, {
       method: "POST",
@@ -167,7 +172,7 @@ export default function AccountPage() {
             </select>
           </label>
         )}
-        <button data-testid="btn-create-account" onClick={createAccount}>
+        <button data-testid="btn-create-account" onClick={createAccount} disabled={!bffUrl || !userId}>
           Create Account
         </button>
         <pre data-testid="result-create-account">{accountResult}</pre>
@@ -184,6 +189,7 @@ export default function AccountPage() {
           >
             <option value="">Real service</option>
             <option value={MOCK_SCENARIO.BFF.GET_USER}>{MOCK_SCENARIO.BFF.GET_USER}</option>
+            <option value={MOCK_SCENARIO.BFF.GET_USER_NOT_FOUND}>{MOCK_SCENARIO.BFF.GET_USER_NOT_FOUND}</option>
           </select>
         </label>
         <br />

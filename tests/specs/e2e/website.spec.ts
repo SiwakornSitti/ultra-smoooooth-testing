@@ -11,6 +11,7 @@ import {
   startBankAccountService,
   startTransferService,
   startEKYCService,
+  startSMSService,
   startBffService,
   runSeedData,
   stopAll,
@@ -29,6 +30,7 @@ let userServiceContainer: StartedTestContainer;
 let bankAccountServiceContainer: StartedTestContainer;
 let transferServiceContainer: StartedTestContainer;
 let ekycServiceContainer: StartedTestContainer;
+let smsServiceContainer: StartedTestContainer;
 let bffContainer: StartedTestContainer;
 let websiteContainer: StartedTestContainer;
 let websiteUrl: string;
@@ -55,18 +57,21 @@ test.beforeAll(async () => {
   });
 
   bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {
-    SMS_SERVICE_URL: "http://wiremock:8080",
-    SMS_API_KEY: "dummy-sms-api-key",
   });
 
   transferServiceContainer = await startTransferService(network, dbContainer);
   ekycServiceContainer = await startEKYCService(network, dbContainer);
+  smsServiceContainer = await startSMSService(network, {
+    SMS_UPSTREAM_URL: "http://wiremock:8080",
+    SMS_API_KEY: "dummy-sms-api-key",
+  });
 
   bffContainer = await startBffService(network, {
     USER_SERVICE_URL: "http://user-service:8080",
     BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
     EKYC_SERVICE_URL: "http://ekyc-service:8080",
     TRANSFER_SERVICE_URL: "http://transfer-service:8080",
+    SMS_SERVICE_URL: "http://sms-service:8080",
   });
 
   console.log("Starting website container...");
@@ -105,6 +110,7 @@ test.afterAll(async () => {
       bffContainer,
       transferServiceContainer,
       ekycServiceContainer,
+      smsServiceContainer,
       bankAccountServiceContainer,
       userServiceContainer,
       wiremockContainer,
@@ -170,6 +176,21 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("btn-verify-profile").click();
     await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"blocked"');
     await expect(page.getByText("Account is BLOCKED")).toBeVisible();
+  });
+
+  test("create account reports an SMS delivery failure", async ({ page }) => {
+    await login(page);
+    await page.goto(`${websiteUrl}/account`);
+
+    await page.getByTestId("input-name").fill("SMS Failure User");
+    await page.getByTestId("input-email").fill(`sms-failure-${Date.now()}@example.com`);
+    await page.getByTestId("input-phone").fill("+66800000098");
+    await page.getByTestId("btn-create-user").click();
+    await expect(page.getByTestId("result-create-user")).toContainText('"id"');
+
+    await page.getByTestId("select-sms-scenario").selectOption(MOCK_SCENARIO.SMS.INVALID_NUMBER);
+    await page.getByTestId("btn-create-account").click();
+    await expect(page.getByTestId("result-create-account")).toContainText("SMS delivery failed: invalid_number");
   });
 
   test("create user rejects a missing phone number", async ({ page }) => {

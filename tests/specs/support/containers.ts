@@ -25,6 +25,7 @@ const SERVICE_NAME = {
   BANK_ACCOUNT: "bank-account-service",
   EKYC: "ekyc-service",
   TRANSFER: "transfer-service",
+  SMS: "sms-service",
   BFF: "bff-service",
 } as const;
 
@@ -210,6 +211,23 @@ export async function startTransferService(
     .withEnvironment({
       PORT: PORT.toString(),
       ...getDatabaseEnvironment(database),
+      ...env,
+    })
+    .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
+    .start();
+}
+
+export async function startSMSService(
+  network: StartedNetwork,
+  env: Record<string, string>
+): Promise<StartedTestContainer> {
+  console.log("Starting sms-service container...");
+  return new GenericContainer(`${SERVICE_NAME.SMS}:test`)
+    .withNetwork(network)
+    .withNetworkAliases(SERVICE_NAME.SMS)
+    .withExposedPorts(PORT)
+    .withEnvironment({
+      PORT: PORT.toString(),
       ...env,
     })
     .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))

@@ -1,0 +1,32 @@
+{
+  "id" : "0d138e6a-91d3-49f0-afec-3f64c80ed71e",
+  "name" : "BFF Mock - Get User Profile Not Found",
+  "request" : {
+    "urlPathPattern" : "/api/v1/users/[^/]+",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BFF:GET_USER_NOT_FOUND"
+      }
+    }
+  },
+  "response" : {
+    "status" : 404,
+    "jsonBody" : {
+      "error" : "User not found"
+    },
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Access-Control-Allow-Origin" : "*"
+    }
+  },
+  "uuid" : "0d138e6a-91d3-49f0-afec-3f64c80ed71e",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bff"
+    }
+  },
+  "insertionIndex" : 90
+}

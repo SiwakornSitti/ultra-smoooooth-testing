@@ -15,5 +15,6 @@ export const MOCK_SCENARIO = {
   },
   BFF: {
     GET_USER: "BFF:GET_USER",
+    GET_USER_NOT_FOUND: "BFF:GET_USER_NOT_FOUND",
   },
 } as const;

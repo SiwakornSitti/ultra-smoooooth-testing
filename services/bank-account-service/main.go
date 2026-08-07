@@ -14,7 +14,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib" //nolint:staticcheck
-	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type BankAccount struct {
@@ -25,21 +24,7 @@ type BankAccount struct {
 	Phone    string  `json:"phone,omitempty"`
 }
 
-type NotificationCommand struct {
-	Channel string            `json:"channel"`
-	To      string            `json:"to"`
-	Message string            `json:"message"`
-	Headers map[string]string `json:"headers,omitempty"`
-}
-
-const notificationChannelSMS = "sms"
-
 var db *sql.DB
-
-var (
-	rabbitMQURL       = getEnv("RABBITMQ_URL", "")
-	notificationQueue = getEnv("NOTIFICATION_QUEUE", "notification.commands")
-)
 
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -55,24 +40,6 @@ func writeJSONError(w http.ResponseWriter, message string, status int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(map[string]string{"error": message})
-}
-
-func notificationHeaders(in *http.Request) map[string]string {
-	headers := make(map[string]string, len(in.Header))
-	for name, values := range in.Header {
-		if len(values) > 0 {
-			headers[name] = values[0]
-		}
-	}
-	return headers
-}
-
-func amqpNotificationHeaders(in *http.Request) amqp.Table {
-	headers := amqp.Table{}
-	for name, value := range notificationHeaders(in) {
-		headers[name] = value
-	}
-	return headers
 }
 
 func main() {
@@ -177,60 +144,12 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if a.Phone != "" {
-		enqueueNotification(r, a.Phone, fmt.Sprintf("Your new %s account has been created.", a.Currency))
+		slog.Info("SMS delivery is handled by bff-service", "phone", a.Phone)
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(a)
-}
-
-// enqueueNotification publishes an SMS command. Best-effort: failures are
-// logged, not surfaced to the caller, since account creation already succeeded.
-func enqueueNotification(r *http.Request, to, message string) {
-	if rabbitMQURL == "" {
-		slog.Error("RABBITMQ_URL is not configured")
-		return
-	}
-
-	body, err := json.Marshal(NotificationCommand{
-		Channel: notificationChannelSMS,
-		To:      to,
-		Message: message,
-		Headers: notificationHeaders(r),
-	})
-	if err != nil {
-		slog.Error("Failed to build notification command", "error", err)
-		return
-	}
-
-	conn, err := amqp.Dial(rabbitMQURL)
-	if err != nil {
-		slog.Error("Failed to connect to notification queue", "error", err)
-		return
-	}
-	defer conn.Close()
-
-	channel, err := conn.Channel()
-	if err != nil {
-		slog.Error("Failed to open notification queue channel", "error", err)
-		return
-	}
-	defer channel.Close()
-
-	if _, err := channel.QueueDeclare(notificationQueue, true, false, false, false, nil); err != nil {
-		slog.Error("Failed to declare notification queue", "error", err)
-		return
-	}
-
-	if err := channel.PublishWithContext(r.Context(), "", notificationQueue, false, false, amqp.Publishing{
-		ContentType:  "application/json",
-		DeliveryMode: amqp.Persistent,
-		Headers:      amqpNotificationHeaders(r),
-		Body:         body,
-	}); err != nil {
-		slog.Error("Failed to publish notification command", "error", err)
-	}
 }
 
 func handleGetAccount(w http.ResponseWriter, r *http.Request) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -24,6 +25,7 @@ type BankAccount struct {
 	UserID   string  `json:"user_id"`
 	Balance  float64 `json:"balance"`
 	Currency string  `json:"currency"`
+	Phone    string  `json:"phone,omitempty"`
 }
 
 type UserDetail struct {
@@ -36,6 +38,7 @@ var (
 	bankAccountServiceURL = getEnv("BANK_ACCOUNT_SERVICE_URL", "http://bank-account-service.app.svc.cluster.local")
 	ekycServiceURL        = getEnv("EKYC_SERVICE_URL", "http://ekyc-service.app.svc.cluster.local")
 	transferServiceURL    = getEnv("TRANSFER_SERVICE_URL", "http://transfer-service.app.svc.cluster.local")
+	smsServiceURL         = getEnv("SMS_SERVICE_URL", "http://sms-service.app.svc.cluster.local")
 )
 
 func forwardHeaders(in *http.Request, out *http.Request) {
@@ -246,7 +249,13 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Proxying create account request to bank-account-service")
 
-	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/accounts", bankAccountServiceURL), r.Body)
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		writeJSONError(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/accounts", bankAccountServiceURL), bytes.NewReader(body))
 	if err != nil {
 		slog.Error("Failed to create request", "error", err)
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
@@ -263,10 +272,65 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	w.WriteHeader(resp.StatusCode)
-	if _, err := io.Copy(w, resp.Body); err != nil {
-		slog.Error("Failed to copy response body", "error", err)
+	accountBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		writeJSONError(w, "Failed to read bank account response", http.StatusBadGateway)
+		return
 	}
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		w.WriteHeader(resp.StatusCode)
+		_, _ = w.Write(accountBody)
+		return
+	}
+
+	var account BankAccount
+	if err := json.Unmarshal(accountBody, &account); err != nil {
+		writeJSONError(w, "Invalid bank account response", http.StatusBadGateway)
+		return
+	}
+	if account.Phone != "" {
+		if err := sendAccountSMS(r, account); err != nil {
+			slog.Error("Failed to deliver account creation SMS", "error", err)
+			writeJSONError(w, err.Error(), http.StatusBadGateway)
+			return
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = w.Write(accountBody)
+}
+
+func sendAccountSMS(r *http.Request, account BankAccount) error {
+	body, err := json.Marshal(map[string]string{
+		"to":      account.Phone,
+		"message": fmt.Sprintf("Your new %s account has been created.", account.Currency),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to build SMS request")
+	}
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/sms/send", smsServiceURL), bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("failed to create SMS request")
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("SMS service unavailable")
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		var providerError struct {
+			Error string `json:"error"`
+		}
+		if json.NewDecoder(resp.Body).Decode(&providerError) == nil && providerError.Error != "" {
+			return fmt.Errorf("SMS delivery failed: %s", providerError.Error)
+		}
+		return fmt.Errorf("SMS delivery failed")
+	}
+	return nil
 }
 
 func proxyPaotangCallback(w http.ResponseWriter, r *http.Request) {

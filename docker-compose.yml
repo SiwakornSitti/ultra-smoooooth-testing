@@ -48,20 +48,6 @@ services:
       - ./wiremock/extensions:/var/wiremock/extensions:ro
 
   # =========================================================================
-  # NOTIFICATION COMMAND QUEUE
-  # =========================================================================
-  rabbitmq:
-    image: rabbitmq:3.13-management-alpine
-    container_name: poc-rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   # =========================================================================
   # REAL MICROSERVICES
   # =========================================================================
@@ -107,42 +93,32 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
-      NOTIFICATION_QUEUE: notification.commands
     depends_on:
       db:
-        condition: service_healthy
-      wiremock:
-        condition: service_started
-      rabbitmq:
         condition: service_healthy
     develop:
       watch:
         - action: rebuild
           path: ./services/bank-account-service
 
-  notification-service:
+  sms-service:
     build:
-      context: ./services/notification-service
+      context: ./services/sms-service
       dockerfile: Dockerfile
-    container_name: poc-notification-service
+    container_name: poc-sms-service
     ports:
       - "8086:8080"
     environment:
       PORT: "8080"
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
-      NOTIFICATION_QUEUE: notification.commands
-      SMS_SERVICE_URL: http://wiremock:8080
+      SMS_UPSTREAM_URL: http://wiremock:8080
       SMS_API_KEY: dummy-sms-api-key
     depends_on:
       wiremock:
         condition: service_started
-      rabbitmq:
-        condition: service_healthy
     develop:
       watch:
         - action: rebuild
-          path: ./services/notification-service
+          path: ./services/sms-service
 
   ekyc-service:
     build:
@@ -204,11 +180,13 @@ services:
       BANK_ACCOUNT_SERVICE_URL: ${BANK_ACCOUNT_SERVICE_URL:-http://bank-account-service:8080}
       EKYC_SERVICE_URL: ${EKYC_SERVICE_URL:-http://ekyc-service:8080}
       TRANSFER_SERVICE_URL: ${TRANSFER_SERVICE_URL:-http://transfer-service:8080}
+      SMS_SERVICE_URL: ${SMS_SERVICE_URL:-http://sms-service:8080}
     depends_on:
       - user-service
       - bank-account-service
       - ekyc-service
       - transfer-service
+      - sms-service
     develop:
       watch:
         - action: rebuild
