@@ -140,291 +140,299 @@ test.afterEach(async ({ request }: { request: APIRequestContext }) => {
 });
 
 test.describe("BFF Service Integration Tests", () => {
-  test("should fetch user details and their filtered bank accounts", async ({ request }) => {
-    console.log(`Fetching user details from BFF: ${bffUrl}/api/v1/users/${seededUserId}`);
-    const response = await request.get(`${bffUrl}/api/v1/users/${seededUserId}`);
-    expect(response.ok()).toBeTruthy();
+  test.describe("/api/v1/users", () => {
+    test("should fetch user details and their filtered bank accounts", async ({ request }) => {
+      console.log(`Fetching user details from BFF: ${bffUrl}/api/v1/users/${seededUserId}`);
+      const response = await request.get(`${bffUrl}/api/v1/users/${seededUserId}`);
+      expect(response.ok()).toBeTruthy();
 
-    const data = await response.json();
-    console.log("Response data received:", JSON.stringify(data));
+      const data = await response.json();
+      console.log("Response data received:", JSON.stringify(data));
 
-    expect(data.user).toEqual({
-      id: seededUserId,
-      name: mockUserName,
-      email: mockUserEmail,
-      phone: mockUserPhone,
-      status: "active",
+      expect(data.user).toEqual({
+        id: seededUserId,
+        name: mockUserName,
+        email: mockUserEmail,
+        phone: mockUserPhone,
+        status: "active",
+      });
+
+      // Verify accounts are correctly filtered (only seededUserId's accounts)
+      expect(data.accounts).toHaveLength(2);
+      expect(data.accounts).toContainEqual(
+        expect.objectContaining({
+          user_id: seededUserId,
+          balance: mockAcc1Balance,
+          currency: mockAcc1Currency,
+        })
+      );
+      expect(data.accounts).toContainEqual(
+        expect.objectContaining({
+          user_id: seededUserId,
+          balance: mockAcc2Balance,
+          currency: mockAcc2Currency,
+        })
+      );
     });
 
-    // Verify accounts are correctly filtered (only seededUserId's accounts)
-    expect(data.accounts).toHaveLength(2);
-    expect(data.accounts).toContainEqual(
-      expect.objectContaining({
-        user_id: seededUserId,
-        balance: mockAcc1Balance,
-        currency: mockAcc1Currency,
-      })
-    );
-    expect(data.accounts).toContainEqual(
-      expect.objectContaining({
-        user_id: seededUserId,
-        balance: mockAcc2Balance,
-        currency: mockAcc2Currency,
-      })
-    );
-  });
+    test("should return 404 if user does not exist", async ({ request }) => {
+      // Must be a well-formed UUID (real Postgres UUID column) that was never
+      // inserted, otherwise the query fails on invalid syntax instead of a miss.
+      const nonexistentId = "00000000-0000-0000-0000-000000000000";
+      console.log(`Testing nonexistent user fetch: ${bffUrl}/api/v1/users/${nonexistentId}`);
+      const response = await request.get(`${bffUrl}/api/v1/users/${nonexistentId}`);
+      expect(response.status()).toBe(HttpStatusCode.NotFound);
+    });
 
-  test("should return 404 if user does not exist", async ({ request }) => {
-    // Must be a well-formed UUID (real Postgres UUID column) that was never
-    // inserted, otherwise the query fails on invalid syntax instead of a miss.
-    const nonexistentId = "00000000-0000-0000-0000-000000000000";
-    console.log(`Testing nonexistent user fetch: ${bffUrl}/api/v1/users/${nonexistentId}`);
-    const response = await request.get(`${bffUrl}/api/v1/users/${nonexistentId}`);
-    expect(response.status()).toBe(HttpStatusCode.NotFound);
-  });
+    test("should proxy user creation requests to user-service", async ({ request }) => {
+      console.log(`Creating a user via BFF: ${bffUrl}/api/v1/users`);
+      const response = await request.post(`${bffUrl}/api/v1/users`, {
+        data: {
+          name: "Alice Johnson",
+          email: "alice@example.com",
+          phone: "+66800000002",
+        },
+      });
+      expect(response.status()).toBe(HttpStatusCode.Created);
 
-  test("should proxy user creation requests to user-service", async ({ request }) => {
-    console.log(`Creating a user via BFF: ${bffUrl}/api/v1/users`);
-    const response = await request.post(`${bffUrl}/api/v1/users`, {
-      data: {
+      const data = await response.json();
+      console.log("Created user response:", JSON.stringify(data));
+
+      expect(data).toEqual({
+        id: expect.any(String),
         name: "Alice Johnson",
         email: "alice@example.com",
         phone: "+66800000002",
-      },
-    });
-    expect(response.status()).toBe(HttpStatusCode.Created);
-
-    const data = await response.json();
-    console.log("Created user response:", JSON.stringify(data));
-
-    expect(data).toEqual({
-      id: expect.any(String),
-      name: "Alice Johnson",
-      email: "alice@example.com",
-      phone: "+66800000002",
-      status: "active",
-    });
-  });
-
-  test("should reject duplicate user email", async ({ request }) => {
-    const user = {
-      name: "Duplicate User",
-      email: "duplicate@example.com",
-      phone: "+66800000004",
-    };
-
-    const first = await request.post(`${bffUrl}/api/v1/users`, { data: user });
-    expect(first.status()).toBe(HttpStatusCode.Created);
-
-    const duplicate = await request.post(`${bffUrl}/api/v1/users`, { data: user });
-    expect(duplicate.status()).toBe(HttpStatusCode.Conflict);
-    expect(await duplicate.json()).toEqual({ error: "User with email already exists" });
-  });
-
-  test("should return 400 when phone is missing on user creation", async ({ request }) => {
-    console.log(`Creating a user without phone via BFF: ${bffUrl}/api/v1/users`);
-    const response = await request.post(`${bffUrl}/api/v1/users`, {
-      data: {
-        name: "Bob Missing Phone",
-        email: "bob@example.com",
-      },
-    });
-    expect(response.status()).toBe(HttpStatusCode.BadRequest);
-  });
-
-  test("should return empty accounts array for a user with no accounts", async ({ request }) => {
-    console.log(`Creating a user with no accounts via BFF: ${bffUrl}/api/v1/users`);
-    const createResponse = await request.post(`${bffUrl}/api/v1/users`, {
-      data: {
-        name: "No Accounts User",
-        email: "no-accounts@example.com",
-        phone: "+66800000003",
-      },
-    });
-    expect(createResponse.status()).toBe(HttpStatusCode.Created);
-    const { id: newUserId } = await createResponse.json();
-
-    const response = await request.get(`${bffUrl}/api/v1/users/${newUserId}`);
-    expect(response.ok()).toBeTruthy();
-
-    const data = await response.json();
-    // bff-service encodes an empty accounts slice as JSON null (Go nil-slice
-    // marshaling), not [] -- assert the real wire behavior.
-    expect(data.accounts).toBeNull();
-  });
-
-  test("should return 400 for malformed JSON body on user creation", async ({ request }) => {
-    console.log(`Creating a user with malformed JSON via BFF: ${bffUrl}/api/v1/users`);
-    const response = await request.post(`${bffUrl}/api/v1/users`, {
-      headers: { "Content-Type": "application/json" },
-      data: "{not valid json",
-    });
-    expect(response.status()).toBe(HttpStatusCode.BadRequest);
-  });
-
-  test("should reject Paotang authcode replay (one-time use)", async ({ request }) => {
-    console.log(`Exchanging one-time authcode via BFF: ${bffUrl}/auth/paotang/callback`);
-    const first = await request.post(`${bffUrl}/auth/paotang/callback`, {
-      headers: { "Mock-Scenario": MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE },
-      data: { code: "one-time-authcode" },
-    });
-    expect(first.status()).toBe(HttpStatusCode.Ok);
-    expect(await first.json()).toEqual({
-      access_token: "mock-access-token",
-      token_type: "Bearer",
-      expires_in: 3600,
+        status: "active",
+      });
     });
 
-    const replay = await request.post(`${bffUrl}/auth/paotang/callback`, {
-      headers: { "Mock-Scenario": MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE },
-      data: { code: "one-time-authcode" },
-    });
-    expect(replay.status()).toBe(HttpStatusCode.BadRequest);
-    expect(await replay.json()).toEqual({ error: "invalid_grant" });
-  });
+    test("should reject duplicate user email", async ({ request }) => {
+      const user = {
+        name: "Duplicate User",
+        email: "duplicate@example.com",
+        phone: "+66800000004",
+      };
 
-  test("should verify OTP code successfully", async ({ request }) => {
-    console.log(`Verifying OTP via BFF: ${bffUrl}/auth/otp/verify`);
-    const response = await request.post(`${bffUrl}/auth/otp/verify`, {
-      headers: { "Mock-Scenario": MOCK_SCENARIO.OTP.SUCCESS },
-      data: { phone: mockUserPhone, code: "123456" },
-    });
-    expect(response.status()).toBe(HttpStatusCode.Ok);
-    expect(await response.json()).toEqual({ verified: true });
-  });
+      const first = await request.post(`${bffUrl}/api/v1/users`, { data: user });
+      expect(first.status()).toBe(HttpStatusCode.Created);
 
-  test("should reject invalid OTP code", async ({ request }) => {
-    console.log(`Verifying invalid OTP via BFF: ${bffUrl}/auth/otp/verify`);
-    const response = await request.post(`${bffUrl}/auth/otp/verify`, {
-      headers: { "Mock-Scenario": MOCK_SCENARIO.OTP.INVALID },
-      data: { phone: mockUserPhone, code: "000000" },
+      const duplicate = await request.post(`${bffUrl}/api/v1/users`, { data: user });
+      expect(duplicate.status()).toBe(HttpStatusCode.Conflict);
+      expect(await duplicate.json()).toEqual({ error: "User with email already exists" });
     });
-    expect(response.status()).toBe(HttpStatusCode.BadRequest);
-    expect(await response.json()).toEqual({ error: "invalid_otp" });
-  });
 
-  test("should proxy eKYC verification request to ekyc-service", async ({ request }) => {
-    console.log(`Proxying eKYC verify via BFF: ${bffUrl}/api/v1/ekycs/verify`);
-    const response = await request.post(`${bffUrl}/api/v1/ekycs/verify`, {
-      data: {
-        customer_id: seededUserId,
-        national_id: "1234567890123",
-        full_name: mockUserName,
-      },
+    test("should return 400 when phone is missing on user creation", async ({ request }) => {
+      console.log(`Creating a user without phone via BFF: ${bffUrl}/api/v1/users`);
+      const response = await request.post(`${bffUrl}/api/v1/users`, {
+        data: {
+          name: "Bob Missing Phone",
+          email: "bob@example.com",
+        },
+      });
+      expect(response.status()).toBe(HttpStatusCode.BadRequest);
     });
-    expect(response.status()).toBe(HttpStatusCode.Created);
-    const data = await response.json();
-    expect(data.status).toBe("APPROVED");
-    expect(data.customer_id).toBe(seededUserId);
-  });
 
-  test("should proxy transfer request to transfer-service", async ({ request }) => {
-    console.log(`Proxying transfer via BFF: ${bffUrl}/api/v1/transfers`);
-    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
-      data: {
-        source_account_id: seededSourceAccountId,
-        target_account_id: seededTargetAccountId,
-        amount: 500,
-        currency: mockAcc1Currency,
-      },
-    });
-    expect(response.status()).toBe(HttpStatusCode.Created);
-    const data = await response.json();
-    expect(data.status).toBe("COMPLETED");
-    expect(data.amount).toBe(500);
-  });
+    test("should return empty accounts array for a user with no accounts", async ({ request }) => {
+      console.log(`Creating a user with no accounts via BFF: ${bffUrl}/api/v1/users`);
+      const createResponse = await request.post(`${bffUrl}/api/v1/users`, {
+        data: {
+          name: "No Accounts User",
+          email: "no-accounts@example.com",
+          phone: "+66800000003",
+        },
+      });
+      expect(createResponse.status()).toBe(HttpStatusCode.Created);
+      const { id: newUserId } = await createResponse.json();
 
-  test("should reject transfer with insufficient funds", async ({ request }) => {
-    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
-      data: {
-        source_account_id: seededSourceAccountId,
-        target_account_id: seededTargetAccountId,
-        amount: mockAcc1Balance + 1,
-        currency: mockAcc1Currency,
-      },
+      const response = await request.get(`${bffUrl}/api/v1/users/${newUserId}`);
+      expect(response.ok()).toBeTruthy();
+
+      const data = await response.json();
+      // bff-service encodes an empty accounts slice as JSON null (Go nil-slice
+      // marshaling), not [] -- assert the real wire behavior.
+      expect(data.accounts).toBeNull();
     });
-    expect(response.status()).toBe(HttpStatusCode.BadRequest);
-    expect(await response.json()).toEqual({
-      error: "insufficient funds",
-      code: "INSUFFICIENT_FUNDS",
+
+    test("should return 400 for malformed JSON body on user creation", async ({ request }) => {
+      console.log(`Creating a user with malformed JSON via BFF: ${bffUrl}/api/v1/users`);
+      const response = await request.post(`${bffUrl}/api/v1/users`, {
+        headers: { "Content-Type": "application/json" },
+        data: "{not valid json",
+      });
+      expect(response.status()).toBe(HttpStatusCode.BadRequest);
     });
   });
 
-  test("should retrieve a created transfer through the BFF", async ({ request }) => {
-    const createResponse = await request.post(`${bffUrl}/api/v1/transfers`, {
-      data: {
-        source_account_id: seededSourceAccountId,
-        target_account_id: seededTargetAccountId,
-        amount: 125,
-        currency: mockAcc1Currency,
-      },
+  test.describe("/auth", () => {
+    test("should reject Paotang authcode replay (one-time use)", async ({ request }) => {
+      console.log(`Exchanging one-time authcode via BFF: ${bffUrl}/auth/paotang/callback`);
+      const first = await request.post(`${bffUrl}/auth/paotang/callback`, {
+        headers: { "Mock-Scenario": MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE },
+        data: { code: "one-time-authcode" },
+      });
+      expect(first.status()).toBe(HttpStatusCode.Ok);
+      expect(await first.json()).toEqual({
+        access_token: "mock-access-token",
+        token_type: "Bearer",
+        expires_in: 3600,
+      });
+
+      const replay = await request.post(`${bffUrl}/auth/paotang/callback`, {
+        headers: { "Mock-Scenario": MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE },
+        data: { code: "one-time-authcode" },
+      });
+      expect(replay.status()).toBe(HttpStatusCode.BadRequest);
+      expect(await replay.json()).toEqual({ error: "invalid_grant" });
     });
-    expect(createResponse.status()).toBe(HttpStatusCode.Created);
 
-    const created = await createResponse.json();
-    expect(createResponse.headers().location).toBe(`/transfers/${created.id}`);
+    test("should verify OTP code successfully", async ({ request }) => {
+      console.log(`Verifying OTP via BFF: ${bffUrl}/auth/otp/verify`);
+      const response = await request.post(`${bffUrl}/auth/otp/verify`, {
+        headers: { "Mock-Scenario": MOCK_SCENARIO.OTP.SUCCESS },
+        data: { phone: mockUserPhone, code: "123456" },
+      });
+      expect(response.status()).toBe(HttpStatusCode.Ok);
+      expect(await response.json()).toEqual({ verified: true });
+    });
 
-    const response = await request.get(`${bffUrl}/api/v1/transfers/${created.id}`);
-    expect(response.status()).toBe(HttpStatusCode.Ok);
-    expect(await response.json()).toEqual(
-      expect.objectContaining({
-        id: created.id,
-        source_account_id: seededSourceAccountId,
-        target_account_id: seededTargetAccountId,
-        amount: 125,
-        currency: mockAcc1Currency,
-        status: "COMPLETED",
-      })
-    );
+    test("should reject invalid OTP code", async ({ request }) => {
+      console.log(`Verifying invalid OTP via BFF: ${bffUrl}/auth/otp/verify`);
+      const response = await request.post(`${bffUrl}/auth/otp/verify`, {
+        headers: { "Mock-Scenario": MOCK_SCENARIO.OTP.INVALID },
+        data: { phone: mockUserPhone, code: "000000" },
+      });
+      expect(response.status()).toBe(HttpStatusCode.BadRequest);
+      expect(await response.json()).toEqual({ error: "invalid_otp" });
+    });
   });
 
-  test("should list transfers through the BFF", async ({ request }) => {
-    const response = await request.get(`${bffUrl}/api/v1/transfers`);
-    expect(response.status()).toBe(HttpStatusCode.Ok);
+  test.describe("/api/v1/ekycs", () => {
+    test("should proxy eKYC verification request to ekyc-service", async ({ request }) => {
+      console.log(`Proxying eKYC verify via BFF: ${bffUrl}/api/v1/ekycs/verify`);
+      const response = await request.post(`${bffUrl}/api/v1/ekycs/verify`, {
+        data: {
+          customer_id: seededUserId,
+          national_id: "1234567890123",
+          full_name: mockUserName,
+        },
+      });
+      expect(response.status()).toBe(HttpStatusCode.Created);
+      const data = await response.json();
+      expect(data.status).toBe("APPROVED");
+      expect(data.customer_id).toBe(seededUserId);
+    });
+  });
 
-    const transfers = await response.json();
-    expect(Array.isArray(transfers)).toBeTruthy();
-    expect(transfers.length).toBeGreaterThan(0);
-    expect(transfers).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
+  test.describe("/api/v1/transfers", () => {
+    test("should proxy transfer request to transfer-service", async ({ request }) => {
+      console.log(`Proxying transfer via BFF: ${bffUrl}/api/v1/transfers`);
+      const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+        data: {
           source_account_id: seededSourceAccountId,
           target_account_id: seededTargetAccountId,
+          amount: 500,
+          currency: mockAcc1Currency,
+        },
+      });
+      expect(response.status()).toBe(HttpStatusCode.Created);
+      const data = await response.json();
+      expect(data.status).toBe("COMPLETED");
+      expect(data.amount).toBe(500);
+    });
+
+    test("should reject transfer with insufficient funds", async ({ request }) => {
+      const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+        data: {
+          source_account_id: seededSourceAccountId,
+          target_account_id: seededTargetAccountId,
+          amount: mockAcc1Balance + 1,
+          currency: mockAcc1Currency,
+        },
+      });
+      expect(response.status()).toBe(HttpStatusCode.BadRequest);
+      expect(await response.json()).toEqual({
+        error: "insufficient funds",
+        code: "INSUFFICIENT_FUNDS",
+      });
+    });
+
+    test("should retrieve a created transfer through the BFF", async ({ request }) => {
+      const createResponse = await request.post(`${bffUrl}/api/v1/transfers`, {
+        data: {
+          source_account_id: seededSourceAccountId,
+          target_account_id: seededTargetAccountId,
+          amount: 125,
+          currency: mockAcc1Currency,
+        },
+      });
+      expect(createResponse.status()).toBe(HttpStatusCode.Created);
+
+      const created = await createResponse.json();
+      expect(createResponse.headers().location).toBe(`/transfers/${created.id}`);
+
+      const response = await request.get(`${bffUrl}/api/v1/transfers/${created.id}`);
+      expect(response.status()).toBe(HttpStatusCode.Ok);
+      expect(await response.json()).toEqual(
+        expect.objectContaining({
+          id: created.id,
+          source_account_id: seededSourceAccountId,
+          target_account_id: seededTargetAccountId,
+          amount: 125,
+          currency: mockAcc1Currency,
           status: "COMPLETED",
-        }),
-      ])
-    );
-  });
+        })
+      );
+    });
 
-  test("should reject a transfer between the same account", async ({ request }) => {
-    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
-      data: {
-        source_account_id: seededSourceAccountId,
-        target_account_id: seededSourceAccountId,
-        amount: 100,
-        currency: mockAcc1Currency,
-      },
-    });
-    expect(response.status()).toBe(HttpStatusCode.BadRequest);
-    expect(await response.json()).toEqual({
-      error: "source and target accounts must be different",
-      code: "VALIDATION_FAILED",
-    });
-  });
+    test("should list transfers through the BFF", async ({ request }) => {
+      const response = await request.get(`${bffUrl}/api/v1/transfers`);
+      expect(response.status()).toBe(HttpStatusCode.Ok);
 
-  test("should reject a transfer with a currency mismatch", async ({ request }) => {
-    const response = await request.post(`${bffUrl}/api/v1/transfers`, {
-      data: {
-        source_account_id: seededSourceAccountId,
-        target_account_id: seededTargetAccountId,
-        amount: 100,
-        currency: "THB",
-      },
+      const transfers = await response.json();
+      expect(Array.isArray(transfers)).toBeTruthy();
+      expect(transfers.length).toBeGreaterThan(0);
+      expect(transfers).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            source_account_id: seededSourceAccountId,
+            target_account_id: seededTargetAccountId,
+            status: "COMPLETED",
+          }),
+        ])
+      );
     });
-    expect(response.status()).toBe(HttpStatusCode.BadRequest);
-    expect(await response.json()).toEqual({
-      error: "source, target, and transfer currencies must match",
-      code: "CURRENCY_MISMATCH",
+
+    test("should reject a transfer between the same account", async ({ request }) => {
+      const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+        data: {
+          source_account_id: seededSourceAccountId,
+          target_account_id: seededSourceAccountId,
+          amount: 100,
+          currency: mockAcc1Currency,
+        },
+      });
+      expect(response.status()).toBe(HttpStatusCode.BadRequest);
+      expect(await response.json()).toEqual({
+        error: "source and target accounts must be different",
+        code: "VALIDATION_FAILED",
+      });
+    });
+
+    test("should reject a transfer with a currency mismatch", async ({ request }) => {
+      const response = await request.post(`${bffUrl}/api/v1/transfers`, {
+        data: {
+          source_account_id: seededSourceAccountId,
+          target_account_id: seededTargetAccountId,
+          amount: 100,
+          currency: "THB",
+        },
+      });
+      expect(response.status()).toBe(HttpStatusCode.BadRequest);
+      expect(await response.json()).toEqual({
+        error: "source, target, and transfer currencies must match",
+        code: "CURRENCY_MISMATCH",
+      });
     });
   });
 });

@@ -81,7 +81,7 @@ test.beforeAll(async () => {
   const host = websiteContainer.getHost();
   const port = websiteContainer.getMappedPort(3000);
   websiteUrl = `http://${host}:${port}`;
-  console.log(`qa-website container is ready at: ${websiteUrl}`);
+  console.log(`website container is ready at: ${websiteUrl}`);
 
   // 2. Run migrations as the last infrastructure step. This flow creates its
   // own data through the UI.
@@ -151,6 +151,45 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("btn-verify-profile").click();
     await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"blocked"');
     await expect(page.getByText("Account is BLOCKED")).toBeVisible();
+  });
+
+  test("create user rejects a missing phone number", async ({ page }) => {
+    await login(page);
+    await page.goto(`${websiteUrl}/account`);
+
+    await page.getByTestId("input-name").fill("Missing Phone User");
+    await page.getByTestId("input-email").fill(`missing-phone-${Date.now()}@example.com`);
+    await page.getByTestId("input-phone").fill("");
+    await page.getByTestId("btn-create-user").click();
+
+    await expect(page.getByTestId("result-create-user")).toContainText("phone is required");
+  });
+
+  test("create user rejects a duplicate email", async ({ page }) => {
+    await login(page);
+    await page.goto(`${websiteUrl}/account`);
+
+    const email = `duplicate-${Date.now()}@example.com`;
+    await page.getByTestId("input-name").fill("First Duplicate User");
+    await page.getByTestId("input-email").fill(email);
+    await page.getByTestId("input-phone").fill("+66800000010");
+    await page.getByTestId("btn-create-user").click();
+    await expect(page.getByTestId("result-create-user")).toContainText('"id"');
+
+    await page.getByTestId("input-name").fill("Second Duplicate User");
+    await page.getByTestId("input-phone").fill("+66800000011");
+    await page.getByTestId("btn-create-user").click();
+    await expect(page.getByTestId("result-create-user")).toContainText("User with email already exists");
+  });
+
+  test("verify profile shows a missing user error", async ({ page }) => {
+    await login(page);
+    await page.goto(`${websiteUrl}/account`);
+
+    await page.getByTestId("input-user-id").fill("00000000-0000-0000-0000-000000000000");
+    await page.getByTestId("btn-verify-profile").click();
+
+    await expect(page.getByTestId("result-verify-profile")).toContainText("User not found");
   });
 
   test("login: authcode exchange then OTP verify success", async ({ page }) => {
