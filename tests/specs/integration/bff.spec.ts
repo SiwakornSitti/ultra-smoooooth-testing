@@ -83,24 +83,24 @@ test.beforeAll(async () => {
   dbContainer = await startPostgres(network);
 
   console.log("Starting WireMock container to stand in for Paotang Pass, OTP...");
-  wiremockContainer = await startWiremock(network, "paotang", [
+  wiremockContainer = await startWiremock(network, "wiremock", [
     wiremockMapping("paotang", { flat: true }),
     wiremockMapping("otp", { flat: true }),
     wiremockMapping("sms", { flat: true }),
   ]);
 
   userServiceContainer = await startUserService(network, dbContainer, {
-    PAOTANG_SERVICE_URL: "http://paotang:8080",
+    PAOTANG_SERVICE_URL: "http://wiremock:8080",
     PAOTANG_CLIENT_ID: "dummy-client-id",
     PAOTANG_CLIENT_SECRET: "dummy-client-secret",
-    OTP_SERVICE_URL: "http://paotang:8080",
+    OTP_SERVICE_URL: "http://wiremock:8080",
   });
 
   bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {});
 
   transferServiceContainer = await startTransferService(network, dbContainer);
   smsServiceContainer = await startSMSService(network, {
-    SMS_UPSTREAM_URL: "http://paotang:8080",
+    SMS_UPSTREAM_URL: "http://wiremock:8080",
     SMS_API_KEY: "dummy-sms-api-key",
   });
 

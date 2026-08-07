@@ -25,7 +25,7 @@ import { MOCK_SCENARIO, mockScenario } from "../support/mock-scenario";
 
 let network: StartedNetwork;
 let dbContainer: StartedPostgreSqlContainer;
-let wiremockContainer: StartedTestContainer;
+let wiremock: StartedTestContainer;
 let userServiceContainer: StartedTestContainer;
 let bankAccountServiceContainer: StartedTestContainer;
 let transferServiceContainer: StartedTestContainer;
@@ -43,7 +43,7 @@ test.beforeAll(async () => {
   dbContainer = await startPostgres(network);
 
   console.log("Starting WireMock container for Paotang Pass + SMS service...");
-  wiremockContainer = await startWiremock(network, "wiremock", [
+  wiremock = await startWiremock(network, "wiremock", [
     wiremockMapping("paotang"),
     wiremockMapping("sms"),
     wiremockMapping("otp"),
@@ -113,7 +113,7 @@ test.afterAll(async () => {
       smsServiceContainer,
       bankAccountServiceContainer,
       userServiceContainer,
-      wiremockContainer,
+      wiremock,
       dbContainer,
     ],
     network
