@@ -6,7 +6,7 @@
     "method" : "GET",
     "headers" : {
       "Mock-Scenario" : {
-        "contains" : "BFF:GET_USER_NOT_FOUND"
+        "contains" : "BFF:GET_USER:INVALID"
       }
     }
   },

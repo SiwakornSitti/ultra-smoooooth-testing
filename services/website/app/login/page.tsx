@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { AUTH_SESSION_KEY } from "../lib/auth";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
+
+const THAI_MOBILE_PHONE_PATTERN = /^\+66[689]\d{8}$/;
+
+function randomThaiMobileNumber() {
+  const mobilePrefix = ["6", "8", "9"][Math.floor(Math.random() * 3)];
+  const subscriberNumber = Math.floor(Math.random() * 100_000_000)
+    .toString()
+    .padStart(8, "0");
+  return `+66${mobilePrefix}${subscriberNumber}`;
+}
 
 export default function LoginPage() {
   const bffUrl = useBffUrl();
@@ -21,6 +30,11 @@ export default function LoginPage() {
   const [otpCode, setOtpCode] = useState("123456");
   const [otpScenario, setOtpScenario] = useState<string>(MOCK_SCENARIO.OTP.SUCCESS);
   const [otpResult, setOtpResult] = useState("");
+  const phoneValid = THAI_MOBILE_PHONE_PATTERN.test(phone);
+
+  useEffect(() => {
+    setPhone(randomThaiMobileNumber());
+  }, []);
 
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
@@ -44,6 +58,11 @@ export default function LoginPage() {
   }
 
   async function verifyOtp() {
+    if (!phoneValid) {
+      setOtpResult(JSON.stringify({ error: "phone must match +66 followed by a valid 9-digit Thai mobile number" }));
+      return;
+    }
+
     setOtpResult("Loading...");
     const res = await fetch(`${bffUrl}/auth/otp/verify`, {
       method: "POST",
@@ -63,7 +82,6 @@ export default function LoginPage() {
   return (
     <main className="page-shell">
       <header className="page-header">
-        <Link className="home-link" href="/">← Home</Link>
         <p className="eyebrow">Secure access</p>
         <h1>Sign in</h1>
         <p className="subtitle">Exchange your Paotang auth code, then verify your identity with a one-time password.</p>
@@ -110,8 +128,22 @@ export default function LoginPage() {
         <h2>2. Verify OTP</h2>
         <label>
           Phone{" "}
-          <input data-testid="input-phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <input
+            data-testid="input-phone"
+            type="tel"
+            inputMode="tel"
+            pattern="\\+66[689][0-9]{8}"
+            title="Enter a Thai mobile number such as +66800000000"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            aria-invalid={!phoneValid}
+          />
         </label>
+        {!phoneValid && (
+          <p data-testid="phone-validation-error">
+            Enter a valid Thai mobile number starting with +66 and followed by exactly 9 digits.
+          </p>
+        )}
         <br />
         <label>
           OTP Code{" "}
@@ -127,7 +159,7 @@ export default function LoginPage() {
             </select>
           </label>
         )}
-        <button data-testid="btn-verify-otp" onClick={verifyOtp} disabled={!tokenExchanged}>
+        <button data-testid="btn-verify-otp" onClick={verifyOtp} disabled={!tokenExchanged || !phoneValid}>
           Verify OTP
         </button>
         <pre data-testid="result-otp">{otpResult}</pre>

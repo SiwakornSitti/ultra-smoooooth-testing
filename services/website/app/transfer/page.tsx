@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
+import { LogoutButton } from "../lib/logout-button";
 
 export default function TransferPage() {
   const authenticated = useRequireLogin();
@@ -49,6 +50,7 @@ export default function TransferPage() {
         <p className="eyebrow">Payments</p>
         <h1>Transfer money</h1>
         <p className="subtitle">Move funds securely between accounts and review completed transfers.</p>
+        <LogoutButton />
       </header>
 
       <div className="page-grid">

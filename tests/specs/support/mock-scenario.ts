@@ -14,6 +14,10 @@ export const MOCK_SCENARIO = {
     SUCCESS: "SMS:SUCCESS",
     INVALID_NUMBER: "SMS:INVALID_NUMBER",
   },
+  BFF: {
+    GET_USER_SUCCESS: "BFF:GET_USER:SUCCESS",
+    GET_USER_INVALID: "BFF:GET_USER:INVALID",
+  },
 } as const;
 
 // mockScenario intercepts every outgoing request from the page and injects

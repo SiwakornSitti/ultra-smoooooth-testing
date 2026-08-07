@@ -1,12 +1,23 @@
+"use client";
+
 import Link from "next/link";
+import { useRequireLogin } from "./lib/auth";
+import { LogoutButton } from "./lib/logout-button";
 
 export default function Home() {
+  const authenticated = useRequireLogin();
+
+  if (!authenticated) {
+    return null;
+  }
+
   return (
     <main className="page-shell">
       <header className="page-header">
         <p className="eyebrow">Ultra Smoooooth Testing</p>
         <h1>QA Automation Website</h1>
         <p className="subtitle">Drive real service flows through the BFF while external integrations stay safely mocked.</p>
+        <LogoutButton />
       </header>
       <ul className="home-links">
         <li>

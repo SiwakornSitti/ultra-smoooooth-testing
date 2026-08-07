@@ -81,7 +81,7 @@ adapter used by the BFF to call the external SMS provider.
 | `ekyc-service` | eKYC verification requests and retrieval | PostgreSQL |
 | `transfer-service` | Transfer validation, balance movement, and transfer history | PostgreSQL; updates both account balances and the transfer record in one transaction |
 | `sms-service` | Internal HTTP adapter that sends SMS | SMS provider through WireMock |
-| PostgreSQL | Shared local database used by the persistence-backed services | Named volume `postgres-data-v18` |
+| PostgreSQL | Shared local database used by the persistence-backed services | Temporary container-local storage |
 | WireMock | Deterministic external-provider mocks and optional BFF façade | Paotang, OTP, SMS, stateless labs, stateful labs, and BFF mappings |
 
 ## Request flows

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
+import { LogoutButton } from "../lib/logout-button";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
 
 export default function AccountPage() {
@@ -101,7 +102,8 @@ export default function AccountPage() {
         <Link className="home-link" href="/">← Home</Link>
         <p className="eyebrow">Customer workspace</p>
         <h1>Create account</h1>
-        <p className="subtitle">Set up a customer profile, open an account, and verify its profile status.</p>
+        <p className="subtitle">Set up a customer profile, open an account, and retrieve the user profile.</p>
+        <LogoutButton />
         <label className="toggle-field">
           <input
             data-testid="toggle-mock-controls"
@@ -179,7 +181,16 @@ export default function AccountPage() {
       </section>
 
       <section data-testid="section-verify-profile">
-        <h2>3. Verify Profile</h2>
+        <h2>3. Get User Profile</h2>
+        <label>
+          User ID{" "}
+          <input
+            data-testid="input-profile-user-id"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+          />
+        </label>
+        <br />
         <label>
           Profile Mock Scenario{" "}
           <select
@@ -188,13 +199,13 @@ export default function AccountPage() {
             onChange={(e) => setProfileScenario(e.target.value)}
           >
             <option value="">Real service</option>
-            <option value={MOCK_SCENARIO.BFF.GET_USER}>{MOCK_SCENARIO.BFF.GET_USER}</option>
-            <option value={MOCK_SCENARIO.BFF.GET_USER_NOT_FOUND}>{MOCK_SCENARIO.BFF.GET_USER_NOT_FOUND}</option>
+            <option value={MOCK_SCENARIO.BFF.GET_USER_SUCCESS}>{MOCK_SCENARIO.BFF.GET_USER_SUCCESS}</option>
+            <option value={MOCK_SCENARIO.BFF.GET_USER_INVALID}>{MOCK_SCENARIO.BFF.GET_USER_INVALID}</option>
           </select>
         </label>
         <br />
         <button data-testid="btn-verify-profile" onClick={verifyProfile} disabled={!bffUrl || !userId}>
-          Verify Profile
+          Get User Profile
         </button>
         {profileStatus && (
           <p style={{ color: profileStatus === "blocked" ? "red" : "green" }}>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
+import { LogoutButton } from "../lib/logout-button";
 
 export default function EkycPage() {
   const authenticated = useRequireLogin();
@@ -34,6 +35,7 @@ export default function EkycPage() {
         <p className="eyebrow">Identity</p>
         <h1>eKYC verification</h1>
         <p className="subtitle">Verify a customer identity through the BFF.</p>
+        <LogoutButton />
       </header>
 
       <section data-testid="section-ekyc">

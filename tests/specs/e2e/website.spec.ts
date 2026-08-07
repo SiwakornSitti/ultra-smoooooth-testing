@@ -134,7 +134,24 @@ async function login(page: Page) {
 }
 
 test.describe("QA website full e2e flow", () => {
-  test("create user, create account (SMS success), verify profile not blocked", async ({ page }) => {
+  test("requires login before showing the home navigation", async ({ page }) => {
+    await page.goto(websiteUrl);
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(page.getByTestId("link-account")).not.toBeVisible();
+  });
+
+  test("logs out and requires login again", async ({ page }) => {
+    await login(page);
+    await page.goto(websiteUrl);
+
+    await page.getByTestId("btn-logout").click();
+    await expect(page).toHaveURL(/\/login$/);
+
+    await page.goto(websiteUrl);
+    await expect(page).toHaveURL(/\/login$/);
+  });
+
+  test("create user, create account (SMS success), get user profile not blocked", async ({ page }) => {
     const setScenario = mockScenario(page);
 
     await login(page);
@@ -162,7 +179,7 @@ test.describe("QA website full e2e flow", () => {
     await expect(page.getByText("Account is active")).toBeVisible();
   });
 
-  test("verify profile shows blocked status", async ({ page }) => {
+  test("get user profile shows blocked status", async ({ page }) => {
     await login(page);
     await page.goto(`${websiteUrl}/account`);
 
@@ -222,7 +239,7 @@ test.describe("QA website full e2e flow", () => {
     await expect(page.getByTestId("result-create-user")).toContainText("User with email already exists");
   });
 
-  test("verify profile shows a missing user error", async ({ page }) => {
+  test("get user profile shows a missing user error", async ({ page }) => {
     await login(page);
     await page.goto(`${websiteUrl}/account`);
 
@@ -303,5 +320,19 @@ test.describe("QA website full e2e flow", () => {
     setScenario(MOCK_SCENARIO.OTP.INVALID);
     await page.getByTestId("btn-verify-otp").click();
     await expect(page.getByTestId("result-otp")).toContainText("invalid_otp");
+  });
+
+  test("OTP verify validates the phone pattern on the client", async ({ page }) => {
+    const setScenario = mockScenario(page);
+    await page.goto(`${websiteUrl}/login`);
+
+    setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
+    await page.getByTestId("btn-paotang-login").click();
+    await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
+
+    await page.getByTestId("input-phone").fill("0800000000");
+
+    await expect(page.getByTestId("phone-validation-error")).toBeVisible();
+    await expect(page.getByTestId("btn-verify-otp")).toBeDisabled();
   });
 });
