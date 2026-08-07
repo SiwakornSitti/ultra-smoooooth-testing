@@ -7,6 +7,7 @@ import * as dotenv from "dotenv";
 import {
   startNetwork,
   startPostgres,
+  runMigrations,
   startWiremock,
   startUserService,
   startBankAccountService,
@@ -16,6 +17,7 @@ import {
   wiremockMapping,
 } from "../support/containers";
 import { MOCK_SCENARIO } from "../support/mock-scenario";
+import { DirectSeedIds, SeedData, seedTestData, seedTestDataDirectly } from "../support/seed-data";
 
 // Try loading multiple possible .env locations
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
@@ -46,88 +48,21 @@ let seededUserId: string;
 let seededSourceAccountId: string;
 let seededTargetAccountId: string;
 
-const directSeedIds = {
+const seedData: SeedData = {
+  userName: mockUserName,
+  userEmail: mockUserEmail,
+  userPhone: mockUserPhone,
+  sourceBalance: mockAcc1Balance,
+  sourceCurrency: mockAcc1Currency,
+  targetBalance: mockAcc2Balance,
+  targetCurrency: mockAcc2Currency,
+};
+
+const directSeedIds: DirectSeedIds = {
   user: "00000000-0000-0000-0000-000000000021",
   sourceAccount: "00000000-0000-0000-0000-000000000022",
   targetAccount: "00000000-0000-0000-0000-000000000023",
-} as const;
-
-const sqlLiteral = (value: string) => `'${value.replaceAll("'", "''")}'`;
-
-async function seedTestData(userServiceUrl: string, bankAccountServiceUrl: string) {
-  console.log("Seeding test data...");
-
-  const createUserRes = await fetch(`${userServiceUrl}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: mockUserName, email: mockUserEmail, phone: mockUserPhone }),
-  });
-  const createdUser = await createUserRes.json();
-  seededUserId = createdUser.id;
-
-  const sourceAccountResponse = await fetch(`${bankAccountServiceUrl}/accounts`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      user_id: seededUserId,
-      balance: mockAcc1Balance,
-      currency: mockAcc1Currency,
-    }),
-  });
-  seededSourceAccountId = (await sourceAccountResponse.json()).id;
-
-  const targetAccountResponse = await fetch(`${bankAccountServiceUrl}/accounts`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      user_id: seededUserId,
-      balance: mockAcc2Balance,
-      currency: mockAcc2Currency,
-    }),
-  });
-  seededTargetAccountId = (await targetAccountResponse.json()).id;
-}
-
-async function seedTestDataDirectly(database: StartedPostgreSqlContainer) {
-  console.log("Seeding test data directly into Postgres...");
-
-  const sql = `
-    INSERT INTO users (id, name, email, phone, status)
-    VALUES (
-      ${sqlLiteral(directSeedIds.user)},
-      ${sqlLiteral(mockUserName)},
-      ${sqlLiteral(mockUserEmail)},
-      ${sqlLiteral(mockUserPhone)},
-      'active'
-    )
-    ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, email = EXCLUDED.email,
-      phone = EXCLUDED.phone, status = EXCLUDED.status;
-
-    INSERT INTO accounts (id, user_id, balance, currency)
-    VALUES
-      (${sqlLiteral(directSeedIds.sourceAccount)}, ${sqlLiteral(directSeedIds.user)}, ${mockAcc1Balance}, ${sqlLiteral(mockAcc1Currency)}),
-      (${sqlLiteral(directSeedIds.targetAccount)}, ${sqlLiteral(directSeedIds.user)}, ${mockAcc2Balance}, ${sqlLiteral(mockAcc2Currency)})
-    ON CONFLICT (id) DO UPDATE SET balance = EXCLUDED.balance, currency = EXCLUDED.currency;
-  `;
-  const result = await database.exec([
-    "psql",
-    "-U",
-    database.getUsername(),
-    "-d",
-    database.getDatabase(),
-    "-v",
-    "ON_ERROR_STOP=1",
-    "-c",
-    sql,
-  ]);
-  if (result.exitCode !== 0) {
-    throw new Error(`Direct database seed failed: ${result.stderr || result.output}`);
-  }
-
-  seededUserId = directSeedIds.user;
-  seededSourceAccountId = directSeedIds.sourceAccount;
-  seededTargetAccountId = directSeedIds.targetAccount;
-}
+};
 
 test.beforeAll(async () => {
   // Real-stack integration test: no mocks. Testcontainers spins up a real
@@ -141,8 +76,7 @@ test.beforeAll(async () => {
     return;
   }
 
-  // Setup infrastructure containers: network, Postgres, WireMock, and the real
-
+  // 1. Set up infrastructure containers.
   network = await startNetwork();
   dbContainer = await startPostgres(network);
 
@@ -161,17 +95,6 @@ test.beforeAll(async () => {
 
   bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {});
 
-  // Run migration
-  if (process.env.SEED_MODE === "direct") {
-    await seedTestDataDirectly(dbContainer);
-  } else {
-    const userServiceUrl = `http://${userServiceContainer.getHost()}:${userServiceContainer.getMappedPort(8080)}`;
-    const bankAccountServiceUrl = `http://${bankAccountServiceContainer.getHost()}:${bankAccountServiceContainer.getMappedPort(8080)}`;
-    await seedTestData(userServiceUrl, bankAccountServiceUrl);
-  }
-
-  // Optionally Run seeding for ekyc-service and transfer-service if they require initial data
-
   transferServiceContainer = await startTransferService(network, dbContainer);
 
   bffContainer = await startBffService(network, {
@@ -185,6 +108,20 @@ test.beforeAll(async () => {
   const port = bffContainer.getMappedPort(8080);
   bffUrl = `http://${host}:${port}`;
   console.log(`BFF service container is ready at: ${bffUrl}`);
+
+  // Run migrations and seed data last, after the full infrastructure is ready.
+  await runMigrations(dbContainer);
+
+  // Direct database seeding is optional; API seeding is the default.
+  if (process.env.SEED_MODE === "direct") {
+    ({ userId: seededUserId, sourceAccountId: seededSourceAccountId, targetAccountId: seededTargetAccountId } =
+      await seedTestDataDirectly(dbContainer, seedData, directSeedIds));
+  } else {
+    const userServiceUrl = `http://${userServiceContainer.getHost()}:${userServiceContainer.getMappedPort(8080)}`;
+    const bankAccountServiceUrl = `http://${bankAccountServiceContainer.getHost()}:${bankAccountServiceContainer.getMappedPort(8080)}`;
+    ({ userId: seededUserId, sourceAccountId: seededSourceAccountId, targetAccountId: seededTargetAccountId } =
+      await seedTestData(userServiceUrl, bankAccountServiceUrl, seedData));
+  }
 });
 
 test.afterAll(async () => {

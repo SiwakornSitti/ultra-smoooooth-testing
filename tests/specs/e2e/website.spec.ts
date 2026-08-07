@@ -5,6 +5,7 @@ import {
   PORT,
   startNetwork,
   startPostgres,
+  runMigrations,
   startWiremock,
   startUserService,
   startBankAccountService,
@@ -30,6 +31,7 @@ let websiteUrl: string;
 test.beforeAll(async () => {
   test.setTimeout(240000);
 
+  // 1. Set up infrastructure containers.
   network = await startNetwork();
   dbContainer = await startPostgres(network);
 
@@ -80,6 +82,10 @@ test.beforeAll(async () => {
   const port = websiteContainer.getMappedPort(3000);
   websiteUrl = `http://${host}:${port}`;
   console.log(`qa-website container is ready at: ${websiteUrl}`);
+
+  // 2. Run migrations as the last infrastructure step. This flow creates its
+  // own data through the UI.
+  await runMigrations(dbContainer);
 });
 
 test.afterAll(async () => {

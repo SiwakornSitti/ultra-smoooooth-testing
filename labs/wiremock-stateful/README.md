@@ -106,20 +106,7 @@ stateDiagram-v2
 
 ## 🚀 Running the Lab
 
-### 1. Automated Execution (Playwright & Testcontainers)
-
-Run the automated lab test suite using npm or Makefile:
-
-```bash
-# Using npm from tests directory
-cd tests
-npm run test:lab
-
-# Or using Makefile from workspace root
-make test-lab
-```
-
-### 2. Manual Testing (cURL / WireMock GUI)
+### 1. Manual Testing (cURL / WireMock GUI)
 
 1. Start the Docker ecosystem:
 
@@ -187,6 +174,4 @@ wiremock/mappings/lab-stateful/
     ├── 01-payment-webhook-success.json # Payment webhook accepted (Started -> WEBHOOK_PROCESSED)
     └── 02-payment-webhook-replay.json  # Duplicate webhook rejected (WEBHOOK_PROCESSED -> 409)
 
-tests/specs/labs/
-└── wiremock-stateful.spec.ts         # Playwright test suite validating stateful stubs
 ```

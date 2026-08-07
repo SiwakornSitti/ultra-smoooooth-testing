@@ -160,8 +160,6 @@ make test-integration
 # Run End-to-End Browser Tests (specs/e2e)
 make test-e2e
 
-# Run WireMock Stateful Stub Lab (specs/labs)
-make test-lab
 ```
 
 ---

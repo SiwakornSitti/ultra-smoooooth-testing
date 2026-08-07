@@ -35,14 +35,14 @@ const DATABASE_SERVICES = [
   { name: SERVICE_NAME.TRANSFER, hasSeed: false },
 ] as const;
 
-const databaseInitDirectory = (serviceName: string, directory: "migration" | "seed") => ({
+const databaseScriptDirectory = (serviceName: string, directory: "migration" | "seed") => ({
   source: path.resolve(DATABASE_ROOT, serviceName, "db", directory),
-  target: "/docker-entrypoint-initdb.d",
+  target: `/test-data/${directory}/${serviceName}`,
 });
 
-const DATABASE_INIT_DIRECTORIES = DATABASE_SERVICES.flatMap(({ name, hasSeed }) => [
-  databaseInitDirectory(name, "migration"),
-  ...(hasSeed ? [databaseInitDirectory(name, "seed")] : []),
+const DATABASE_SCRIPT_DIRECTORIES = DATABASE_SERVICES.flatMap(({ name, hasSeed }) => [
+  databaseScriptDirectory(name, "migration"),
+  ...(hasSeed ? [databaseScriptDirectory(name, "seed")] : []),
 ]);
 
 // Builds a source/target pair for a wiremock/mappings/<name> directory, for
@@ -69,8 +69,33 @@ export async function startPostgres(network: StartedNetwork): Promise<StartedPos
     .withUsername(DB_USER)
     .withPassword(DB_PASSWORD)
     .withDatabase(DB_NAME)
-    .withCopyDirectoriesToContainer(DATABASE_INIT_DIRECTORIES)
+    .withCopyDirectoriesToContainer(DATABASE_SCRIPT_DIRECTORIES)
     .start();
+}
+
+async function runDatabaseScripts(
+  database: StartedPostgreSqlContainer,
+  directory: "migration" | "seed",
+  services: readonly { name: string }[]
+): Promise<void> {
+  for (const { name } of services) {
+    const result = await database.exec([
+      "sh",
+      "-c",
+      `for file in /test-data/${directory}/${name}/*.sql; do [ -e "$file" ] || continue; PGPASSWORD=${database.getPassword()} psql -v ON_ERROR_STOP=1 -U ${database.getUsername()} -d ${database.getDatabase()} -f "$file"; done`,
+    ]);
+    if (result.exitCode !== 0) {
+      throw new Error(`${directory} failed for ${name}: ${result.stderr || result.output}`);
+    }
+  }
+}
+
+export function runMigrations(database: StartedPostgreSqlContainer): Promise<void> {
+  return runDatabaseScripts(database, "migration", DATABASE_SERVICES);
+}
+
+export function runSeedData(database: StartedPostgreSqlContainer): Promise<void> {
+  return runDatabaseScripts(database, "seed", DATABASE_SERVICES.filter(({ hasSeed }) => hasSeed));
 }
 
 export async function startWiremock(

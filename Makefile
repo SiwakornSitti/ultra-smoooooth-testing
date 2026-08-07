@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy test test-integration test-e2e test-lab slides
+.PHONY: all build clean sync tidy test test-integration test-e2e slides
 
 all: build
 
@@ -42,9 +42,6 @@ test-integration:
 
 test-e2e:
 	cd tests && npm install && npm run test:e2e
-
-test-lab:
-	cd tests && npm install && npm run test:lab
 
 slides:
 	cd slides && bunx @slidev/cli slides.md

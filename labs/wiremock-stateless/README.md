@@ -219,20 +219,7 @@ Proxy mappings keep WireMock in front of the external API while forwarding the r
 
 ## 🚀 Running the Lab
 
-### 1. Automated Execution (Playwright & Testcontainers)
-
-Execute the lab test suite via npm or Makefile:
-
-```bash
-# Using Makefile from workspace root
-make test-lab
-
-# Or using npm from tests directory
-cd tests
-npm run test:lab
-```
-
-### 2. Manual Testing via cURL
+### 1. Manual Testing via cURL
 
 Start the WireMock service:
 
@@ -323,7 +310,4 @@ wiremock/mappings/lab-stateless/
 wiremock/__files/lab-stateless/
 └── body-file-response.json             # File-backed response body
 
-tests/specs/labs/
-├── wiremock-stateful.spec.ts         # Stateful stub lab tests
-└── wiremock-stateless.spec.ts        # Stateless stub lab tests
 ```

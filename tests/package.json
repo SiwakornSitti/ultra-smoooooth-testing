@@ -6,8 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "test:integration": "playwright test specs/integration",
-    "test:e2e": "playwright test specs/e2e",
-    "test:lab": "playwright test specs/labs"
+    "test:e2e": "playwright test specs/e2e"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",

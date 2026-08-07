@@ -36,14 +36,23 @@ exercises and debugging.
 4. Understand mappings: request matchers, responses, priorities, and fallbacks
 5. Match requests by path, method, body, and headers
 6. Use `Mock-Scenario` to select test behavior
-7. Test success and failure scenarios:
+7. Understand stateless stubs:
+   - Each request is matched independently.
+   - Use them for deterministic success, validation, and fault responses.
+   - Practice with [WireMock Stateless Stubbing](../labs/wiremock-stateless/README.md).
+8. Understand stateful stubs:
+   - Responses depend on scenario state and request history.
+   - Use them for one-time tokens, retries, payment lifecycle, and replay tests.
+   - Reset state with the WireMock Admin API between test runs.
+   - Practice with [WireMock Stateful Stubbing](../labs/wiremock-stateful/README.md).
+9. Test success and failure scenarios:
    - `SMS:SUCCESS`
    - `SMS:INVALID_NUMBER`
    - `SMS:UNAVAILABLE`
-8. Inspect matched and unmatched requests
-9. Edit, reload, and reset mappings/scenarios
-10. Connect WireMock to the QA website and verify the end-to-end flow
-11. Manual testing with WireMock:
+10. Inspect matched and unmatched requests
+11. Edit, reload, and reset mappings/scenarios
+12. Connect WireMock to the QA website and verify the end-to-end flow
+13. Manual testing with WireMock:
     - Open the WireMock GUI and inspect the target mapping
     - Use the mapping **Test** action or send a request with cURL
     - Add the required `Mock-Scenario` header
@@ -118,18 +127,12 @@ exercises and debugging.
             target: /app/public
       ```
 
-    - WireMock mappings are also watched and synced:
-
-      ```yaml
-      develop:
-        watch:
-          - action: sync
-            path: ./wiremock/mappings
-            target: /home/wiremock/mappings
-      ```
-
-      Reload mappings through the WireMock Admin API after a file change when
-      the running instance does not pick it up automatically.
+    - WireMock mappings are bind-mounted directly from
+      `./wiremock/mappings` to `/home/wiremock/mappings`. They do not use a
+      separate Compose Watch rule because a path cannot be monitored by Watch
+      when it is already declared as a bind mount. Reload mappings through the
+      WireMock Admin API after a file change when the running instance does not
+      pick it up automatically.
 
     - Use `rebuild` for application source changes because they require a new
       image, dependency install, compiled binary, or Dockerfile update:
@@ -212,12 +215,11 @@ exercises and debugging.
    npm run test:e2e
    ```
 
-5. Run WireMock lab tests with `npm run test:lab`.
-6. Use Playwright assertions for status codes, response bodies, headers, and
+5. Use Playwright assertions for status codes, response bodies, headers, and
    persisted state.
-7. Use test fixtures and Testcontainers to create isolated Postgres,
+6. Use test fixtures and Testcontainers to create isolated Postgres,
    WireMock, and service environments.
-8. Test both success and failure scenarios using `Mock-Scenario` headers.
+7. Test both success and failure scenarios using `Mock-Scenario` headers.
 9. Review traces, console output, service logs, and WireMock request history
    when a test fails.
 10. Run the complete test suite in CI and publish the failure artifacts.

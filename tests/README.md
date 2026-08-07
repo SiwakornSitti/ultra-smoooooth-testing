@@ -47,7 +47,7 @@ flowchart TD
 
 The fixture creates one isolated Docker network and starts:
 
-- PostgreSQL with service migrations and seeds.
+- PostgreSQL, followed by explicit service migrations and optional seed data.
 - WireMock for Paotang Pass and OTP responses.
 - `user-service` and `bank-account-service` connected to PostgreSQL.
 - `transfer-service` connected to PostgreSQL.

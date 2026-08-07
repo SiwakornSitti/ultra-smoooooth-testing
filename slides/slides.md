@@ -456,13 +456,10 @@ make sync
 </div>
 <div>
 
-### 🧪 Automated Integration & Labs
+### 🧪 Automated Integration
 ```bash
 # Run Integration Tests with Testcontainers
 make test-integration
-
-# Run WireMock Stateful & Stateless Labs
-make test-lab
 
 # Run Playwright E2E Browser Tests
 make test-e2e
