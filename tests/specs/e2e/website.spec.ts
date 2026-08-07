@@ -9,7 +9,10 @@ import {
   startWiremock,
   startUserService,
   startBankAccountService,
+  startTransferService,
+  startEKYCService,
   startBffService,
+  runSeedData,
   stopAll,
   wiremockMapping,
 } from "../support/containers";
@@ -24,6 +27,8 @@ let dbContainer: StartedPostgreSqlContainer;
 let wiremockContainer: StartedTestContainer;
 let userServiceContainer: StartedTestContainer;
 let bankAccountServiceContainer: StartedTestContainer;
+let transferServiceContainer: StartedTestContainer;
+let ekycServiceContainer: StartedTestContainer;
 let bffContainer: StartedTestContainer;
 let websiteContainer: StartedTestContainer;
 let websiteUrl: string;
@@ -54,9 +59,14 @@ test.beforeAll(async () => {
     SMS_API_KEY: "dummy-sms-api-key",
   });
 
+  transferServiceContainer = await startTransferService(network, dbContainer);
+  ekycServiceContainer = await startEKYCService(network, dbContainer);
+
   bffContainer = await startBffService(network, {
     USER_SERVICE_URL: "http://user-service:8080",
     BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
+    EKYC_SERVICE_URL: "http://ekyc-service:8080",
+    TRANSFER_SERVICE_URL: "http://transfer-service:8080",
   });
 
   console.log("Starting website container...");
@@ -83,14 +93,23 @@ test.beforeAll(async () => {
   websiteUrl = `http://${host}:${port}`;
   console.log(`website container is ready at: ${websiteUrl}`);
 
-  // 2. Run migrations as the last infrastructure step. This flow creates its
-  // own data through the UI.
+  // 2. Run migrations and baseline account seed data as the last infrastructure steps.
   await runMigrations(dbContainer);
+  await runSeedData(dbContainer);
 });
 
 test.afterAll(async () => {
   await stopAll(
-    [websiteContainer, bffContainer, bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
+    [
+      websiteContainer,
+      bffContainer,
+      transferServiceContainer,
+      ekycServiceContainer,
+      bankAccountServiceContainer,
+      userServiceContainer,
+      wiremockContainer,
+      dbContainer,
+    ],
     network
   );
 });
@@ -213,6 +232,33 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("btn-submit-transfer").click();
 
     await expect(page.getByTestId("result-transfer")).toContainText('"error":"insufficient funds"');
+  });
+
+  test("transfer succeeds and appears in transfer history", async ({ page }) => {
+    await login(page);
+    await page.goto(`${websiteUrl}/transfer`);
+
+    await page.getByTestId("input-transfer-amount").fill("100");
+    await page.getByTestId("input-transfer-currency").fill("THB");
+    await page.getByTestId("btn-submit-transfer").click();
+
+    await expect(page.getByTestId("result-transfer")).toContainText('"status":"COMPLETED"');
+
+    await page.getByTestId("btn-list-transfers").click();
+    await expect(page.getByTestId("result-transfers")).toContainText('"amount":100');
+    await expect(page.getByTestId("result-transfers")).toContainText('"status":"COMPLETED"');
+  });
+
+  test("eKYC verification succeeds", async ({ page }) => {
+    await login(page);
+    await page.goto(`${websiteUrl}/ekyc`);
+
+    await page.getByTestId("input-ekyc-customer-id").fill("00000000-0000-0000-0000-000000000001");
+    await page.getByTestId("input-ekyc-national-id").fill("1234567890123");
+    await page.getByTestId("input-ekyc-full-name").fill("Seed Sender");
+    await page.getByTestId("btn-submit-ekyc").click();
+
+    await expect(page.getByTestId("result-ekyc")).toContainText('"status":"APPROVED"');
   });
 
   test("Paotang login rejects invalid authcode", async ({ page }) => {

@@ -24,6 +24,11 @@ export default function Home() {
             Transfer Money (move funds and view transfer history)
           </Link>
         </li>
+        <li>
+          <Link data-testid="link-ekyc" href="/ekyc">
+            eKYC Verification
+          </Link>
+        </li>
       </ul>
     </main>
   );
