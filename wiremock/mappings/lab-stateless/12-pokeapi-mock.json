@@ -6,7 +6,7 @@
     "method" : "GET",
     "headers" : {
       "Mock-Scenario" : {
-        "equalTo" : "POKEAPI:MOCK"
+        "contains" : "POKEAPI:MOCK"
       }
     }
   },
@@ -36,5 +36,5 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 224
+  "insertionIndex" : 91
 }

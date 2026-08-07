@@ -141,6 +141,8 @@ test.beforeAll(async () => {
     return;
   }
 
+  // Setup infrastructure containers: network, Postgres, WireMock, and the real
+
   network = await startNetwork();
   dbContainer = await startPostgres(network);
 
@@ -159,6 +161,7 @@ test.beforeAll(async () => {
 
   bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {});
 
+  // Run migration
   if (process.env.SEED_MODE === "direct") {
     await seedTestDataDirectly(dbContainer);
   } else {
@@ -166,6 +169,8 @@ test.beforeAll(async () => {
     const bankAccountServiceUrl = `http://${bankAccountServiceContainer.getHost()}:${bankAccountServiceContainer.getMappedPort(8080)}`;
     await seedTestData(userServiceUrl, bankAccountServiceUrl);
   }
+
+  // Optionally Run seeding for ekyc-service and transfer-service if they require initial data
 
   transferServiceContainer = await startTransferService(network, dbContainer);
 

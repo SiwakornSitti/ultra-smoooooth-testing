@@ -26,6 +26,7 @@ export function mockScenario(page: Page) {
     if (box.value) headers["mock-scenario"] = box.value;
     route.continue({ headers });
   });
+
   return (scenario: string) => {
     box.value = scenario;
   };

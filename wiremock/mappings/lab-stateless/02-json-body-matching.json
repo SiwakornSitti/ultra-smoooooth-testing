@@ -1,32 +1,30 @@
 {
-  "id": "26feef68-91a3-4fe9-a122-3fadb1029c4f",
-  "name": "2. Payments - High Value Approved",
-  "request": {
-    "urlPath": "/lab/api/stateless/payments",
-    "method": "POST",
-    "bodyPatterns": [
-      {
-        "matchesJsonPath": "$.payment[?(@.amount > 1000)]"
-      }
-    ]
+  "id" : "26feef68-91a3-4fe9-a122-3fadb1029c4f",
+  "name" : "2. Payments - High Value Approved",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/payments",
+    "method" : "POST",
+    "bodyPatterns" : [ {
+      "matchesJsonPath" : "$.payment[?(@.amount > 1000)]"
+    } ]
   },
-  "response": {
-    "status": 201,
-    "jsonBody": {
-      "status": "APPROVED",
-      "flag": "HIGH_VALUE_TRANSACTION"
+  "response" : {
+    "status" : 201,
+    "jsonBody" : {
+      "status" : "APPROVED",
+      "flag" : "HIGH_VALUE_TRANSACTION"
     },
-    "headers": {
-      "Content-Type": "application/json"
+    "headers" : {
+      "Content-Type" : "application/json"
     }
   },
-  "uuid": "26feef68-91a3-4fe9-a122-3fadb1029c4f",
-  "persistent": true,
-  "priority": 1,
-  "metadata": {
-    "wiremock-gui": {
-      "folder": "/lab-stateless"
+  "uuid" : "26feef68-91a3-4fe9-a122-3fadb1029c4f",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex": 236
+  "insertionIndex" : 99
 }

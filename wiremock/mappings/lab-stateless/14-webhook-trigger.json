@@ -1,15 +1,15 @@
 {
   "id" : "e9f0a1b2-c3d4-4e5f-9012-3456789abcde",
-  "name" : "14. Webhook Trigger - Order Created",
+  "name" : "14. Payment - Webhook Status Update",
   "request" : {
-    "urlPath" : "/lab/api/stateless/webhook-orders",
+    "urlPath" : "/lab/api/stateless/payments",
     "method" : "POST"
   },
   "response" : {
     "status" : 202,
     "jsonBody" : {
-      "accepted" : true,
-      "order_id" : "{{jsonPath request.body '$.order_id'}}"
+      "payment_id" : "{{jsonPath request.body '$.payment_id'}}",
+      "status" : "PENDING"
     },
     "headers" : {
       "Content-Type" : "application/json"
@@ -24,5 +24,16 @@
       "folder" : "/lab-stateless"
     }
   },
-  "insertionIndex" : 225
+  "insertionIndex" : 92,
+  "serveEventListeners" : [ {
+    "name" : "webhook",
+    "parameters" : {
+      "method" : "POST",
+      "url" : "{{jsonPath originalRequest.body '$.callback_url'}}",
+      "headers" : {
+        "Content-Type" : "application/json"
+      },
+      "body" : "{ \"event_type\": \"payment.status_updated\", \"payment_id\": \"{{jsonPath originalRequest.body '$.payment_id'}}\", \"status\": \"PAID\" }"
+    }
+  } ]
 }

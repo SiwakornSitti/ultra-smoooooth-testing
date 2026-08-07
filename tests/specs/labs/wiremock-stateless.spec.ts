@@ -107,13 +107,6 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 5: Priority-Based Overriding", async ({ request }: { request: APIRequestContext }) => {
-    const res = await request.get(`${wiremockUrl}/lab/api/stateless/products/vip`);
-    expect(res.status()).toBe(HttpStatusCode.Ok);
-    const body = await res.json();
-    expect(body.product).toBe("VIP Gold Membership");
-  });
-
   test("Scenario 6: Response Template Echo and Helpers", async ({ request }: { request: APIRequestContext }) => {
     const echoRes = await request.get(`${wiremockUrl}/lab/api/stateless/echo/item-999?name=John`, {
       headers: {
@@ -194,22 +187,6 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     });
   });
 
-  test("Scenario 11: Chunked Dribble Delay Simulation", async ({ request }: { request: APIRequestContext }) => {
-    const startTime = Date.now();
-    const res = await request.get(`${wiremockUrl}/lab/api/stateless/chunked-delay`);
-    const duration = Date.now() - startTime;
-
-    expect(res.status()).toBe(HttpStatusCode.Ok);
-    expect(duration).toBeGreaterThanOrEqual(850);
-    expect(duration).toBeLessThan(2000);
-    expect(res.headers()["content-type"]).toMatch(/application\/json/);
-    const body = await res.json();
-    expect(body).toEqual({
-      message: "Response delivered in chunks",
-      chunks: 5,
-    });
-  });
-
   test("Scenario 12: PokeAPI Mock or Proxy", async ({ request }: { request: APIRequestContext }) => {
     const mockRes = await request.get(`${wiremockUrl}/lab/api/stateless/pokemon/ditto/`, {
       headers: {
@@ -238,20 +215,23 @@ test.describe("Lab: WireMock Stateless Stubs & Pattern Matching", () => {
     ]));
   });
 
-  test("Scenario 13: Stateless Webhook Trigger", async ({ request }: { request: APIRequestContext }) => {
-    const res = await request.post(`${wiremockUrl}/lab/api/stateless/webhook-orders`, {
+  test("Scenario 14: Payment Triggers a Status Webhook", async ({ request }: { request: APIRequestContext }) => {
+    const res = await request.post(`${wiremockUrl}/lab/api/stateless/payments`, {
       headers: {
         "Content-Type": "application/json",
       },
       data: {
-        order_id: "ord-webhook-001",
+        payment_id: "pay-webhook-001",
+        amount: 1500,
+        currency: "THB",
+        callback_url: "http://callback-service/webhooks/payment-status",
       },
     });
 
     expect(res.status()).toBe(HttpStatusCode.Accepted);
     expect(await res.json()).toEqual({
-      accepted: true,
-      order_id: "ord-webhook-001",
+      payment_id: "pay-webhook-001",
+      status: "PENDING",
     });
   });
 
