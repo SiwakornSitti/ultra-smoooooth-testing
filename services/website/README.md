@@ -34,7 +34,7 @@ Open `http://localhost:3000` after starting the BFF and its dependencies.
 
 ## Test with mock scenarios
 
-Keep the browser pointed at the real BFF (`http://localhost:8080`). WireMock is used by domain services for external-provider scenarios such as `PT_PASS:SUCCESS_ONCE` replay rejection and `SMS:INVALID_NUMBER`; the BFF sends transfer requests to WireMock, which handles `TRANSFER:*` transfer scenarios or proxies to the real transfer-service.
+Keep the browser pointed at the real BFF (`http://localhost:8080`). WireMock is used by domain services for external-provider scenarios such as `PT_PASS:SUCCESS_ONCE` replay rejection and `SMS:INVALID_NUMBER`; the BFF sends bank-account and transfer requests to WireMock, which handles service scenarios or proxies to the real core services.
 
 ```bash
 docker compose up --build

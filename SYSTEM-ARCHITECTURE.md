@@ -127,9 +127,10 @@ WireMock has two roles in this repository:
 
 - External-provider mock: domain services call WireMock for Paotang, OTP, and
   SMS behavior.
-- Transfer-service mock: the BFF sends transfer requests to WireMock; WireMock
+- Core-service mocks: the BFF sends bank-account and transfer requests to
+  WireMock; WireMock
   matches `TRANSFER:*` scenarios or proxies unmatched requests to the real
-  transfer-service.
+  core service.
 - External-provider mock: domain services call WireMock for Paotang, OTP, and
   SMS behavior.
 
@@ -139,6 +140,7 @@ stateful mappings:
 - `wiremock/mappings/lab-stateless` contains independent request/response
   examples.
 - `wiremock/mappings/transfer-service` contains transfer-service scenarios.
+- `wiremock/mappings/bank-account-service` contains bank-account-service scenarios.
 - `labs/wiremock-stateful` contains request sequences whose responses depend on
   WireMock scenario state.
 

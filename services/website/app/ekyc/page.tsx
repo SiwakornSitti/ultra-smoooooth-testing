@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
+import { EKYC_CUSTOMERS } from "../lib/ekyc-customers";
+import { MOCK_SCENARIO } from "../lib/mock-scenario";
 import { LogoutButton } from "../lib/logout-button";
 
 export default function EkycPage() {
@@ -12,13 +14,17 @@ export default function EkycPage() {
   const [customerId, setCustomerId] = useState("00000000-0000-0000-0000-000000000001");
   const [nationalId, setNationalId] = useState("1234567890123");
   const [fullName, setFullName] = useState("Narin Chaiyasit");
+  const [scenario, setScenario] = useState("");
   const [result, setResult] = useState("");
 
   async function verifyIdentity() {
     setResult("Loading...");
     const res = await fetch(`${bffUrl}/api/v1/ekycs/verify`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(scenario ? { "Mock-Scenario": scenario } : {}),
+      },
       body: JSON.stringify({ customer_id: customerId, national_id: nationalId, full_name: fullName }),
     });
     setResult(JSON.stringify(await parseResponse(res)));
@@ -41,7 +47,22 @@ export default function EkycPage() {
       <section data-testid="section-ekyc">
         <label>
           Customer ID{" "}
-          <input data-testid="input-ekyc-customer-id" value={customerId} onChange={(e) => setCustomerId(e.target.value)} />
+          <select
+            data-testid="input-ekyc-customer-id"
+            value={customerId}
+            onChange={(e) => {
+              const customer = EKYC_CUSTOMERS.find((item) => item.id === e.target.value);
+              if (customer) {
+                setCustomerId(customer.id);
+                setNationalId(customer.nationalId);
+                setFullName(customer.name);
+              }
+            }}
+          >
+            {EKYC_CUSTOMERS.map((customer) => (
+              <option key={customer.id} value={customer.id}>{customer.name}</option>
+            ))}
+          </select>
         </label>
         <br />
         <label>
@@ -52,6 +73,14 @@ export default function EkycPage() {
         <label>
           Full name{" "}
           <input data-testid="input-ekyc-full-name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        </label>
+        <br />
+        <label>
+          eKYC Mock Scenario{" "}
+          <select data-testid="select-ekyc-scenario" value={scenario} onChange={(e) => setScenario(e.target.value)}>
+            <option value="">Real service</option>
+            <option value={MOCK_SCENARIO.EKYC.VERIFY_APPROVED}>{MOCK_SCENARIO.EKYC.VERIFY_APPROVED}</option>
+          </select>
         </label>
         <br />
         <button data-testid="btn-submit-ekyc" onClick={verifyIdentity} disabled={!bffUrl}>

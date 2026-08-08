@@ -1,0 +1,33 @@
+{
+  "name": "eKYC Service Mock - Verify Approved",
+  "request": {
+    "urlPath": "/ekycs/verify",
+    "method": "POST",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "EKYC:VERIFY_APPROVED"
+      }
+    }
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "id": "frontend-mock-ekyc-001",
+      "customer_id": "00000000-0000-0000-0000-000000000001",
+      "national_id": "1234567890123",
+      "full_name": "Narin Chaiyasit",
+      "document_type": "national_id",
+      "status": "APPROVED",
+      "confidence_score": 0.98
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "persistent": true,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/ekyc-service"
+    }
+  }
+}

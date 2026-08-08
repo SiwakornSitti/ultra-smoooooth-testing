@@ -5,15 +5,8 @@ import { parseResponse, useBffUrl } from "./lib/api";
 import { AUTH_SESSION_KEY } from "./lib/auth";
 import { LogoutButton } from "./lib/logout-button";
 import { MOCK_SCENARIO } from "./lib/mock-scenario";
-
-type TransferRecord = {
-  id: string;
-  source_account_id: string;
-  target_account_id: string;
-  amount: number;
-  currency: string;
-  status: string;
-};
+import { EKYC_CUSTOMERS } from "./lib/ekyc-customers";
+import { TransferPanel } from "./components/transfer-panel";
 
 type AccountBalance = {
   balance: number;
@@ -23,61 +16,21 @@ type AccountBalance = {
 export default function Home() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const bffUrl = useBffUrl();
-  const [sourceAccountId, setSourceAccountId] = useState("00000000-0000-0000-0000-000000000011");
-  const [targetAccountId, setTargetAccountId] = useState("00000000-0000-0000-0000-000000000012");
-  const [amount, setAmount] = useState("100");
-  const [transferResult, setTransferResult] = useState("");
-  const [transfersResult, setTransfersResult] = useState("");
-  const [transfers, setTransfers] = useState<TransferRecord[]>([]);
   const [balanceAccountId, setBalanceAccountId] = useState("00000000-0000-0000-0000-000000000011");
   const [balanceResult, setBalanceResult] = useState("");
   const [accountBalance, setAccountBalance] = useState<AccountBalance | null>(null);
   const [balanceError, setBalanceError] = useState("");
   const [balanceScenario, setBalanceScenario] = useState("");
   const [showMockControls, setShowMockControls] = useState(true);
-  const [transferScenario, setTransferScenario] = useState<string>(MOCK_SCENARIO.TRANSFER.CREATE_TRANSFER);
-  const [listTransfersScenario, setListTransfersScenario] = useState<string>(MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS);
   const [customerId, setCustomerId] = useState("00000000-0000-0000-0000-000000000001");
   const [nationalId, setNationalId] = useState("1234567890123");
   const [fullName, setFullName] = useState("Narin Chaiyasit");
   const [ekycResult, setEkycResult] = useState("");
+  const [ekycScenario, setEkycScenario] = useState("");
 
   useEffect(() => {
     setAuthenticated(window.sessionStorage.getItem(AUTH_SESSION_KEY) === "true");
   }, []);
-
-  async function submitTransfer() {
-    setTransferResult("Loading...");
-    const res = await fetch(`${bffUrl}/api/v1/transfers`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(transferScenario ? { "Mock-Scenario": transferScenario } : {}),
-      },
-      body: JSON.stringify({
-        source_account_id: sourceAccountId,
-        target_account_id: targetAccountId,
-        amount: parseFloat(amount),
-      }),
-    });
-    const data = await parseResponse(res);
-    setTransferResult(res.ok ? `Transfer ${data.status || "completed"}.` : `Error: ${data.error || "Transfer failed"}`);
-  }
-
-  async function listTransfers() {
-    setTransfersResult("Loading...");
-    const res = await fetch(`${bffUrl}/api/v1/transfers`, {
-      headers: listTransfersScenario ? { "Mock-Scenario": listTransfersScenario } : {},
-    });
-    const data = await parseResponse(res);
-    if (res.ok && Array.isArray(data)) {
-      setTransfers(data);
-      setTransfersResult("");
-    } else {
-      setTransfers([]);
-      setTransfersResult(`Error: ${data.error || "Unable to load transfer history"}`);
-    }
-  }
 
   async function checkBalance() {
     setBalanceResult("Loading...");
@@ -100,7 +53,10 @@ export default function Home() {
     setEkycResult("Loading...");
     const res = await fetch(`${bffUrl}/api/v1/ekycs/verify`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(ekycScenario ? { "Mock-Scenario": ekycScenario } : {}),
+      },
       body: JSON.stringify({ customer_id: customerId, national_id: nationalId, full_name: fullName }),
     });
     const data = await parseResponse(res);
@@ -131,45 +87,15 @@ export default function Home() {
             onChange={(e) => {
               const enabled = e.target.checked;
               setShowMockControls(enabled);
-              setTransferScenario(enabled ? MOCK_SCENARIO.TRANSFER.CREATE_TRANSFER : "");
-              setListTransfersScenario(enabled ? MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS : "");
               setBalanceScenario("");
+              setEkycScenario("");
             }}
           />
           <span>Show mock controls</span>
         </label>
       </header>
       <div className="page-grid">
-        <section data-testid="section-transfer">
-          <p className="eyebrow">Payments</p>
-          <h2>Transfer money</h2>
-          <label>
-            Source Account No.{" "}
-            <input data-testid="input-source-account-id" value={sourceAccountId} onChange={(e) => setSourceAccountId(e.target.value)} />
-          </label>
-          <label>
-            Target Account No.{" "}
-            <input data-testid="input-target-account-id" value={targetAccountId} onChange={(e) => setTargetAccountId(e.target.value)} />
-          </label>
-          <label>
-            Amount{" "}
-            <input data-testid="input-transfer-amount" type="number" min="0.01" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
-          </label>
-          {showMockControls && (
-            <label>
-              Transfer Mock Scenario
-              <select data-testid="select-transfer-scenario" value={transferScenario} onChange={(e) => setTransferScenario(e.target.value)}>
-                <option value="">Real service</option>
-                <option value={MOCK_SCENARIO.TRANSFER.CREATE_TRANSFER}>{MOCK_SCENARIO.TRANSFER.CREATE_TRANSFER}</option>
-                <option value={MOCK_SCENARIO.TRANSFER.TRANSFER_INSUFFICIENT_AMOUNT}>{MOCK_SCENARIO.TRANSFER.TRANSFER_INSUFFICIENT_AMOUNT}</option>
-              </select>
-            </label>
-          )}
-          <button data-testid="btn-submit-transfer" onClick={submitTransfer} disabled={!bffUrl || !sourceAccountId || !targetAccountId}>
-            Transfer Money
-          </button>
-          <p data-testid="result-transfer">{transferResult}</p>
-        </section>
+        <TransferPanel bffUrl={bffUrl} showMockControls={showMockControls} />
 
         <section data-testid="section-balance">
           <p className="eyebrow">Payments</p>
@@ -190,7 +116,7 @@ export default function Home() {
               Balance Mock Scenario
               <select data-testid="select-balance-scenario" value={balanceScenario} onChange={(e) => setBalanceScenario(e.target.value)}>
                 <option value="">Real service</option>
-                <option value={MOCK_SCENARIO.BFF.GET_ACCOUNT_NOT_FOUND}>{MOCK_SCENARIO.BFF.GET_ACCOUNT_NOT_FOUND}</option>
+                <option value={MOCK_SCENARIO.BANK_ACCOUNT.GET_ACCOUNT_NOT_FOUND}>{MOCK_SCENARIO.BANK_ACCOUNT.GET_ACCOUNT_NOT_FOUND}</option>
               </select>
             </label>
           )}
@@ -206,54 +132,27 @@ export default function Home() {
           )}
         </section>
 
-        <section data-testid="section-transfer-history">
-          <p className="eyebrow">Payments</p>
-          <h2>Transfer History</h2>
-          {showMockControls && (
-            <label>
-              List Transfers Mock Scenario
-              <select data-testid="select-list-transfers-scenario" value={listTransfersScenario} onChange={(e) => setListTransfersScenario(e.target.value)}>
-                <option value="">Real service</option>
-                <option value={MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS}>{MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS}</option>
-              </select>
-            </label>
-          )}
-          <button data-testid="btn-list-transfers" onClick={listTransfers} disabled={!bffUrl}>
-            Load Transfers
-          </button>
-          {transfersResult && <p className="error-message" data-testid="result-transfers">{transfersResult}</p>}
-          {transfers.length > 0 && (
-            <div className="table-wrapper" data-testid="result-transfers">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Source</th>
-                    <th>Target</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transfers.map((transfer) => (
-                    <tr key={transfer.id}>
-                      <td>{transfer.source_account_id}</td>
-                      <td>{transfer.target_account_id}</td>
-                      <td>{transfer.amount} {transfer.currency}</td>
-                      <td>{transfer.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
-
         <section data-testid="section-ekyc">
           <p className="eyebrow">Identity</p>
           <h2>eKYC verification</h2>
           <label>
             Customer ID{" "}
-            <input data-testid="input-ekyc-customer-id" value={customerId} onChange={(e) => setCustomerId(e.target.value)} />
+            <select
+              data-testid="input-ekyc-customer-id"
+              value={customerId}
+              onChange={(e) => {
+                const customer = EKYC_CUSTOMERS.find((item) => item.id === e.target.value);
+                if (customer) {
+                  setCustomerId(customer.id);
+                  setNationalId(customer.nationalId);
+                  setFullName(customer.name);
+                }
+              }}
+            >
+              {EKYC_CUSTOMERS.map((customer) => (
+                <option key={customer.id} value={customer.id}>{customer.name}</option>
+              ))}
+            </select>
           </label>
           <label>
             National ID{" "}
@@ -263,6 +162,15 @@ export default function Home() {
             Full name{" "}
             <input data-testid="input-ekyc-full-name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
           </label>
+          {showMockControls && (
+            <label>
+              eKYC Mock Scenario{" "}
+              <select data-testid="select-ekyc-scenario" value={ekycScenario} onChange={(e) => setEkycScenario(e.target.value)}>
+                <option value="">Real service</option>
+                <option value={MOCK_SCENARIO.EKYC.VERIFY_APPROVED}>{MOCK_SCENARIO.EKYC.VERIFY_APPROVED}</option>
+              </select>
+            </label>
+          )}
           <button data-testid="btn-submit-ekyc" onClick={verifyIdentity} disabled={!bffUrl}>
             Verify Identity
           </button>

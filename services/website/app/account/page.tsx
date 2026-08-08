@@ -200,8 +200,8 @@ export default function AccountPage() {
             onChange={(e) => setProfileScenario(e.target.value)}
           >
             <option value="">Real service</option>
-            <option value={MOCK_SCENARIO.BFF.GET_USER_SUCCESS}>{MOCK_SCENARIO.BFF.GET_USER_SUCCESS}</option>
-            <option value={MOCK_SCENARIO.BFF.GET_USER_INVALID}>{MOCK_SCENARIO.BFF.GET_USER_INVALID}</option>
+            <option value={MOCK_SCENARIO.USER.GET_USER_SUCCESS}>{MOCK_SCENARIO.USER.GET_USER_SUCCESS}</option>
+            <option value={MOCK_SCENARIO.USER.GET_USER_INVALID}>{MOCK_SCENARIO.USER.GET_USER_INVALID}</option>
           </select>
         </label>
         <br />

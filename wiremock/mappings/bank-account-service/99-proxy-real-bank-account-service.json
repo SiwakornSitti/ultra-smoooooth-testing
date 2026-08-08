@@ -1,0 +1,17 @@
+{
+  "name": "Proxy - Real Bank Account Service",
+  "priority": 100,
+  "request": {
+    "urlPathPattern": "/accounts(/.*)?",
+    "method": "ANY"
+  },
+  "response": {
+    "proxyBaseUrl": "http://bank-account-service:8080"
+  },
+  "persistent": true,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/bank-account-service"
+    }
+  }
+}

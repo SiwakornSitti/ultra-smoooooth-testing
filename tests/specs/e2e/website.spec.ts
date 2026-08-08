@@ -48,6 +48,8 @@ test.beforeAll(async () => {
     wiremockMapping("sms"),
     wiremockMapping("otp"),
     wiremockMapping("transfer-service"),
+    wiremockMapping("bank-account-service"),
+    wiremockMapping("ekyc-service"),
   ]);
 
   userServiceContainer = await startUserService(network, dbContainer, {
@@ -69,8 +71,8 @@ test.beforeAll(async () => {
 
   bffContainer = await startBffService(network, {
     USER_SERVICE_URL: "http://user-service:8080",
-    BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
-    EKYC_SERVICE_URL: "http://ekyc-service:8080",
+    BANK_ACCOUNT_SERVICE_URL: "http://wiremock:8080",
+    EKYC_SERVICE_URL: "http://wiremock:8080",
     TRANSFER_SERVICE_URL: "http://wiremock:8080",
     SMS_SERVICE_URL: "http://sms-service:8080",
   });
@@ -312,7 +314,7 @@ test.describe("QA website full e2e flow", () => {
     await login(page);
     await page.goto(`${websiteUrl}/ekyc`);
 
-    await page.getByTestId("input-ekyc-customer-id").fill("00000000-0000-0000-0000-000000000001");
+    await page.getByTestId("input-ekyc-customer-id").selectOption("00000000-0000-0000-0000-000000000001");
     await page.getByTestId("input-ekyc-national-id").fill("1234567890123");
     await page.getByTestId("input-ekyc-full-name").fill("Narin Chaiyasit");
     await page.getByTestId("btn-submit-ekyc").click();

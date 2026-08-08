@@ -5,6 +5,7 @@ import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
 import { LogoutButton } from "../lib/logout-button";
+import { MOCK_SCENARIO } from "../lib/mock-scenario";
 
 export default function TransferPage() {
   const authenticated = useRequireLogin();
@@ -15,6 +16,7 @@ export default function TransferPage() {
   const [currency, setCurrency] = useState("THB");
   const [transferResult, setTransferResult] = useState("");
   const [transfersResult, setTransfersResult] = useState("");
+  const [listTransfersScenario, setListTransfersScenario] = useState("");
 
   async function submitTransfer() {
     setTransferResult("Loading...");
@@ -34,7 +36,9 @@ export default function TransferPage() {
 
   async function listTransfers() {
     setTransfersResult("Loading...");
-    const res = await fetch(`${bffUrl}/api/v1/transfers`);
+    const res = await fetch(`${bffUrl}/api/v1/transfers`, {
+      headers: listTransfersScenario ? { "Mock-Scenario": listTransfersScenario } : {},
+    });
     const data = await parseResponse(res);
     setTransfersResult(JSON.stringify(data));
   }
@@ -103,6 +107,14 @@ export default function TransferPage() {
 
       <section data-testid="section-list-transfers">
         <h2>Transfer History</h2>
+        <label>
+          Transfer History Mock Scenario{" "}
+          <select data-testid="select-list-transfers-scenario" value={listTransfersScenario} onChange={(e) => setListTransfersScenario(e.target.value)}>
+            <option value="">Real service</option>
+            <option value={MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS}>{MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS}</option>
+          </select>
+        </label>
+        <br />
         <button data-testid="btn-list-transfers" onClick={listTransfers} disabled={!bffUrl}>
           Load Transfers
         </button>
