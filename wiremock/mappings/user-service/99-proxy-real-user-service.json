@@ -1,0 +1,22 @@
+{
+  "name": "Proxy - Real User Service from BFF",
+  "priority": 1,
+  "request": {
+    "urlPathPattern": "/(users|auth)(/.*)?",
+    "method": "ANY",
+    "headers": {
+      "X-BFF-Target": {
+        "equalTo": "user-service"
+      }
+    }
+  },
+  "response": {
+    "proxyBaseUrl": "http://user-service:8080"
+  },
+  "persistent": true,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/user-service"
+    }
+  }
+}

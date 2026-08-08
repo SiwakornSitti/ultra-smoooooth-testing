@@ -1,0 +1,22 @@
+{
+  "name": "Proxy - Real SMS Service from BFF",
+  "priority": 1,
+  "request": {
+    "urlPathPattern": "/sms(/.*)?",
+    "method": "ANY",
+    "headers": {
+      "X-BFF-Target": {
+        "equalTo": "sms-service"
+      }
+    }
+  },
+  "response": {
+    "proxyBaseUrl": "http://sms-service:8080"
+  },
+  "persistent": true,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/sms-service"
+    }
+  }
+}

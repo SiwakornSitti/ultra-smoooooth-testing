@@ -166,12 +166,13 @@ export default function AccountPage() {
         <br />
         {showMockControls && (
           <label>
-            SMS Mock Scenario
+            Account Mock Scenario
             <select data-testid="select-sms-scenario" value={smsScenario} onChange={(e) => setSmsScenario(e.target.value)}>
               <option value="">Real service</option>
               <option value={MOCK_SCENARIO.SMS.SUCCESS}>{MOCK_SCENARIO.SMS.SUCCESS}</option>
               <option value={MOCK_SCENARIO.SMS.INVALID_NUMBER}>{MOCK_SCENARIO.SMS.INVALID_NUMBER}</option>
               <option value={MOCK_SCENARIO.SMS.UNAVAILABLE}>{MOCK_SCENARIO.SMS.UNAVAILABLE}</option>
+              <option value={MOCK_SCENARIO.BANK_ACCOUNT.ACCOUNT_NUMBER_ALREADY_EXISTS}>{MOCK_SCENARIO.BANK_ACCOUNT.ACCOUNT_NUMBER_ALREADY_EXISTS}</option>
             </select>
           </label>
         )}

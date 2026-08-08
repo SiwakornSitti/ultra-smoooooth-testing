@@ -25,6 +25,8 @@ flowchart LR
     DB[(PostgreSQL\n:5432)]
     MockCore[WireMock Core Mocks\n:8088]
     MockExternal[WireMock External Mocks\n:8088]
+    AuthProvider[Paotang / OTP Provider]
+    SMSProvider[SMS Provider]
 
     Browser -->|REST| BFF
     BridgeWebsite -.->|REST + mocked JSBridge| Burp
@@ -44,8 +46,10 @@ flowchart LR
     Account --> DB
     EKYC --> DB
     Transfer --> DB
-    User -->|Paotang and OTP| MockExternal
-    SMS -->|SMS provider| MockExternal
+    User -->|Paotang/OTP request| MockExternal
+    MockExternal -.->|proxy unmatched| AuthProvider
+    SMS -->|SMS request| MockExternal
+    MockExternal -.->|proxy unmatched| SMSProvider
 ```
 
 All ports in the diagram are host-facing Compose ports. The website has only
@@ -60,6 +64,11 @@ for readability.
 The BFF is explicitly allowed to connect to the core services. This is the
 intended direction for synchronous application requests: `website → BFF → core
 service`.
+
+For bank-account, eKYC, and transfer requests, the configured first hop is
+WireMock: `website → BFF → WireMock Core Mocks → core service`. WireMock
+returns a matching scenario response or proxies an unmatched request to the
+real core service.
 
 The core services are `user-service`, `bank-account-service`, `ekyc-service`,
 `transfer-service`, and `sms-service`. `sms-service` is an internal HTTP
