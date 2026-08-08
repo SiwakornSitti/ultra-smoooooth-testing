@@ -3,12 +3,7 @@
   "priority": 1,
   "request": {
     "urlPathPattern": "/(users|auth)(/.*)?",
-    "method": "ANY",
-    "headers": {
-      "X-BFF-Target": {
-        "equalTo": "user-service"
-      }
-    }
+    "method": "ANY"
   },
   "response": {
     "proxyBaseUrl": "http://user-service:8080"

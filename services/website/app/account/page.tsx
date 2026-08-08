@@ -101,7 +101,7 @@ export default function AccountPage() {
       <header className="page-header">
         <Link className="home-link" href="/">← Home</Link>
         <p className="eyebrow">Customer workspace</p>
-        <h1>Create account</h1>
+        <h1>Create new bank account</h1>
         <p className="subtitle">Set up a customer profile, open an account, and retrieve the user profile.</p>
         <LogoutButton />
         <label className="toggle-field">
@@ -148,7 +148,7 @@ export default function AccountPage() {
       </section>
 
       <section data-testid="section-create-account">
-        <h2>2. Create Account (triggers SMS)</h2>
+        <h2>2. Create New Bank Account (triggers SMS)</h2>
         <label>
           User ID{" "}
           <input data-testid="input-user-id" value={userId} onChange={(e) => setUserId(e.target.value)} />
