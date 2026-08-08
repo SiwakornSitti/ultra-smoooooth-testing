@@ -21,7 +21,7 @@ export default function TransferPage() {
   const [hasLoadedTransfers, setHasLoadedTransfers] = useState(false);
   const [listTransfersScenario, setListTransfersScenario] = useState("");
   const [historyCustomerId, setHistoryCustomerId] = useState<string>(EKYC_CUSTOMERS[0].id);
-  const [historyAccountNo, setHistoryAccountNo] = useState(ACCOUNT_OPTIONS[0].number);
+  const [historyAccountNo, setHistoryAccountNo] = useState<string>(ACCOUNT_OPTIONS[0].number);
 
   async function submitTransfer() {
     setTransferResult("Loading...");

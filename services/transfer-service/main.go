@@ -11,7 +11,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"strings"
 	"sync"
 	"time"
 
@@ -262,28 +261,11 @@ func executeMoneyTransfer(ctx context.Context, transfer FundTransfer) error {
 
 func getAllTransfersHandler(w http.ResponseWriter, r *http.Request) {
 	var transfers []FundTransfer
-	customerID := r.URL.Query().Get("customer_id")
-	accountNo := r.URL.Query().Get("account_no")
 
 	if db != nil {
 		rows, err := db.QueryContext(r.Context(), `
-			SELECT t.id, t.source_account_id, t.target_account_id, t.amount, t.currency, t.status, t.created_at
-			FROM transfers t
-			WHERE (
-				$1 = '' OR EXISTS (
-					SELECT 1 FROM accounts a
-					WHERE a.user_id = $1
-					  AND (a.id = t.source_account_id OR a.id = t.target_account_id)
-				)
-			)
-			AND (
-				$2 = '' OR EXISTS (
-					SELECT 1 FROM accounts a
-					WHERE RIGHT(REPLACE(a.id::text, '-', ''), 8) = $2
-					  AND (a.id = t.source_account_id OR a.id = t.target_account_id)
-				)
-			)
-			ORDER BY t.created_at DESC`, customerID, accountNo)
+			SELECT id, source_account_id, target_account_id, amount, currency, status, created_at
+			FROM transfers ORDER BY created_at DESC`)
 		if err != nil {
 			slog.Error("Failed to query transfers from DB", "error", err)
 			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
@@ -301,13 +283,15 @@ func getAllTransfersHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			transfers = append(transfers, t)
 		}
+		if err := rows.Err(); err != nil {
+			slog.Error("Failed to iterate transfer rows", "error", err)
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
+		}
 	} else {
 		storeMu.RLock()
 		transfers = make([]FundTransfer, 0, len(transfersStore))
 		for _, t := range transfersStore {
-			if accountNo != "" && !strings.HasSuffix(strings.ReplaceAll(t.SourceAccountID, "-", ""), accountNo) && !strings.HasSuffix(strings.ReplaceAll(t.TargetAccountID, "-", ""), accountNo) {
-				continue
-			}
 			transfers = append(transfers, t)
 		}
 		storeMu.RUnlock()

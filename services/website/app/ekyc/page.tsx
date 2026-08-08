@@ -67,7 +67,7 @@ export default function EkycPage() {
         <br />
         <label>
           National ID{" "}
-          <input data-testid="input-ekyc-national-id" value={nationalId} readOnly />
+          <input data-testid="input-ekyc-national-id" value={nationalId} disabled />
         </label>
         <br />
         <label>

@@ -42,7 +42,7 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
   const [transferScenario, setTransferScenario] = useState<string>("");
   const [listTransfersScenario, setListTransfersScenario] = useState<string>("");
   const [historyCustomerId, setHistoryCustomerId] = useState<string>(EKYC_CUSTOMERS[0].id);
-  const [historyAccountNo, setHistoryAccountNo] = useState(ACCOUNT_OPTIONS[0].number);
+  const [historyAccountNo, setHistoryAccountNo] = useState<string>(ACCOUNT_OPTIONS[0].number);
 
   useEffect(() => {
     if (!bffUrl) return;
@@ -132,6 +132,7 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
               <option value="">Real service</option>
               <option value={MOCK_SCENARIO.TRANSFER.SUCCESS}>{MOCK_SCENARIO.TRANSFER.SUCCESS}</option>
               <option value={MOCK_SCENARIO.TRANSFER.INSUFFICIENT_AMOUNT}>{MOCK_SCENARIO.TRANSFER.INSUFFICIENT_AMOUNT}</option>
+              <option value={MOCK_SCENARIO.TRANSFER.INVALID_ACCOUNT}>{MOCK_SCENARIO.TRANSFER.INVALID_ACCOUNT}</option>
             </select>
           </label>
         )}

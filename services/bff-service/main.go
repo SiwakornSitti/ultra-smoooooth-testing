@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -31,6 +32,15 @@ type BankAccount struct {
 type UserDetail struct {
 	User     User          `json:"user"`
 	Accounts []BankAccount `json:"accounts"`
+}
+
+type Transfer struct {
+	ID              string  `json:"id"`
+	SourceAccountID string  `json:"source_account_id"`
+	TargetAccountID string  `json:"target_account_id"`
+	Amount          float64 `json:"amount"`
+	Currency        string  `json:"currency"`
+	Status          string  `json:"status"`
 }
 
 var (
@@ -220,6 +230,37 @@ func fetchAccounts(r *http.Request, userID string) ([]BankAccount, error) {
 		}
 	}
 	return userAccounts, nil
+}
+
+func fetchAllAccounts(r *http.Request) ([]BankAccount, error) {
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/accounts", bankAccountServiceURL), nil)
+	if err != nil {
+		return nil, err
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch accounts, status: %d", resp.StatusCode)
+	}
+
+	var accounts []BankAccount
+	if err := json.NewDecoder(resp.Body).Decode(&accounts); err != nil {
+		return nil, err
+	}
+	return accounts, nil
+}
+
+func accountNumber(accountID string) string {
+	normalized := strings.ReplaceAll(accountID, "-", "")
+	if len(normalized) < 8 {
+		return normalized
+	}
+	return normalized[len(normalized)-8:]
 }
 
 func handleCreateUser(w http.ResponseWriter, r *http.Request) {
@@ -598,9 +639,6 @@ func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Proxying get all transfers request to transfer-service")
 
 	target := fmt.Sprintf("%s/transfers", transferServiceURL)
-	if r.URL.RawQuery != "" {
-		target += "?" + r.URL.RawQuery
-	}
 	req, err := http.NewRequestWithContext(r.Context(), "GET", target, nil)
 	if err != nil {
 		slog.Error("Failed to create request", "error", err)
@@ -617,10 +655,58 @@ func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 
-	w.WriteHeader(resp.StatusCode)
-	if _, err := io.Copy(w, resp.Body); err != nil {
-		slog.Error("Failed to copy response body", "error", err)
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		writeJSONError(w, "Failed to read transfer response", http.StatusBadGateway)
+		return
 	}
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		w.WriteHeader(resp.StatusCode)
+		_, _ = w.Write(body)
+		return
+	}
+
+	var transfers []Transfer
+	if err := json.Unmarshal(body, &transfers); err != nil {
+		writeJSONError(w, "Invalid transfer response", http.StatusBadGateway)
+		return
+	}
+
+	customerID := r.URL.Query().Get("customer_id")
+	accountNo := r.URL.Query().Get("account_no")
+	if customerID != "" || accountNo != "" {
+		accounts, err := fetchAllAccounts(r)
+		if err != nil {
+			slog.Error("Failed to fetch accounts for transfer history", "error", err)
+			writeJSONError(w, "Bank account service unavailable", http.StatusBadGateway)
+			return
+		}
+
+		allowedAccounts := make(map[string]struct{})
+		for _, account := range accounts {
+			if customerID != "" && account.UserID != customerID {
+				continue
+			}
+			if accountNo != "" && accountNumber(account.ID) != accountNo {
+				continue
+			}
+			allowedAccounts[account.ID] = struct{}{}
+		}
+
+		filtered := make([]Transfer, 0, len(transfers))
+		for _, transfer := range transfers {
+			_, sourceAllowed := allowedAccounts[transfer.SourceAccountID]
+			_, targetAllowed := allowedAccounts[transfer.TargetAccountID]
+			if sourceAllowed || targetAllowed {
+				filtered = append(filtered, transfer)
+			}
+		}
+		transfers = filtered
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(transfers)
 }
 
 func handleGetTransfer(w http.ResponseWriter, r *http.Request) {

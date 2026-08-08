@@ -156,7 +156,7 @@ export default function Home() {
           </label>
           <label>
             National ID{" "}
-            <input data-testid="input-ekyc-national-id" value={nationalId} readOnly />
+            <input data-testid="input-ekyc-national-id" value={nationalId} disabled />
           </label>
           {showMockControls && (
             <label>

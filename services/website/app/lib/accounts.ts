@@ -11,7 +11,7 @@ export const ACCOUNT_OPTIONS = [
 
 export const INVALID_ACCOUNT_OPTION = {
   id: "00000000-0000-0000-0000-000099999999",
-  number: "99999",
+  number: "99999999",
 } as const;
 
 export function getAccountNumber(accountId: string) {
