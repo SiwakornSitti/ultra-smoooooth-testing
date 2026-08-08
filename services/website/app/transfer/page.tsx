@@ -6,21 +6,26 @@ import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
 import { LogoutButton } from "../lib/logout-button";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
+import { EKYC_CUSTOMERS } from "../lib/ekyc-customers";
+import { ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION } from "../lib/accounts";
 
 export default function TransferPage() {
   const authenticated = useRequireLogin();
   const bffUrl = useBffUrl();
-  const [sourceAccountId, setSourceAccountId] = useState("00000000-0000-0000-0000-000000000011");
-  const [targetAccountId, setTargetAccountId] = useState("00000000-0000-0000-0000-000000000012");
+  const [sourceAccountId, setSourceAccountId] = useState<string>(ACCOUNT_OPTIONS[0].id);
+  const [targetAccountId, setTargetAccountId] = useState<string>(ACCOUNT_OPTIONS[1].id);
   const [amount, setAmount] = useState("100");
   const [currency, setCurrency] = useState("THB");
   const [transferResult, setTransferResult] = useState("");
   const [transfersResult, setTransfersResult] = useState("");
+  const [hasLoadedTransfers, setHasLoadedTransfers] = useState(false);
   const [listTransfersScenario, setListTransfersScenario] = useState("");
+  const [historyCustomerId, setHistoryCustomerId] = useState<string>(EKYC_CUSTOMERS[0].id);
+  const [historyAccountNo, setHistoryAccountNo] = useState(ACCOUNT_OPTIONS[0].number);
 
   async function submitTransfer() {
     setTransferResult("Loading...");
-    const res = await fetch(`${bffUrl}/api/v1/transfers`, {
+    const res = await fetch(`${bffUrl}/api/v1/transfers?customer_id=${historyCustomerId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -36,11 +41,15 @@ export default function TransferPage() {
 
   async function listTransfers() {
     setTransfersResult("Loading...");
-    const res = await fetch(`${bffUrl}/api/v1/transfers`, {
+    setHasLoadedTransfers(false);
+    const query = new URLSearchParams({ customer_id: historyCustomerId });
+    if (historyAccountNo) query.set("account_no", historyAccountNo);
+    const res = await fetch(`${bffUrl}/api/v1/transfers?${query.toString()}`, {
       headers: listTransfersScenario ? { "Mock-Scenario": listTransfersScenario } : {},
     });
     const data = await parseResponse(res);
-    setTransfersResult(JSON.stringify(data));
+    setTransfersResult(Array.isArray(data) && data.length === 0 ? "" : JSON.stringify(data));
+    setHasLoadedTransfers(res.ok && Array.isArray(data));
   }
 
   if (!authenticated) {
@@ -62,20 +71,24 @@ export default function TransferPage() {
         <h2>Create Transfer</h2>
         <label>
           Source Account ID{" "}
-          <input
+          <select
             data-testid="input-source-account-id"
             value={sourceAccountId}
             onChange={(e) => setSourceAccountId(e.target.value)}
-          />
+          >
+            {[...ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION].map((account) => <option key={account.id} value={account.id}>{account.id === INVALID_ACCOUNT_OPTION.id ? `${account.number} (Invalid account)` : account.number}</option>)}
+          </select>
         </label>
         <br />
         <label>
           Target Account ID{" "}
-          <input
+          <select
             data-testid="input-target-account-id"
             value={targetAccountId}
             onChange={(e) => setTargetAccountId(e.target.value)}
-          />
+          >
+            {[...ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION].map((account) => <option key={account.id} value={account.id}>{account.id === INVALID_ACCOUNT_OPTION.id ? `${account.number} (Invalid account)` : account.number}</option>)}
+          </select>
         </label>
         <br />
         <label>
@@ -108,10 +121,25 @@ export default function TransferPage() {
       <section data-testid="section-list-transfers">
         <h2>Transfer History</h2>
         <label>
+          Customer{" "}
+          <select data-testid="select-transfer-history-customer" value={historyCustomerId} onChange={(e) => setHistoryCustomerId(e.target.value)}>
+            {EKYC_CUSTOMERS.map((customer) => (
+              <option key={customer.id} value={customer.id}>{customer.name}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Account No. {" "}
+          <select data-testid="select-transfer-history-account-no" value={historyAccountNo} onChange={(e) => setHistoryAccountNo(e.target.value)}>
+            {[...ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION].map((account) => <option key={account.id} value={account.number}>{account.id === INVALID_ACCOUNT_OPTION.id ? `${account.number} (Invalid account)` : account.number}</option>)}
+          </select>
+        </label>
+        <label>
           Transfer History Mock Scenario{" "}
           <select data-testid="select-list-transfers-scenario" value={listTransfersScenario} onChange={(e) => setListTransfersScenario(e.target.value)}>
             <option value="">Real service</option>
             <option value={MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS}>{MOCK_SCENARIO.TRANSFER.LIST_TRANSFERS}</option>
+            <option value={MOCK_SCENARIO.TRANSFER.EMPTY_LIST}>{MOCK_SCENARIO.TRANSFER.EMPTY_LIST}</option>
           </select>
         </label>
         <br />
@@ -119,6 +147,7 @@ export default function TransferPage() {
           Load Transfers
         </button>
         <pre data-testid="result-transfers">{transfersResult}</pre>
+        {hasLoadedTransfers && !transfersResult && <p data-testid="empty-transfer-history">No transfers found.</p>}
       </section>
       </div>
     </main>

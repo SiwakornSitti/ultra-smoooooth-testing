@@ -1,20 +1,17 @@
 {
-  "name": "Core Mock - Transfer Insufficient Amount",
+  "name": "Core Mock - Empty Transfer List",
   "request": {
     "urlPath": "/transfers",
-    "method": "POST",
+    "method": "GET",
     "headers": {
       "Mock-Scenario": {
-        "contains": "TRANSFER:INSUFFICIENT_AMOUNT"
+        "contains": "TRANSFER:EMPTY_LIST"
       }
     }
   },
   "response": {
-    "status": 400,
-    "jsonBody": {
-      "error": "insufficient funds",
-      "code": "INSUFFICIENT_FUNDS"
-    },
+    "status": 200,
+    "jsonBody": [],
     "headers": {
       "Content-Type": "application/json"
     }

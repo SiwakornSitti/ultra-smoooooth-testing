@@ -1,19 +1,19 @@
 {
-  "name": "Core Mock - Transfer Insufficient Amount",
+  "name": "eKYC Service Mock - Verify Failed",
   "request": {
-    "urlPath": "/transfers",
+    "urlPath": "/ekycs/verify",
     "method": "POST",
     "headers": {
       "Mock-Scenario": {
-        "contains": "TRANSFER:INSUFFICIENT_AMOUNT"
+        "contains": "EKYC:VERIFY_FAILED"
       }
     }
   },
   "response": {
-    "status": 400,
+    "status": 422,
     "jsonBody": {
-      "error": "insufficient funds",
-      "code": "INSUFFICIENT_FUNDS"
+      "error": "Identity verification failed",
+      "code": "VERIFICATION_FAILED"
     },
     "headers": {
       "Content-Type": "application/json"
@@ -22,7 +22,7 @@
   "persistent": true,
   "metadata": {
     "wiremock-gui": {
-      "folder": "/core"
+      "folder": "/ekyc-service"
     }
   }
 }

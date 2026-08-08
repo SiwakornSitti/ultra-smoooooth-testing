@@ -14,8 +14,8 @@
     "jsonBody": [
       {
         "id": "frontend-mock-transfer-001",
-        "source_account_id": "frontend-mock-account-001",
-        "target_account_id": "frontend-mock-account-002",
+        "source_account_id": "00000000-0000-0000-0000-000000000011",
+        "target_account_id": "00000000-0000-0000-0000-000000000012",
         "amount": 100,
         "currency": "THB",
         "status": "completed"

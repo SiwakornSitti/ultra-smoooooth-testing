@@ -6,6 +6,7 @@ import { AUTH_SESSION_KEY } from "./lib/auth";
 import { LogoutButton } from "./lib/logout-button";
 import { MOCK_SCENARIO } from "./lib/mock-scenario";
 import { EKYC_CUSTOMERS } from "./lib/ekyc-customers";
+import { ACCOUNT_OPTIONS } from "./lib/accounts";
 import { TransferPanel } from "./components/transfer-panel";
 
 type AccountBalance = {
@@ -16,7 +17,7 @@ type AccountBalance = {
 export default function Home() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const bffUrl = useBffUrl();
-  const [balanceAccountId, setBalanceAccountId] = useState("00000000-0000-0000-0000-000000000011");
+  const [balanceAccountId, setBalanceAccountId] = useState<string>(ACCOUNT_OPTIONS[0].id);
   const [balanceResult, setBalanceResult] = useState("");
   const [accountBalance, setAccountBalance] = useState<AccountBalance | null>(null);
   const [balanceError, setBalanceError] = useState("");
@@ -107,8 +108,7 @@ export default function Home() {
               value={balanceAccountId}
               onChange={(e) => setBalanceAccountId(e.target.value)}
             >
-              <option value="00000000-0000-0000-0000-000000000011">Account 001 (00000000-0000-0000-0000-000000000011)</option>
-              <option value="00000000-0000-0000-0000-000000000012">Account 002 (00000000-0000-0000-0000-000000000012)</option>
+              {ACCOUNT_OPTIONS.map((account) => <option key={account.id} value={account.id}>{account.number}</option>)}
             </select>
           </label>
           {showMockControls && (
@@ -136,7 +136,7 @@ export default function Home() {
           <p className="eyebrow">Identity</p>
           <h2>eKYC verification</h2>
           <label>
-            Customer ID{" "}
+            Customer name{" "}
             <select
               data-testid="input-ekyc-customer-id"
               value={customerId}
@@ -156,11 +156,7 @@ export default function Home() {
           </label>
           <label>
             National ID{" "}
-            <input data-testid="input-ekyc-national-id" value={nationalId} onChange={(e) => setNationalId(e.target.value)} />
-          </label>
-          <label>
-            Full name{" "}
-            <input data-testid="input-ekyc-full-name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+            <input data-testid="input-ekyc-national-id" value={nationalId} readOnly />
           </label>
           {showMockControls && (
             <label>
@@ -168,6 +164,7 @@ export default function Home() {
               <select data-testid="select-ekyc-scenario" value={ekycScenario} onChange={(e) => setEkycScenario(e.target.value)}>
                 <option value="">Real service</option>
                 <option value={MOCK_SCENARIO.EKYC.VERIFY_APPROVED}>{MOCK_SCENARIO.EKYC.VERIFY_APPROVED}</option>
+                <option value={MOCK_SCENARIO.EKYC.VERIFY_FAILED}>{MOCK_SCENARIO.EKYC.VERIFY_FAILED}</option>
               </select>
             </label>
           )}

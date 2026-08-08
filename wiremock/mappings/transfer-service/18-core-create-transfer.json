@@ -5,7 +5,7 @@
     "method": "POST",
     "headers": {
       "Mock-Scenario": {
-        "contains": "TRANSFER:CREATE_TRANSFER"
+        "contains": "TRANSFER:SUCCESS"
       }
     }
   },

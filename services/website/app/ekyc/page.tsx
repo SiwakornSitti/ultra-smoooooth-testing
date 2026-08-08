@@ -46,7 +46,7 @@ export default function EkycPage() {
 
       <section data-testid="section-ekyc">
         <label>
-          Customer ID{" "}
+          Customer name{" "}
           <select
             data-testid="input-ekyc-customer-id"
             value={customerId}
@@ -67,12 +67,7 @@ export default function EkycPage() {
         <br />
         <label>
           National ID{" "}
-          <input data-testid="input-ekyc-national-id" value={nationalId} onChange={(e) => setNationalId(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Full name{" "}
-          <input data-testid="input-ekyc-full-name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <input data-testid="input-ekyc-national-id" value={nationalId} readOnly />
         </label>
         <br />
         <label>
@@ -80,6 +75,7 @@ export default function EkycPage() {
           <select data-testid="select-ekyc-scenario" value={scenario} onChange={(e) => setScenario(e.target.value)}>
             <option value="">Real service</option>
             <option value={MOCK_SCENARIO.EKYC.VERIFY_APPROVED}>{MOCK_SCENARIO.EKYC.VERIFY_APPROVED}</option>
+            <option value={MOCK_SCENARIO.EKYC.VERIFY_FAILED}>{MOCK_SCENARIO.EKYC.VERIFY_FAILED}</option>
           </select>
         </label>
         <br />

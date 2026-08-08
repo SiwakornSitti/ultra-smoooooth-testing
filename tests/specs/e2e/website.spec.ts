@@ -316,7 +316,6 @@ test.describe("QA website full e2e flow", () => {
 
     await page.getByTestId("input-ekyc-customer-id").selectOption("00000000-0000-0000-0000-000000000001");
     await page.getByTestId("input-ekyc-national-id").fill("1234567890123");
-    await page.getByTestId("input-ekyc-full-name").fill("Narin Chaiyasit");
     await page.getByTestId("btn-submit-ekyc").click();
 
     await expect(page.getByTestId("result-ekyc")).toContainText('"status":"APPROVED"');

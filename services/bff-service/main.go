@@ -109,6 +109,7 @@ func main() {
 	r.HandleFunc("/api/v1/users/{id}/", handleUserDetails).Methods("GET")
 	r.HandleFunc("/api/v1/users", handleCreateUser).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleCreateAccount).Methods("POST")
+	r.HandleFunc("/api/v1/accounts", handleListAccounts).Methods("GET")
 	r.HandleFunc("/api/v1/accounts/{id}", handleGetAccount).Methods("GET")
 	r.HandleFunc("/api/v1/ekycs/verify", handleEKYCVerify).Methods("POST")
 	r.HandleFunc("/api/v1/ekycs", handleListEKYC).Methods("GET")
@@ -300,6 +301,28 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(resp.StatusCode)
 	_, _ = w.Write(accountBody)
+}
+
+func handleListAccounts(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying list accounts request to bank-account-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/accounts", bankAccountServiceURL), nil)
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		writeJSONError(w, "Bank account service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = io.Copy(w, resp.Body)
 }
 
 func handleGetAccount(w http.ResponseWriter, r *http.Request) {
@@ -574,7 +597,11 @@ func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
 func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Proxying get all transfers request to transfer-service")
 
-	req, err := http.NewRequestWithContext(r.Context(), "GET", fmt.Sprintf("%s/transfers", transferServiceURL), nil)
+	target := fmt.Sprintf("%s/transfers", transferServiceURL)
+	if r.URL.RawQuery != "" {
+		target += "?" + r.URL.RawQuery
+	}
+	req, err := http.NewRequestWithContext(r.Context(), "GET", target, nil)
 	if err != nil {
 		slog.Error("Failed to create request", "error", err)
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
