@@ -64,6 +64,13 @@ var (
 	storeMu        sync.RWMutex
 )
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 func writeJSONError(w http.ResponseWriter, message string, code string, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
@@ -343,10 +350,7 @@ func main() {
 
 	initDB()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8085"
-	}
+	port := getEnv("PORT", "8085")
 
 	router := setupRouter()
 	slog.Info("Transfer service starting", "port", port)

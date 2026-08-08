@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy test test-integration test-e2e slides
+.PHONY: all build clean sync tidy setup docker-up docker-start migrate seed test test-integration test-e2e slides
 
 all: build
 
@@ -28,6 +28,38 @@ sync:
 	@echo "Workspace and module dependencies synced successfully."
 
 tidy: sync
+
+setup: docker-up migrate seed
+	@echo "Docker services, migrations, and seed data are ready."
+
+docker-up:
+	docker compose watch
+
+docker-start:
+	docker compose up -d --build
+	@until docker compose exec -T db pg_isready -U app -d app >/dev/null 2>&1; do \
+		echo "Waiting for PostgreSQL..."; \
+		sleep 1; \
+	done
+	@echo "PostgreSQL is ready."
+
+migrate:
+	@for file in services/*/db/migration/*.sql; do \
+		echo "Applying $$file..."; \
+		docker compose exec -T db psql -v ON_ERROR_STOP=1 -U app -d app < "$$file" || exit 1; \
+	done
+	@echo "Database migrations applied successfully."
+
+seed:
+	@for file in \
+		services/user-service/db/seed/002-user-service-seed.sql \
+		services/bank-account-service/db/seed/001-bank-account-service-seed.sql \
+		services/ekyc-service/db/seed/001-ekyc-service-seed.sql \
+		services/transfer-service/db/seed/001-transfer-service-seed.sql; do \
+		echo "Applying $$file..."; \
+		docker compose exec -T db psql -v ON_ERROR_STOP=1 -U app -d app < "$$file" || exit 1; \
+	done
+	@echo "Database seed data applied successfully."
 
 test:
 	@for d in services/*; do \

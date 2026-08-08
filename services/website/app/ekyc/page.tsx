@@ -11,7 +11,7 @@ export default function EkycPage() {
   const bffUrl = useBffUrl();
   const [customerId, setCustomerId] = useState("00000000-0000-0000-0000-000000000001");
   const [nationalId, setNationalId] = useState("1234567890123");
-  const [fullName, setFullName] = useState("Seed Sender");
+  const [fullName, setFullName] = useState("Narin Chaiyasit");
   const [result, setResult] = useState("");
 
   async function verifyIdentity() {

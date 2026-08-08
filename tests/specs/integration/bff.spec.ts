@@ -87,6 +87,7 @@ test.beforeAll(async () => {
     wiremockMapping("paotang", { flat: true }),
     wiremockMapping("otp", { flat: true }),
     wiremockMapping("sms", { flat: true }),
+    wiremockMapping("transfer-service", { flat: true }),
   ]);
 
   userServiceContainer = await startUserService(network, dbContainer, {
@@ -108,7 +109,7 @@ test.beforeAll(async () => {
     USER_SERVICE_URL: "http://user-service:8080",
     BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
     EKYC_SERVICE_URL: "http://ekyc-service:8080",
-    TRANSFER_SERVICE_URL: "http://transfer-service:8080",
+    TRANSFER_SERVICE_URL: "http://wiremock:8080",
     SMS_SERVICE_URL: "http://sms-service:8080",
   });
 

@@ -1,0 +1,34 @@
+{
+  "name": "Core Mock - List Transfers",
+  "request": {
+    "urlPath": "/transfers",
+    "method": "GET",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "TRANSFER:LIST_TRANSFERS"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [
+      {
+        "id": "frontend-mock-transfer-001",
+        "source_account_id": "frontend-mock-account-001",
+        "target_account_id": "frontend-mock-account-002",
+        "amount": 100,
+        "currency": "THB",
+        "status": "completed"
+      }
+    ],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "persistent": true,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/core"
+    }
+  }
+}

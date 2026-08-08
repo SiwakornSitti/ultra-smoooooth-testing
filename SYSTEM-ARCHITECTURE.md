@@ -82,7 +82,7 @@ adapter used by the BFF to call the external SMS provider.
 | `transfer-service` | Transfer validation, balance movement, and transfer history | PostgreSQL; updates both account balances and the transfer record in one transaction |
 | `sms-service` | Internal HTTP adapter that sends SMS | SMS provider through WireMock |
 | PostgreSQL | Shared local database used by the persistence-backed services | Temporary container-local storage |
-| WireMock | Deterministic external-provider mocks and optional BFF façade | Paotang, OTP, SMS, stateless labs, stateful labs, and BFF mappings |
+| WireMock | Deterministic external-provider and core-service mocks | Paotang, OTP, SMS, transfer-service, stateless labs, and stateful labs |
 
 ## Request flows
 
@@ -127,17 +127,18 @@ WireMock has two roles in this repository:
 
 - External-provider mock: domain services call WireMock for Paotang, OTP, and
   SMS behavior.
-- Optional BFF façade: set `BFF_URL=http://localhost:8088` for the website.
-  Scenario-specific BFF mappings are matched using the `Mock-Scenario` header;
-  requests that do not match fall through to the real BFF through the proxy
-  mapping.
+- Transfer-service mock: the BFF sends transfer requests to WireMock; WireMock
+  matches `TRANSFER:*` scenarios or proxies unmatched requests to the real
+  transfer-service.
+- External-provider mock: domain services call WireMock for Paotang, OTP, and
+  SMS behavior.
 
 The repository separates deterministic stateless mappings from scenario-based
 stateful mappings:
 
 - `wiremock/mappings/lab-stateless` contains independent request/response
   examples.
-- `wiremock/mappings/bff` contains website and API façade scenarios.
+- `wiremock/mappings/transfer-service` contains transfer-service scenarios.
 - `labs/wiremock-stateful` contains request sequences whose responses depend on
   WireMock scenario state.
 
@@ -166,12 +167,6 @@ Start the complete environment with:
 
 ```bash
 docker compose up --build
-```
-
-For a browser flow driven by WireMock BFF scenarios:
-
-```bash
-BFF_URL=http://localhost:8088 docker compose up --build
 ```
 
 The main configuration boundaries are:

@@ -109,6 +109,7 @@ func main() {
 	r.HandleFunc("/api/v1/users/{id}/", handleUserDetails).Methods("GET")
 	r.HandleFunc("/api/v1/users", handleCreateUser).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleCreateAccount).Methods("POST")
+	r.HandleFunc("/api/v1/accounts/{id}", handleGetAccount).Methods("GET")
 	r.HandleFunc("/api/v1/ekycs/verify", handleEKYCVerify).Methods("POST")
 	r.HandleFunc("/api/v1/ekycs", handleListEKYC).Methods("GET")
 	r.HandleFunc("/api/v1/ekycs/{id}", handleGetEKYC).Methods("GET")
@@ -299,6 +300,29 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(resp.StatusCode)
 	_, _ = w.Write(accountBody)
+}
+
+func handleGetAccount(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying account lookup request to bank-account-service", "account_id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/accounts/%s", bankAccountServiceURL, id), nil)
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		writeJSONError(w, "Bank account service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = io.Copy(w, resp.Body)
 }
 
 func sendAccountSMS(r *http.Request, account BankAccount) error {

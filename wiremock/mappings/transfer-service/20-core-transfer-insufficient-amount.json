@@ -1,0 +1,28 @@
+{
+  "name": "Core Mock - Transfer Insufficient Amount",
+  "request": {
+    "urlPath": "/transfers",
+    "method": "POST",
+    "headers": {
+      "Mock-Scenario": {
+        "contains": "TRANSFER:TRANSFER_INSUFFICIENT_AMOUNT"
+      }
+    }
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "insufficient funds",
+      "code": "INSUFFICIENT_FUNDS"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  },
+  "persistent": true,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/core"
+    }
+  }
+}

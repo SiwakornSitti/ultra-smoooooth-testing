@@ -47,6 +47,7 @@ test.beforeAll(async () => {
     wiremockMapping("paotang"),
     wiremockMapping("sms"),
     wiremockMapping("otp"),
+    wiremockMapping("transfer-service"),
   ]);
 
   userServiceContainer = await startUserService(network, dbContainer, {
@@ -70,7 +71,7 @@ test.beforeAll(async () => {
     USER_SERVICE_URL: "http://user-service:8080",
     BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
     EKYC_SERVICE_URL: "http://ekyc-service:8080",
-    TRANSFER_SERVICE_URL: "http://transfer-service:8080",
+    TRANSFER_SERVICE_URL: "http://wiremock:8080",
     SMS_SERVICE_URL: "http://sms-service:8080",
   });
 
@@ -130,14 +131,14 @@ async function login(page: Page) {
 
   setScenario(MOCK_SCENARIO.OTP.SUCCESS);
   await page.getByTestId("btn-verify-otp").click();
-  await expect(page.getByTestId("result-otp")).toContainText('"verified":true');
+  await expect(page).toHaveURL(/\/$/);
 }
 
 test.describe("QA website full e2e flow", () => {
-  test("requires login before showing the home navigation", async ({ page }) => {
+  test("redirects unauthenticated visitors to sign in", async ({ page }) => {
     await page.goto(websiteUrl);
     await expect(page).toHaveURL(/\/login$/);
-    await expect(page.getByTestId("link-account")).not.toBeVisible();
+    await expect(page.getByTestId("btn-paotang-login")).toBeVisible();
   });
 
   test("logs out and requires login again", async ({ page }) => {
@@ -148,6 +149,26 @@ test.describe("QA website full e2e flow", () => {
     await expect(page).toHaveURL(/\/login$/);
 
     await page.goto(websiteUrl);
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(page.getByTestId("signup-button")).toBeVisible();
+  });
+
+  test("signup verifies OTP before redirecting to sign in", async ({ page }) => {
+    const setScenario = mockScenario(page);
+    await page.goto(`${websiteUrl}/signup`);
+
+    await page.getByTestId("input-signup-email").fill(`signup-${Date.now()}@example.com`);
+    await page.getByTestId("btn-signup").click();
+    await expect(page.getByTestId("result-signup")).toContainText('"id"');
+    await expect(page.getByTestId("section-signup-otp")).toBeVisible();
+
+    setScenario(MOCK_SCENARIO.OTP.INVALID);
+    await page.getByTestId("btn-signup-verify-otp").click();
+    await expect(page.getByTestId("result-signup-otp")).toContainText("invalid_otp");
+    await expect(page).toHaveURL(/\/signup$/);
+
+    setScenario(MOCK_SCENARIO.OTP.SUCCESS);
+    await page.getByTestId("btn-signup-verify-otp").click();
     await expect(page).toHaveURL(/\/login$/);
   });
 
@@ -259,7 +280,7 @@ test.describe("QA website full e2e flow", () => {
 
     setScenario(MOCK_SCENARIO.OTP.SUCCESS);
     await page.getByTestId("btn-verify-otp").click();
-    await expect(page.getByTestId("result-otp")).toContainText('"verified":true');
+    await expect(page).toHaveURL(/\/$/);
   });
 
   test("transfer rejects insufficient funds", async ({ page }) => {
@@ -293,7 +314,7 @@ test.describe("QA website full e2e flow", () => {
 
     await page.getByTestId("input-ekyc-customer-id").fill("00000000-0000-0000-0000-000000000001");
     await page.getByTestId("input-ekyc-national-id").fill("1234567890123");
-    await page.getByTestId("input-ekyc-full-name").fill("Seed Sender");
+    await page.getByTestId("input-ekyc-full-name").fill("Narin Chaiyasit");
     await page.getByTestId("btn-submit-ekyc").click();
 
     await expect(page.getByTestId("result-ekyc")).toContainText('"status":"APPROVED"');

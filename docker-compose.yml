@@ -177,13 +177,14 @@ services:
       USER_SERVICE_URL: ${USER_SERVICE_URL:-http://user-service:8080}
       BANK_ACCOUNT_SERVICE_URL: ${BANK_ACCOUNT_SERVICE_URL:-http://bank-account-service:8080}
       EKYC_SERVICE_URL: ${EKYC_SERVICE_URL:-http://ekyc-service:8080}
-      TRANSFER_SERVICE_URL: ${TRANSFER_SERVICE_URL:-http://transfer-service:8080}
+      TRANSFER_SERVICE_URL: ${TRANSFER_SERVICE_URL:-http://wiremock:8080}
       SMS_SERVICE_URL: ${SMS_SERVICE_URL:-http://sms-service:8080}
     depends_on:
       - user-service
       - bank-account-service
       - ekyc-service
       - transfer-service
+      - wiremock
       - sms-service
     develop:
       watch:

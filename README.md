@@ -122,6 +122,25 @@ make clean
 
 ## 🚀 Running with Docker Compose
 
+### Apple Silicon (Rosetta 2)
+
+On Apple Silicon Macs, enable x86/amd64 emulation in Docker Desktop before
+starting the stack:
+
+1. Open **Docker Desktop → Settings → General**.
+2. Enable **Use Rosetta for x86/amd64 emulation on Apple Silicon**.
+3. Click **Apply & Restart**.
+
+This repository pins the WireMock container to `linux/amd64`, so Docker Desktop
+uses Rosetta 2 to run it. Verify that the setting is active with:
+
+```bash
+docker info --format '{{.Architecture}}'
+docker compose config
+```
+
+Then start the stack as usual:
+
 Spin up the entire microservices environment (Postgres, WireMock, User Service, Bank Account Service, eKYC Service, Transfer Service, SMS Service, BFF Service, and Website):
 
 ```bash
@@ -132,13 +151,17 @@ docker compose up --build
 docker compose down
 ```
 
-To test the frontend against the BFF mappings in the existing WireMock service:
+Open `http://localhost:3000`.
+
+Or start Docker, apply migrations, and load seed data with one command:
 
 ```bash
-BFF_URL=http://localhost:8088 docker compose up --build
+make setup
 ```
 
-Open `http://localhost:3000`.
+`make seed` inserts the two demo users. The login page uses `Narin Chaiyasit` with
+phone `+66800000001` by default, plus the sample accounts, eKYC record, and
+transfer data.
 
 Mocked BFF mappings require a `Mock-Scenario` header; requests without it fall back to the real `bff-service:8080` through WireMock.
 

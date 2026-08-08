@@ -1,21 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { AUTH_SESSION_KEY } from "../lib/auth";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
 
 const THAI_MOBILE_PHONE_PATTERN = /^\+66[689]\d{8}$/;
 
-function randomThaiMobileNumber() {
-  const mobilePrefix = ["6", "8", "9"][Math.floor(Math.random() * 3)];
-  const subscriberNumber = Math.floor(Math.random() * 100_000_000)
-    .toString()
-    .padStart(8, "0");
-  return `+66${mobilePrefix}${subscriberNumber}`;
-}
-
 export default function LoginPage() {
+  const router = useRouter();
   const bffUrl = useBffUrl();
 
   // Step 1: Paotang authcode exchange
@@ -26,15 +21,11 @@ export default function LoginPage() {
   const [showMockControls, setShowMockControls] = useState(true);
 
   // Step 2: OTP SMS verify
-  const [phone, setPhone] = useState("+66800000000");
+  const [phone, setPhone] = useState("+66800000001");
   const [otpCode, setOtpCode] = useState("123456");
   const [otpScenario, setOtpScenario] = useState<string>(MOCK_SCENARIO.OTP.SUCCESS);
   const [otpResult, setOtpResult] = useState("");
   const phoneValid = THAI_MOBILE_PHONE_PATTERN.test(phone);
-
-  useEffect(() => {
-    setPhone(randomThaiMobileNumber());
-  }, []);
 
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
@@ -76,6 +67,7 @@ export default function LoginPage() {
     setOtpResult(JSON.stringify(data));
     if (res.ok && data.verified === true) {
       window.sessionStorage.setItem(AUTH_SESSION_KEY, "true");
+      router.replace("/");
     }
   }
 
@@ -85,6 +77,12 @@ export default function LoginPage() {
         <p className="eyebrow">Secure access</p>
         <h1>Sign in</h1>
         <p className="subtitle">Exchange your Paotang auth code, then verify your identity with a one-time password.</p>
+        <div data-testid="example-user">
+          <strong>Example user</strong>
+          <p>Name: Narin Chaiyasit</p>
+          <p>Email: sender@example.com</p>
+          <p>Phone: +66800000001</p>
+        </div>
         <label className="toggle-field">
           <input
             data-testid="toggle-mock-controls"
@@ -112,6 +110,7 @@ export default function LoginPage() {
               value={paotangScenario}
               onChange={(e) => setPaotangScenario(e.target.value)}
             >
+              <option value="">Real service</option>
               <option value={MOCK_SCENARIO.PAOTANG.SUCCESS}>{MOCK_SCENARIO.PAOTANG.SUCCESS}</option>
               <option value={MOCK_SCENARIO.PAOTANG.INVALID_GRANT}>{MOCK_SCENARIO.PAOTANG.INVALID_GRANT}</option>
               <option value={MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE}>{MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE}</option>
@@ -154,6 +153,7 @@ export default function LoginPage() {
           <label>
             OTP Mock Scenario
             <select data-testid="select-otp-scenario" value={otpScenario} onChange={(e) => setOtpScenario(e.target.value)}>
+              <option value="">Real service</option>
               <option value={MOCK_SCENARIO.OTP.SUCCESS}>{MOCK_SCENARIO.OTP.SUCCESS}</option>
               <option value={MOCK_SCENARIO.OTP.INVALID}>{MOCK_SCENARIO.OTP.INVALID}</option>
             </select>
@@ -165,6 +165,9 @@ export default function LoginPage() {
         <pre data-testid="result-otp">{otpResult}</pre>
       </section>
       </div>
+      <Link className="signup-button" data-testid="signup-button" href="/signup">
+        Need an account? Sign up
+      </Link>
     </main>
   );
 }

@@ -55,6 +55,21 @@ a:hover {
   color: var(--primary);
 }
 
+.signup-button {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: white;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.signup-button:hover {
+  background: var(--primary-dark);
+}
+
 .eyebrow {
   margin: 0 0 0.5rem;
   color: var(--primary);
@@ -114,6 +129,11 @@ label {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 700;
+}
+
+.page-header .toggle-field {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .toggle-field input {
@@ -178,6 +198,35 @@ pre {
   word-break: break-word;
 }
 
+.error-message {
+  color: #b42318;
+  font-weight: 700;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 0.65rem;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .home-links {
   display: grid;
   gap: 0.75rem;
@@ -205,13 +254,14 @@ pre {
 
 @media (min-width: 720px) {
   .page-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.9rem;
+    column-count: 2;
+    column-gap: 0.9rem;
   }
 
   .page-grid section[data-testid] {
     margin-top: 0;
+    break-inside: avoid;
+    margin-bottom: 0.9rem;
   }
 }
 

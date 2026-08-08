@@ -1,0 +1,17 @@
+{
+  "name": "Proxy - Real Transfer Service",
+  "priority": 100,
+  "request": {
+    "urlPathPattern": "/transfers(/.*)?",
+    "method": "ANY"
+  },
+  "response": {
+    "proxyBaseUrl": "http://transfer-service:8080"
+  },
+  "persistent": true,
+  "metadata": {
+    "wiremock-gui": {
+      "folder": "/transfer-service"
+    }
+  }
+}
