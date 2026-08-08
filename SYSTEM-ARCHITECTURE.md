@@ -11,7 +11,8 @@ WireMock test doubles together.
 
 ```mermaid
 flowchart LR
-    Browser[QA Website\nNext.js :3000]
+    Browser[Website\nNext.js :3000]
+    BridgeWebsite[Website with mocked JSBridge\nNext.js :3000]
     Burp[Optional Burp Suite\nMITM proxy]
     BFF[BFF Service\nGo :8080]
 
@@ -22,30 +23,39 @@ flowchart LR
     SMS[SMS Service\n:8086]
 
     DB[(PostgreSQL\n:5432)]
-    Mock[WireMock + GUI\n:8088]
+    MockCore[WireMock Core Mocks\n:8088]
+    MockExternal[WireMock External Mocks\n:8088]
 
     Browser -->|REST| BFF
+    BridgeWebsite -.->|REST + mocked JSBridge| Burp
+    BridgeWebsite -->|direct REST| BFF
+    Burp -->|proxied REST| BFF
     Browser -.->|optional interception| Burp
-    Burp -.-> BFF
 
     BFF --> User
-    BFF --> Account
-    BFF --> EKYC
-    BFF --> Transfer
+    BFF -->|account/eKYC/transfer| MockCore
     BFF --> SMS
+
+    MockCore -.->|unmatched request proxy| Account
+    MockCore -.->|unmatched request proxy| EKYC
+    MockCore -.->|unmatched request proxy| Transfer
 
     User --> DB
     Account --> DB
     EKYC --> DB
     Transfer --> DB
-    User -->|Paotang and OTP| Mock
-    SMS -->|SMS provider| Mock
+    User -->|Paotang and OTP| MockExternal
+    SMS -->|SMS provider| MockExternal
 ```
 
 All ports in the diagram are host-facing Compose ports. The website has only
 one application API boundary: `bff-service`. Core services are internal and
 must not be called directly by the browser. Cross-service coordination uses
 the BFF and the shared database transaction used by transfers.
+
+The two WireMock nodes are logical views of the same WireMock container: one
+groups core-service mappings and the other groups external-provider mappings
+for readability.
 
 The BFF is explicitly allowed to connect to the core services. This is the
 intended direction for synchronous application requests: `website → BFF → core
@@ -75,11 +85,11 @@ adapter used by the BFF to call the external SMS provider.
 | Component | Responsibility | Data or integration boundary |
 | --- | --- | --- |
 | `website` | Browser-facing QA application and scenario selector | Calls the configured BFF URL; defaults to `http://localhost:8080` |
-| `bff-service` | Backend-for-Frontend and API orchestration layer | Routes user, account, eKYC, and transfer requests to domain services |
+| `bff-service` | Backend-for-Frontend and API orchestration layer | Routes requests, loads accounts for transfer-history filters, and filters transfer results |
 | `user-service` | User profile, Paotang authentication, and OTP workflows | PostgreSQL; Paotang and OTP through WireMock |
 | `bank-account-service` | Bank account operations | PostgreSQL |
 | `ekyc-service` | eKYC verification requests and retrieval | PostgreSQL |
-| `transfer-service` | Transfer validation, balance movement, and transfer history | PostgreSQL; updates both account balances and the transfer record in one transaction |
+| `transfer-service` | Transfer validation, balance movement, and transfer records | PostgreSQL; updates both account balances and the transfer record in one transaction; history reads only query `transfers` |
 | `sms-service` | Internal HTTP adapter that sends SMS | SMS provider through WireMock |
 | PostgreSQL | Shared local database used by the persistence-backed services | Temporary container-local storage |
 | WireMock | Deterministic external-provider and core-service mocks | Paotang, OTP, SMS, transfer-service, stateless labs, and stateful labs |
@@ -114,12 +124,35 @@ caller.
 
 ### Transfer flow
 
-The BFF sends transfer requests to `transfer-service`. Transfer validation and
-transfer history are handled there. The transfer service locks the source and
-target account rows and updates both balances together with the transfer record
-in one PostgreSQL transaction; it does not call `bank-account-service` over
-HTTP. A failed validation, currency mismatch, or insufficient balance is
-returned as a domain error without completing the transfer.
+The BFF sends create-transfer requests to `transfer-service`. Transfer
+validation and atomic balance movement remain in the transfer service, which
+locks the source and target account rows and writes the transfer record in one
+PostgreSQL transaction.
+
+For Transfer History, the BFF owns filtering. It reads accounts from
+`bank-account-service`, resolves the requested customer or eight-digit account
+number, fetches transfer records from `transfer-service`, and filters the
+response before returning it to the website. `transfer-service` only queries
+the `transfers` table for history and does not use the bank-account service's
+`accounts` table for that read path. A failed validation, currency mismatch, or
+insufficient balance is returned as a domain error without completing the
+transfer.
+
+```mermaid
+sequenceDiagram
+    participant Website
+    participant BFF
+    participant Bank as bank-account-service
+    participant Transfer as transfer-service
+
+    Website->>BFF: GET /api/v1/transfers?account_no=00000011
+    BFF->>Bank: GET /accounts
+    Bank-->>BFF: Account records and ownership
+    BFF->>Transfer: GET /transfers
+    Transfer-->>BFF: Transfer records
+    BFF->>BFF: Match account number and customer
+    BFF-->>Website: Filtered transfer history
+```
 
 ## WireMock modes
 
@@ -131,8 +164,6 @@ WireMock has two roles in this repository:
   WireMock; WireMock
   matches `TRANSFER:*` scenarios or proxies unmatched requests to the real
   core service.
-- External-provider mock: domain services call WireMock for Paotang, OTP, and
-  SMS behavior.
 
 The repository separates deterministic stateless mappings from scenario-based
 stateful mappings:
