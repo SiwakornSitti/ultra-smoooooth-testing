@@ -22,8 +22,8 @@
   "requiredScenarioState" : "SHIPPED",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful/order-fulfillment-lifecycle"
+      "folder" : "/lab-stateful/order-fulfillment-lifecycle/003 - Order - Ship Already Shipped"
     }
   },
-  "insertionIndex" : 54
+  "insertionIndex" : 145
 }

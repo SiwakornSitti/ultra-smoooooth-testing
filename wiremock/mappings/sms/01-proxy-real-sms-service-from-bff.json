@@ -1,0 +1,26 @@
+{
+  "id" : "2e69d2a0-de5a-4a4a-b515-8cee9f56579e",
+  "name" : "Proxy - Real SMS Service from BFF",
+  "request" : {
+    "urlPathPattern" : "/sms(/.*)?",
+    "method" : "ANY",
+    "headers" : {
+      "X-BFF-Target" : {
+        "equalTo" : "sms-service"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "proxyBaseUrl" : "http://sms-service:8080"
+  },
+  "uuid" : "2e69d2a0-de5a-4a4a-b515-8cee9f56579e",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms-service/001 - Proxy - Real SMS Service from BFF"
+    }
+  },
+  "insertionIndex" : 153
+}

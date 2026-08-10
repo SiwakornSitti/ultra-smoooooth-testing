@@ -1,0 +1,21 @@
+{
+  "id" : "f76f804f-90b0-4850-bf14-7069ecd39875",
+  "name" : "Proxy - Real eKYC Service",
+  "request" : {
+    "urlPathPattern" : "/ekycs(/.*)?",
+    "method" : "ANY"
+  },
+  "response" : {
+    "status" : 200,
+    "proxyBaseUrl" : "http://ekyc-service:8080"
+  },
+  "uuid" : "f76f804f-90b0-4850-bf14-7069ecd39875",
+  "persistent" : true,
+  "priority" : 100,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/ekyc-service/003 - Proxy - Real eKYC Service"
+    }
+  },
+  "insertionIndex" : 161
+}

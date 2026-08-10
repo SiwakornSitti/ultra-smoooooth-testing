@@ -1,0 +1,31 @@
+{
+  "id" : "3ace19e3-e7cc-4a0e-857c-3ad65f3c000d",
+  "name" : "Core Mock - Transfer Insufficient Amount",
+  "request" : {
+    "urlPath" : "/transfers",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "TRANSFER:INSUFFICIENT_AMOUNT"
+      }
+    }
+  },
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "insufficient funds",
+      "code" : "INSUFFICIENT_FUNDS"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "3ace19e3-e7cc-4a0e-857c-3ad65f3c000d",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/core/003 - Core Mock - Transfer Insufficient Amount"
+    }
+  },
+  "insertionIndex" : 184
+}

@@ -1,19 +1,19 @@
 {
-  "id" : "ed568961-0cf7-41a7-a811-c3dec06a1d9f",
-  "name" : "OTP - Success",
+  "id" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
+  "name" : "SMS - Invalid Number",
   "request" : {
-    "urlPath" : "/otp/verify",
+    "urlPath" : "/sms/send",
     "method" : "POST",
     "headers" : {
       "Mock-Scenario" : {
-        "contains" : "OTP:SUCCESS"
+        "contains" : "SMS:INVALID_NUMBER"
       }
     }
   },
   "response" : {
-    "status" : 200,
+    "status" : 400,
     "jsonBody" : {
-      "verified" : true
+      "error" : "invalid_number"
     },
     "headers" : {
       "Content-Type" : "application/json",
@@ -21,13 +21,13 @@
     },
     "transformers" : [ "response-template" ]
   },
-  "uuid" : "ed568961-0cf7-41a7-a811-c3dec06a1d9f",
+  "uuid" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/otp"
+      "folder" : "/sms/003 - SMS - Invalid Number"
     }
   },
-  "insertionIndex" : 66
+  "insertionIndex" : 156
 }

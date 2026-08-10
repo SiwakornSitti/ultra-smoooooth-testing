@@ -14,8 +14,8 @@
   "priority" : 10,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms"
+      "folder" : "/sms/002 - SMS - Proxy Real"
     }
   },
-  "insertionIndex" : 62
+  "insertionIndex" : 154
 }

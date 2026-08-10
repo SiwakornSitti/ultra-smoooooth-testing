@@ -1,12 +1,12 @@
 {
-  "id" : "3bb10442-83d9-445f-93de-61dbe0350348",
-  "name" : "Paotang Token - Success",
+  "id" : "0d8d99ea-3f66-461e-83f1-4c971724b94b",
+  "name" : "Paotang Token - Success Once",
   "request" : {
     "urlPath" : "/oauth/token",
     "method" : "POST",
     "headers" : {
       "Mock-Scenario" : {
-        "contains" : "PT_PASS:SUCCESS"
+        "contains" : "PT_PASS:SUCCESS_ONCE"
       }
     }
   },
@@ -23,13 +23,16 @@
     },
     "transformers" : [ "response-template" ]
   },
-  "uuid" : "3bb10442-83d9-445f-93de-61dbe0350348",
+  "uuid" : "0d8d99ea-3f66-461e-83f1-4c971724b94b",
   "persistent" : true,
   "priority" : 1,
+  "scenarioName" : "paotang-authcode-lifecycle",
+  "requiredScenarioState" : "Started",
+  "newScenarioState" : "code-used",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/paotang"
+      "folder" : "/paotang/004 - Paotang Token - Success Once"
     }
   },
-  "insertionIndex" : 68
+  "insertionIndex" : 166
 }

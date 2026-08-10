@@ -25,8 +25,8 @@
   "requiredScenarioState" : "Started",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful/order-fulfillment-lifecycle"
+      "folder" : "/lab-stateful/order-fulfillment-lifecycle/01 - Order - Get Pending"
     }
   },
-  "insertionIndex" : 52
+  "insertionIndex" : 143
 }

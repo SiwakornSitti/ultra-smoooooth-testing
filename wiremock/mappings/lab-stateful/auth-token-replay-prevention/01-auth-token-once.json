@@ -27,8 +27,8 @@
   "newScenarioState" : "TOKEN_ISSUED",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful/auth-token-replay-prevention"
+      "folder" : "/lab-stateful/auth-token-replay-prevention/01 - OAuth Token - Success Once"
     }
   },
-  "insertionIndex" : 57
+  "insertionIndex" : 148
 }

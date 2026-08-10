@@ -1,0 +1,28 @@
+{
+  "id" : "5b473ba3-fac1-4db3-b612-35d360e7ff87",
+  "name" : "Core Mock - Empty Transfer List",
+  "request" : {
+    "urlPath" : "/transfers",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "TRANSFER:EMPTY_LIST"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : [ ],
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "5b473ba3-fac1-4db3-b612-35d360e7ff87",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/core/004 - Core Mock - Empty Transfer List"
+    }
+  },
+  "insertionIndex" : 185
+}

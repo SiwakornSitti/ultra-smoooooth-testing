@@ -28,8 +28,8 @@
   "requiredScenarioState" : "code-used",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/paotang"
+      "folder" : "/paotang/003 - Paotang Token - Replay Rejected"
     }
   },
-  "insertionIndex" : 72
+  "insertionIndex" : 167
 }
