@@ -1,6 +1,6 @@
 {
   "id" : "e9f0a1b2-c3d4-4e5f-9012-3456789abcde",
-  "name" : "14. Payment - Webhook Status Update",
+  "name" : "12. Payment - Webhook Status Update",
   "request" : {
     "urlPath" : "/lab/api/stateless/payments",
     "method" : "POST"
@@ -21,7 +21,7 @@
   "priority" : 2,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/012 - Payment - Webhook Status Update"
     }
   },
   "insertionIndex" : 92,

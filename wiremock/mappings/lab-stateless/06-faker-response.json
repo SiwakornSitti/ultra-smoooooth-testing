@@ -1,6 +1,6 @@
 {
   "id" : "f6e5d4c3-b2a1-4987-8654-3210fedcba98",
-  "name" : "7. Faker Response Template",
+  "name" : "6. Faker Response Template",
   "request" : {
     "urlPath" : "/lab/api/stateless/faker-user",
     "method" : "GET"
@@ -25,7 +25,7 @@
   "priority" : 2,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/006 - Faker Response Template"
     }
   },
   "insertionIndex" : 90

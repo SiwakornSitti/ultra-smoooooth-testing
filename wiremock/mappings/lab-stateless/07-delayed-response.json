@@ -1,6 +1,6 @@
 {
   "id" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
-  "name" : "8. Slow Endpoint - Fixed Delay",
+  "name" : "7. Slow Endpoint - Fixed Delay",
   "request" : {
     "urlPath" : "/lab/api/stateless/slow-endpoint",
     "method" : "GET"
@@ -20,7 +20,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/007 - Slow Endpoint - Fixed Delay"
     }
   },
   "insertionIndex" : 100

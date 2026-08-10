@@ -17,7 +17,7 @@
   "priority" : 2,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/004 - Body File Response"
     }
   },
   "insertionIndex" : 93

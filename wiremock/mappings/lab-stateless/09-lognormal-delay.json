@@ -1,6 +1,6 @@
 {
   "id" : "f2cbf3cf-8b9d-46e1-8be0-fd6f4a0cd78a",
-  "name" : "10. Lognormal Delay - Median 250ms",
+  "name" : "9. Lognormal Delay - Median 250ms",
   "request" : {
     "urlPath" : "/lab/api/stateless/lognormal-delay",
     "method" : "GET"
@@ -31,7 +31,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/009 - Lognormal Delay - Median 250ms"
     }
   },
   "insertionIndex" : 101

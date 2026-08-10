@@ -28,7 +28,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless/3"
+      "folder" : "/lab-stateless/003 - Secure Endpoint - Header Match"
     }
   },
   "insertionIndex" : 94

@@ -1,6 +1,6 @@
 {
   "id" : "112cbffb-5a79-4f5f-b311-2f3ec642c9d3",
-  "name" : "6. Response Template - Echo and Helpers",
+  "name" : "5. Response Template - Echo and Helpers",
   "request" : {
     "urlPathPattern" : "/lab/api/stateless/(echo/.*|template-helpers)",
     "method" : "ANY"
@@ -26,7 +26,7 @@
   "priority" : 2,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/005 - Response Template - Echo and Helpers"
     }
   },
   "insertionIndex" : 98

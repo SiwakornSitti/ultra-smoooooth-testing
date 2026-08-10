@@ -1,6 +1,6 @@
 {
   "id" : "c7d8e9f0-a1b2-4c3d-8e9f-0123456789ab",
-  "name" : "13. Proxy PokeAPI Pokemon",
+  "name" : "11. Proxy PokeAPI Pokemon",
   "request" : {
     "urlPathPattern" : "/lab/api/stateless/pokemon/.*",
     "method" : "GET"
@@ -15,7 +15,7 @@
   "priority" : 2,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/011 - Proxy PokeAPI Pokemon"
     }
   },
   "insertionIndex" : 97

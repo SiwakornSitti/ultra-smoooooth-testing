@@ -33,7 +33,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless/1"
+      "folder" : "/lab-stateless/001 - Users - Query Match"
     }
   },
   "insertionIndex" : 95
