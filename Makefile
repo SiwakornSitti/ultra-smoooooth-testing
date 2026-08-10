@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy setup docker-up docker-start migrate seed test test-integration test-e2e slides
+.PHONY: all build clean sync tidy setup setup-dev docker-start migrate seed test test-integration test-e2e slides
 
 all: build
 
@@ -29,19 +29,15 @@ sync:
 
 tidy: sync
 
-setup: docker-up migrate seed
+setup: docker-start migrate seed
 	@echo "Docker services, migrations, and seed data are ready."
 
-docker-up:
+setup-dev: docker-start migrate seed
+	@echo "Docker services, migrations, and seed data are ready for development."
 	docker compose watch
 
 docker-start:
 	docker compose up -d --build
-	@until docker compose exec -T db pg_isready -U app -d app >/dev/null 2>&1; do \
-		echo "Waiting for PostgreSQL..."; \
-		sleep 1; \
-	done
-	@echo "PostgreSQL is ready."
 
 migrate:
 	@for file in services/*/db/migration/*.sql; do \
@@ -52,7 +48,7 @@ migrate:
 
 seed:
 	@for file in \
-		services/user-service/db/seed/002-user-service-seed.sql \
+		services/user-service/db/seed/001-user-service-seed.sql \
 		services/bank-account-service/db/seed/001-bank-account-service-seed.sql \
 		services/ekyc-service/db/seed/001-ekyc-service-seed.sql \
 		services/transfer-service/db/seed/001-transfer-service-seed.sql; do \
