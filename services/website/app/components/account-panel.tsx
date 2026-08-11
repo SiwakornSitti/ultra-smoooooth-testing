@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import { parseResponse } from "../lib/api";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
+import { EKYC_CUSTOMERS } from "../lib/ekyc-customers";
 
 type AccountPanelProps = {
   bffUrl: string;
   showMockControls: boolean;
 };
+
+const INVALID_USER_ID = "00000000-0000-0000-0000-000000000000";
 
 export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   // Step 1: create user
@@ -167,6 +170,26 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
       <section data-testid="section-verify-profile" id="section-verify-profile">
         <p className="eyebrow">Customer workspace</p>
         <h2>3. Get User Profile</h2>
+        <label>
+          Select User{" "}
+          <select
+            data-testid="select-profile-user-id"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+          >
+            {userId && !EKYC_CUSTOMERS.some((c) => c.id === userId) && userId !== INVALID_USER_ID && (
+              <option value={userId}>Created User ({userId})</option>
+            )}
+            {EKYC_CUSTOMERS.map((customer) => (
+              <option key={customer.id} value={customer.id}>
+                {customer.name} ({customer.id})
+              </option>
+            ))}
+            <option value={INVALID_USER_ID}>
+              {INVALID_USER_ID} (Invalid / Not Found User)
+            </option>
+          </select>
+        </label>
         <label>
           User ID{" "}
           <input
