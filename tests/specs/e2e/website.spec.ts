@@ -264,7 +264,12 @@ test.describe("QA website full e2e flow", () => {
     await login(page);
     await page.goto(`${websiteUrl}/account`);
 
-    await page.getByTestId("input-user-id").fill("00000000-0000-0000-0000-000000000000");
+    await page.getByTestId("input-name").fill("Missing User");
+    await page.getByTestId("input-email").fill(`missing-user-${Date.now()}@example.com`);
+    await page.getByTestId("input-phone").fill("+66800000097");
+    await page.getByTestId("btn-create-user").click();
+    await expect(page.getByTestId("result-create-user")).toContainText('"id"');
+    await page.getByTestId("select-profile-scenario").selectOption(MOCK_SCENARIO.USER.GET_USER_INVALID);
     await page.getByTestId("btn-verify-profile").click();
 
     await expect(page.getByTestId("result-verify-profile")).toContainText("User not found");

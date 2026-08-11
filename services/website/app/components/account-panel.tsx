@@ -3,14 +3,16 @@
 import { useEffect, useState } from "react";
 import { parseResponse } from "../lib/api";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
-import { EKYC_CUSTOMERS } from "../lib/ekyc-customers";
 
 type AccountPanelProps = {
   bffUrl: string;
   showMockControls: boolean;
 };
 
-const INVALID_USER_ID = "00000000-0000-0000-0000-000000000000";
+type UserOption = {
+  id: string;
+  name: string;
+};
 
 export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   // Step 1: create user
@@ -19,9 +21,10 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   const [phone, setPhone] = useState("+66800000000");
   const [userScenario, setUserScenario] = useState("");
   const [userId, setUserId] = useState("");
+  const [users, setUsers] = useState<UserOption[]>([]);
   const [userResult, setUserResult] = useState("");
 
-  // Step 2: create account (triggers SMS)
+  // Step 2: create account
   const [balance, setBalance] = useState("1000");
   const currency = "USD";
   const [smsScenario, setSmsScenario] = useState<string>(MOCK_SCENARIO.SMS.SUCCESS);
@@ -32,10 +35,9 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   const [profileStatus, setProfileStatus] = useState("");
   const [profileScenario, setProfileScenario] = useState("");
 
-  // Step 4: update user status
+  // Step 3: update user status
   const [updateStatus, setUpdateStatus] = useState("active");
   const [updateUserResult, setUpdateUserResult] = useState("");
-
   useEffect(() => {
     if (!showMockControls) {
       setUserScenario("");
@@ -45,6 +47,23 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
       setSmsScenario(MOCK_SCENARIO.SMS.SUCCESS);
     }
   }, [showMockControls]);
+
+  async function loadUsers(selectedUserId?: string) {
+    const res = await fetch(`${bffUrl}/api/v1/users`);
+    const data = await parseResponse(res);
+    if (res.ok && Array.isArray(data)) {
+      setUsers(data);
+      if (selectedUserId) {
+        setUserId(selectedUserId);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (bffUrl) {
+      void loadUsers();
+    }
+  }, [bffUrl]);
 
   async function createUser() {
     setUserResult("Loading...");
@@ -58,7 +77,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
     });
     const data = await parseResponse(res);
     if (res.ok && data.id) {
-      setUserId(data.id);
+      await loadUsers(data.id);
     }
     setUserResult(JSON.stringify(data));
   }
@@ -126,24 +145,21 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
   return (
     <>
-      <section data-testid="section-create-user" id="section-create-user">
+      <section className="account-section" data-testid="section-create-user" id="section-create-user">
         <p className="eyebrow">Customer workspace</p>
-        <h2>1. Create User</h2>
+        <h2>Create User</h2>
         <label>
           Name{" "}
           <input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} />
         </label>
-        <br />
         <label>
           Email{" "}
           <input data-testid="input-email" value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
-        <br />
         <label>
           Phone{" "}
           <input data-testid="input-phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </label>
-        <br />
         {showMockControls && (
           <label>
             User Mock Scenario{" "}
@@ -159,19 +175,24 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <pre data-testid="result-create-user">{userResult}</pre>
       </section>
 
-      <section data-testid="section-create-account" id="section-create-account">
+      <section className="account-section" data-testid="section-create-account" id="section-create-account">
         <p className="eyebrow">Customer workspace</p>
-        <h2>2. Create New Bank Account (triggers SMS)</h2>
+        <h2>Create New Bank Account</h2>
         <label>
           User ID{" "}
-          <input data-testid="input-user-id" value={userId} onChange={(e) => setUserId(e.target.value)} />
+          <select data-testid="input-user-id" value={userId} onChange={(e) => setUserId(e.target.value)}>
+            <option value="" disabled>Select a user</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} ({user.id})
+              </option>
+            ))}
+          </select>
         </label>
-        <br />
         <label>
           Balance{" "}
           <input data-testid="input-balance" value={balance} onChange={(e) => setBalance(e.target.value)} />
         </label>
-        <br />
         {showMockControls && (
           <label>
             Account Mock Scenario
@@ -190,38 +211,24 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <pre data-testid="result-create-account">{accountResult}</pre>
       </section>
 
-      <section data-testid="section-verify-profile" id="section-verify-profile">
+      <section className="account-section" data-testid="section-verify-profile" id="section-verify-profile">
         <p className="eyebrow">Customer workspace</p>
-        <h2>3. Get & Update User Profile</h2>
+        <h2>Get & Update User Profile</h2>
         <label>
-          Select User{" "}
+          User ID{" "}
           <select
             data-testid="select-profile-user-id"
             value={userId}
             onChange={(e) => setUserId(e.target.value)}
           >
-            {userId && !EKYC_CUSTOMERS.some((c) => c.id === userId) && userId !== INVALID_USER_ID && (
-              <option value={userId}>Created User ({userId})</option>
-            )}
-            {EKYC_CUSTOMERS.map((customer) => (
-              <option key={customer.id} value={customer.id}>
-                {customer.name} ({customer.id})
+            <option value="" disabled>Select a user</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} ({user.id})
               </option>
             ))}
-            <option value={INVALID_USER_ID}>
-              {INVALID_USER_ID} (Invalid / Not Found User)
-            </option>
           </select>
         </label>
-        <label>
-          User ID{" "}
-          <input
-            data-testid="input-profile-user-id"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
-          />
-        </label>
-        <br />
         {showMockControls && (
           <label>
             Profile Mock Scenario{" "}
@@ -236,7 +243,6 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
             </select>
           </label>
         )}
-        <br />
         <button data-testid="btn-verify-profile" onClick={verifyProfile} disabled={!bffUrl || !userId}>
           Get User Profile
         </button>

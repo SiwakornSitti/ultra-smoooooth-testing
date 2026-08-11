@@ -113,6 +113,26 @@ section[data-testid] {
   box-shadow: var(--shadow);
 }
 
+.account-section {
+  padding: 0.65rem;
+}
+
+.account-section h2 {
+  margin-bottom: 0.5rem;
+}
+
+.account-section label {
+  margin: 0.3rem 0;
+}
+
+.account-section pre {
+  margin-top: 0.45rem;
+}
+
+.account-section button {
+  margin-top: 0.3rem;
+}
+
 label {
   display: block;
   margin: 0.75rem 0;

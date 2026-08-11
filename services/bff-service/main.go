@@ -41,6 +41,12 @@ type Transfer struct {
 	Status          string  `json:"status"`
 }
 
+type CreateTransferRequest struct {
+	SourceAccountID string  `json:"source_account_id"`
+	TargetAccountID string  `json:"target_account_id"`
+	Amount          float64 `json:"amount"`
+}
+
 var (
 	userServiceURL        = getEnv("USER_SERVICE_URL", "http://user-service.app.svc.cluster.local")
 	bankAccountServiceURL = getEnv("BANK_ACCOUNT_SERVICE_URL", "http://bank-account-service.app.svc.cluster.local")
@@ -116,6 +122,7 @@ func main() {
 	r.HandleFunc("/api/v1/users/{id}", handleUserDetails).Methods("GET")
 	r.HandleFunc("/api/v1/users/{id}/", handleUserDetails).Methods("GET")
 	r.HandleFunc("/api/v1/users/{id}", handleUpdateUser).Methods("PATCH", "PUT")
+	r.HandleFunc("/api/v1/users", handleGetUsers).Methods("GET")
 	r.HandleFunc("/api/v1/users", handleCreateUser).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleCreateAccount).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleListAccounts).Methods("GET")
@@ -300,6 +307,32 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(resp.StatusCode)
 	// Properly copy the response body
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleGetUsers(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying user list request to user-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/users", userServiceURL), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call user-service", "error", err)
+		writeJSONError(w, "User service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
 	if _, err := io.Copy(w, resp.Body); err != nil {
 		slog.Error("Failed to copy response body", "error", err)
 	}
@@ -653,7 +686,27 @@ func handleDeleteEKYC(w http.ResponseWriter, r *http.Request) {
 func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Proxying create transfer request to transfer-service")
 
-	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/transfers", transferServiceURL), r.Body)
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		writeJSONError(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	var transfer CreateTransferRequest
+	if json.Unmarshal(body, &transfer) == nil && transfer.SourceAccountID != "" {
+		status, err := sourceUserStatus(r, transfer.SourceAccountID)
+		if err != nil {
+			slog.Error("Failed to verify source user status", "error", err)
+			writeJSONError(w, "User status service unavailable", http.StatusServiceUnavailable)
+			return
+		}
+		if strings.EqualFold(status, "blocked") {
+			writeJSONError(w, "blocked users cannot transfer", http.StatusForbidden)
+			return
+		}
+	}
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/transfers", transferServiceURL), bytes.NewReader(body))
 	if err != nil {
 		slog.Error("Failed to create request", "error", err)
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
@@ -677,6 +730,23 @@ func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
 	if _, err := io.Copy(w, resp.Body); err != nil {
 		slog.Error("Failed to copy response body", "error", err)
 	}
+}
+
+func sourceUserStatus(r *http.Request, sourceAccountID string) (string, error) {
+	accounts, err := fetchAllAccounts(r)
+	if err != nil {
+		return "", err
+	}
+	for _, account := range accounts {
+		if account.ID == sourceAccountID {
+			user, err := fetchUser(r, account.UserID)
+			if err != nil {
+				return "", err
+			}
+			return user.Status, nil
+		}
+	}
+	return "", nil
 }
 
 func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {

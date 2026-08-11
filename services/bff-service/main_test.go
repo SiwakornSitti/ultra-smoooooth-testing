@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -116,6 +117,12 @@ func TestProxyHandlers(t *testing.T) {
 		roundTrip: func(req *http.Request) (*http.Response, error) {
 			rec := httptest.NewRecorder()
 			switch req.URL.Path {
+			case "/accounts":
+				rec.WriteHeader(http.StatusOK)
+				rec.Body.WriteString(`[{"id":"source-account","user_id":"blocked-user","balance":1000}]`)
+			case "/users/blocked-user":
+				rec.WriteHeader(http.StatusOK)
+				rec.Body.WriteString(`{"id":"blocked-user","status":"blocked"}`)
 			case "/ekycs/verify":
 				rec.Header().Set("Location", "/ekycs/ekyc-123")
 				rec.WriteHeader(http.StatusCreated)
@@ -211,6 +218,22 @@ func TestProxyHandlers(t *testing.T) {
 	}
 	if loc := rec.Header().Get("Location"); loc != "/transfers/txn-123" {
 		t.Errorf("Transfer create Location = %v, want /transfers/txn-123", loc)
+	}
+
+	// 6b. Blocked users cannot create transfers
+	rec = httptest.NewRecorder()
+	req = httptest.NewRequest("POST", "/api/v1/transfers", strings.NewReader(`{"source_account_id":"source-account","target_account_id":"target-account","amount":100}`))
+	r.ServeHTTP(rec, req)
+	if rec.Code != http.StatusForbidden {
+		t.Errorf("blocked transfer status = %v, want 403", rec.Code)
+	}
+
+	var blockedBody map[string]string
+	if err := json.NewDecoder(rec.Body).Decode(&blockedBody); err != nil {
+		t.Fatalf("failed to decode blocked transfer response: %v", err)
+	}
+	if blockedBody["error"] != "blocked users cannot transfer" {
+		t.Errorf("blocked transfer error = %q", blockedBody["error"])
 	}
 
 	// 7. Test Transfer get all

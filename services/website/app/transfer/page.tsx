@@ -16,6 +16,8 @@ export default function TransferPage() {
   const [targetAccountId, setTargetAccountId] = useState<string>(ACCOUNT_OPTIONS[1].id);
   const [amount, setAmount] = useState("100");
   const [transferResult, setTransferResult] = useState("");
+  const [userScenario, setUserScenario] = useState("");
+  const [transferScenario, setTransferScenario] = useState("");
   const [transfersResult, setTransfersResult] = useState("");
   const [hasLoadedTransfers, setHasLoadedTransfers] = useState(false);
   const [listTransfersScenario, setListTransfersScenario] = useState("");
@@ -26,7 +28,12 @@ export default function TransferPage() {
     setTransferResult("Loading...");
     const res = await fetch(`${bffUrl}/api/v1/transfers?customer_id=${historyCustomerId}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(([userScenario, transferScenario].filter(Boolean).join(","))
+          ? { "Mock-Scenario": [userScenario, transferScenario].filter(Boolean).join(",") }
+          : {}),
+      },
       body: JSON.stringify({
         source_account_id: sourceAccountId,
         target_account_id: targetAccountId,
@@ -101,6 +108,19 @@ export default function TransferPage() {
           />
         </label>
         <br />
+        <label>
+          User Mock Scenario{" "}
+          <select data-testid="select-transfer-user-scenario" value={userScenario} onChange={(e) => setUserScenario(e.target.value)}>
+            <option value="">Real service</option>
+            <option value={MOCK_SCENARIO.USER.GET_USER_BLOCKED}>{MOCK_SCENARIO.USER.GET_USER_BLOCKED}</option>
+          </select>
+        </label>
+        <label>
+          Transfer Mock Scenario{" "}
+          <select data-testid="select-transfer-scenario" value={transferScenario} onChange={(e) => setTransferScenario(e.target.value)}>
+            <option value="">Real service</option>
+          </select>
+        </label>
         <button
           data-testid="btn-submit-transfer"
           onClick={submitTransfer}

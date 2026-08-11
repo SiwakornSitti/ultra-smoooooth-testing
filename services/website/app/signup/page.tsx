@@ -90,7 +90,7 @@ export default function SignupPage() {
 
       {signupComplete && (
         <section data-testid="section-signup-otp">
-          <h2>2. Verify OTP</h2>
+          <h2>Verify OTP</h2>
           <label>
             Phone{" "}
             <input

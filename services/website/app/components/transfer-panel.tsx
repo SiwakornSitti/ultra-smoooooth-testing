@@ -38,6 +38,7 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
   const [transfersResult, setTransfersResult] = useState("");
   const [transfers, setTransfers] = useState<TransferRecord[]>([]);
   const [hasLoadedTransfers, setHasLoadedTransfers] = useState(false);
+  const [userScenario, setUserScenario] = useState<string>("");
   const [transferScenario, setTransferScenario] = useState<string>("");
   const [listTransfersScenario, setListTransfersScenario] = useState<string>("");
   const [historyCustomerId, setHistoryCustomerId] = useState<string>(EKYC_CUSTOMERS[0].id);
@@ -60,6 +61,7 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
 
   useEffect(() => {
     if (!showMockControls) {
+      setUserScenario("");
       setTransferScenario("");
       setListTransfersScenario("");
     }
@@ -73,7 +75,9 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(transferScenario ? { "Mock-Scenario": transferScenario } : {}),
+        ...(([userScenario, transferScenario].filter(Boolean).join(","))
+          ? { "Mock-Scenario": [userScenario, transferScenario].filter(Boolean).join(",") }
+          : {}),
       },
       body: JSON.stringify({
         source_account_id: sourceAccountId,
@@ -124,6 +128,15 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
         <label>
           Amount <input data-testid="input-transfer-amount" type="number" min="0.01" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </label>
+        {showMockControls && (
+          <label>
+            User Mock Scenario
+            <select data-testid="select-transfer-user-scenario" value={userScenario} onChange={(e) => setUserScenario(e.target.value)}>
+              <option value="">Real service</option>
+              <option value={MOCK_SCENARIO.USER.GET_USER_BLOCKED}>{MOCK_SCENARIO.USER.GET_USER_BLOCKED}</option>
+            </select>
+          </label>
+        )}
         {showMockControls && (
           <label>
             Transfer Mock Scenario

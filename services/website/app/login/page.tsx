@@ -96,7 +96,7 @@ export default function LoginPage() {
 
       <div className="page-grid">
       <section data-testid="section-paotang">
-        <h2>1. Exchange Authcode</h2>
+        <h2>Exchange Authcode</h2>
         <label>
           Auth Code{" "}
           <input data-testid="input-authcode" value={authCode} onChange={(e) => setAuthCode(e.target.value)} />
@@ -124,7 +124,7 @@ export default function LoginPage() {
       </section>
 
       <section data-testid="section-otp">
-        <h2>2. Verify OTP</h2>
+        <h2>Verify OTP</h2>
         <label>
           Phone{" "}
           <input
