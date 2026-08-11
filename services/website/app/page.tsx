@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { parseResponse, useBffUrl } from "./lib/api";
 import { AUTH_SESSION_KEY } from "./lib/auth";
 import { LogoutButton } from "./lib/logout-button";
@@ -81,7 +80,6 @@ export default function Home() {
         <p className="eyebrow">Ultra Smoooooth Testing</p>
         <h1>QA Automation Website</h1>
         <p className="subtitle">Drive real service flows through the BFF while external integrations stay safely mocked.</p>
-        <Link className="home-link" href="#section-create-account">Create new bank account</Link>
         <LogoutButton />
         <label className="toggle-field">
           <input
