@@ -139,7 +139,7 @@ flowchart TD
 #### **Case 7: BFF Data Aggregation (User Dashboard View)**
 
 - **Flow**: `Next.js Web Frontend` ➔ `BFF Service` ➔ (`User Service` + `Bank Account Service`)
-- **Challenge**: `BFF Service` fetches user details from `user-service` and account list from `bank-account-service` concurrently, combining them into a single `UserDashboard` JSON payload.
+- **Challenge**: `BFF Service` fetches user details from `user-service` and account list from `bank-account-service` sequentially, combining them into a single `UserDashboard` JSON payload.
 - **Key Assertions**:
   - BFF returns aggregated response with user profile and accounts array.
   - If `bank-account-service` returns empty list `[]`, BFF still returns user profile with empty accounts list.
