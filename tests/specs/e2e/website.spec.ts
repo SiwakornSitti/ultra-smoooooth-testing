@@ -20,7 +20,7 @@ import {
 import { MOCK_SCENARIO, mockScenario } from "../support/mock-scenario";
 
 // Full-stack browser e2e: real Postgres, real user-service, bank-account-service,
-// bff-service, and the qa-website UI, all real containers. Paotang Pass and the
+// bff-service, and the website UI, all real containers. Paotang Pass and the
 // SMS service (true external dependencies) are mocked via WireMock.
 
 let network: StartedNetwork;
@@ -78,7 +78,7 @@ test.beforeAll(async () => {
   });
 
   console.log("Starting website container...");
-  websiteContainer = await new GenericContainer("qa-website:test")
+  websiteContainer = await new GenericContainer("website:test")
     .withNetwork(network)
     .withNetworkAliases("website")
     .withExposedPorts(3000)

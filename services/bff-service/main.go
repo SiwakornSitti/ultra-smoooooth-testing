@@ -95,7 +95,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// corsMiddleware allows browser-based callers (e.g. the qa-website, served
+// corsMiddleware allows browser-based callers (e.g. the website, served
 // from a different origin/port) to call this API directly.
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
