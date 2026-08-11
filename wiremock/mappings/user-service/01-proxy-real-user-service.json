@@ -11,7 +11,7 @@
   },
   "uuid" : "d36f90e7-00b0-4cf9-8bec-bbff9f2cf027",
   "persistent" : true,
-  "priority" : 1,
+  "priority" : 100,
   "metadata" : {
     "wiremock-gui" : {
       "folder" : "/user-service/001 - Proxy - Real User Service from BFF"
