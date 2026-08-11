@@ -70,7 +70,7 @@ test.beforeAll(async () => {
   });
 
   bffContainer = await startBffService(network, {
-    USER_SERVICE_URL: "http://user-service:8080",
+    USER_SERVICE_URL: "http://wiremock:8080",
     BANK_ACCOUNT_SERVICE_URL: "http://wiremock:8080",
     EKYC_SERVICE_URL: "http://wiremock:8080",
     TRANSFER_SERVICE_URL: "http://wiremock:8080",
