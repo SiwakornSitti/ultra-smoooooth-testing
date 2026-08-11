@@ -23,7 +23,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
   // Step 2: create account (triggers SMS)
   const [balance, setBalance] = useState("1000");
-  const [currency, setCurrency] = useState("USD");
+  const currency = "USD";
   const [smsScenario, setSmsScenario] = useState<string>(MOCK_SCENARIO.SMS.SUCCESS);
   const [accountResult, setAccountResult] = useState("");
 
@@ -165,11 +165,6 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <label>
           Balance{" "}
           <input data-testid="input-balance" value={balance} onChange={(e) => setBalance(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Currency{" "}
-          <input data-testid="input-currency" value={currency} onChange={(e) => setCurrency(e.target.value)} />
         </label>
         <br />
         {showMockControls && (
