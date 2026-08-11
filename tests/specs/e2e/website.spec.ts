@@ -199,7 +199,7 @@ test.describe("QA website full e2e flow", () => {
 
     await page.getByTestId("btn-verify-profile").click();
     await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"active"');
-    await expect(page.getByText("Account is active")).toBeVisible();
+    await expect(page.getByText("Account is Active")).toBeVisible();
   });
 
   test("get user profile shows blocked status", async ({ page }) => {
@@ -215,7 +215,7 @@ test.describe("QA website full e2e flow", () => {
 
     await page.getByTestId("btn-verify-profile").click();
     await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"blocked"');
-    await expect(page.getByText("Account is BLOCKED")).toBeVisible();
+    await expect(page.getByText("Account is Blocked")).toBeVisible();
   });
 
   test("create account reports an SMS delivery failure", async ({ page }) => {

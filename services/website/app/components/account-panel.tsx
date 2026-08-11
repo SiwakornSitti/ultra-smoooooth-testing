@@ -117,8 +117,8 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <label>
           Status{" "}
           <select data-testid="select-user-status" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="active">active</option>
-            <option value="blocked">blocked</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
           </select>
         </label>
         <br />
@@ -196,7 +196,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         </button>
         {profileStatus && (
           <p style={{ color: profileStatus === "blocked" ? "red" : "green" }}>
-            Account is {profileStatus === "blocked" ? "BLOCKED" : "active"}
+            Account is {profileStatus === "blocked" ? "Blocked" : "Active"}
           </p>
         )}
         <pre data-testid="result-verify-profile">{profileResult}</pre>
