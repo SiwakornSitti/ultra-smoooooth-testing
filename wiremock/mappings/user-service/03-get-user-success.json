@@ -14,7 +14,7 @@
     "status" : 200,
     "jsonBody" : {
       "user" : {
-        "id" : "00000000-0000-0000-0000-000000000001",
+        "id" : "{{request.path.[1]}}",
         "name" : "Mock User",
         "email" : "mock.user@example.com",
         "phone" : "+66800000000",
