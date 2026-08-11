@@ -191,6 +191,7 @@ func fetchUser(r *http.Request, userID string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	forwardHeaders(r, req)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -211,6 +212,7 @@ func fetchAccounts(r *http.Request, userID string) ([]BankAccount, error) {
 	if err != nil {
 		return nil, err
 	}
+	forwardHeaders(r, req)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
@@ -255,6 +257,20 @@ func fetchAllAccounts(r *http.Request) ([]BankAccount, error) {
 	return accounts, nil
 }
 
+func normalizePhone(phone string) string {
+	var builder strings.Builder
+	for _, ch := range phone {
+		if ch >= '0' && ch <= '9' {
+			builder.WriteRune(ch)
+		}
+	}
+	normalized := builder.String()
+	if len(normalized) < 8 {
+		return normalized
+	}
+	return normalized[len(normalized)-8:]
+}
+
 func accountNumber(accountID string) string {
 	normalized := strings.ReplaceAll(accountID, "-", "")
 	if len(normalized) < 8 {
@@ -272,6 +288,7 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	forwardHeaders(r, req)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
