@@ -9,6 +9,7 @@ import { MOCK_SCENARIO } from "./lib/mock-scenario";
 import { EKYC_CUSTOMERS } from "./lib/ekyc-customers";
 import { ACCOUNT_OPTIONS } from "./lib/accounts";
 import { TransferPanel } from "./components/transfer-panel";
+import { AccountPanel } from "./components/account-panel";
 
 type AccountBalance = {
   balance: number;
@@ -80,7 +81,7 @@ export default function Home() {
         <p className="eyebrow">Ultra Smoooooth Testing</p>
         <h1>QA Automation Website</h1>
         <p className="subtitle">Drive real service flows through the BFF while external integrations stay safely mocked.</p>
-        <Link className="home-link" href="/account">Create new bank account</Link>
+        <Link className="home-link" href="#section-create-account">Create new bank account</Link>
         <LogoutButton />
         <label className="toggle-field">
           <input
@@ -98,6 +99,7 @@ export default function Home() {
         </label>
       </header>
       <div className="page-grid">
+        <AccountPanel bffUrl={bffUrl} showMockControls={showMockControls} />
         <TransferPanel bffUrl={bffUrl} showMockControls={showMockControls} />
 
         <section data-testid="section-balance">
