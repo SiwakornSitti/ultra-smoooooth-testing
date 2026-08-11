@@ -32,6 +32,10 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   const [profileStatus, setProfileStatus] = useState("");
   const [profileScenario, setProfileScenario] = useState("");
 
+  // Step 4: update user status
+  const [updateStatus, setUpdateStatus] = useState("active");
+  const [updateUserResult, setUpdateUserResult] = useState("");
+
   useEffect(() => {
     if (!showMockControls) {
       setSmsScenario("");
@@ -94,6 +98,25 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
     setProfileResult(JSON.stringify(data));
     if (res.ok && data.user) {
       setProfileStatus(data.user.status === "blocked" ? "blocked" : "active");
+    }
+  }
+
+  async function updateUserStatus() {
+    if (!userId) {
+      setUpdateUserResult(JSON.stringify({ error: "user id is required" }));
+      return;
+    }
+
+    setUpdateUserResult("Loading...");
+    const res = await fetch(`${bffUrl}/api/v1/users/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: updateStatus }),
+    });
+    const data = await parseResponse(res);
+    setUpdateUserResult(JSON.stringify(data));
+    if (res.ok && data.status) {
+      setProfileStatus(data.status === "blocked" ? "blocked" : "active");
     }
   }
 
@@ -169,7 +192,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
       <section data-testid="section-verify-profile" id="section-verify-profile">
         <p className="eyebrow">Customer workspace</p>
-        <h2>3. Get User Profile</h2>
+        <h2>3. Get & Update User Profile</h2>
         <label>
           Select User{" "}
           <select
@@ -217,6 +240,27 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <button data-testid="btn-verify-profile" onClick={verifyProfile} disabled={!bffUrl || !userId}>
           Get User Profile
         </button>
+
+        <label style={{ marginTop: "1rem" }}>
+          Update Status{" "}
+          <select
+            data-testid="select-update-user-status"
+            value={updateStatus}
+            onChange={(e) => setUpdateStatus(e.target.value)}
+          >
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
+          </select>
+        </label>
+        <button
+          data-testid="btn-update-user-status"
+          onClick={updateUserStatus}
+          disabled={!bffUrl || !userId}
+        >
+          Update User Status
+        </button>
+        {updateUserResult && <pre data-testid="result-update-user-status">{updateUserResult}</pre>}
+
         {profileStatus && (
           <p style={{ color: profileStatus === "blocked" ? "red" : "green" }}>
             Account is {profileStatus === "blocked" ? "Blocked" : "Active"}

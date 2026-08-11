@@ -117,6 +117,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/api/v1/users/{id}", handleUserDetails).Methods("GET")
 	r.HandleFunc("/api/v1/users/{id}/", handleUserDetails).Methods("GET")
+	r.HandleFunc("/api/v1/users/{id}", handleUpdateUser).Methods("PATCH", "PUT")
 	r.HandleFunc("/api/v1/users", handleCreateUser).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleCreateAccount).Methods("POST")
 	r.HandleFunc("/api/v1/accounts", handleListAccounts).Methods("GET")
@@ -301,6 +302,34 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(resp.StatusCode)
 	// Properly copy the response body
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
+	userID := mux.Vars(r)["id"]
+	slog.Info("Proxying update user request to user-service", "user_id", userID)
+
+	req, err := http.NewRequestWithContext(r.Context(), r.Method, fmt.Sprintf("%s/users/%s", userServiceURL, userID), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call user-service", "error", err)
+		writeJSONError(w, "User service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
 	if _, err := io.Copy(w, resp.Body); err != nil {
 		slog.Error("Failed to copy response body", "error", err)
 	}

@@ -253,13 +253,19 @@ func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	slog.Info("Updating user", "user_id", id)
-	_, err := db.ExecContext(r.Context(), "UPDATE users SET name = $1, email = $2, phone = $3 WHERE id = $4", u.Name, u.Email, u.Phone, id)
+	_, err := db.ExecContext(r.Context(), "UPDATE users SET name = COALESCE(NULLIF($1, ''), name), email = COALESCE(NULLIF($2, ''), email), phone = COALESCE(NULLIF($3, ''), phone), status = COALESCE(NULLIF($4, ''), status) WHERE id = $5", u.Name, u.Email, u.Phone, u.Status, id)
 	if err != nil {
 		slog.Error("Update failed", "error", err)
 		writeJSONError(w, "Database error", http.StatusInternalServerError)
 		return
 	}
-	u.ID = id
+	var updated User
+	err = db.QueryRowContext(r.Context(), "SELECT id, name, email, phone, status FROM users WHERE id = $1", id).Scan(&updated.ID, &updated.Name, &updated.Email, &updated.Phone, &updated.Status)
+	if err == nil {
+		u = updated
+	} else {
+		u.ID = id
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(u)
 }
