@@ -26,7 +26,7 @@ export default function SignupPage() {
     const res = await fetch(`${bffUrl}/api/v1/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, phone, status: "active" }),
+      body: JSON.stringify({ name, email, phone }),
     });
     const data = await parseResponse(res);
     setResult(JSON.stringify(data));

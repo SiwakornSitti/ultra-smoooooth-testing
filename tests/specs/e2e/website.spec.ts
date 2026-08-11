@@ -201,20 +201,19 @@ test.describe("QA website full e2e flow", () => {
     await expect(page.getByText("Account is Active")).toBeVisible();
   });
 
-  test("get user profile shows blocked status", async ({ page }) => {
+  test("newly created user starts active", async ({ page }) => {
     await login(page);
     await page.goto(`${websiteUrl}/account`);
 
-    await page.getByTestId("input-name").fill("Blocked User");
-    await page.getByTestId("input-email").fill("blocked@example.com");
+    await page.getByTestId("input-name").fill("Active User");
+    await page.getByTestId("input-email").fill("active@example.com");
     await page.getByTestId("input-phone").fill("+66800000099");
-    await page.getByTestId("select-user-status").selectOption("blocked");
     await page.getByTestId("btn-create-user").click();
     await expect(page.getByTestId("result-create-user")).toContainText('"id"');
 
     await page.getByTestId("btn-verify-profile").click();
-    await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"blocked"');
-    await expect(page.getByText("Account is Blocked")).toBeVisible();
+    await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"active"');
+    await expect(page.getByText("Account is Active")).toBeVisible();
   });
 
   test("create account reports an SMS delivery failure", async ({ page }) => {

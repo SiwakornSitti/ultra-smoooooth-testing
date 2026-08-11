@@ -17,7 +17,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   const [name, setName] = useState("Jane Doe");
   const [email, setEmail] = useState("jane.doe@example.com");
   const [phone, setPhone] = useState("+66800000000");
-  const [status, setStatus] = useState("active");
+  const [userScenario, setUserScenario] = useState("");
   const [userId, setUserId] = useState("");
   const [userResult, setUserResult] = useState("");
 
@@ -38,6 +38,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
   useEffect(() => {
     if (!showMockControls) {
+      setUserScenario("");
       setSmsScenario("");
       setProfileScenario("");
     } else if (!smsScenario) {
@@ -49,8 +50,11 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
     setUserResult("Loading...");
     const res = await fetch(`${bffUrl}/api/v1/users`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, phone, status }),
+      headers: {
+        "Content-Type": "application/json",
+        ...(showMockControls && userScenario ? { "Mock-Scenario": userScenario } : {}),
+      },
+      body: JSON.stringify({ name, email, phone }),
     });
     const data = await parseResponse(res);
     if (res.ok && data.id) {
@@ -140,14 +144,15 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
           <input data-testid="input-phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
         </label>
         <br />
-        <label>
-          Status{" "}
-          <select data-testid="select-user-status" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="active">Active</option>
-            <option value="blocked">Blocked</option>
-          </select>
-        </label>
-        <br />
+        {showMockControls && (
+          <label>
+            User Mock Scenario{" "}
+            <select data-testid="select-create-user-scenario" value={userScenario} onChange={(e) => setUserScenario(e.target.value)}>
+              <option value="">Real service</option>
+              <option value={MOCK_SCENARIO.USER.CREATE_USER_FAILED}>{MOCK_SCENARIO.USER.CREATE_USER_FAILED}</option>
+            </select>
+          </label>
+        )}
         <button data-testid="btn-create-user" onClick={createUser}>
           Create User
         </button>

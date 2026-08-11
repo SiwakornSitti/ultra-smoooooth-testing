@@ -195,6 +195,7 @@ test.describe("BFF Service Integration Tests", () => {
           name: "Alice Johnson",
           email: "alice@example.com",
           phone: "+66800000002",
+          status: "blocked",
         },
       });
       expect(response.status()).toBe(HttpStatusCode.Created);

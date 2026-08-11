@@ -1,0 +1,31 @@
+{
+  "id" : "9d1a0bb4-4c7c-4e1d-9f17-7a6f5f7d8f30",
+  "name" : "User Service Mock - Create User Failed",
+  "request" : {
+    "urlPath" : "/users",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "USER:CREATE_USER_FAILED"
+      }
+    }
+  },
+  "response" : {
+    "status" : 409,
+    "jsonBody" : {
+      "error" : "User with email already exists"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "9d1a0bb4-4c7c-4e1d-9f17-7a6f5f7d8f30",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/user-service/004 - User Service Mock - Create User Failed"
+    }
+  },
+  "insertionIndex" : 186
+}

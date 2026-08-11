@@ -196,9 +196,7 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, "phone is required", http.StatusBadRequest)
 		return
 	}
-	if u.Status == "" {
-		u.Status = "active"
-	}
+	u.Status = "active"
 	var emailExists bool
 	if err := db.QueryRowContext(r.Context(), "SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)", u.Email).Scan(&emailExists); err != nil {
 		slog.Error("Duplicate user check failed", "error", err)
