@@ -22,11 +22,10 @@ type User struct {
 }
 
 type BankAccount struct {
-	ID       string  `json:"id"`
-	UserID   string  `json:"user_id"`
-	Balance  float64 `json:"balance"`
-	Currency string  `json:"currency"`
-	Phone    string  `json:"phone,omitempty"`
+	ID      string  `json:"id"`
+	UserID  string  `json:"user_id"`
+	Balance float64 `json:"balance"`
+	Phone   string  `json:"phone,omitempty"`
 }
 
 type UserDetail struct {
@@ -39,7 +38,6 @@ type Transfer struct {
 	SourceAccountID string  `json:"source_account_id"`
 	TargetAccountID string  `json:"target_account_id"`
 	Amount          float64 `json:"amount"`
-	Currency        string  `json:"currency"`
 	Status          string  `json:"status"`
 }
 
@@ -438,7 +436,7 @@ func handleGetAccount(w http.ResponseWriter, r *http.Request) {
 func sendAccountSMS(r *http.Request, account BankAccount) error {
 	body, err := json.Marshal(map[string]string{
 		"to":      account.Phone,
-		"message": fmt.Sprintf("Your new %s account has been created.", account.Currency),
+		"message": "Your new account has been created.",
 	})
 	if err != nil {
 		return fmt.Errorf("failed to build SMS request")

@@ -195,7 +195,6 @@ test.describe("QA website full e2e flow", () => {
 
     setScenario(MOCK_SCENARIO.SMS.SUCCESS);
     await page.getByTestId("btn-create-account").click();
-    await expect(page.getByTestId("result-create-account")).toContainText('"currency":"USD"');
 
     await page.getByTestId("btn-verify-profile").click();
     await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"active"');
@@ -300,7 +299,6 @@ test.describe("QA website full e2e flow", () => {
     await page.goto(`${websiteUrl}/transfer`);
 
     await page.getByTestId("input-transfer-amount").fill("100");
-    await page.getByTestId("input-transfer-currency").fill("THB");
     await page.getByTestId("btn-submit-transfer").click();
 
     await expect(page.getByTestId("result-transfer")).toContainText('"status":"COMPLETED"');

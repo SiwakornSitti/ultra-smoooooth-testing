@@ -40,10 +40,7 @@ const mockUserEmail = process.env.MOCK_USER_EMAIL || "jane.doe@example.com";
 const mockUserPhone = process.env.MOCK_USER_PHONE || "+66800000001";
 
 const mockAcc1Balance = parseFloat(process.env.MOCK_ACC_1_BALANCE || "2500.75");
-const mockAcc1Currency = process.env.MOCK_ACC_1_CURRENCY || "USD";
-
 const mockAcc2Balance = parseFloat(process.env.MOCK_ACC_2_BALANCE || "120.5");
-const mockAcc2Currency = process.env.MOCK_ACC_2_CURRENCY || "USD";
 
 // Filled in after seeding, since Postgres generates the UUIDs.
 let seededUserId: string;
@@ -55,9 +52,7 @@ const seedData: SeedData = {
   userEmail: mockUserEmail,
   userPhone: mockUserPhone,
   sourceBalance: mockAcc1Balance,
-  sourceCurrency: mockAcc1Currency,
   targetBalance: mockAcc2Balance,
-  targetCurrency: mockAcc2Currency,
 };
 
 const directSeedIds: DirectSeedIds = {
@@ -174,14 +169,12 @@ test.describe("BFF Service Integration Tests", () => {
         expect.objectContaining({
           user_id: seededUserId,
           balance: mockAcc1Balance,
-          currency: mockAcc1Currency,
         })
       );
       expect(data.accounts).toContainEqual(
         expect.objectContaining({
           user_id: seededUserId,
           balance: mockAcc2Balance,
-          currency: mockAcc2Currency,
         })
       );
     });
@@ -318,6 +311,33 @@ test.describe("BFF Service Integration Tests", () => {
     });
   });
 
+  test.describe("/api/v1/accounts", () => {
+    test("should proxy account list request to bank-account-service", async ({ request }) => {
+      const response = await request.get(`${bffUrl}/api/v1/accounts`);
+      expect(response.status()).toBe(HttpStatusCode.Ok);
+      const accounts = await response.json();
+      expect(Array.isArray(accounts)).toBe(true);
+      expect(accounts.length).toBeGreaterThan(0);
+    });
+
+    test("should proxy account details request to bank-account-service", async ({ request }) => {
+      const response = await request.get(`${bffUrl}/api/v1/accounts/${seededSourceAccountId}`);
+      expect(response.status()).toBe(HttpStatusCode.Ok);
+      const account = await response.json();
+      expect(account).toEqual({
+        id: seededSourceAccountId,
+        user_id: seededUserId,
+        balance: mockAcc1Balance,
+      });
+    });
+
+    test("should return 404 for nonexistent account details", async ({ request }) => {
+      const nonexistentId = "00000000-0000-0000-0000-000000000000";
+      const response = await request.get(`${bffUrl}/api/v1/accounts/${nonexistentId}`);
+      expect(response.status()).toBe(HttpStatusCode.NotFound);
+    });
+  });
+
   test.describe("/api/v1/ekycs", () => {
     test("should proxy eKYC verification request to ekyc-service", async ({ request }) => {
       console.log(`Proxying eKYC verify via BFF: ${bffUrl}/api/v1/ekycs/verify`);
@@ -343,7 +363,6 @@ test.describe("BFF Service Integration Tests", () => {
           source_account_id: seededSourceAccountId,
           target_account_id: seededTargetAccountId,
           amount: 500,
-          currency: mockAcc1Currency,
         },
       });
       expect(response.status()).toBe(HttpStatusCode.Created);
@@ -358,7 +377,6 @@ test.describe("BFF Service Integration Tests", () => {
           source_account_id: seededSourceAccountId,
           target_account_id: seededTargetAccountId,
           amount: mockAcc1Balance + 1,
-          currency: mockAcc1Currency,
         },
       });
       expect(response.status()).toBe(HttpStatusCode.BadRequest);
@@ -374,7 +392,6 @@ test.describe("BFF Service Integration Tests", () => {
           source_account_id: seededSourceAccountId,
           target_account_id: seededTargetAccountId,
           amount: 125,
-          currency: mockAcc1Currency,
         },
       });
       expect(createResponse.status()).toBe(HttpStatusCode.Created);
@@ -390,7 +407,6 @@ test.describe("BFF Service Integration Tests", () => {
           source_account_id: seededSourceAccountId,
           target_account_id: seededTargetAccountId,
           amount: 125,
-          currency: mockAcc1Currency,
           status: "COMPLETED",
         })
       );
@@ -420,29 +436,12 @@ test.describe("BFF Service Integration Tests", () => {
           source_account_id: seededSourceAccountId,
           target_account_id: seededSourceAccountId,
           amount: 100,
-          currency: mockAcc1Currency,
         },
       });
       expect(response.status()).toBe(HttpStatusCode.BadRequest);
       expect(await response.json()).toEqual({
         error: "source and target accounts must be different",
         code: "VALIDATION_FAILED",
-      });
-    });
-
-    test("should reject a transfer with a currency mismatch", async ({ request }) => {
-      const response = await request.post(`${bffUrl}/api/v1/transfers`, {
-        data: {
-          source_account_id: seededSourceAccountId,
-          target_account_id: seededTargetAccountId,
-          amount: 100,
-          currency: "THB",
-        },
-      });
-      expect(response.status()).toBe(HttpStatusCode.BadRequest);
-      expect(await response.json()).toEqual({
-        error: "source, target, and transfer currencies must match",
-        code: "CURRENCY_MISMATCH",
       });
     });
   });

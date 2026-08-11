@@ -17,11 +17,10 @@ import (
 )
 
 type BankAccount struct {
-	ID       string  `json:"id"`
-	UserID   string  `json:"user_id"`
-	Balance  float64 `json:"balance"`
-	Currency string  `json:"currency"`
-	Phone    string  `json:"phone,omitempty"`
+	ID      string  `json:"id"`
+	UserID  string  `json:"user_id"`
+	Balance float64 `json:"balance"`
+	Phone   string  `json:"phone,omitempty"`
 }
 
 var db *sql.DB
@@ -102,7 +101,7 @@ func main() {
 
 func handleGetAccounts(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Fetching all accounts")
-	rows, err := db.QueryContext(r.Context(), "SELECT id, user_id, balance, currency FROM accounts")
+	rows, err := db.QueryContext(r.Context(), "SELECT id, user_id, balance FROM accounts")
 	if err != nil {
 		slog.Error("Query failed", "error", err)
 		writeJSONError(w, "Database error", http.StatusInternalServerError)
@@ -113,7 +112,7 @@ func handleGetAccounts(w http.ResponseWriter, r *http.Request) {
 	var accountList []BankAccount
 	for rows.Next() {
 		var a BankAccount
-		if err := rows.Scan(&a.ID, &a.UserID, &a.Balance, &a.Currency); err != nil {
+		if err := rows.Scan(&a.ID, &a.UserID, &a.Balance); err != nil {
 			slog.Error("Scan failed", "error", err)
 			writeJSONError(w, "Database error", http.StatusInternalServerError)
 			return
@@ -137,7 +136,7 @@ func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	slog.Info("Creating account", "user_id", a.UserID)
-	err := db.QueryRowContext(r.Context(), "INSERT INTO accounts (user_id, balance, currency) VALUES ($1, $2, $3) RETURNING id", a.UserID, a.Balance, a.Currency).Scan(&a.ID)
+	err := db.QueryRowContext(r.Context(), "INSERT INTO accounts (user_id, balance) VALUES ($1, $2) RETURNING id", a.UserID, a.Balance).Scan(&a.ID)
 	if err != nil {
 		slog.Error("Insert failed", "error", err)
 		writeJSONError(w, "Database error", http.StatusInternalServerError)
@@ -156,7 +155,7 @@ func handleGetAccount(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	slog.Info("Fetching account", "account_id", id)
 	var a BankAccount
-	err := db.QueryRowContext(r.Context(), "SELECT id, user_id, balance, currency FROM accounts WHERE id = $1", id).Scan(&a.ID, &a.UserID, &a.Balance, &a.Currency)
+	err := db.QueryRowContext(r.Context(), "SELECT id, user_id, balance FROM accounts WHERE id = $1", id).Scan(&a.ID, &a.UserID, &a.Balance)
 	if err == sql.ErrNoRows {
 		slog.Warn("Account not found", "account_id", id)
 		writeJSONError(w, "Account not found", http.StatusNotFound)
@@ -179,7 +178,7 @@ func handleUpdateAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	slog.Info("Updating account", "account_id", id)
-	_, err := db.ExecContext(r.Context(), "UPDATE accounts SET balance = $1, currency = $2 WHERE id = $3", a.Balance, a.Currency, id)
+	_, err := db.ExecContext(r.Context(), "UPDATE accounts SET balance = $1 WHERE id = $2", a.Balance, id)
 	if err != nil {
 		slog.Error("Update failed", "error", err)
 		writeJSONError(w, "Database error", http.StatusInternalServerError)

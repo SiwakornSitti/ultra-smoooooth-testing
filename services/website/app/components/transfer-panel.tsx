@@ -11,7 +11,6 @@ type TransferRecord = {
   source_account_id: string;
   target_account_id: string;
   amount: number;
-  currency: string;
   status: string;
 };
 
@@ -184,7 +183,7 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
                   <tr key={transfer.id}>
                     <td>{getAccountNumber(transfer.source_account_id)}</td>
                     <td>{getAccountNumber(transfer.target_account_id)}</td>
-                    <td>{transfer.amount} {transfer.currency}</td>
+                    <td>{transfer.amount}</td>
                     <td>{transfer.status}</td>
                   </tr>
                 ))}

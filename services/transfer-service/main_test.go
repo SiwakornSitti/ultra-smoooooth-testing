@@ -16,7 +16,6 @@ func TestCreateTransferHandler(t *testing.T) {
 			SourceAccountID: "acc-123",
 			TargetAccountID: "acc-456",
 			Amount:          500.0,
-			Currency:        "THB",
 		}
 		bodyBytes, _ := json.Marshal(reqBody)
 
@@ -91,7 +90,6 @@ func TestCreateTransferRejectsSameAccount(t *testing.T) {
 		SourceAccountID: "same-account",
 		TargetAccountID: "same-account",
 		Amount:          100,
-		Currency:        "THB",
 	})
 	req := httptest.NewRequest(http.MethodPost, "/transfers", bytes.NewReader(body))
 	req.Header.Set("Content-Type", "application/json")

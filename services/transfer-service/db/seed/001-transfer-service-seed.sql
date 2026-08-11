@@ -5,20 +5,17 @@ BEGIN
     ) THEN
         UPDATE accounts
         SET balance = balance - 100.00
-        WHERE id = '00000000-0000-0000-0000-000000000011'
-          AND currency = 'THB';
+        WHERE id = '00000000-0000-0000-0000-000000000011';
 
         UPDATE accounts
         SET balance = balance + 100.00
-        WHERE id = '00000000-0000-0000-0000-000000000012'
-          AND currency = 'THB';
+        WHERE id = '00000000-0000-0000-0000-000000000012';
 
         INSERT INTO transfers (
             id,
             source_account_id,
             target_account_id,
             amount,
-            currency,
             status
         )
         VALUES (
@@ -26,7 +23,6 @@ BEGIN
             '00000000-0000-0000-0000-000000000011',
             '00000000-0000-0000-0000-000000000012',
             100.00,
-            'THB',
             'COMPLETED'
         );
     END IF;

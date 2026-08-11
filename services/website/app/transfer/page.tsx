@@ -15,7 +15,6 @@ export default function TransferPage() {
   const [sourceAccountId, setSourceAccountId] = useState<string>(ACCOUNT_OPTIONS[0].id);
   const [targetAccountId, setTargetAccountId] = useState<string>(ACCOUNT_OPTIONS[1].id);
   const [amount, setAmount] = useState("100");
-  const [currency, setCurrency] = useState("THB");
   const [transferResult, setTransferResult] = useState("");
   const [transfersResult, setTransfersResult] = useState("");
   const [hasLoadedTransfers, setHasLoadedTransfers] = useState(false);
@@ -32,7 +31,6 @@ export default function TransferPage() {
         source_account_id: sourceAccountId,
         target_account_id: targetAccountId,
         amount: parseFloat(amount),
-        currency,
       }),
     });
     const data = await parseResponse(res);
@@ -101,11 +99,6 @@ export default function TransferPage() {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-        </label>
-        <br />
-        <label>
-          Currency{" "}
-          <input data-testid="input-transfer-currency" value={currency} onChange={(e) => setCurrency(e.target.value)} />
         </label>
         <br />
         <button

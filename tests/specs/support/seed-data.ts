@@ -5,9 +5,7 @@ export interface SeedData {
   userEmail: string;
   userPhone: string;
   sourceBalance: number;
-  sourceCurrency: string;
   targetBalance: number;
-  targetCurrency: string;
 }
 
 export interface DirectSeedIds {
@@ -44,7 +42,6 @@ export async function seedTestData(
     body: JSON.stringify({
       user_id: createdUser.id,
       balance: data.sourceBalance,
-      currency: data.sourceCurrency,
     }),
   });
   const sourceAccount = await sourceAccountResponse.json();
@@ -55,7 +52,6 @@ export async function seedTestData(
     body: JSON.stringify({
       user_id: createdUser.id,
       balance: data.targetBalance,
-      currency: data.targetCurrency,
     }),
   });
   const targetAccount = await targetAccountResponse.json();
@@ -86,11 +82,11 @@ export async function seedTestDataDirectly(
     ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, email = EXCLUDED.email,
       phone = EXCLUDED.phone, status = EXCLUDED.status;
 
-    INSERT INTO accounts (id, user_id, balance, currency)
+    INSERT INTO accounts (id, user_id, balance)
     VALUES
-      (${sqlLiteral(ids.sourceAccount)}, ${sqlLiteral(ids.user)}, ${data.sourceBalance}, ${sqlLiteral(data.sourceCurrency)}),
-      (${sqlLiteral(ids.targetAccount)}, ${sqlLiteral(ids.user)}, ${data.targetBalance}, ${sqlLiteral(data.targetCurrency)})
-    ON CONFLICT (id) DO UPDATE SET balance = EXCLUDED.balance, currency = EXCLUDED.currency;
+      (${sqlLiteral(ids.sourceAccount)}, ${sqlLiteral(ids.user)}, ${data.sourceBalance}),
+      (${sqlLiteral(ids.targetAccount)}, ${sqlLiteral(ids.user)}, ${data.targetBalance})
+    ON CONFLICT (id) DO UPDATE SET balance = EXCLUDED.balance;
   `;
   const result = await database.exec([
     "psql",

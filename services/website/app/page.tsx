@@ -12,7 +12,6 @@ import { AccountPanel } from "./components/account-panel";
 
 type AccountBalance = {
   balance: number;
-  currency: string;
 };
 
 export default function Home() {
@@ -129,7 +128,7 @@ export default function Home() {
           {balanceError && <p className="error-message" data-testid="balance-error">Error: {balanceError}</p>}
           {accountBalance && (
             <p data-testid="result-balance">
-              Balance: {accountBalance.balance} {accountBalance.currency}
+              Balance: {accountBalance.balance}
             </p>
           )}
         </section>
