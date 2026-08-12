@@ -9,6 +9,14 @@ import { getOrCreateNationalId } from "../lib/national-id";
 
 const THAI_MOBILE_PHONE_PATTERN = /^\+66[689]\d{8}$/;
 
+function responseError(data: unknown, fallback: string) {
+  if (typeof data !== "object" || data === null) return fallback;
+  const result = data as { error?: unknown; body?: unknown };
+  if (typeof result.error === "string") return result.error;
+  if (typeof result.body === "string") return result.body;
+  return fallback;
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const bffUrl = useBffUrl();
@@ -31,13 +39,13 @@ export default function SignupPage() {
     });
     const data = await parseResponse(res);
     if (res.ok && data.id) getOrCreateNationalId(data.id);
-    setResult(JSON.stringify(data));
+    setResult(res.ok ? "User created successfully." : `Error: ${responseError(data, "Unable to create user")}`);
     setSignupComplete(res.ok);
   }
 
   async function verifyOtp() {
     if (!phoneValid) {
-      setOtpResult(JSON.stringify({ error: "phone must match +66 followed by a valid 9-digit Thai mobile number" }));
+      setOtpResult("Error: phone must match +66 followed by a valid 9-digit Thai mobile number");
       return;
     }
 
@@ -51,7 +59,7 @@ export default function SignupPage() {
       body: JSON.stringify({ phone, code: otpCode }),
     });
     const data = await parseResponse(res);
-    setOtpResult(JSON.stringify(data));
+    setOtpResult(res.ok ? "OTP verified successfully." : `Error: ${responseError(data, "OTP verification failed")}`);
     if (res.ok && data.verified === true) {
       router.replace("/login");
     }
@@ -87,7 +95,7 @@ export default function SignupPage() {
         <button data-testid="btn-signup" onClick={signup} disabled={!bffUrl}>
           Create User
         </button>
-        <pre data-testid="result-signup">{result}</pre>
+        {result && <p className="profile-result" data-testid="result-signup">{result}</p>}
       </section>
 
       {signupComplete && (
@@ -122,7 +130,7 @@ export default function SignupPage() {
           <button data-testid="btn-signup-verify-otp" onClick={verifyOtp} disabled={!phoneValid}>
             Verify OTP and continue
           </button>
-          <pre data-testid="result-signup-otp">{otpResult}</pre>
+          {otpResult && <p className="profile-result" data-testid="result-signup-otp">{otpResult}</p>}
         </section>
       )}
     </main>

@@ -13,6 +13,9 @@ type AccountPanelProps = {
 type UserOption = {
   id: string;
   name: string;
+  email?: string;
+  phone?: string;
+  status?: string;
 };
 
 const INVALID_USER_OPTION: UserOption = {
@@ -35,6 +38,12 @@ type ProfileData = {
   }>;
 };
 
+type AccountData = {
+  id: string;
+  user_id: string;
+  balance: number;
+};
+
 function isProfileData(value: unknown): value is ProfileData {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as { user?: unknown; accounts?: unknown };
@@ -49,6 +58,46 @@ function profileErrorMessage(value: unknown) {
   return "Unable to load user profile";
 }
 
+function isUpdatedUser(value: unknown): value is Required<UserOption> {
+  if (typeof value !== "object" || value === null) return false;
+  const user = value as Partial<Required<UserOption>>;
+  return typeof user.id === "string"
+    && typeof user.name === "string"
+    && typeof user.email === "string"
+    && typeof user.phone === "string"
+    && typeof user.status === "string";
+}
+
+function isAccountData(value: unknown): value is AccountData {
+  if (typeof value !== "object" || value === null) return false;
+  const account = value as Partial<AccountData>;
+  return typeof account.id === "string" && typeof account.user_id === "string" && typeof account.balance === "number";
+}
+
+function UserSummary({ user, testId }: { user: Required<UserOption>; testId: string }) {
+  return (
+    <div className="profile-summary" data-testid={testId}>
+      <div className="profile-summary-header">
+        <div className="profile-customer">
+          <strong>{user.name}</strong>
+          <span className="profile-summary-id">ID: {user.id}</span>
+        </div>
+        <span className="profile-status">{user.status}</span>
+      </div>
+      <dl className="profile-details">
+        <div>
+          <dt>Email</dt>
+          <dd>{user.email}</dd>
+        </div>
+        <div>
+          <dt>Phone</dt>
+          <dd>{user.phone}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
 export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   // Step 1: create user
   const [name, setName] = useState("Demo User");
@@ -60,12 +109,14 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   const [updateUserId, setUpdateUserId] = useState("");
   const [users, setUsers] = useState<UserOption[]>([]);
   const [userResult, setUserResult] = useState("");
+  const [createdUser, setCreatedUser] = useState<Required<UserOption> | null>(null);
 
   // Step 2: create account
   const [balance, setBalance] = useState("1000");
   const currency = "USD";
   const [smsScenario, setSmsScenario] = useState<string>(MOCK_SCENARIO.SMS.SUCCESS);
   const [accountResult, setAccountResult] = useState("");
+  const [createdAccount, setCreatedAccount] = useState<AccountData | null>(null);
 
   // Step 3: verify profile status not blocked
   const [profileResult, setProfileResult] = useState("");
@@ -75,6 +126,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   // Step 3: update user status
   const [updateStatus, setUpdateStatus] = useState("active");
   const [updateUserResult, setUpdateUserResult] = useState("");
+  const [updatedUser, setUpdatedUser] = useState<Required<UserOption> | null>(null);
   useEffect(() => {
     if (!showMockControls) {
       setUserScenario("");
@@ -101,6 +153,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
   async function createUser() {
     setUserResult("Loading...");
+    setCreatedUser(null);
     const res = await fetch(`${bffUrl}/api/v1/users`, {
       method: "POST",
       headers: {
@@ -110,11 +163,14 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
       body: JSON.stringify({ name, email, phone }),
     });
     const data = await parseResponse(res);
-    if (res.ok && data.id) {
+    if (res.ok && isUpdatedUser(data)) {
+      setUserResult("");
+      setCreatedUser(data);
       getOrCreateNationalId(data.id);
       await loadUsers(data.id);
+    } else {
+      setUserResult(profileErrorMessage(data));
     }
-    setUserResult(JSON.stringify(data));
   }
 
   async function createAccount() {
@@ -124,6 +180,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
     }
 
     setAccountResult("Loading...");
+    setCreatedAccount(null);
     const res = await fetch(`${bffUrl}/api/v1/accounts`, {
       method: "POST",
       headers: {
@@ -138,7 +195,12 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
       }),
     });
     const data = await parseResponse(res);
-    setAccountResult(JSON.stringify(data));
+    if (res.ok && isAccountData(data)) {
+      setAccountResult("");
+      setCreatedAccount(data);
+    } else {
+      setAccountResult(profileErrorMessage(data));
+    }
   }
 
   async function verifyProfile() {
@@ -168,13 +230,19 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
     }
 
     setUpdateUserResult("Loading...");
+    setUpdatedUser(null);
     const res = await fetch(`${bffUrl}/api/v1/users/${updateUserId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: updateStatus }),
     });
     const data = await parseResponse(res);
-    setUpdateUserResult(JSON.stringify(data));
+    if (res.ok && isUpdatedUser(data)) {
+      setUpdateUserResult("");
+      setUpdatedUser(data);
+    } else {
+      setUpdateUserResult(profileErrorMessage(data));
+    }
   }
 
   return (
@@ -206,7 +274,8 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <button data-testid="btn-create-user" onClick={createUser}>
           Create User
         </button>
-        <pre data-testid="result-create-user">{userResult}</pre>
+        {createdUser && <UserSummary user={createdUser} testId="created-user-summary" />}
+        {userResult && <p className="profile-result" data-testid="result-create-user">{userResult}</p>}
       </section>
 
       <section className="account-section" data-testid="section-create-account" id="section-create-account">
@@ -240,7 +309,28 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <button data-testid="btn-create-account" onClick={createAccount} disabled={!bffUrl || !accountUserId}>
           Create Account
         </button>
-        <pre data-testid="result-create-account">{accountResult}</pre>
+        {createdAccount && (
+          <div className="profile-summary account-summary" data-testid="created-account-summary">
+            <div className="profile-summary-header">
+              <div className="profile-customer">
+                <strong>Bank account created</strong>
+                <span className="profile-summary-id">Account ID: {createdAccount.id}</span>
+              </div>
+              <span className="profile-status">Active</span>
+            </div>
+            <dl className="profile-details">
+              <div>
+                <dt>User ID</dt>
+                <dd>{createdAccount.user_id}</dd>
+              </div>
+              <div>
+                <dt>Balance</dt>
+                <dd>{createdAccount.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</dd>
+              </div>
+            </dl>
+          </div>
+        )}
+        {accountResult && <p className="profile-result" data-testid="result-create-account">{accountResult}</p>}
       </section>
 
       <section className="account-section profile-panel" data-testid="section-verify-profile" id="section-verify-profile">
@@ -370,7 +460,10 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         >
           Update User Status
         </button>
-        {updateUserResult && <pre data-testid="result-update-user-status">{updateUserResult}</pre>}
+        {updatedUser && (
+          <UserSummary user={updatedUser} testId="updated-user-summary" />
+        )}
+        {updateUserResult && <p className="profile-result" data-testid="result-update-user-status">{updateUserResult}</p>}
       </section>
     </>
   );

@@ -9,6 +9,14 @@ import { MOCK_SCENARIO } from "../lib/mock-scenario";
 
 const THAI_MOBILE_PHONE_PATTERN = /^\+66[689]\d{8}$/;
 
+function responseError(data: unknown, fallback: string) {
+  if (typeof data !== "object" || data === null) return fallback;
+  const result = data as { error?: unknown; body?: unknown };
+  if (typeof result.error === "string") return result.error;
+  if (typeof result.body === "string") return result.body;
+  return fallback;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const bffUrl = useBffUrl();
@@ -45,12 +53,12 @@ export default function LoginPage() {
     });
     const data = await parseResponse(res);
     setTokenExchanged(res.ok);
-    setPaotangResult(JSON.stringify(data));
+    setPaotangResult(res.ok ? "Authcode exchanged successfully." : `Error: ${responseError(data, "Authcode exchange failed")}`);
   }
 
   async function verifyOtp() {
     if (!phoneValid) {
-      setOtpResult(JSON.stringify({ error: "phone must match +66 followed by a valid 9-digit Thai mobile number" }));
+      setOtpResult("Error: phone must match +66 followed by a valid 9-digit Thai mobile number");
       return;
     }
 
@@ -64,7 +72,7 @@ export default function LoginPage() {
       body: JSON.stringify({ phone, code: otpCode }),
     });
     const data = await parseResponse(res);
-    setOtpResult(JSON.stringify(data));
+    setOtpResult(res.ok ? "OTP verified successfully." : `Error: ${responseError(data, "OTP verification failed")}`);
     if (res.ok && data.verified === true) {
       window.sessionStorage.setItem(AUTH_SESSION_KEY, "true");
       router.replace("/");
@@ -120,7 +128,7 @@ export default function LoginPage() {
         <button data-testid="btn-paotang-login" onClick={paotangLogin}>
           Exchange Authcode
         </button>
-        <pre data-testid="result-paotang">{paotangResult}</pre>
+        {paotangResult && <p className="profile-result" data-testid="result-paotang">{paotangResult}</p>}
       </section>
 
       <section data-testid="section-otp">
@@ -162,7 +170,7 @@ export default function LoginPage() {
         <button data-testid="btn-verify-otp" onClick={verifyOtp} disabled={!tokenExchanged || !phoneValid}>
           Verify OTP
         </button>
-        <pre data-testid="result-otp">{otpResult}</pre>
+        {otpResult && <p className="profile-result" data-testid="result-otp">{otpResult}</p>}
       </section>
       </div>
       <Link className="signup-button" data-testid="signup-button" href="/signup">

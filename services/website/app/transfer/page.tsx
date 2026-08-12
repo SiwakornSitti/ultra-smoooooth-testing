@@ -17,6 +17,22 @@ type AccountOption = {
   ownerName?: string;
 };
 
+type TransferRecord = {
+  id: string;
+  source_account_id: string;
+  target_account_id: string;
+  amount: number;
+  status: string;
+};
+
+function responseError(data: unknown, fallback: string) {
+  if (typeof data !== "object" || data === null) return fallback;
+  const result = data as { error?: unknown; body?: unknown };
+  if (typeof result.error === "string") return result.error;
+  if (typeof result.body === "string") return result.body;
+  return fallback;
+}
+
 function accountLabel(account: AccountOption) {
   const number = getAccountNumber(account.id);
   if (account.id === INVALID_ACCOUNT_OPTION.id) return `${number} (Invalid account)`;
@@ -35,6 +51,7 @@ export default function TransferPage() {
   const [userScenario, setUserScenario] = useState("");
   const [transferScenario, setTransferScenario] = useState("");
   const [transfersResult, setTransfersResult] = useState("");
+  const [transfers, setTransfers] = useState<TransferRecord[]>([]);
   const [hasLoadedTransfers, setHasLoadedTransfers] = useState(false);
   const [listTransfersScenario, setListTransfersScenario] = useState("");
   const [historyCustomerId, setHistoryCustomerId] = useState<string>(EKYC_CUSTOMERS[0].id);
@@ -88,7 +105,7 @@ export default function TransferPage() {
       }),
     });
     const data = await parseResponse(res);
-    setTransferResult(JSON.stringify(data));
+    setTransferResult(res.ok ? `Transfer ${data.status || "completed"}.` : `Error: ${responseError(data, "Transfer failed")}`);
   }
 
   async function listTransfers() {
@@ -100,8 +117,15 @@ export default function TransferPage() {
       headers: listTransfersScenario ? { "Mock-Scenario": listTransfersScenario } : {},
     });
     const data = await parseResponse(res);
-    setTransfersResult(Array.isArray(data) && data.length === 0 ? "" : JSON.stringify(data));
-    setHasLoadedTransfers(res.ok && Array.isArray(data));
+    if (res.ok && Array.isArray(data)) {
+      setTransfers(data);
+      setTransfersResult("");
+      setHasLoadedTransfers(true);
+    } else {
+      setTransfers([]);
+      setTransfersResult(`Error: ${responseError(data, "Unable to load transfer history")}`);
+      setHasLoadedTransfers(false);
+    }
   }
 
   if (!authenticated) {
@@ -180,7 +204,7 @@ export default function TransferPage() {
         >
           Transfer Money
         </button>
-        <pre data-testid="result-transfer">{transferResult}</pre>
+        {transferResult && <p className="profile-result" data-testid="result-transfer">{transferResult}</p>}
       </section>
 
       <section data-testid="section-list-transfers">
@@ -211,7 +235,26 @@ export default function TransferPage() {
         <button data-testid="btn-list-transfers" onClick={listTransfers} disabled={!bffUrl}>
           Load Transfers
         </button>
-        <pre data-testid="result-transfers">{transfersResult}</pre>
+        {transfersResult && <p className="profile-result" data-testid="result-transfers">{transfersResult}</p>}
+        {transfers.length > 0 && (
+          <div className="table-wrapper" data-testid="result-transfers">
+            <table>
+              <thead>
+                <tr><th>Source</th><th>Target</th><th>Amount</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                {transfers.map((transfer) => (
+                  <tr key={transfer.id}>
+                    <td>{getAccountNumber(transfer.source_account_id)}</td>
+                    <td>{getAccountNumber(transfer.target_account_id)}</td>
+                    <td>{transfer.amount}</td>
+                    <td>{transfer.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
         {hasLoadedTransfers && !transfersResult && <p data-testid="empty-transfer-history">No transfers found.</p>}
       </section>
       </div>

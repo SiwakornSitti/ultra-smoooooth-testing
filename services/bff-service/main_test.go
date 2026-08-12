@@ -253,3 +253,45 @@ func TestProxyHandlers(t *testing.T) {
 	}
 
 }
+
+func TestHandleCreateTransferBlocksTargetUser(t *testing.T) {
+	originalTransport := http.DefaultClient.Transport
+	originalUserServiceURL := userServiceURL
+	originalBankAccountServiceURL := bankAccountServiceURL
+	originalTransferServiceURL := transferServiceURL
+	defer func() {
+		http.DefaultClient.Transport = originalTransport
+		userServiceURL = originalUserServiceURL
+		bankAccountServiceURL = originalBankAccountServiceURL
+		transferServiceURL = originalTransferServiceURL
+	}()
+
+	userServiceURL = "http://user-service"
+	bankAccountServiceURL = "http://bank-account-service"
+	transferServiceURL = "http://transfer-service"
+	http.DefaultClient.Transport = &mockRoundTripper{roundTrip: func(req *http.Request) (*http.Response, error) {
+		rec := httptest.NewRecorder()
+		switch req.URL.Path {
+		case "/accounts":
+			rec.WriteHeader(http.StatusOK)
+			rec.Body.WriteString(`[{"id":"source-account","user_id":"source-user"},{"id":"target-account","user_id":"target-user"}]`)
+		case "/users/source-user":
+			rec.WriteHeader(http.StatusOK)
+			rec.Body.WriteString(`{"id":"source-user","status":"active"}`)
+		case "/users/target-user":
+			rec.WriteHeader(http.StatusOK)
+			rec.Body.WriteString(`{"id":"target-user","status":"blocked"}`)
+		default:
+			rec.WriteHeader(http.StatusNotFound)
+		}
+		return rec.Result(), nil
+	}}
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/transfers", strings.NewReader(`{"source_account_id":"source-account","target_account_id":"target-account","amount":100}`))
+	handleCreateTransfer(rec, req)
+
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("blocked target transfer status = %d; want %d", rec.Code, http.StatusForbidden)
+	}
+}

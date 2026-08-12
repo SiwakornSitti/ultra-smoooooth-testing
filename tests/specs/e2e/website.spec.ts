@@ -129,7 +129,7 @@ async function login(page: Page) {
 
   setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
   await page.getByTestId("btn-paotang-login").click();
-  await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
+  await expect(page.getByTestId("result-paotang")).toContainText("successfully");
 
   setScenario(MOCK_SCENARIO.OTP.SUCCESS);
   await page.getByTestId("btn-verify-otp").click();
@@ -161,7 +161,7 @@ test.describe("QA website full e2e flow", () => {
 
     await page.getByTestId("input-signup-email").fill(`signup-${Date.now()}@example.com`);
     await page.getByTestId("btn-signup").click();
-    await expect(page.getByTestId("result-signup")).toContainText('"id"');
+    await expect(page.getByTestId("result-signup")).toContainText("User created successfully");
     await expect(page.getByTestId("section-signup-otp")).toBeVisible();
 
     setScenario(MOCK_SCENARIO.OTP.INVALID);
@@ -185,10 +185,9 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-phone").fill("+66800000000");
     await page.getByTestId("btn-create-user").click();
 
-    const userResult = page.getByTestId("result-create-user");
-    await expect(userResult).toContainText('"id"');
-    const userText = await userResult.textContent();
-    const userId = JSON.parse(userText || "{}").id;
+    await expect(page.getByTestId("created-user-summary")).toBeVisible();
+    const userText = await page.getByTestId("created-user-summary").textContent();
+    const userId = userText?.match(/ID: ([0-9a-f-]+)/)?.[1] ?? "";
     expect(userId).toBeTruthy();
 
     await expect(page.getByTestId("input-user-id")).toHaveValue(userId);
@@ -209,9 +208,9 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-email").fill("active@example.com");
     await page.getByTestId("input-phone").fill("+66800000099");
     await page.getByTestId("btn-create-user").click();
-    await expect(page.getByTestId("result-create-user")).toContainText('"id"');
-    const userText = await page.getByTestId("result-create-user").textContent();
-    const userId = JSON.parse(userText || "{}").id;
+    await expect(page.getByTestId("created-user-summary")).toBeVisible();
+    const userText = await page.getByTestId("created-user-summary").textContent();
+    const userId = userText?.match(/ID: ([0-9a-f-]+)/)?.[1] ?? "";
 
     await page.getByTestId("select-profile-user-id").selectOption(userId);
     await page.getByTestId("btn-verify-profile").click();
@@ -226,7 +225,7 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-email").fill(`sms-failure-${Date.now()}@example.com`);
     await page.getByTestId("input-phone").fill("+66800000098");
     await page.getByTestId("btn-create-user").click();
-    await expect(page.getByTestId("result-create-user")).toContainText('"id"');
+    await expect(page.getByTestId("created-user-summary")).toBeVisible();
 
     await page.getByTestId("select-sms-scenario").selectOption(MOCK_SCENARIO.SMS.INVALID_NUMBER);
     await page.getByTestId("btn-create-account").click();
@@ -254,7 +253,7 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-email").fill(email);
     await page.getByTestId("input-phone").fill("+66800000010");
     await page.getByTestId("btn-create-user").click();
-    await expect(page.getByTestId("result-create-user")).toContainText('"id"');
+    await expect(page.getByTestId("created-user-summary")).toBeVisible();
 
     await page.getByTestId("input-name").fill("Second Duplicate User");
     await page.getByTestId("input-phone").fill("+66800000011");
@@ -270,9 +269,9 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-email").fill(`missing-user-${Date.now()}@example.com`);
     await page.getByTestId("input-phone").fill("+66800000097");
     await page.getByTestId("btn-create-user").click();
-    await expect(page.getByTestId("result-create-user")).toContainText('"id"');
-    const userText = await page.getByTestId("result-create-user").textContent();
-    const userId = JSON.parse(userText || "{}").id;
+    await expect(page.getByTestId("created-user-summary")).toBeVisible();
+    const userText = await page.getByTestId("created-user-summary").textContent();
+    const userId = userText?.match(/ID: ([0-9a-f-]+)/)?.[1] ?? "";
     await page.getByTestId("select-profile-user-id").selectOption(userId);
     await page.getByTestId("select-profile-scenario").selectOption(MOCK_SCENARIO.USER.GET_USER_INVALID);
     await page.getByTestId("btn-verify-profile").click();
@@ -286,7 +285,7 @@ test.describe("QA website full e2e flow", () => {
 
     setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
     await page.getByTestId("btn-paotang-login").click();
-    await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
+    await expect(page.getByTestId("result-paotang")).toContainText("successfully");
 
     setScenario(MOCK_SCENARIO.OTP.SUCCESS);
     await page.getByTestId("btn-verify-otp").click();
@@ -300,7 +299,7 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-transfer-amount").fill("2000");
     await page.getByTestId("btn-submit-transfer").click();
 
-    await expect(page.getByTestId("result-transfer")).toContainText('"error":"insufficient funds"');
+    await expect(page.getByTestId("result-transfer")).toContainText("insufficient funds");
   });
 
   test("transfer succeeds and appears in transfer history", async ({ page }) => {
@@ -310,11 +309,11 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-transfer-amount").fill("100");
     await page.getByTestId("btn-submit-transfer").click();
 
-    await expect(page.getByTestId("result-transfer")).toContainText('"status":"COMPLETED"');
+    await expect(page.getByTestId("result-transfer")).toContainText("Transfer COMPLETED");
 
     await page.getByTestId("btn-list-transfers").click();
-    await expect(page.getByTestId("result-transfers")).toContainText('"amount":100');
-    await expect(page.getByTestId("result-transfers")).toContainText('"status":"COMPLETED"');
+    await expect(page.getByTestId("result-transfers")).toContainText("100");
+    await expect(page.getByTestId("result-transfers")).toContainText("COMPLETED");
   });
 
   test("eKYC verification succeeds", async ({ page }) => {
@@ -344,7 +343,7 @@ test.describe("QA website full e2e flow", () => {
 
     setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
     await page.getByTestId("btn-paotang-login").click();
-    await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
+    await expect(page.getByTestId("result-paotang")).toContainText("successfully");
 
     setScenario(MOCK_SCENARIO.OTP.INVALID);
     await page.getByTestId("btn-verify-otp").click();
@@ -357,7 +356,7 @@ test.describe("QA website full e2e flow", () => {
 
     setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
     await page.getByTestId("btn-paotang-login").click();
-    await expect(page.getByTestId("result-paotang")).toContainText("mock-access-token");
+    await expect(page.getByTestId("result-paotang")).toContainText("successfully");
 
     await page.getByTestId("input-phone").fill("0800000000");
 

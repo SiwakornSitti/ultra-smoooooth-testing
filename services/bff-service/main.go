@@ -693,16 +693,21 @@ func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var transfer CreateTransferRequest
-	if json.Unmarshal(body, &transfer) == nil && transfer.SourceAccountID != "" {
-		status, err := sourceUserStatus(r, transfer.SourceAccountID)
-		if err != nil {
-			slog.Error("Failed to verify source user status", "error", err)
-			writeJSONError(w, "User status service unavailable", http.StatusServiceUnavailable)
-			return
-		}
-		if strings.EqualFold(status, "blocked") {
-			writeJSONError(w, "blocked users cannot transfer", http.StatusForbidden)
-			return
+	if json.Unmarshal(body, &transfer) == nil {
+		for _, accountID := range []string{transfer.SourceAccountID, transfer.TargetAccountID} {
+			if accountID == "" {
+				continue
+			}
+			status, err := accountUserStatus(r, accountID)
+			if err != nil {
+				slog.Error("Failed to verify transfer user status", "account_id", accountID, "error", err)
+				writeJSONError(w, "User status service unavailable", http.StatusServiceUnavailable)
+				return
+			}
+			if strings.EqualFold(status, "blocked") {
+				writeJSONError(w, "blocked users cannot transfer", http.StatusForbidden)
+				return
+			}
 		}
 	}
 
@@ -732,13 +737,13 @@ func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func sourceUserStatus(r *http.Request, sourceAccountID string) (string, error) {
+func accountUserStatus(r *http.Request, accountID string) (string, error) {
 	accounts, err := fetchAllAccounts(r)
 	if err != nil {
 		return "", err
 	}
 	for _, account := range accounts {
-		if account.ID == sourceAccountID {
+		if account.ID == accountID {
 			user, err := fetchUser(r, account.UserID)
 			if err != nil {
 				return "", err
