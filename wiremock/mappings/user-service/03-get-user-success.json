@@ -13,13 +13,11 @@
   "response" : {
     "status" : 200,
     "jsonBody" : {
-      "user" : {
-        "id" : "{{request.path.[1]}}",
-        "name" : "Mock User",
-        "email" : "mock.user@example.com",
-        "phone" : "+66800000000",
-        "status" : "active"
-      }
+      "id" : "{{request.path.[1]}}",
+      "name" : "Mock User",
+      "email" : "mock.user@example.com",
+      "phone" : "+66800000000",
+      "status" : "active"
     },
     "headers" : {
       "Content-Type" : "application/json"

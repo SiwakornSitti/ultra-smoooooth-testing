@@ -133,6 +133,127 @@ section[data-testid] {
   margin-top: 0.3rem;
 }
 
+.profile-summary {
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: #f8faff;
+}
+
+.profile-summary-header,
+.profile-accounts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.profile-summary-meta {
+  display: grid;
+  justify-items: end;
+  gap: 0.35rem;
+}
+
+.profile-summary-header strong,
+.profile-summary-label {
+  display: block;
+}
+
+.profile-summary-label,
+.profile-accounts-header span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-summary-id {
+  color: var(--muted);
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.profile-status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.profile-status.is-active {
+  color: var(--success);
+  background: rgba(20, 128, 74, 0.12);
+}
+
+.profile-status.is-blocked {
+  color: var(--danger);
+  background: rgba(196, 50, 80, 0.12);
+}
+
+.profile-details {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.85rem 0;
+}
+
+.profile-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.profile-details dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.profile-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.profile-accounts-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.profile-accounts .table-wrapper {
+  margin-top: 0.5rem;
+}
+
+.profile-accounts table {
+  font-size: 0.75rem;
+}
+
+.profile-accounts th,
+.profile-accounts td {
+  padding: 0.45rem;
+}
+
+.profile-empty {
+  margin: 0.6rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.profile-raw-response {
+  margin-top: 0.65rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.profile-raw-response pre {
+  color: var(--ink);
+  font-weight: 400;
+}
+
 label {
   display: block;
   margin: 0.75rem 0;
@@ -283,6 +404,7 @@ th {
     break-inside: avoid;
     margin-bottom: 0.9rem;
   }
+
 }
 
 @media (prefers-color-scheme: dark) {

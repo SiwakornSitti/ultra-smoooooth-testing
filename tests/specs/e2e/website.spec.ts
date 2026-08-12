@@ -196,9 +196,9 @@ test.describe("QA website full e2e flow", () => {
     setScenario(MOCK_SCENARIO.SMS.SUCCESS);
     await page.getByTestId("btn-create-account").click();
 
+    await page.getByTestId("select-profile-user-id").selectOption(userId);
     await page.getByTestId("btn-verify-profile").click();
     await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"active"');
-    await expect(page.getByText("Account is Active")).toBeVisible();
   });
 
   test("newly created user starts active", async ({ page }) => {
@@ -210,10 +210,12 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-phone").fill("+66800000099");
     await page.getByTestId("btn-create-user").click();
     await expect(page.getByTestId("result-create-user")).toContainText('"id"');
+    const userText = await page.getByTestId("result-create-user").textContent();
+    const userId = JSON.parse(userText || "{}").id;
 
+    await page.getByTestId("select-profile-user-id").selectOption(userId);
     await page.getByTestId("btn-verify-profile").click();
     await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"active"');
-    await expect(page.getByText("Account is Active")).toBeVisible();
   });
 
   test("create account reports an SMS delivery failure", async ({ page }) => {
@@ -269,6 +271,9 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-phone").fill("+66800000097");
     await page.getByTestId("btn-create-user").click();
     await expect(page.getByTestId("result-create-user")).toContainText('"id"');
+    const userText = await page.getByTestId("result-create-user").textContent();
+    const userId = JSON.parse(userText || "{}").id;
+    await page.getByTestId("select-profile-user-id").selectOption(userId);
     await page.getByTestId("select-profile-scenario").selectOption(MOCK_SCENARIO.USER.GET_USER_INVALID);
     await page.getByTestId("btn-verify-profile").click();
 

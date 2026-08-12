@@ -14,13 +14,36 @@ type UserOption = {
   name: string;
 };
 
+type ProfileData = {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    status: string;
+  };
+  accounts: Array<{
+    id: string;
+    user_id: string;
+    balance: number;
+  }>;
+};
+
+function isProfileData(value: unknown): value is ProfileData {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as { user?: unknown; accounts?: unknown };
+  return typeof candidate.user === "object" && candidate.user !== null && Array.isArray(candidate.accounts);
+}
+
 export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   // Step 1: create user
   const [name, setName] = useState("Jane Doe");
   const [email, setEmail] = useState("jane.doe@example.com");
   const [phone, setPhone] = useState("+66800000000");
   const [userScenario, setUserScenario] = useState("");
-  const [userId, setUserId] = useState("");
+  const [accountUserId, setAccountUserId] = useState("");
+  const [profileUserId, setProfileUserId] = useState("");
+  const [updateUserId, setUpdateUserId] = useState("");
   const [users, setUsers] = useState<UserOption[]>([]);
   const [userResult, setUserResult] = useState("");
 
@@ -32,7 +55,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
   // Step 3: verify profile status not blocked
   const [profileResult, setProfileResult] = useState("");
-  const [profileStatus, setProfileStatus] = useState("");
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [profileScenario, setProfileScenario] = useState("");
 
   // Step 3: update user status
@@ -41,10 +64,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   useEffect(() => {
     if (!showMockControls) {
       setUserScenario("");
-      setSmsScenario("");
       setProfileScenario("");
-    } else if (!smsScenario) {
-      setSmsScenario(MOCK_SCENARIO.SMS.SUCCESS);
     }
   }, [showMockControls]);
 
@@ -54,7 +74,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
     if (res.ok && Array.isArray(data)) {
       setUsers(data);
       if (selectedUserId) {
-        setUserId(selectedUserId);
+        setAccountUserId(selectedUserId);
       }
     }
   }
@@ -83,7 +103,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   }
 
   async function createAccount() {
-    if (!userId) {
+    if (!accountUserId) {
       setAccountResult(JSON.stringify({ error: "user id is required" }));
       return;
     }
@@ -96,7 +116,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         ...(showMockControls && smsScenario ? { "Mock-Scenario": smsScenario } : {}),
       },
       body: JSON.stringify({
-        user_id: userId,
+        user_id: accountUserId,
         balance: parseFloat(balance),
         currency,
         phone,
@@ -107,40 +127,37 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   }
 
   async function verifyProfile() {
-    if (!userId) {
+    if (!profileUserId) {
       setProfileResult(JSON.stringify({ error: "user id is required" }));
       return;
     }
 
     setProfileResult("Loading...");
-    setProfileStatus("");
-    const res = await fetch(`${bffUrl}/api/v1/users/${userId}`, {
+    setProfileData(null);
+    const res = await fetch(`${bffUrl}/api/v1/users/${profileUserId}`, {
       headers: showMockControls && profileScenario ? { "Mock-Scenario": profileScenario } : {},
     });
     const data = await parseResponse(res);
     setProfileResult(JSON.stringify(data));
-    if (res.ok && data.user) {
-      setProfileStatus(data.user.status === "blocked" ? "blocked" : "active");
+    if (res.ok && isProfileData(data)) {
+      setProfileData(data);
     }
   }
 
   async function updateUserStatus() {
-    if (!userId) {
+    if (!updateUserId) {
       setUpdateUserResult(JSON.stringify({ error: "user id is required" }));
       return;
     }
 
     setUpdateUserResult("Loading...");
-    const res = await fetch(`${bffUrl}/api/v1/users/${userId}`, {
+    const res = await fetch(`${bffUrl}/api/v1/users/${updateUserId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: updateStatus }),
     });
     const data = await parseResponse(res);
     setUpdateUserResult(JSON.stringify(data));
-    if (res.ok && data.status) {
-      setProfileStatus(data.status === "blocked" ? "blocked" : "active");
-    }
   }
 
   return (
@@ -165,7 +182,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
             User Mock Scenario{" "}
             <select data-testid="select-create-user-scenario" value={userScenario} onChange={(e) => setUserScenario(e.target.value)}>
               <option value="">Real service</option>
-              <option value={MOCK_SCENARIO.USER.CREATE_USER_FAILED}>{MOCK_SCENARIO.USER.CREATE_USER_FAILED}</option>
+              <option value={MOCK_SCENARIO.USER.EMAIL_DUPLICATE}>{MOCK_SCENARIO.USER.EMAIL_DUPLICATE}</option>
             </select>
           </label>
         )}
@@ -180,7 +197,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <h2>Create New Bank Account</h2>
         <label>
           User ID{" "}
-          <select data-testid="input-user-id" value={userId} onChange={(e) => setUserId(e.target.value)}>
+          <select data-testid="input-user-id" value={accountUserId} onChange={(e) => setAccountUserId(e.target.value)}>
             <option value="" disabled>Select a user</option>
             {users.map((user) => (
               <option key={user.id} value={user.id}>
@@ -195,31 +212,29 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         </label>
         {showMockControls && (
           <label>
-            Account Mock Scenario
+            SMS Mock Scenario
             <select data-testid="select-sms-scenario" value={smsScenario} onChange={(e) => setSmsScenario(e.target.value)}>
-              <option value="">Real service</option>
               <option value={MOCK_SCENARIO.SMS.SUCCESS}>{MOCK_SCENARIO.SMS.SUCCESS}</option>
               <option value={MOCK_SCENARIO.SMS.INVALID_NUMBER}>{MOCK_SCENARIO.SMS.INVALID_NUMBER}</option>
               <option value={MOCK_SCENARIO.SMS.UNAVAILABLE}>{MOCK_SCENARIO.SMS.UNAVAILABLE}</option>
-              <option value={MOCK_SCENARIO.BANK_ACCOUNT.ACCOUNT_NUMBER_ALREADY_EXISTS}>{MOCK_SCENARIO.BANK_ACCOUNT.ACCOUNT_NUMBER_ALREADY_EXISTS}</option>
             </select>
           </label>
         )}
-        <button data-testid="btn-create-account" onClick={createAccount} disabled={!bffUrl || !userId}>
+        <button data-testid="btn-create-account" onClick={createAccount} disabled={!bffUrl || !accountUserId}>
           Create Account
         </button>
         <pre data-testid="result-create-account">{accountResult}</pre>
       </section>
 
-      <section className="account-section" data-testid="section-verify-profile" id="section-verify-profile">
+      <section className="account-section profile-panel" data-testid="section-verify-profile" id="section-verify-profile">
         <p className="eyebrow">Customer workspace</p>
-        <h2>Get & Update User Profile</h2>
+        <h2>Get User Profile</h2>
         <label>
           User ID{" "}
           <select
             data-testid="select-profile-user-id"
-            value={userId}
-            onChange={(e) => setUserId(e.target.value)}
+            value={profileUserId}
+            onChange={(e) => setProfileUserId(e.target.value)}
           >
             <option value="" disabled>Select a user</option>
             {users.map((user) => (
@@ -243,11 +258,91 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
             </select>
           </label>
         )}
-        <button data-testid="btn-verify-profile" onClick={verifyProfile} disabled={!bffUrl || !userId}>
+        <button data-testid="btn-verify-profile" onClick={verifyProfile} disabled={!bffUrl || !profileUserId}>
           Get User Profile
         </button>
 
-        <label style={{ marginTop: "1rem" }}>
+        {profileData && (
+          <div className="profile-summary" data-testid="profile-summary">
+            <div className="profile-summary-header">
+              <div>
+                <span className="profile-summary-label">Customer</span>
+                <strong>{profileData.user.name}</strong>
+              </div>
+              <div className="profile-summary-meta">
+                <span className="profile-summary-id">{profileData.user.id}</span>
+                <span className={`profile-status ${profileData.user.status === "blocked" ? "is-blocked" : "is-active"}`}>
+                  {profileData.user.status}
+                </span>
+              </div>
+            </div>
+
+            <dl className="profile-details">
+              <div>
+                <dt>Email</dt>
+                <dd>{profileData.user.email}</dd>
+              </div>
+              <div>
+                <dt>Phone</dt>
+                <dd>{profileData.user.phone}</dd>
+              </div>
+            </dl>
+
+            <div className="profile-accounts">
+              <div className="profile-accounts-header">
+                <h3>Accounts</h3>
+                <span>{profileData.accounts.length} total</span>
+              </div>
+              {profileData.accounts.length > 0 ? (
+                <div className="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Account ID</th>
+                        <th>Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {profileData.accounts.map((account) => (
+                        <tr key={account.id}>
+                          <td>{account.id}</td>
+                          <td>{account.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="profile-empty">No accounts found.</p>
+              )}
+            </div>
+          </div>
+        )}
+        <details className="profile-raw-response">
+          <summary>Raw response</summary>
+          <pre data-testid="result-verify-profile">{profileResult}</pre>
+        </details>
+      </section>
+
+      <section className="account-section" data-testid="section-update-user" id="section-update-user">
+        <p className="eyebrow">Customer workspace</p>
+        <h2>Update User Status</h2>
+        <label>
+          User ID{" "}
+          <select
+            data-testid="select-update-user-id"
+            value={updateUserId}
+            onChange={(e) => setUpdateUserId(e.target.value)}
+          >
+            <option value="" disabled>Select a user</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} ({user.id})
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
           Update Status{" "}
           <select
             data-testid="select-update-user-status"
@@ -261,18 +356,11 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <button
           data-testid="btn-update-user-status"
           onClick={updateUserStatus}
-          disabled={!bffUrl || !userId}
+          disabled={!bffUrl || !updateUserId}
         >
           Update User Status
         </button>
         {updateUserResult && <pre data-testid="result-update-user-status">{updateUserResult}</pre>}
-
-        {profileStatus && (
-          <p style={{ color: profileStatus === "blocked" ? "red" : "green" }}>
-            Account is {profileStatus === "blocked" ? "Blocked" : "Active"}
-          </p>
-        )}
-        <pre data-testid="result-verify-profile">{profileResult}</pre>
       </section>
     </>
   );
