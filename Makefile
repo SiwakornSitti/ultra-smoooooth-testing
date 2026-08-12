@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy setup setup-dev docker-start migrate seed test test-integration test-e2e slides
+.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-integration test-e2e slides
 
 all: build
 
@@ -38,6 +38,9 @@ setup-dev: docker-start migrate seed
 
 docker-start:
 	docker compose up -d --build
+
+destroy:
+	docker compose down
 
 migrate:
 	@for file in services/*/db/migration/*.sql; do \

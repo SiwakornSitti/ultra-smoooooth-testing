@@ -1,24 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
 import { EKYC_CUSTOMERS } from "../lib/ekyc-customers";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
 import { LogoutButton } from "../lib/logout-button";
+import { getOrCreateNationalId } from "../lib/national-id";
+import { EkycSummary, isEkycResult, type EkycResult } from "../components/ekyc-summary";
+
+type UserOption = {
+  id: string;
+  name: string;
+};
 
 export default function EkycPage() {
   const authenticated = useRequireLogin();
   const bffUrl = useBffUrl();
   const [customerId, setCustomerId] = useState("00000000-0000-0000-0000-000000000001");
+  const [users, setUsers] = useState<UserOption[]>([]);
   const [nationalId, setNationalId] = useState("1234567890123");
   const [fullName, setFullName] = useState("Narin Chaiyasit");
   const [scenario, setScenario] = useState("");
   const [result, setResult] = useState("");
+  const [ekycData, setEkycData] = useState<EkycResult | null>(null);
+
+  useEffect(() => {
+    if (!bffUrl) return;
+    fetch(`${bffUrl}/api/v1/users`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Unable to load users"))))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setUsers(data);
+      })
+      .catch(() => undefined);
+  }, [bffUrl]);
 
   async function verifyIdentity() {
     setResult("Loading...");
+    setEkycData(null);
     const res = await fetch(`${bffUrl}/api/v1/ekycs/verify`, {
       method: "POST",
       headers: {
@@ -27,7 +47,13 @@ export default function EkycPage() {
       },
       body: JSON.stringify({ customer_id: customerId, national_id: nationalId, full_name: fullName }),
     });
-    setResult(JSON.stringify(await parseResponse(res)));
+    const data = await parseResponse(res);
+    if (res.ok && isEkycResult(data)) {
+      setResult("");
+      setEkycData(data);
+    } else {
+      setResult(`Error: ${data.error || "Identity verification failed"}`);
+    }
   }
 
   if (!authenticated) {
@@ -52,14 +78,19 @@ export default function EkycPage() {
             value={customerId}
             onChange={(e) => {
               const customer = EKYC_CUSTOMERS.find((item) => item.id === e.target.value);
+              const user = users.find((item) => item.id === e.target.value);
               if (customer) {
                 setCustomerId(customer.id);
                 setNationalId(customer.nationalId);
                 setFullName(customer.name);
+              } else if (user) {
+                setCustomerId(user.id);
+                setNationalId(getOrCreateNationalId(user.id));
+                setFullName(user.name);
               }
             }}
           >
-            {EKYC_CUSTOMERS.map((customer) => (
+            {(users.length > 0 ? users : EKYC_CUSTOMERS).map((customer) => (
               <option key={customer.id} value={customer.id}>{customer.name}</option>
             ))}
           </select>
@@ -82,7 +113,8 @@ export default function EkycPage() {
         <button data-testid="btn-submit-ekyc" onClick={verifyIdentity} disabled={!bffUrl}>
           Verify Identity
         </button>
-        <pre data-testid="result-ekyc">{result}</pre>
+        {result && <p data-testid="result-ekyc">{result}</p>}
+        {ekycData && <EkycSummary result={ekycData} />}
       </section>
     </main>
   );

@@ -1,17 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { useRequireLogin } from "../lib/auth";
 import { LogoutButton } from "../lib/logout-button";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
 import { EKYC_CUSTOMERS } from "../lib/ekyc-customers";
-import { ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION } from "../lib/accounts";
+import { ACCOUNT_OPTIONS, getAccountNumber, INVALID_ACCOUNT_OPTION } from "../lib/accounts";
+
+type AccountOption = {
+  id: string;
+  number?: string;
+  user_id?: string;
+  balance?: number;
+  ownerName?: string;
+};
+
+function accountLabel(account: AccountOption) {
+  const number = getAccountNumber(account.id);
+  if (account.id === INVALID_ACCOUNT_OPTION.id) return `${number} (Invalid account)`;
+  const owner = account.ownerName || account.user_id;
+  return owner ? `${number} — ${owner}` : number;
+}
 
 export default function TransferPage() {
   const authenticated = useRequireLogin();
   const bffUrl = useBffUrl();
+  const [accounts, setAccounts] = useState<AccountOption[]>([...ACCOUNT_OPTIONS]);
   const [sourceAccountId, setSourceAccountId] = useState<string>(ACCOUNT_OPTIONS[0].id);
   const [targetAccountId, setTargetAccountId] = useState<string>(ACCOUNT_OPTIONS[1].id);
   const [amount, setAmount] = useState("100");
@@ -23,6 +39,37 @@ export default function TransferPage() {
   const [listTransfersScenario, setListTransfersScenario] = useState("");
   const [historyCustomerId, setHistoryCustomerId] = useState<string>(EKYC_CUSTOMERS[0].id);
   const [historyAccountNo, setHistoryAccountNo] = useState<string>(ACCOUNT_OPTIONS[0].number);
+
+  useEffect(() => {
+    if (!bffUrl) return;
+
+    fetch(`${bffUrl}/api/v1/accounts`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Unable to load accounts"))))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setAccounts(data);
+          setSourceAccountId(data[0].id);
+          setTargetAccountId(data[Math.min(1, data.length - 1)].id);
+          setHistoryAccountNo(getAccountNumber(data[0].id));
+        }
+      })
+      .catch(() => undefined);
+
+    fetch(`${bffUrl}/api/v1/users`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Unable to load users"))))
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const names = new Map(data.map((user) => [user.id, user.name]));
+        setAccounts((current) => current.map((account) => ({
+          ...account,
+          ownerName: account.user_id ? names.get(account.user_id) : undefined,
+        })));
+      })
+      .catch(() => undefined);
+  }, [bffUrl]);
+
+  const selectableAccounts = [...accounts, INVALID_ACCOUNT_OPTION];
+  const sourceAccount = accounts.find((account) => account.id === sourceAccountId);
 
   async function submitTransfer() {
     setTransferResult("Loading...");
@@ -81,9 +128,14 @@ export default function TransferPage() {
             value={sourceAccountId}
             onChange={(e) => setSourceAccountId(e.target.value)}
           >
-            {[...ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION].map((account) => <option key={account.id} value={account.id}>{account.id === INVALID_ACCOUNT_OPTION.id ? `${account.number} (Invalid account)` : account.number}</option>)}
+            {selectableAccounts.map((account) => <option key={account.id} value={account.id}>{accountLabel(account)}</option>)}
           </select>
         </label>
+        {sourceAccount?.balance !== undefined && (
+          <p className="current-balance" data-testid="source-account-balance">
+            Current balance: {sourceAccount.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </p>
+        )}
         <br />
         <label>
           Target Account ID{" "}
@@ -92,7 +144,7 @@ export default function TransferPage() {
             value={targetAccountId}
             onChange={(e) => setTargetAccountId(e.target.value)}
           >
-            {[...ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION].map((account) => <option key={account.id} value={account.id}>{account.id === INVALID_ACCOUNT_OPTION.id ? `${account.number} (Invalid account)` : account.number}</option>)}
+            {selectableAccounts.map((account) => <option key={account.id} value={account.id}>{accountLabel(account)}</option>)}
           </select>
         </label>
         <br />
@@ -144,7 +196,7 @@ export default function TransferPage() {
         <label>
           Account No. {" "}
           <select data-testid="select-transfer-history-account-no" value={historyAccountNo} onChange={(e) => setHistoryAccountNo(e.target.value)}>
-            {[...ACCOUNT_OPTIONS, INVALID_ACCOUNT_OPTION].map((account) => <option key={account.id} value={account.number}>{account.id === INVALID_ACCOUNT_OPTION.id ? `${account.number} (Invalid account)` : account.number}</option>)}
+            {selectableAccounts.map((account) => <option key={account.id} value={getAccountNumber(account.id)}>{accountLabel(account)}</option>)}
           </select>
         </label>
         <label>

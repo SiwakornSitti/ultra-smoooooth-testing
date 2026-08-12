@@ -180,8 +180,8 @@ test.describe("QA website full e2e flow", () => {
     await login(page);
     await page.goto(`${websiteUrl}/account`);
 
-    await page.getByTestId("input-name").fill("Jane Doe");
-    await page.getByTestId("input-email").fill("jane.doe@example.com");
+    await page.getByTestId("input-name").fill("Demo User");
+    await page.getByTestId("input-email").fill("demo.user@example.com");
     await page.getByTestId("input-phone").fill("+66800000000");
     await page.getByTestId("btn-create-user").click();
 
@@ -198,7 +198,7 @@ test.describe("QA website full e2e flow", () => {
 
     await page.getByTestId("select-profile-user-id").selectOption(userId);
     await page.getByTestId("btn-verify-profile").click();
-    await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"active"');
+    await expect(page.getByTestId("profile-status")).toHaveText("active");
   });
 
   test("newly created user starts active", async ({ page }) => {
@@ -215,7 +215,7 @@ test.describe("QA website full e2e flow", () => {
 
     await page.getByTestId("select-profile-user-id").selectOption(userId);
     await page.getByTestId("btn-verify-profile").click();
-    await expect(page.getByTestId("result-verify-profile")).toContainText('"status":"active"');
+    await expect(page.getByTestId("profile-status")).toHaveText("active");
   });
 
   test("create account reports an SMS delivery failure", async ({ page }) => {
@@ -325,7 +325,7 @@ test.describe("QA website full e2e flow", () => {
     await page.getByTestId("input-ekyc-national-id").fill("1234567890123");
     await page.getByTestId("btn-submit-ekyc").click();
 
-    await expect(page.getByTestId("result-ekyc")).toContainText('"status":"APPROVED"');
+    await expect(page.getByTestId("ekyc-status")).toHaveText("APPROVED");
   });
 
   test("Paotang login rejects invalid authcode", async ({ page }) => {

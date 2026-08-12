@@ -35,8 +35,8 @@ let smsServiceContainer: StartedTestContainer;
 let bffContainer: StartedTestContainer;
 let bffUrl: string;
 
-const mockUserName = process.env.MOCK_USER_NAME || "Jane Doe";
-const mockUserEmail = process.env.MOCK_USER_EMAIL || "jane.doe@example.com";
+const mockUserName = process.env.MOCK_USER_NAME || "Demo User";
+const mockUserEmail = process.env.MOCK_USER_EMAIL || "demo.user@example.com";
 const mockUserPhone = process.env.MOCK_USER_PHONE || "+66800000001";
 
 const mockAcc1Balance = parseFloat(process.env.MOCK_ACC_1_BALANCE || "2500.75");

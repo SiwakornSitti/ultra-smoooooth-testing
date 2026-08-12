@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { parseResponse } from "../lib/api";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
+import { getOrCreateNationalId } from "../lib/national-id";
 
 type AccountPanelProps = {
   bffUrl: string;
@@ -12,6 +13,11 @@ type AccountPanelProps = {
 type UserOption = {
   id: string;
   name: string;
+};
+
+const INVALID_USER_OPTION: UserOption = {
+  id: "00000000-0000-0000-0000-000099999999",
+  name: "Invalid user",
 };
 
 type ProfileData = {
@@ -35,10 +41,18 @@ function isProfileData(value: unknown): value is ProfileData {
   return typeof candidate.user === "object" && candidate.user !== null && Array.isArray(candidate.accounts);
 }
 
+function profileErrorMessage(value: unknown) {
+  if (typeof value !== "object" || value === null) return "Unable to load user profile";
+  const candidate = value as { error?: unknown; body?: unknown };
+  if (typeof candidate.error === "string") return candidate.error;
+  if (typeof candidate.body === "string") return candidate.body;
+  return "Unable to load user profile";
+}
+
 export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
   // Step 1: create user
-  const [name, setName] = useState("Jane Doe");
-  const [email, setEmail] = useState("jane.doe@example.com");
+  const [name, setName] = useState("Demo User");
+  const [email, setEmail] = useState("demo.user@example.com");
   const [phone, setPhone] = useState("+66800000000");
   const [userScenario, setUserScenario] = useState("");
   const [accountUserId, setAccountUserId] = useState("");
@@ -97,6 +111,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
     });
     const data = await parseResponse(res);
     if (res.ok && data.id) {
+      getOrCreateNationalId(data.id);
       await loadUsers(data.id);
     }
     setUserResult(JSON.stringify(data));
@@ -128,7 +143,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
   async function verifyProfile() {
     if (!profileUserId) {
-      setProfileResult(JSON.stringify({ error: "user id is required" }));
+      setProfileResult("User ID is required");
       return;
     }
 
@@ -138,9 +153,11 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
       headers: showMockControls && profileScenario ? { "Mock-Scenario": profileScenario } : {},
     });
     const data = await parseResponse(res);
-    setProfileResult(JSON.stringify(data));
     if (res.ok && isProfileData(data)) {
       setProfileData(data);
+      setProfileResult("");
+    } else {
+      setProfileResult(profileErrorMessage(data));
     }
   }
 
@@ -199,7 +216,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
           User ID{" "}
           <select data-testid="input-user-id" value={accountUserId} onChange={(e) => setAccountUserId(e.target.value)}>
             <option value="" disabled>Select a user</option>
-            {users.map((user) => (
+            {(showMockControls ? [...users, INVALID_USER_OPTION] : users).map((user) => (
               <option key={user.id} value={user.id}>
                 {user.name} ({user.id})
               </option>
@@ -227,7 +244,6 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
       </section>
 
       <section className="account-section profile-panel" data-testid="section-verify-profile" id="section-verify-profile">
-        <p className="eyebrow">Customer workspace</p>
         <h2>Get User Profile</h2>
         <label>
           User ID{" "}
@@ -265,16 +281,11 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         {profileData && (
           <div className="profile-summary" data-testid="profile-summary">
             <div className="profile-summary-header">
-              <div>
-                <span className="profile-summary-label">Customer</span>
+              <div className="profile-customer">
                 <strong>{profileData.user.name}</strong>
+                <span className="profile-summary-id">ID: {profileData.user.id}</span>
               </div>
-              <div className="profile-summary-meta">
-                <span className="profile-summary-id">{profileData.user.id}</span>
-                <span className={`profile-status ${profileData.user.status === "blocked" ? "is-blocked" : "is-active"}`}>
-                  {profileData.user.status}
-                </span>
-              </div>
+              <span className="profile-status" data-testid="profile-status">{profileData.user.status}</span>
             </div>
 
             <dl className="profile-details">
@@ -318,10 +329,9 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
             </div>
           </div>
         )}
-        <details className="profile-raw-response">
-          <summary>Raw response</summary>
-          <pre data-testid="result-verify-profile">{profileResult}</pre>
-        </details>
+        {profileResult ? (
+          <p className="profile-result" data-testid="result-verify-profile">{profileResult}</p>
+        ) : null}
       </section>
 
       <section className="account-section" data-testid="section-update-user" id="section-update-user">

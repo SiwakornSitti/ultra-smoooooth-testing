@@ -12,7 +12,7 @@ export function LogoutButton() {
   }
 
   return (
-    <button data-testid="btn-logout" type="button" onClick={logout}>
+    <button className="logout-button" data-testid="btn-logout" type="button" onClick={logout}>
       Logout
     </button>
   );

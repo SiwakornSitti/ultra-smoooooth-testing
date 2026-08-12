@@ -5,14 +5,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { parseResponse, useBffUrl } from "../lib/api";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
+import { getOrCreateNationalId } from "../lib/national-id";
 
 const THAI_MOBILE_PHONE_PATTERN = /^\+66[689]\d{8}$/;
 
 export default function SignupPage() {
   const router = useRouter();
   const bffUrl = useBffUrl();
-  const [name, setName] = useState("Jane Doe");
-  const [email, setEmail] = useState("jane.doe@example.com");
+  const [name, setName] = useState("Demo User");
+  const [email, setEmail] = useState("demo.user@example.com");
   const [phone, setPhone] = useState("+66800000000");
   const [result, setResult] = useState("");
   const [signupComplete, setSignupComplete] = useState(false);
@@ -29,6 +30,7 @@ export default function SignupPage() {
       body: JSON.stringify({ name, email, phone }),
     });
     const data = await parseResponse(res);
+    if (res.ok && data.id) getOrCreateNationalId(data.id);
     setResult(JSON.stringify(data));
     setSignupComplete(res.ok);
   }

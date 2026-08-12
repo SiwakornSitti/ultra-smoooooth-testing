@@ -6,52 +6,45 @@ import { AUTH_SESSION_KEY } from "./lib/auth";
 import { LogoutButton } from "./lib/logout-button";
 import { MOCK_SCENARIO } from "./lib/mock-scenario";
 import { EKYC_CUSTOMERS } from "./lib/ekyc-customers";
-import { ACCOUNT_OPTIONS } from "./lib/accounts";
+import { getOrCreateNationalId } from "./lib/national-id";
 import { TransferPanel } from "./components/transfer-panel";
 import { AccountPanel } from "./components/account-panel";
+import { EkycSummary, isEkycResult, type EkycResult } from "./components/ekyc-summary";
 
-type AccountBalance = {
-  balance: number;
+type UserOption = {
+  id: string;
+  name: string;
 };
 
 export default function Home() {
   const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const bffUrl = useBffUrl();
-  const [balanceAccountId, setBalanceAccountId] = useState<string>(ACCOUNT_OPTIONS[0].id);
-  const [balanceResult, setBalanceResult] = useState("");
-  const [accountBalance, setAccountBalance] = useState<AccountBalance | null>(null);
-  const [balanceError, setBalanceError] = useState("");
-  const [balanceScenario, setBalanceScenario] = useState("");
   const [showMockControls, setShowMockControls] = useState(true);
   const [customerId, setCustomerId] = useState("00000000-0000-0000-0000-000000000001");
+  const [users, setUsers] = useState<UserOption[]>([]);
   const [nationalId, setNationalId] = useState("1234567890123");
   const [fullName, setFullName] = useState("Narin Chaiyasit");
   const [ekycResult, setEkycResult] = useState("");
+  const [ekycData, setEkycData] = useState<EkycResult | null>(null);
   const [ekycScenario, setEkycScenario] = useState("");
 
   useEffect(() => {
     setAuthenticated(window.sessionStorage.getItem(AUTH_SESSION_KEY) === "true");
   }, []);
 
-  async function checkBalance() {
-    setBalanceResult("Loading...");
-    setAccountBalance(null);
-    setBalanceError("");
-    const res = await fetch(`${bffUrl}/api/v1/accounts/${balanceAccountId}`, {
-      headers: balanceScenario ? { "Mock-Scenario": balanceScenario } : {},
-    });
-    const data = await parseResponse(res);
-    if (res.ok) {
-      setAccountBalance(data);
-      setBalanceResult("");
-    } else {
-      setBalanceResult("");
-      setBalanceError(data.error || "Unable to load account balance");
-    }
-  }
+  useEffect(() => {
+    if (!bffUrl) return;
+    fetch(`${bffUrl}/api/v1/users`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Unable to load users"))))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setUsers(data);
+      })
+      .catch(() => undefined);
+  }, [bffUrl]);
 
   async function verifyIdentity() {
     setEkycResult("Loading...");
+    setEkycData(null);
     const res = await fetch(`${bffUrl}/api/v1/ekycs/verify`, {
       method: "POST",
       headers: {
@@ -61,7 +54,12 @@ export default function Home() {
       body: JSON.stringify({ customer_id: customerId, national_id: nationalId, full_name: fullName }),
     });
     const data = await parseResponse(res);
-    setEkycResult(res.ok ? "Identity verification completed." : `Error: ${data.error || "Identity verification failed"}`);
+    if (res.ok && isEkycResult(data)) {
+      setEkycResult("");
+      setEkycData(data);
+    } else {
+      setEkycResult(`Error: ${data.error || "Identity verification failed"}`);
+    }
   }
 
   if (authenticated === null) {
@@ -88,7 +86,6 @@ export default function Home() {
             onChange={(e) => {
               const enabled = e.target.checked;
               setShowMockControls(enabled);
-              setBalanceScenario("");
               setEkycScenario("");
             }}
           />
@@ -98,40 +95,6 @@ export default function Home() {
       <div className="page-grid">
         <AccountPanel bffUrl={bffUrl} showMockControls={showMockControls} />
         <TransferPanel bffUrl={bffUrl} showMockControls={showMockControls} />
-
-        <section data-testid="section-balance">
-          <p className="eyebrow">Payments</p>
-          <h2>Current Balance</h2>
-          <label>
-            Account No.{" "}
-            <select
-              data-testid="input-balance-account-id"
-              value={balanceAccountId}
-              onChange={(e) => setBalanceAccountId(e.target.value)}
-            >
-              {ACCOUNT_OPTIONS.map((account) => <option key={account.id} value={account.id}>{account.number}</option>)}
-            </select>
-          </label>
-          {showMockControls && (
-            <label>
-              Balance Mock Scenario
-              <select data-testid="select-balance-scenario" value={balanceScenario} onChange={(e) => setBalanceScenario(e.target.value)}>
-                <option value="">Real service</option>
-                <option value={MOCK_SCENARIO.BANK_ACCOUNT.GET_ACCOUNT_NOT_FOUND}>{MOCK_SCENARIO.BANK_ACCOUNT.GET_ACCOUNT_NOT_FOUND}</option>
-              </select>
-            </label>
-          )}
-          <button data-testid="btn-check-balance" onClick={checkBalance} disabled={!bffUrl || !balanceAccountId}>
-            Check Current Balance
-          </button>
-          {balanceResult && <p data-testid="balance-loading">{balanceResult}</p>}
-          {balanceError && <p className="error-message" data-testid="balance-error">Error: {balanceError}</p>}
-          {accountBalance && (
-            <p data-testid="result-balance">
-              Balance: {accountBalance.balance}
-            </p>
-          )}
-        </section>
 
         <section data-testid="section-ekyc">
           <p className="eyebrow">Identity</p>
@@ -143,14 +106,19 @@ export default function Home() {
               value={customerId}
               onChange={(e) => {
                 const customer = EKYC_CUSTOMERS.find((item) => item.id === e.target.value);
+                const user = users.find((item) => item.id === e.target.value);
                 if (customer) {
                   setCustomerId(customer.id);
                   setNationalId(customer.nationalId);
                   setFullName(customer.name);
+                } else if (user) {
+                  setCustomerId(user.id);
+                  setNationalId(getOrCreateNationalId(user.id));
+                  setFullName(user.name);
                 }
               }}
             >
-              {EKYC_CUSTOMERS.map((customer) => (
+              {(users.length > 0 ? users : EKYC_CUSTOMERS).map((customer) => (
                 <option key={customer.id} value={customer.id}>{customer.name}</option>
               ))}
             </select>
@@ -172,7 +140,8 @@ export default function Home() {
           <button data-testid="btn-submit-ekyc" onClick={verifyIdentity} disabled={!bffUrl}>
             Verify Identity
           </button>
-          <p data-testid="result-ekyc">{ekycResult}</p>
+          {ekycResult && <p data-testid="result-ekyc">{ekycResult}</p>}
+          {ekycData && <EkycSummary result={ekycData} />}
         </section>
       </div>
     </main>

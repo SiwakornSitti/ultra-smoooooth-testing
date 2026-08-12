@@ -22,11 +22,16 @@ type TransferPanelProps = {
 type AccountOption = {
   id: string;
   number?: string;
+  user_id?: string;
+  balance?: number;
+  ownerName?: string;
 };
 
 function accountLabel(account: AccountOption) {
   const number = getAccountNumber(account.id);
-  return account.id === INVALID_ACCOUNT_OPTION.id ? `${number} (Invalid account)` : number;
+  if (account.id === INVALID_ACCOUNT_OPTION.id) return `${number} (Invalid account)`;
+  const owner = account.ownerName || account.user_id;
+  return owner ? `${number} — ${owner}` : number;
 }
 
 export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) {
@@ -57,6 +62,18 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
         }
       })
       .catch(() => undefined);
+
+    fetch(`${bffUrl}/api/v1/users`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Unable to load users"))))
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const names = new Map(data.map((user) => [user.id, user.name]));
+        setAccounts((current) => current.map((account) => ({
+          ...account,
+          ownerName: account.user_id ? names.get(account.user_id) : undefined,
+        })));
+      })
+      .catch(() => undefined);
   }, [bffUrl]);
 
   useEffect(() => {
@@ -68,6 +85,7 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
   }, [showMockControls]);
 
   const selectableAccounts = showMockControls ? [...accounts, INVALID_ACCOUNT_OPTION] : accounts;
+  const sourceAccount = accounts.find((account) => account.id === sourceAccountId);
 
   async function submitTransfer() {
     setTransferResult("Loading...");
@@ -119,6 +137,11 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
             {selectableAccounts.map((account) => <option key={account.id} value={account.id}>{accountLabel(account)}</option>)}
           </select>
         </label>
+        {sourceAccount?.balance !== undefined && (
+          <p className="current-balance" data-testid="source-account-balance">
+            Current balance: {sourceAccount.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </p>
+        )}
         <label>
           Target Account No.{" "}
           <select data-testid="input-target-account-id" value={targetAccountId} onChange={(e) => setTargetAccountId(e.target.value)}>
