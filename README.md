@@ -30,9 +30,11 @@ flowchart TD
     subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
         UserService["👤 user-service<br/><code>Go :8081</code>"]
         BankService["🏦 bank-account-service<br/><code>Go :8082</code>"]
+        PaotangService["💳 paotang-service<br/><code>Go :8083</code>"]
         EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
         TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
         SMSService["💬 sms-service<br/><code>Go :8086</code>"]
+        OTPService["🔑 otp-service<br/><code>Go :8087</code>"]
     end
 
     subgraph Persistence["🗄️ 4. Persistence Layer"]
@@ -56,14 +58,16 @@ flowchart TD
     BFF -->|POST/GET /ekycs| EKYCService
     BFF -->|POST/GET /transfers| TransferService
     BFF -->|POST /sms/send| SMSService
+    BFF -->|POST /auth/otp/verify| OTPService
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
     TransferService -->|Atomic Balance Updates| DB
 
-    UserService -->|OAuth & OTP Stubs| WireMock
+    UserService -->|OAuth via WireMock| WireMock
+    OTPService -->|Send SMS via WireMock| WireMock
     SMSService -->|SMS Delivery Stubs| WireMock
-    EKYCService -->|Paotang eKYC Stubs| WireMock
+    WireMock -.->|Proxy Unmatched| PaotangService
 ```
 
 ### Microservices
@@ -71,9 +75,11 @@ flowchart TD
 - **`bff-service`** (`:8080`): Backend-for-Frontend service exposing unified API endpoints.
 - **`user-service`** (`:8081`): User profile management microservice backed by PostgreSQL.
 - **`bank-account-service`** (`:8082`): Bank account management microservice backed by PostgreSQL.
+- **`paotang-service`** (`:8083`): Paotang OAuth identity provider microservice.
 - **`ekyc-service`** (`:8084`): Electronic Know Your Customer identity verification service (`POST /ekycs/verify`, `GET /ekycs/{id}`).
 - **`transfer-service`** (`:8085`): Money movement and transfer history service; atomically updates source and target account balances.
 - **`sms-service`** (`:8086`): Internal HTTP SMS adapter that forwards delivery requests to WireMock.
+- **`otp-service`** (`:8087`): OTP generation and verification microservice that delegates SMS message delivery to `sms-service`.
 - **`website`** (`:3000`): Next.js 16 web client interface.
 - **`wiremock`** (`:8088`): WireMock GUI mocking third-party integrations (Paotang Pass, OTP, SMS).
 
