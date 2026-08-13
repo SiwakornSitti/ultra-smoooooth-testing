@@ -82,7 +82,7 @@ flowchart LR
     Burp -->|proxied REST| BFF
     Browser -.->|optional interception| Burp
 
-    BFF -->|user/account/eKYC/transfer/otp| MockCore
+    BFF --> MockCore
 
     MockCore -.->|unmatched request proxy| User
     MockCore -.->|unmatched request proxy| Account
