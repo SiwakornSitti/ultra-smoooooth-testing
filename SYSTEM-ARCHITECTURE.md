@@ -9,7 +9,7 @@ WireMock test doubles together.
 
 ## System overview topology (Logical Microservices Architecture)
 
-In the logical system architecture, core microservices communicate directly with one another without any intermediary mocking layer:
+In the logical system architecture, core services communicate with backend domains, while all calls to provider services (`Paotang Provider Service` and `SMS Provider`) are mediated through the WireMock interceptor layer. Core services are not able to request provider services directly:
 
 ```mermaid
 flowchart LR
@@ -24,7 +24,7 @@ flowchart LR
     Transfer[Transfer Service\n:8085]
     SMS[SMS Service\n:8086]
     OTP[OTP Service\n:8087]
-    PaotangSvc[Paotang Service\n:8083]
+    PaotangSvc[Paotang Provider Service\n:8083]
 
     DB[(PostgreSQL\n:5432)]
     WireMock[WireMock Service\n:8088]
@@ -47,17 +47,18 @@ flowchart LR
     EKYC --> DB
     Transfer --> DB
 
-    User -->|OAuth| PaotangSvc
     User -->|Verify OTP| OTP
-    OTP -->|Send OTP SMS| SMS
+    User -->|OAuth via WireMock| WireMock
+    OTP -->|Send OTP SMS via WireMock| WireMock
+    SMS -->|Send SMS via WireMock| WireMock
 
-    SMS -->|Send SMS| WireMock
+    WireMock -.->|proxy unmatched| PaotangSvc
     WireMock -.->|proxy unmatched| SMSProvider
 ```
 
 ## Runtime test topology (Local Compose & WireMock Setup)
 
-For local development and automated testing, Docker Compose inserts WireMock in front of core services (`BFF → WireMock Core Mocks → core service`) to support deterministic scenario stubs and fault injection while proxying unmatched requests to the real core containers:
+For local development and automated testing, Docker Compose inserts WireMock in front of core services and provider integrations (`core service → WireMock → provider service / external provider`). Core services cannot call providers directly:
 
 ```mermaid
 flowchart LR
@@ -72,7 +73,7 @@ flowchart LR
     Transfer[Transfer Service\n:8085]
     SMS[SMS Service\n:8086]
     OTP[OTP Service\n:8087]
-    PaotangSvc[Paotang Service\n:8083]
+    PaotangSvc[Paotang Provider Service\n:8083]
 
     DB[(PostgreSQL\n:5432)]
     MockCore[WireMock Core Mocks\n:8088]
@@ -93,16 +94,16 @@ flowchart LR
     MockCore -.->|unmatched request proxy| Transfer
     MockCore -.->|unmatched request proxy| SMS
     MockCore -.->|unmatched request proxy| OTP
-    MockCore -.->|unmatched request proxy| PaotangSvc
 
     User --> DB
     Account --> DB
     EKYC --> DB
     Transfer --> DB
-    User -->|Paotang request| MockCore
+    User -->|Paotang request| MockExternal
     User -->|OTP verify request| MockCore
     OTP -->|Send OTP SMS| MockCore
     SMS -->|SMS request| MockExternal
+    MockExternal -.->|proxy unmatched| PaotangSvc
     MockExternal -.->|proxy unmatched| SMSProvider
 ```
 
@@ -125,8 +126,7 @@ returns a matching scenario response or proxies an unmatched request to the
 real core service.
 
 The core services are `user-service`, `bank-account-service`, `ekyc-service`,
-`transfer-service`, `sms-service`, `otp-service`, and `paotang-service`. `paotang-service` is an internal HTTP
-adapter used by `user-service` to exchange Paotang OAuth tokens through the configured provider.
+`transfer-service`, `sms-service`, `otp-service`, and `paotang-service`. `paotang-service` is the Paotang Provider service.
 
 ## Tech lead awareness
 
@@ -134,8 +134,8 @@ adapter used by `user-service` to exchange Paotang OAuth tokens through the conf
   Clients must not call any core service directly.
 - Core services own their domain behavior. The BFF orchestrates the account
   creation and SMS delivery calls synchronously.
-- `sms-service`, `otp-service`, and `paotang-service` are core adapters, not external providers. They own HTTP
-  integrations with their configured external providers.
+- **Core services are not able to request provider services directly.** All requests to providers (`Paotang Provider Service` and `SMS Provider`) must route through WireMock (`core-service → WireMock → provider`).
+- `paotang-service` IS the Paotang Provider service (`:8083`). `user-service` connects to it via WireMock (`PAOTANG_SERVICE_URL: http://wiremock:8080`).
 - WireMock represents external systems and test doubles only: Paotang, OTP,
   SMS, and optional BFF scenario/proxy behavior.
 - `transfer-service` currently uses the shared PostgreSQL database transaction
