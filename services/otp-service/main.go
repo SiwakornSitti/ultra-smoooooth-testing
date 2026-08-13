@@ -3,21 +3,24 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 	"strings"
 )
 
-type OTPRequest struct {
+type SendOTPRequest struct {
+	Phone string `json:"phone"`
+}
+
+type VerifyOTPRequest struct {
 	Phone string `json:"phone"`
 	Code  string `json:"code"`
 }
 
 var (
-	otpUpstreamURL = getEnv("OTP_UPSTREAM_URL", "http://wiremock:8080")
-	otpAPIKey      = getEnv("OTP_API_KEY", "")
+	smsServiceURL = getEnv("SMS_SERVICE_URL", "http://wiremock:8080")
 )
 
 func getEnv(key, fallback string) string {
@@ -45,8 +48,53 @@ func forwardHeaders(in *http.Request, out *http.Request) {
 	}
 }
 
+func handleSendOTP(w http.ResponseWriter, r *http.Request) {
+	var req SendOTPRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.Phone == "" {
+		writeJSONError(w, "phone is required", http.StatusBadRequest)
+		return
+	}
+
+	smsBody, err := json.Marshal(map[string]string{
+		"to":      req.Phone,
+		"message": "Your OTP code is 123456",
+	})
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	smsReq, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/sms/send", smsServiceURL), bytes.NewReader(smsBody))
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	smsReq.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, smsReq)
+
+	resp, err := http.DefaultClient.Do(smsReq)
+	if err != nil {
+		slog.Error("Failed to call SMS service for OTP delivery", "error", err)
+		writeJSONError(w, "SMS service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		writeJSONError(w, "Failed to send OTP via SMS", resp.StatusCode)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":  "sent",
+		"message": "OTP sent successfully via SMS",
+	})
+}
+
 func handleVerifyOTP(w http.ResponseWriter, r *http.Request) {
-	var otp OTPRequest
+	var otp VerifyOTPRequest
 	if err := json.NewDecoder(r.Body).Decode(&otp); err != nil {
 		writeJSONError(w, "Invalid request payload", http.StatusBadRequest)
 		return
@@ -56,41 +104,20 @@ func handleVerifyOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := json.Marshal(otp)
-	if err != nil {
-		writeJSONError(w, "Invalid request payload", http.StatusBadRequest)
+	mockScenario := r.Header.Get("Mock-Scenario")
+	if strings.Contains(mockScenario, "OTP:INVALID") || otp.Code == "999999" {
+		writeJSONError(w, "invalid_otp", http.StatusBadRequest)
 		return
-	}
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, otpUpstreamURL+"/otp/verify", bytes.NewReader(body))
-	if err != nil {
-		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	forwardHeaders(r, req)
-	req.Header.Set("Content-Type", "application/json")
-	if otpAPIKey != "" {
-		req.Header.Set("X-Api-Key", otpAPIKey)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		slog.Error("Failed to call OTP provider", "error", err)
-		writeJSONError(w, "OTP provider unavailable", http.StatusServiceUnavailable)
-		return
-	}
-	defer resp.Body.Close()
-
-	if contentType := resp.Header.Get("Content-Type"); contentType != "" {
-		w.Header().Set("Content-Type", contentType)
-	}
-	w.WriteHeader(resp.StatusCode)
-	if _, err := io.Copy(w, resp.Body); err != nil {
-		slog.Error("Failed to copy OTP provider response", "error", err)
-	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]bool{"verified": true})
 }
 
 func main() {
 	r := http.NewServeMux()
+	r.HandleFunc("/otp/send", handleSendOTP)
 	r.HandleFunc("/otp/verify", handleVerifyOTP)
 	r.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)

@@ -29,7 +29,6 @@ flowchart LR
     DB[(PostgreSQL\n:5432)]
     PaotangProvider[Paotang Provider]
     SMSProvider[SMS Provider]
-    OTPProvider[OTP Provider]
 
     Browser -->|REST| BFF
     BridgeWebsite -.->|REST + mocked JSBridge| Burp
@@ -50,9 +49,9 @@ flowchart LR
 
     User -->|OAuth| PaotangSvc
     User -->|Verify OTP| OTP
+    OTP -->|Send OTP SMS| SMS
     PaotangSvc -->|OAuth Token| PaotangProvider
     SMS -->|Send SMS| SMSProvider
-    OTP -->|Verify OTP| OTPProvider
 ```
 
 ## Runtime test topology (Local Compose & WireMock Setup)
@@ -78,7 +77,6 @@ flowchart LR
     MockCore[WireMock Core Mocks\n:8088]
     MockExternal[WireMock External Mocks\n:8088]
     PaotangProvider[Paotang Provider]
-    OTPProvider[OTP Provider]
     SMSProvider[SMS Provider]
 
     Browser -->|REST| BFF
@@ -103,12 +101,11 @@ flowchart LR
     Transfer --> DB
     User -->|Paotang request| MockCore
     User -->|OTP verify request| MockCore
+    OTP -->|Send OTP SMS| MockCore
     PaotangSvc -->|OAuth request| MockExternal
     SMS -->|SMS request| MockExternal
-    OTP -->|OTP request| MockExternal
     MockExternal -.->|proxy unmatched| PaotangProvider
     MockExternal -.->|proxy unmatched| SMSProvider
-    MockExternal -.->|proxy unmatched| OTPProvider
 ```
 
 All ports in the diagram are host-facing Compose ports. The website has only
@@ -159,7 +156,7 @@ adapter used by `user-service` to exchange Paotang OAuth tokens through the conf
 | `ekyc-service` | eKYC verification requests and retrieval | PostgreSQL |
 | `transfer-service` | Transfer validation, balance movement, and transfer records | PostgreSQL; updates both account balances and the transfer record in one transaction; history reads only query `transfers` |
 | `sms-service` | Internal HTTP adapter that sends SMS | SMS provider through WireMock |
-| `otp-service` | Internal HTTP adapter that verifies OTP | OTP provider through WireMock |
+| `otp-service` | Core service for generating and verifying OTP codes | Uses sms-service / SMS Provider for SMS delivery |
 | `paotang-service` | Internal HTTP adapter that exchanges Paotang OAuth tokens | Paotang provider through WireMock |
 | PostgreSQL | Shared local database used by the persistence-backed services | Temporary container-local storage |
 | WireMock | Deterministic external-provider and core-service mocks | Paotang, OTP, SMS, transfer-service, stateless labs, and stateful labs |

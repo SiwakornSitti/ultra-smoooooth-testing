@@ -14,25 +14,35 @@ func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) {
 	return f(r)
 }
 
-func TestHandleVerifyOTP(t *testing.T) {
-	originalURL := otpUpstreamURL
+func TestHandleSendOTP(t *testing.T) {
+	originalURL := smsServiceURL
 	originalTransport := http.DefaultClient.Transport
 	defer func() {
-		otpUpstreamURL = originalURL
+		smsServiceURL = originalURL
 		http.DefaultClient.Transport = originalTransport
 	}()
-	otpUpstreamURL = "http://otp-provider"
+	smsServiceURL = "http://sms-service"
 	http.DefaultClient.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
-		if r.URL.Path != "/otp/verify" {
-			t.Errorf("path = %q; want /otp/verify", r.URL.Path)
+		if r.URL.Path != "/sms/send" {
+			t.Errorf("path = %q; want /sms/send", r.URL.Path)
 		}
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Header:     http.Header{"Content-Type": []string{"application/json"}},
-			Body:       io.NopCloser(bytes.NewBufferString(`{"verified":true}`)),
+			Body:       io.NopCloser(bytes.NewBufferString(`{"status":"sent"}`)),
 		}, nil
 	})
 
+	req := httptest.NewRequest(http.MethodPost, "/otp/send", bytes.NewBufferString(`{"phone":"+66800000000"}`))
+	rec := httptest.NewRecorder()
+	handleSendOTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d; want 200", rec.Code)
+	}
+}
+
+func TestHandleVerifyOTPSuccess(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/otp/verify", bytes.NewBufferString(`{"phone":"+66800000000","code":"123456"}`))
 	rec := httptest.NewRecorder()
 	handleVerifyOTP(rec, req)
@@ -42,8 +52,9 @@ func TestHandleVerifyOTP(t *testing.T) {
 	}
 }
 
-func TestHandleVerifyOTPRejectsMissingFields(t *testing.T) {
-	req := httptest.NewRequest(http.MethodPost, "/otp/verify", bytes.NewBufferString(`{"phone":""}`))
+func TestHandleVerifyOTPInvalidScenario(t *testing.T) {
+	req := httptest.NewRequest(http.MethodPost, "/otp/verify", bytes.NewBufferString(`{"phone":"+66800000000","code":"123456"}`))
+	req.Header.Set("Mock-Scenario", "OTP:INVALID")
 	rec := httptest.NewRecorder()
 	handleVerifyOTP(rec, req)
 
