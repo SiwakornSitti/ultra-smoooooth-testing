@@ -3,12 +3,7 @@
   "name" : "Proxy - Real SMS Service from BFF",
   "request" : {
     "urlPathPattern" : "/sms(/.*)?",
-    "method" : "ANY",
-    "headers" : {
-      "X-BFF-Target" : {
-        "equalTo" : "sms-service"
-      }
-    }
+    "method" : "ANY"
   },
   "response" : {
     "status" : 200,
@@ -16,7 +11,7 @@
   },
   "uuid" : "2e69d2a0-de5a-4a4a-b515-8cee9f56579e",
   "persistent" : true,
-  "priority" : 1,
+  "priority" : 5,
   "metadata" : {
     "wiremock-gui" : {
       "folder" : "/sms-service/001 - Proxy - Real SMS Service from BFF"

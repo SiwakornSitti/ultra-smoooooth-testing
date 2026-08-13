@@ -7,7 +7,9 @@ integration testing, end-to-end testing, API inspection, and controlled external
 service failures. Docker Compose runs the application, infrastructure, and
 WireMock test doubles together.
 
-## Runtime topology
+## System overview topology (Logical Microservices Architecture)
+
+In the logical system architecture, core microservices communicate directly with one another without any intermediary mocking layer:
 
 ```mermaid
 flowchart LR
@@ -21,11 +23,62 @@ flowchart LR
     EKYC[eKYC Service\n:8084]
     Transfer[Transfer Service\n:8085]
     SMS[SMS Service\n:8086]
+    OTP[OTP Service\n:8087]
+    PaotangSvc[Paotang Service\n:8083]
+
+    DB[(PostgreSQL\n:5432)]
+    PaotangProvider[Paotang Provider]
+    SMSProvider[SMS Provider]
+    OTPProvider[OTP Provider]
+
+    Browser -->|REST| BFF
+    BridgeWebsite -.->|REST + mocked JSBridge| Burp
+    BridgeWebsite -->|direct REST| BFF
+    Burp -->|proxied REST| BFF
+    Browser -.->|optional interception| Burp
+
+    BFF -->|Profile / Auth| User
+    BFF -->|Accounts| Account
+    BFF -->|Verification| EKYC
+    BFF -->|Transfers| Transfer
+    BFF -->|Notifications| SMS
+
+    User --> DB
+    Account --> DB
+    EKYC --> DB
+    Transfer --> DB
+
+    User -->|OAuth| PaotangSvc
+    User -->|Verify OTP| OTP
+    PaotangSvc -->|OAuth Token| PaotangProvider
+    SMS -->|Send SMS| SMSProvider
+    OTP -->|Verify OTP| OTPProvider
+```
+
+## Runtime test topology (Local Compose & WireMock Setup)
+
+For local development and automated testing, Docker Compose inserts WireMock in front of core services (`BFF → WireMock Core Mocks → core service`) to support deterministic scenario stubs and fault injection while proxying unmatched requests to the real core containers:
+
+```mermaid
+flowchart LR
+    Browser[Website\nNext.js :3000]
+    BridgeWebsite[Website with mocked JSBridge\nNext.js :3000]
+    Burp[Optional Burp Suite\nMITM proxy]
+    BFF[BFF Service\nGo :8080]
+
+    User[User Service\n:8081]
+    Account[Bank Account Service\n:8082]
+    EKYC[eKYC Service\n:8084]
+    Transfer[Transfer Service\n:8085]
+    SMS[SMS Service\n:8086]
+    OTP[OTP Service\n:8087]
+    PaotangSvc[Paotang Service\n:8083]
 
     DB[(PostgreSQL\n:5432)]
     MockCore[WireMock Core Mocks\n:8088]
     MockExternal[WireMock External Mocks\n:8088]
-    AuthProvider[Paotang / OTP Provider]
+    PaotangProvider[Paotang Provider]
+    OTPProvider[OTP Provider]
     SMSProvider[SMS Provider]
 
     Browser -->|REST| BFF
@@ -35,21 +88,27 @@ flowchart LR
     Browser -.->|optional interception| Burp
 
     BFF --> User
-    BFF -->|account/eKYC/transfer| MockCore
-    BFF --> SMS
+    BFF -->|account/eKYC/transfer/sms/otp| MockCore
 
     MockCore -.->|unmatched request proxy| Account
     MockCore -.->|unmatched request proxy| EKYC
     MockCore -.->|unmatched request proxy| Transfer
+    MockCore -.->|unmatched request proxy| SMS
+    MockCore -.->|unmatched request proxy| OTP
+    MockCore -.->|unmatched request proxy| PaotangSvc
 
     User --> DB
     Account --> DB
     EKYC --> DB
     Transfer --> DB
-    User -->|Paotang/OTP request| MockExternal
-    MockExternal -.->|proxy unmatched| AuthProvider
+    User -->|Paotang request| MockCore
+    User -->|OTP verify request| MockCore
+    PaotangSvc -->|OAuth request| MockExternal
     SMS -->|SMS request| MockExternal
+    OTP -->|OTP request| MockExternal
+    MockExternal -.->|proxy unmatched| PaotangProvider
     MockExternal -.->|proxy unmatched| SMSProvider
+    MockExternal -.->|proxy unmatched| OTPProvider
 ```
 
 All ports in the diagram are host-facing Compose ports. The website has only
@@ -65,14 +124,14 @@ The BFF is explicitly allowed to connect to the core services. This is the
 intended direction for synchronous application requests: `website → BFF → core
 service`.
 
-For bank-account, eKYC, and transfer requests, the configured first hop is
+For bank-account, eKYC, transfer, SMS, OTP, and Paotang requests, the configured first hop is
 WireMock: `website → BFF → WireMock Core Mocks → core service`. WireMock
 returns a matching scenario response or proxies an unmatched request to the
 real core service.
 
 The core services are `user-service`, `bank-account-service`, `ekyc-service`,
-`transfer-service`, and `sms-service`. `sms-service` is an internal HTTP
-adapter used by the BFF to call the external SMS provider.
+`transfer-service`, `sms-service`, `otp-service`, and `paotang-service`. `paotang-service` is an internal HTTP
+adapter used by `user-service` to exchange Paotang OAuth tokens through the configured provider.
 
 ## Tech lead awareness
 
@@ -80,8 +139,8 @@ adapter used by the BFF to call the external SMS provider.
   Clients must not call any core service directly.
 - Core services own their domain behavior. The BFF orchestrates the account
   creation and SMS delivery calls synchronously.
-- `sms-service` is a core adapter, not the external provider. It owns the HTTP
-  integration with the configured SMS provider.
+- `sms-service`, `otp-service`, and `paotang-service` are core adapters, not external providers. They own HTTP
+  integrations with their configured external providers.
 - WireMock represents external systems and test doubles only: Paotang, OTP,
   SMS, and optional BFF scenario/proxy behavior.
 - `transfer-service` currently uses the shared PostgreSQL database transaction
@@ -95,11 +154,13 @@ adapter used by the BFF to call the external SMS provider.
 | --- | --- | --- |
 | `website` | Browser-facing QA application and scenario selector | Calls the configured BFF URL; defaults to `http://localhost:8080` |
 | `bff-service` | Backend-for-Frontend and API orchestration layer | Routes requests, loads accounts for transfer-history filters, and filters transfer results |
-| `user-service` | User profile, Paotang authentication, and OTP workflows | PostgreSQL; Paotang and OTP through WireMock |
+| `user-service` | User profile, Paotang authentication, and OTP workflows | PostgreSQL; Paotang through WireMock / `paotang-service`; OTP through WireMock / `otp-service` |
 | `bank-account-service` | Bank account operations | PostgreSQL |
 | `ekyc-service` | eKYC verification requests and retrieval | PostgreSQL |
 | `transfer-service` | Transfer validation, balance movement, and transfer records | PostgreSQL; updates both account balances and the transfer record in one transaction; history reads only query `transfers` |
 | `sms-service` | Internal HTTP adapter that sends SMS | SMS provider through WireMock |
+| `otp-service` | Internal HTTP adapter that verifies OTP | OTP provider through WireMock |
+| `paotang-service` | Internal HTTP adapter that exchanges Paotang OAuth tokens | Paotang provider through WireMock |
 | PostgreSQL | Shared local database used by the persistence-backed services | Temporary container-local storage |
 | WireMock | Deterministic external-provider and core-service mocks | Paotang, OTP, SMS, transfer-service, stateless labs, and stateful labs |
 
@@ -126,10 +187,7 @@ failure, replay, and other response scenarios.
 
 ### SMS flow
 
-The BFF creates the account through `bank-account-service`, then calls
-`sms-service` directly when a phone number is present. `sms-service` calls the
-mocked SMS provider in WireMock. SMS delivery failures are returned to the
-caller.
+The BFF creates the account through `bank-account-service`, then calls `sms-service` through WireMock (`http://wiremock:8080`) when a phone number is present. WireMock either returns a scenario-matched response (e.g. rate limit, timeout, invalid number) or proxies unmatched requests to `sms-service`. `sms-service` then calls the mocked external SMS provider through WireMock. SMS delivery failures are returned to the caller.
 
 ### Transfer flow
 

@@ -1,0 +1,35 @@
+{
+  "id" : "a2e5c830-4961-4601-9a73-67891bc05d01",
+  "name" : "SMS - Rate Limit Exceeded",
+  "request" : {
+    "urlPath" : "/sms/send",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "SMS:RATE_LIMIT"
+      }
+    }
+  },
+  "response" : {
+    "status" : 429,
+    "jsonBody" : {
+      "error" : "rate_limit_exceeded",
+      "message" : "Too many requests. Please try again later."
+    },
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Retry-After" : "60",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "a2e5c830-4961-4601-9a73-67891bc05d01",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms/006 - SMS - Rate Limit Exceeded"
+    }
+  },
+  "insertionIndex" : 158
+}

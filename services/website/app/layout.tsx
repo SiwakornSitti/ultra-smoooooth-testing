@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "QA Automation Website",
+  title: "Website",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

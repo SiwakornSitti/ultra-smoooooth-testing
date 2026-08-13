@@ -1,0 +1,27 @@
+{
+  "id" : "e7d8f901-8392-4914-cd05-12345ef67890",
+  "name" : "SMS - Default Success",
+  "request" : {
+    "urlPath" : "/sms/send",
+    "method" : "POST"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "status" : "sent",
+      "id" : "mock-sms-id"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "e7d8f901-8392-4914-cd05-12345ef67890",
+  "persistent" : true,
+  "priority" : 10,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms/009 - SMS - Default Success"
+    }
+  },
+  "insertionIndex" : 161
+}

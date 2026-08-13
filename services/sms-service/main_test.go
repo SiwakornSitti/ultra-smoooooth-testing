@@ -55,3 +55,4 @@ func TestHandleSendSMSRejectsMissingFields(t *testing.T) {
 		t.Fatalf("status = %d; want 400", rec.Code)
 	}
 }
+

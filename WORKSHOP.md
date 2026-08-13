@@ -1,6 +1,8 @@
 # 🧪 Microservices Integration Testing Workshop Guide
 
-Welcome to the **Microservices Integration Testing Workshop**! This guide provides a comprehensive framework, architecture overview, setup instructions, and **10 practical thinking cases** for testing microservices in a real-world enterprise banking ecosystem.
+> **Mock the world. Control the chaos. Test without limits.**
+
+Welcome to the **Microservices Integration Testing Workshop**! This guide provides a comprehensive framework, architecture overview, setup instructions, and **11 practical thinking cases** for testing microservices in a real-world enterprise banking ecosystem.
 
 ---
 
@@ -8,33 +10,39 @@ Welcome to the **Microservices Integration Testing Workshop**! This guide provid
 
 ```mermaid
 flowchart TD
-    subgraph Clients["Client Layer"]
-        Website["QA Website (Next.js 16 :3000)"]
-        Burp["Burp Suite MITM Proxy (:8080)"]
+    subgraph Clients["🌐 1. Client & Automation Layer (Test Without Limits)"]
+        Website["💻 Website<br/><code>Next.js :3000</code>"]
+        BridgeWebsite["📱 Mobile WebView<br/><code>Mocked JSBridge</code>"]
+        Playwright["🐦 Playwright E2E<br/><code>Automation Runner</code>"]
+        Burp["🛡️ Burp MITM Proxy<br/><code>:8080 (Control Chaos)</code>"]
     end
 
-    subgraph API_Gateway["API Gateway / Orchestration"]
-        BFF["bff-service (Go :8080)"]
+    subgraph API_Gateway["⚡ 2. Gateway & Orchestration Layer"]
+        BFF["⚙️ bff-service<br/><code>Go :8080</code>"]
     end
 
-    subgraph Core_Services["Independent Domain Microservices"]
-        UserService["user-service (Go :8081)"]
-        BankService["bank-account-service (Go :8082)"]
-        EKYCService["ekyc-service (Go :8084)"]
-        TransferService["transfer-service (Go :8085)"]
-        SMSService["sms-service (Go :8086)"]
+    subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
+        UserService["👤 user-service<br/><code>Go :8081</code>"]
+        BankService["🏦 bank-account-service<br/><code>Go :8082</code>"]
+        EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
+        TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
+        SMSService["💬 sms-service<br/><code>Go :8086</code>"]
     end
 
-    subgraph Persistence["Persistence Layer"]
-        DB[(PostgreSQL :5432)]
+    subgraph Persistence["🗄️ 4. Persistence Layer"]
+        DB[("🐘 PostgreSQL DB<br/><code>:5432</code>")]
     end
 
-    subgraph External_Mocks["External Integration Mocks"]
-        WireMock["WireMock GUI (:8088 / :8080)"]
+    subgraph External_Mocks["🤖 5. External Mocks (Mock The World)"]
+        WireMock["🪝 WireMock Stubs<br/><code>:8088 / :8080</code>"]
     end
 
     Website -->|HTTP REST| BFF
-    Website -.->|Optional Intercept| Burp
+    BridgeWebsite -->|REST + JSBridge Native Bridge| BFF
+    Playwright -->|Automated E2E| Website
+    Playwright -->|Automated E2E| BridgeWebsite
+    Website -.->|MITM Traffic Intercept| Burp
+    BridgeWebsite -.->|MITM Traffic Intercept| Burp
     Burp -.->|Proxied Traffic| BFF
 
     BFF -->|GET/POST /users| UserService
@@ -45,9 +53,11 @@ flowchart TD
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
+    TransferService -->|Atomic Balance Updates| DB
 
-    UserService -->|OAuth & OTP / WireMock| WireMock
-    SMSService -->|SMS Send| WireMock
+    UserService -->|OAuth & OTP Stubs| WireMock
+    SMSService -->|SMS Delivery Stubs| WireMock
+    EKYCService -->|Paotang eKYC Stubs| WireMock
 ```
 
 ---
@@ -163,6 +173,19 @@ flowchart TD
 
 - **Scenario**: Client submits a transfer, but network drops before receiving HTTP response. Client retries the identical request with the same `Idempotency-Key` or transaction reference.
 - **Challenge**: Verify that duplicate requests with the same idempotency key do not execute a second debit, but return the original transaction result.
+
+---
+
+### 📍 Category 6: Mobile Web Hybrid & Native Bridge Testing
+
+#### **Case 11: Mobile WebView JSBridge Native Feature Mocking**
+
+- **Flow**: `Playwright / E2E Runner` ➔ `Mobile WebView Website (Mocked JSBridge)` ➔ `window.JSBridge` ➔ `BFF Service`
+- **Challenge**: Simulate a hybrid mobile app container in web browsers. Inject mock `window.JSBridge` native objects (e.g. `getNativeDeviceInfo()`, `requestBiometricAuth()`, `openNativeCamera()`) to verify mobile WebApp behavior without requiring physical iOS/Android builds.
+- **Key Assertions**:
+  - `window.JSBridge.getNativeDeviceInfo()` resolves with mock device metadata (`{ platform: "iOS", appVersion: "2.4.0" }`).
+  - Biometric trigger sends verified payload to `BFF Service`.
+  - Application handles fallback gracefully when `window.JSBridge` is undefined.
 
 ---
 

@@ -1,8 +1,10 @@
 # Ultra Smoooooth Testing
 
+> **Mock the world. Control the chaos. Test without limits.**
+
 A microservices ecosystem POC demonstrating **Go Workspaces (`go.work`)**, full-stack integration testing with **Docker Compose**, **WireMock**, and **Playwright**.
 
-👉 **Check out the full [Integration Testing Workshop Guide](WORKSHOP.md) for 10 practical thinking cases and hands-on scenarios!**
+👉 **Check out the full [Integration Testing Workshop Guide](WORKSHOP.md) for 11 practical thinking cases and hands-on scenarios!**
 
 ---
 
@@ -14,33 +16,39 @@ boundaries.
 
 ```mermaid
 flowchart TD
-    subgraph Clients["Client Layer"]
-        Website["QA Website (Next.js :3000)"]
-        Burp["Burp Suite MITM Proxy (:8080)"]
+    subgraph Clients["🌐 1. Client & Automation Layer (Test Without Limits)"]
+        Website["💻 Website<br/><code>Next.js :3000</code>"]
+        BridgeWebsite["📱 Mobile WebView<br/><code>Mocked JSBridge</code>"]
+        Playwright["🐦 Playwright E2E<br/><code>Automation Runner</code>"]
+        Burp["🛡️ Burp MITM Proxy<br/><code>:8080 (Control Chaos)</code>"]
     end
 
-    subgraph API_Gateway["API Gateway / Orchestration"]
-        BFF["bff-service (Go :8080)"]
+    subgraph API_Gateway["⚡ 2. Gateway & Orchestration Layer"]
+        BFF["⚙️ bff-service<br/><code>Go :8080</code>"]
     end
 
-    subgraph Core_Services["Independent Domain Microservices"]
-        UserService["user-service (Go :8081)"]
-        BankService["bank-account-service (Go :8082)"]
-        EKYCService["ekyc-service (Go :8084)"]
-        TransferService["transfer-service (Go :8085)"]
-        SMSService["sms-service (Go :8086)"]
+    subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
+        UserService["👤 user-service<br/><code>Go :8081</code>"]
+        BankService["🏦 bank-account-service<br/><code>Go :8082</code>"]
+        EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
+        TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
+        SMSService["💬 sms-service<br/><code>Go :8086</code>"]
     end
 
-    subgraph Persistence["Persistence Layer"]
-        DB[(PostgreSQL :5432)]
+    subgraph Persistence["🗄️ 4. Persistence Layer"]
+        DB[("🐘 PostgreSQL DB<br/><code>:5432</code>")]
     end
 
-    subgraph External_Mocks["External Integration Mocks"]
-        WireMock["WireMock GUI (:8088 / :8080)"]
+    subgraph External_Mocks["🤖 5. External Mocks (Mock The World)"]
+        WireMock["🪝 WireMock Stubs<br/><code>:8088 / :8080</code>"]
     end
 
     Website -->|HTTP REST| BFF
-    Website -.->|Optional Intercept| Burp
+    BridgeWebsite -->|REST + JSBridge Native Bridge| BFF
+    Playwright -->|Automated E2E| Website
+    Playwright -->|Automated E2E| BridgeWebsite
+    Website -.->|MITM Traffic Intercept| Burp
+    BridgeWebsite -.->|MITM Traffic Intercept| Burp
     Burp -.->|Proxied Traffic| BFF
 
     BFF -->|GET/POST /users| UserService
@@ -51,9 +59,11 @@ flowchart TD
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
+    TransferService -->|Atomic Balance Updates| DB
 
-    UserService -->|OAuth & OTP / WireMock| WireMock
-    SMSService -->|SMS Send| WireMock
+    UserService -->|OAuth & OTP Stubs| WireMock
+    SMSService -->|SMS Delivery Stubs| WireMock
+    EKYCService -->|Paotang eKYC Stubs| WireMock
 ```
 
 ### Microservices
@@ -79,7 +89,7 @@ Before setting up and running the microservices ecosystem, ensure the following 
 | **Burp Suite** | Community / Professional | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic between frontend, BFF, and microservices. |
 | **Playwright** | v1.40+ | **Test Runner**: Executing end-to-end (E2E) browser automation tests and API integration test suites (`specs/e2e`, `specs/integration`). |
 | **Go** | 1.27+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
-| **Node.js & npm** | Node v18+ / npm v9+ | Building the QA Website and running Playwright test suites. |
+| **Node.js & npm** | Node v18+ / npm v9+ | Building the Website and running Playwright test suites. |
 
 ---
 

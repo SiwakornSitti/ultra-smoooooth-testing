@@ -1,0 +1,35 @@
+{
+  "id" : "b3f6d941-5072-4712-ab84-78902cd16e02",
+  "name" : "SMS - Timeout / Delay",
+  "request" : {
+    "urlPath" : "/sms/send",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "SMS:TIMEOUT"
+      }
+    }
+  },
+  "response" : {
+    "status" : 504,
+    "fixedDelayMilliseconds" : 5000,
+    "jsonBody" : {
+      "error" : "gateway_timeout",
+      "message" : "SMS gateway response timed out"
+    },
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "b3f6d941-5072-4712-ab84-78902cd16e02",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms/007 - SMS - Timeout"
+    }
+  },
+  "insertionIndex" : 159
+}

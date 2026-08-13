@@ -75,8 +75,8 @@ export default function Home() {
     <main className="page-shell">
       <header className="page-header">
         <p className="eyebrow">Ultra Smoooooth Testing</p>
-        <h1>QA Automation Website</h1>
-        <p className="subtitle">Drive real service flows through the BFF while external integrations stay safely mocked.</p>
+        <h1>Website</h1>
+        <p className="subtitle">Mock the world. Control the chaos. Test without limits.</p>
         <LogoutButton />
         <label className="toggle-field">
           <input

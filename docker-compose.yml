@@ -63,10 +63,10 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
-      PAOTANG_SERVICE_URL: http://wiremock:8080
-      PAOTANG_CLIENT_ID: dummy-client-id
-      PAOTANG_CLIENT_SECRET: dummy-client-secret
-      OTP_SERVICE_URL: http://wiremock:8080
+      PAOTANG_SERVICE_URL: ${PAOTANG_SERVICE_URL:-http://wiremock:8080}
+      PAOTANG_CLIENT_ID: ${PAOTANG_CLIENT_ID:-dummy-client-id}
+      PAOTANG_CLIENT_SECRET: ${PAOTANG_CLIENT_SECRET:-dummy-client-secret}
+      OTP_SERVICE_URL: ${OTP_SERVICE_URL:-http://wiremock:8080}
     depends_on:
       db:
         condition: service_healthy
@@ -76,6 +76,25 @@ services:
       watch:
         - action: rebuild
           path: ./services/user-service
+
+  paotang-service:
+    build:
+      context: ./services/paotang-service
+      dockerfile: Dockerfile
+    container_name: poc-paotang-service
+    ports:
+      - "8083:8080"
+    environment:
+      PORT: "8080"
+      PAOTANG_UPSTREAM_URL: http://wiremock:8080
+      PAOTANG_API_KEY: dummy-paotang-api-key
+    depends_on:
+      wiremock:
+        condition: service_started
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/paotang-service
 
   bank-account-service:
     build:
@@ -117,6 +136,25 @@ services:
       watch:
         - action: rebuild
           path: ./services/sms-service
+
+  otp-service:
+    build:
+      context: ./services/otp-service
+      dockerfile: Dockerfile
+    container_name: poc-otp-service
+    ports:
+      - "8087:8080"
+    environment:
+      PORT: "8080"
+      OTP_UPSTREAM_URL: http://wiremock:8080
+      OTP_API_KEY: dummy-otp-api-key
+    depends_on:
+      wiremock:
+        condition: service_started
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/otp-service
 
   ekyc-service:
     build:
@@ -181,18 +219,20 @@ services:
       SMS_SERVICE_URL: ${SMS_SERVICE_URL:-http://wiremock:8080}
     depends_on:
       - user-service
+      - paotang-service
       - bank-account-service
       - ekyc-service
       - transfer-service
       - wiremock
       - sms-service
+      - otp-service
     develop:
       watch:
         - action: rebuild
           path: ./services/bff-service
 
   # =========================================================================
-  # QA WEBSITE (browser e2e for QA)
+  # WEBSITE (browser e2e)
   # =========================================================================
   website:
     build:
