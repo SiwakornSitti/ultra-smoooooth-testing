@@ -98,24 +98,6 @@ services:
         - action: rebuild
           path: ./services/bank-account-service
 
-  sms-service:
-    build:
-      context: ./services/sms-service
-      dockerfile: Dockerfile
-    container_name: poc-sms-service
-    ports:
-      - "8086:8080"
-    environment:
-      PORT: "8080"
-      SMS_UPSTREAM_URL: http://wiremock:8080
-      SMS_API_KEY: dummy-sms-api-key
-    depends_on:
-      wiremock:
-        condition: service_started
-    develop:
-      watch:
-        - action: rebuild
-          path: ./services/sms-service
 
   otp-service:
     build:
@@ -196,7 +178,6 @@ services:
       BANK_ACCOUNT_SERVICE_URL: ${BANK_ACCOUNT_SERVICE_URL:-http://wiremock:8080}
       EKYC_SERVICE_URL: ${EKYC_SERVICE_URL:-http://wiremock:8080}
       TRANSFER_SERVICE_URL: ${TRANSFER_SERVICE_URL:-http://wiremock:8080}
-      SMS_SERVICE_URL: ${SMS_SERVICE_URL:-http://wiremock:8080}
       OTP_SERVICE_URL: ${OTP_SERVICE_URL:-http://wiremock:8080}
     depends_on:
       - user-service
@@ -204,7 +185,6 @@ services:
       - ekyc-service
       - transfer-service
       - wiremock
-      - sms-service
       - otp-service
     develop:
       watch:

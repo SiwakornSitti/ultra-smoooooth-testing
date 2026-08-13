@@ -32,7 +32,6 @@ flowchart TD
         BankService["🏦 bank-account-service<br/><code>Go :8082</code>"]
         EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
         TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
-        SMSService["💬 sms-service<br/><code>Go :8086</code>"]
         OTPService["🔑 otp-service<br/><code>Go :8087</code>"]
     end
 
@@ -58,7 +57,6 @@ flowchart TD
     BFF -->|GET/POST /accounts| BankService
     BFF -->|POST/GET /ekycs| EKYCService
     BFF -->|POST/GET /transfers| TransferService
-    BFF -->|POST /sms/send| SMSService
     BFF -->|POST /auth/otp/verify| OTPService
 
     UserService -->|SQL Queries| DB
@@ -67,7 +65,6 @@ flowchart TD
 
     UserService -->|OAuth via WireMock| WireMock
     OTPService -->|Send SMS via WireMock| WireMock
-    SMSService -->|SMS Delivery Stubs| WireMock
     WireMock -.->|Proxy Unmatched| PaotangProvider
     WireMock -.->|Proxy Unmatched| SMSProvider
 ```
@@ -79,8 +76,7 @@ flowchart TD
 - **`bank-account-service`** (`:8082`): Bank account management microservice backed by PostgreSQL.
 - **`ekyc-service`** (`:8084`): Electronic Know Your Customer identity verification service (`POST /ekycs/verify`, `GET /ekycs/{id}`).
 - **`transfer-service`** (`:8085`): Money movement and transfer history service; atomically updates source and target account balances.
-- **`sms-service`** (`:8086`): Internal HTTP SMS adapter that forwards delivery requests to WireMock.
-- **`otp-service`** (`:8087`): OTP generation and verification microservice that delegates SMS message delivery to `sms-service`.
+- **`otp-service`** (`:8087`): OTP generation and verification microservice that delegates SMS message delivery to SMS Provider via WireMock.
 - **`website`** (`:3000`): Next.js 16 web client interface.
 - **`wiremock`** (`:8088`): WireMock GUI mocking third-party integrations (Paotang Pass, OTP, SMS).
 

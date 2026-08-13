@@ -20,7 +20,7 @@ type VerifyOTPRequest struct {
 }
 
 var (
-	smsServiceURL = getEnv("SMS_SERVICE_URL", "http://wiremock:8080")
+	smsProviderURL = getEnv("SMS_PROVIDER_URL", "http://wiremock:8080")
 )
 
 func getEnv(key, fallback string) string {
@@ -64,7 +64,7 @@ func handleSendOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	smsReq, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/sms/send", smsServiceURL), bytes.NewReader(smsBody))
+	smsReq, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/sms/send", smsProviderURL), bytes.NewReader(smsBody))
 	if err != nil {
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
 		return
@@ -74,8 +74,8 @@ func handleSendOTP(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := http.DefaultClient.Do(smsReq)
 	if err != nil {
-		slog.Error("Failed to call SMS service for OTP delivery", "error", err)
-		writeJSONError(w, "SMS service unavailable", http.StatusServiceUnavailable)
+		slog.Error("Failed to call SMS Provider for OTP delivery", "error", err)
+		writeJSONError(w, "SMS provider unavailable", http.StatusServiceUnavailable)
 		return
 	}
 	defer resp.Body.Close()
