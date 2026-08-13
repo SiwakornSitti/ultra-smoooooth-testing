@@ -76,25 +76,6 @@ services:
         - action: rebuild
           path: ./services/user-service
 
-  paotang-service:
-    build:
-      context: ./services/paotang-service
-      dockerfile: Dockerfile
-    container_name: poc-paotang-service
-    ports:
-      - "8083:8080"
-    environment:
-      PORT: "8080"
-      PAOTANG_UPSTREAM_URL: http://wiremock:8080
-      PAOTANG_API_KEY: dummy-paotang-api-key
-    depends_on:
-      wiremock:
-        condition: service_started
-    develop:
-      watch:
-        - action: rebuild
-          path: ./services/paotang-service
-
   bank-account-service:
     build:
       context: ./services/bank-account-service
@@ -219,7 +200,6 @@ services:
       OTP_SERVICE_URL: ${OTP_SERVICE_URL:-http://wiremock:8080}
     depends_on:
       - user-service
-      - paotang-service
       - bank-account-service
       - ekyc-service
       - transfer-service

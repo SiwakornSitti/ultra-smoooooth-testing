@@ -105,7 +105,6 @@ flowchart TD
     subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
         UserService["👤 user-service<br/><code>:8081</code>"]
         BankService["🏦 bank-account-service<br/><code>:8082</code>"]
-        PaotangService["💳 paotang-service<br/><code>:8083</code>"]
         EKYCService["🪪 ekyc-service<br/><code>:8084</code>"]
         TransferService["💸 transfer-service<br/><code>:8085</code>"]
         SMSService["💬 sms-service<br/><code>:8086</code>"]
@@ -118,6 +117,8 @@ flowchart TD
 
     subgraph External_Mocks["🤖 5. External Mocks (Mock The World)"]
         WireMock["🪝 WireMock Stubs<br/><code>:8088</code>"]
+        PaotangProvider["💳 Paotang Provider"]
+        SMSProvider["📡 SMS Provider"]
     end
 
     Website -->|REST| BFF
@@ -142,7 +143,8 @@ flowchart TD
     UserService -->|OAuth via WireMock| WireMock
     OTPService -->|Send SMS via WireMock| WireMock
     SMSService -->|SMS Send| WireMock
-    WireMock -.->|Proxy Unmatched| PaotangService
+    WireMock -.->|Proxy Unmatched| PaotangProvider
+    WireMock -.->|Proxy Unmatched| SMSProvider
 ```
 
 </div>

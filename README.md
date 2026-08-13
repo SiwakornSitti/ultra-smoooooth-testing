@@ -30,7 +30,6 @@ flowchart TD
     subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
         UserService["👤 user-service<br/><code>Go :8081</code>"]
         BankService["🏦 bank-account-service<br/><code>Go :8082</code>"]
-        PaotangService["💳 paotang-service<br/><code>Go :8083</code>"]
         EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
         TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
         SMSService["💬 sms-service<br/><code>Go :8086</code>"]
@@ -43,6 +42,8 @@ flowchart TD
 
     subgraph External_Mocks["🤖 5. External Mocks (Mock The World)"]
         WireMock["🪝 WireMock Stubs<br/><code>:8088 / :8080</code>"]
+        PaotangProvider["💳 Paotang Provider"]
+        SMSProvider["📡 SMS Provider"]
     end
 
     Website -->|HTTP REST| BFF
@@ -67,7 +68,8 @@ flowchart TD
     UserService -->|OAuth via WireMock| WireMock
     OTPService -->|Send SMS via WireMock| WireMock
     SMSService -->|SMS Delivery Stubs| WireMock
-    WireMock -.->|Proxy Unmatched| PaotangService
+    WireMock -.->|Proxy Unmatched| PaotangProvider
+    WireMock -.->|Proxy Unmatched| SMSProvider
 ```
 
 ### Microservices
@@ -75,7 +77,6 @@ flowchart TD
 - **`bff-service`** (`:8080`): Backend-for-Frontend service exposing unified API endpoints.
 - **`user-service`** (`:8081`): User profile management microservice backed by PostgreSQL.
 - **`bank-account-service`** (`:8082`): Bank account management microservice backed by PostgreSQL.
-- **`paotang-service`** (`:8083`): Paotang OAuth identity provider microservice.
 - **`ekyc-service`** (`:8084`): Electronic Know Your Customer identity verification service (`POST /ekycs/verify`, `GET /ekycs/{id}`).
 - **`transfer-service`** (`:8085`): Money movement and transfer history service; atomically updates source and target account balances.
 - **`sms-service`** (`:8086`): Internal HTTP SMS adapter that forwards delivery requests to WireMock.
