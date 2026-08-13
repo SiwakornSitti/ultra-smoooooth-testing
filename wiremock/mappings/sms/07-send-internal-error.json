@@ -1,20 +1,20 @@
 {
-  "id" : "8e9c9d9a-18af-4fe0-9b01-166c2a15753f",
-  "name" : "SMS - Success",
+  "id" : "c4a7e052-6183-4823-bc95-89013de27f03",
+  "name" : "SMS - Internal Server Error",
   "request" : {
     "urlPath" : "/sms/send",
     "method" : "POST",
     "headers" : {
       "Mock-Scenario" : {
-        "contains" : "SMS:SUCCESS"
+        "contains" : "SMS:INTERNAL_ERROR"
       }
     }
   },
   "response" : {
-    "status" : 200,
+    "status" : 500,
     "jsonBody" : {
-      "status" : "sent",
-      "id" : "mock-sms-id"
+      "error" : "internal_server_error",
+      "message" : "SMS gateway internal failure"
     },
     "headers" : {
       "Content-Type" : "application/json",
@@ -22,13 +22,13 @@
     },
     "transformers" : [ "response-template" ]
   },
-  "uuid" : "8e9c9d9a-18af-4fe0-9b01-166c2a15753f",
+  "uuid" : "c4a7e052-6183-4823-bc95-89013de27f03",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms/004 - SMS - Success"
+      "folder" : "/sms/007 - SMS - Internal Error"
     }
   },
-  "insertionIndex" : 155
+  "insertionIndex" : 160
 }

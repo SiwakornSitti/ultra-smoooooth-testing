@@ -20,7 +20,7 @@
   "priority" : 10,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms/009 - SMS - Default Success"
+      "folder" : "/sms/008 - SMS - Default Success"
     }
   },
   "insertionIndex" : 161

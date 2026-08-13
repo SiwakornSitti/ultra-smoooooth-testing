@@ -28,7 +28,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms/006 - SMS - Rate Limit Exceeded"
+      "folder" : "/sms/005 - SMS - Rate Limit Exceeded"
     }
   },
   "insertionIndex" : 158

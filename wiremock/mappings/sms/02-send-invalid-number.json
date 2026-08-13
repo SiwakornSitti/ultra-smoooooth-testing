@@ -1,20 +1,19 @@
 {
-  "id" : "c4a7e052-6183-4823-bc95-89013de27f03",
-  "name" : "SMS - Internal Server Error",
+  "id" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
+  "name" : "SMS - Invalid Number",
   "request" : {
     "urlPath" : "/sms/send",
     "method" : "POST",
     "headers" : {
       "Mock-Scenario" : {
-        "contains" : "SMS:INTERNAL_ERROR"
+        "contains" : "SMS:INVALID_NUMBER"
       }
     }
   },
   "response" : {
-    "status" : 500,
+    "status" : 400,
     "jsonBody" : {
-      "error" : "internal_server_error",
-      "message" : "SMS gateway internal failure"
+      "error" : "invalid_number"
     },
     "headers" : {
       "Content-Type" : "application/json",
@@ -22,13 +21,13 @@
     },
     "transformers" : [ "response-template" ]
   },
-  "uuid" : "c4a7e052-6183-4823-bc95-89013de27f03",
+  "uuid" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms/008 - SMS - Internal Error"
+      "folder" : "/sms/002 - SMS - Invalid Number"
     }
   },
-  "insertionIndex" : 160
+  "insertionIndex" : 156
 }

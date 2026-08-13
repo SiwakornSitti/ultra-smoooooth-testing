@@ -1,19 +1,20 @@
 {
-  "id" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
-  "name" : "SMS - Invalid Number",
+  "id" : "8e9c9d9a-18af-4fe0-9b01-166c2a15753f",
+  "name" : "SMS - Success",
   "request" : {
     "urlPath" : "/sms/send",
     "method" : "POST",
     "headers" : {
       "Mock-Scenario" : {
-        "contains" : "SMS:INVALID_NUMBER"
+        "contains" : "SMS:SUCCESS"
       }
     }
   },
   "response" : {
-    "status" : 400,
+    "status" : 200,
     "jsonBody" : {
-      "error" : "invalid_number"
+      "status" : "sent",
+      "id" : "mock-sms-id"
     },
     "headers" : {
       "Content-Type" : "application/json",
@@ -21,13 +22,13 @@
     },
     "transformers" : [ "response-template" ]
   },
-  "uuid" : "736c1a36-ab2a-41e8-ad4c-7c9f60da9685",
+  "uuid" : "8e9c9d9a-18af-4fe0-9b01-166c2a15753f",
   "persistent" : true,
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms/003 - SMS - Invalid Number"
+      "folder" : "/sms/003 - SMS - Success"
     }
   },
-  "insertionIndex" : 156
+  "insertionIndex" : 155
 }
