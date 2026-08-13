@@ -154,6 +154,8 @@ vite.config.ts.timestamp-*
 # Test Reports & Outputs
 test-results/
 playwright-report/
+slides/*-export.*
+*.pptx
 
 # Go Binaries
 bin/
