@@ -27,6 +27,7 @@ flowchart LR
     PaotangSvc[Paotang Service\n:8083]
 
     DB[(PostgreSQL\n:5432)]
+    WireMock[WireMock Service\n:8088]
     PaotangProvider[Paotang Provider]
     SMSProvider[SMS Provider]
 
@@ -50,8 +51,11 @@ flowchart LR
     User -->|OAuth| PaotangSvc
     User -->|Verify OTP| OTP
     OTP -->|Send OTP SMS| SMS
-    PaotangSvc -->|OAuth Token| PaotangProvider
-    SMS -->|Send SMS| SMSProvider
+
+    PaotangSvc -->|OAuth Token| WireMock
+    SMS -->|Send SMS| WireMock
+    WireMock -.->|proxy unmatched| PaotangProvider
+    WireMock -.->|proxy unmatched| SMSProvider
 ```
 
 ## Runtime test topology (Local Compose & WireMock Setup)
