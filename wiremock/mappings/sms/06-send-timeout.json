@@ -28,7 +28,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms/007 - SMS - Timeout"
+      "folder" : "/sms/006 - SMS - Timeout"
     }
   },
   "insertionIndex" : 159

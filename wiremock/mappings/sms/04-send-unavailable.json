@@ -25,7 +25,7 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/sms/005 - SMS - Service Unavailable"
+      "folder" : "/sms/004 - SMS - Service Unavailable"
     }
   },
   "insertionIndex" : 157
