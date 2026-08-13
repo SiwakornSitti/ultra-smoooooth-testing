@@ -105,9 +105,11 @@ flowchart TD
     subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
         UserService["👤 user-service<br/><code>:8081</code>"]
         BankService["🏦 bank-account-service<br/><code>:8082</code>"]
+        PaotangService["💳 paotang-service<br/><code>:8083</code>"]
         EKYCService["🪪 ekyc-service<br/><code>:8084</code>"]
         TransferService["💸 transfer-service<br/><code>:8085</code>"]
         SMSService["💬 sms-service<br/><code>:8086</code>"]
+        OTPService["🔑 otp-service<br/><code>:8087</code>"]
     end
 
     subgraph Persistence["🗄️ 4. Persistence Layer"]
@@ -131,14 +133,16 @@ flowchart TD
     BFF -->|/ekycs| EKYCService
     BFF -->|/transfers| TransferService
     BFF -->|/sms/send| SMSService
+    BFF -->|/auth/otp/verify| OTPService
 
     UserService -->|SQL| DB
     BankService -->|SQL| DB
     TransferService -->|SQL| DB
 
-    UserService -->|OAuth & OTP| WireMock
+    UserService -->|OAuth via WireMock| WireMock
+    OTPService -->|Send SMS via WireMock| WireMock
     SMSService -->|SMS Send| WireMock
-    EKYCService -->|eKYC Stubs| WireMock
+    WireMock -.->|Proxy Unmatched| PaotangService
 ```
 
 </div>
