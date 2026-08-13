@@ -200,6 +200,10 @@ flowchart TD
       <div class="svc-name"><strong class="text-emerald-400">transfer-service</strong> <span class="port-badge">:8085</span></div>
       <div class="svc-desc">Inter-account fund transfer execution and logging.</div>
     </li>
+    <li>
+      <div class="svc-name"><strong class="text-emerald-400">otp-service</strong> <span class="port-badge">:8087</span></div>
+      <div class="svc-desc">One-Time Password generation and verification; delegates SMS delivery via WireMock.</div>
+    </li>
   </ul>
 </div>
 
@@ -303,6 +307,40 @@ flowchart LR
 
 <div class="text-xs opacity-75 pt-2">
   ✨ Supports JSONPath payload matching, regex headers, Handlebars response templating (<code>{{request.headers.X-Request-ID}}</code>), and artificial delay (<code>fixedDelayMilliseconds</code>).
+</div>
+
+---
+
+# 📑 WireMock External Provider Mappings
+
+<div class="grid grid-cols-2 gap-4 text-xs pt-1">
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2">💬 SMS Provider (`wiremock/mappings/sms/`)</h3>
+  <ul class="space-y-1 text-slate-300">
+    <li>• <code>01-proxy-real.json</code> (Live Proxy, Priority 100)</li>
+    <li>• <code>02-send-invalid-number.json</code> (400 Bad Request)</li>
+    <li>• <code>03-send-success.json</code> (200 Scenario Match)</li>
+    <li>• <code>04-send-unavailable.json</code> (503 Unavailable)</li>
+    <li>• <code>05-send-rate-limit.json</code> (429 Rate Limit)</li>
+    <li>• <code>06-send-timeout.json</code> (504 Delayed Timeout)</li>
+    <li>• <code>07-send-internal-error.json</code> (500 Error)</li>
+    <li>• <code>08-send-default-success.json</code> (Priority 10 Catch-all)</li>
+  </ul>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2">💳 Paotang OAuth (`wiremock/mappings/paotang/`)</h3>
+  <ul class="space-y-1 text-slate-300">
+    <li>• <code>01-oauth-invalid-authcode.json</code> (400 Invalid)</li>
+    <li>• <code>02-oauth-expired-token.json</code> (401 Expired)</li>
+    <li>• <code>03-oauth-replay-rejected.json</code> (409 Replay)</li>
+    <li>• <code>04-profile-success.json</code> (200 Profile)</li>
+    <li>• <code>05-token-success.json</code> (200 Mock Scenario)</li>
+    <li>• <code>06-token-always-success.json</code> (200 Default)</li>
+  </ul>
+</div>
+
 </div>
 
 ---
