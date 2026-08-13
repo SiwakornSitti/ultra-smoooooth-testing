@@ -85,9 +85,9 @@ flowchart LR
     Burp -->|proxied REST| BFF
     Browser -.->|optional interception| Burp
 
-    BFF --> User
-    BFF -->|account/eKYC/transfer/sms/otp| MockCore
+    BFF -->|user/account/eKYC/transfer/sms/otp| MockCore
 
+    MockCore -.->|unmatched request proxy| User
     MockCore -.->|unmatched request proxy| Account
     MockCore -.->|unmatched request proxy| EKYC
     MockCore -.->|unmatched request proxy| Transfer
@@ -121,7 +121,7 @@ The BFF is explicitly allowed to connect to the core services. This is the
 intended direction for synchronous application requests: `website → BFF → core
 service`.
 
-For bank-account, eKYC, transfer, SMS, OTP, and Paotang requests, the configured first hop is
+For user, bank-account, eKYC, transfer, SMS, OTP, and Paotang requests, the configured first hop is
 WireMock: `website → BFF → WireMock Core Mocks → core service`. WireMock
 returns a matching scenario response or proxies an unmatched request to the
 real core service.
