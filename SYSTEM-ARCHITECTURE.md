@@ -41,13 +41,13 @@ flowchart LR
     BFF -->|Verification| EKYC
     BFF -->|Transfers| Transfer
     BFF -->|Notifications| SMS
+    BFF -->|OTP Verification| OTP
 
     User --> DB
     Account --> DB
     EKYC --> DB
     Transfer --> DB
 
-    User -->|Verify OTP| OTP
     User -->|OAuth via WireMock| WireMock
     OTP -->|Send OTP SMS via WireMock| WireMock
     SMS -->|Send SMS via WireMock| WireMock
@@ -100,7 +100,6 @@ flowchart LR
     EKYC --> DB
     Transfer --> DB
     User -->|Paotang request| MockExternal
-    User -->|OTP verify request| MockCore
     OTP -->|Send OTP SMS| MockCore
     SMS -->|SMS request| MockExternal
     MockExternal -.->|proxy unmatched| PaotangSvc

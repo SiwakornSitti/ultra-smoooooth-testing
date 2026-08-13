@@ -53,6 +53,7 @@ var (
 	ekycServiceURL        = getEnv("EKYC_SERVICE_URL", "http://ekyc-service.app.svc.cluster.local")
 	transferServiceURL    = getEnv("TRANSFER_SERVICE_URL", "http://transfer-service.app.svc.cluster.local")
 	smsServiceURL         = getEnv("SMS_SERVICE_URL", "http://sms-service.app.svc.cluster.local")
+	otpServiceURL         = getEnv("OTP_SERVICE_URL", "http://otp-service.app.svc.cluster.local")
 )
 
 func forwardHeaders(in *http.Request, out *http.Request) {
@@ -525,9 +526,9 @@ func proxyPaotangCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
-	slog.Info("Proxying OTP verify request to user-service")
+	slog.Info("Proxying OTP verify request to otp-service")
 
-	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/auth/otp/verify", userServiceURL), r.Body)
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/otp/verify", otpServiceURL), r.Body)
 	if err != nil {
 		slog.Error("Failed to create request", "error", err)
 		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
@@ -538,8 +539,8 @@ func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		slog.Error("Failed to call user-service", "error", err)
-		writeJSONError(w, "User service unavailable", http.StatusServiceUnavailable)
+		slog.Error("Failed to call otp-service", "error", err)
+		writeJSONError(w, "OTP service unavailable", http.StatusServiceUnavailable)
 		return
 	}
 	defer resp.Body.Close()

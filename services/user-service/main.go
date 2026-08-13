@@ -54,7 +54,6 @@ var (
 	paotangServiceURL   = getEnv("PAOTANG_SERVICE_URL", "http://localhost:8088")
 	paotangClientID     = getEnv("PAOTANG_CLIENT_ID", "")
 	paotangClientSecret = getEnv("PAOTANG_CLIENT_SECRET", "")
-	otpServiceURL       = getEnv("OTP_SERVICE_URL", "http://localhost:8088")
 )
 
 func getEnv(key, fallback string) string {
@@ -136,7 +135,6 @@ func main() {
 	r.HandleFunc("/users/{id}", handleUpdateUser).Methods("PATCH")
 	r.HandleFunc("/users/{id}", handleDeleteUser).Methods("DELETE")
 	r.HandleFunc("/auth/paotang/callback", handlePaotangCallback).Methods("POST")
-	r.HandleFunc("/auth/otp/verify", handleOTPVerify).Methods("POST")
 
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -337,65 +335,4 @@ func handlePaotangCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(tokenResp)
-}
-
-// handleOTPVerify verifies an OTP code sent via SMS, second factor after
-// the Paotang authcode exchange.
-func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
-	var req OTPVerifyRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		slog.Error("Invalid request body", "error", err)
-		writeJSONError(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	slog.Info("Verifying OTP code")
-
-	body, err := json.Marshal(req)
-	if err != nil {
-		slog.Error("Failed to build OTP verify request", "error", err)
-		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	otpReq, err := http.NewRequestWithContext(r.Context(), "POST", otpServiceURL+"/otp/verify", strings.NewReader(string(body)))
-	if err != nil {
-		slog.Error("Failed to build OTP verify request", "error", err)
-		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	otpReq.Header.Set("Content-Type", "application/json")
-	forwardHeaders(r, otpReq)
-
-	resp, err := http.DefaultClient.Do(otpReq)
-	if err != nil {
-		slog.Error("Failed to call OTP service", "error", err)
-		writeJSONError(w, "OTP service unavailable", http.StatusBadGateway)
-		return
-	}
-	defer resp.Body.Close()
-
-	w.Header().Set("Content-Type", "application/json")
-
-	if resp.StatusCode == http.StatusBadRequest {
-		slog.Warn("OTP service rejected code")
-		w.WriteHeader(http.StatusBadRequest)
-		io.Copy(w, resp.Body)
-		return
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		slog.Error("Unexpected OTP service response", "status", resp.StatusCode)
-		writeJSONError(w, "OTP service error", http.StatusBadGateway)
-		return
-	}
-
-	var verifyResp OTPVerifyResponse
-	if err := json.NewDecoder(resp.Body).Decode(&verifyResp); err != nil {
-		slog.Error("Failed to decode OTP response", "error", err)
-		writeJSONError(w, "OTP service error", http.StatusBadGateway)
-		return
-	}
-
-	json.NewEncoder(w).Encode(verifyResp)
 }
