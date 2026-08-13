@@ -28,7 +28,6 @@ flowchart LR
 
     DB[(PostgreSQL\n:5432)]
     WireMock[WireMock Service\n:8088]
-    PaotangProvider[Paotang Provider]
     SMSProvider[SMS Provider]
 
     Browser -->|REST| BFF
@@ -52,9 +51,7 @@ flowchart LR
     User -->|Verify OTP| OTP
     OTP -->|Send OTP SMS| SMS
 
-    PaotangSvc -->|OAuth Token| WireMock
     SMS -->|Send SMS| WireMock
-    WireMock -.->|proxy unmatched| PaotangProvider
     WireMock -.->|proxy unmatched| SMSProvider
 ```
 
@@ -80,7 +77,6 @@ flowchart LR
     DB[(PostgreSQL\n:5432)]
     MockCore[WireMock Core Mocks\n:8088]
     MockExternal[WireMock External Mocks\n:8088]
-    PaotangProvider[Paotang Provider]
     SMSProvider[SMS Provider]
 
     Browser -->|REST| BFF
@@ -106,9 +102,7 @@ flowchart LR
     User -->|Paotang request| MockCore
     User -->|OTP verify request| MockCore
     OTP -->|Send OTP SMS| MockCore
-    PaotangSvc -->|OAuth request| MockExternal
     SMS -->|SMS request| MockExternal
-    MockExternal -.->|proxy unmatched| PaotangProvider
     MockExternal -.->|proxy unmatched| SMSProvider
 ```
 
