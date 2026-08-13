@@ -107,7 +107,6 @@ flowchart TD
         BankService["🏦 bank-account-service<br/><code>:8082</code>"]
         EKYCService["🪪 ekyc-service<br/><code>:8084</code>"]
         TransferService["💸 transfer-service<br/><code>:8085</code>"]
-        SMSService["💬 sms-service<br/><code>:8086</code>"]
         OTPService["🔑 otp-service<br/><code>:8087</code>"]
     end
 
@@ -133,7 +132,6 @@ flowchart TD
     BFF -->|/accounts| BankService
     BFF -->|/ekycs| EKYCService
     BFF -->|/transfers| TransferService
-    BFF -->|/sms/send| SMSService
     BFF -->|/auth/otp/verify| OTPService
 
     UserService -->|SQL| DB
@@ -142,7 +140,6 @@ flowchart TD
 
     UserService -->|OAuth via WireMock| WireMock
     OTPService -->|Send SMS via WireMock| WireMock
-    SMSService -->|SMS Send| WireMock
     WireMock -.->|Proxy Unmatched| PaotangProvider
     WireMock -.->|Proxy Unmatched| SMSProvider
 ```

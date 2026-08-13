@@ -22,7 +22,6 @@ flowchart LR
     Account[Bank Account Service\n:8082]
     EKYC[eKYC Service\n:8084]
     Transfer[Transfer Service\n:8085]
-    SMS[SMS Service\n:8086]
     OTP[OTP Service\n:8087]
 
     DB[(PostgreSQL\n:5432)]
@@ -40,7 +39,6 @@ flowchart LR
     BFF -->|Accounts| Account
     BFF -->|Verification| EKYC
     BFF -->|Transfers| Transfer
-    BFF -->|Notifications| SMS
     BFF -->|OTP Verification| OTP
 
     User --> DB
@@ -50,7 +48,6 @@ flowchart LR
 
     User -->|OAuth via WireMock| WireMock
     OTP -->|Send OTP SMS via WireMock| WireMock
-    SMS -->|Send SMS via WireMock| WireMock
 
     WireMock -.->|proxy unmatched| PaotangProvider
     WireMock -.->|proxy unmatched| SMSProvider
@@ -71,7 +68,6 @@ flowchart LR
     Account[Bank Account Service\n:8082]
     EKYC[eKYC Service\n:8084]
     Transfer[Transfer Service\n:8085]
-    SMS[SMS Service\n:8086]
     OTP[OTP Service\n:8087]
 
     DB[(PostgreSQL\n:5432)]
@@ -86,13 +82,12 @@ flowchart LR
     Burp -->|proxied REST| BFF
     Browser -.->|optional interception| Burp
 
-    BFF -->|user/account/eKYC/transfer/sms/otp| MockCore
+    BFF -->|user/account/eKYC/transfer/otp| MockCore
 
     MockCore -.->|unmatched request proxy| User
     MockCore -.->|unmatched request proxy| Account
     MockCore -.->|unmatched request proxy| EKYC
     MockCore -.->|unmatched request proxy| Transfer
-    MockCore -.->|unmatched request proxy| SMS
     MockCore -.->|unmatched request proxy| OTP
 
     User --> DB
@@ -100,8 +95,7 @@ flowchart LR
     EKYC --> DB
     Transfer --> DB
     User -->|Paotang request| MockExternal
-    OTP -->|Send OTP SMS| MockCore
-    SMS -->|SMS request| MockExternal
+    OTP -->|Send OTP SMS| MockExternal
     MockExternal -.->|proxy unmatched| PaotangProvider
     MockExternal -.->|proxy unmatched| SMSProvider
 ```
@@ -119,21 +113,22 @@ The BFF is explicitly allowed to connect to the core services. This is the
 intended direction for synchronous application requests: `website → BFF → core
 service`.
 
-For user, bank-account, eKYC, transfer, SMS, and OTP requests, the configured first hop is
+For user, bank-account, eKYC, transfer, and OTP requests, the configured first hop is
 WireMock: `website → BFF → WireMock Core Mocks → core service`. WireMock
 returns a matching scenario response or proxies an unmatched request to the
 real core service.
 
 The core services are `user-service`, `bank-account-service`, `ekyc-service`,
-`transfer-service`, `sms-service`, and `otp-service`.
+`transfer-service`, and `otp-service`.
 
 ## Tech lead awareness
 
 - The BFF is the only synchronous application entry point for the website.
   Clients must not call any core service directly.
 - Core services own their domain behavior. The BFF orchestrates the account
-  creation and SMS delivery calls synchronously.
+  creation calls synchronously.
 - **Core services are not able to request providers directly.** All requests to external providers (`Paotang Provider` and `SMS Provider`) must route through WireMock (`core-service → WireMock → provider`).
+- `otp-service` connects to SMS Provider via WireMock (`OTP Service → WireMock → SMS Provider`).
 - `user-service` connects to Paotang Provider via WireMock (`PAOTANG_SERVICE_URL: http://wiremock:8080`).
 - WireMock represents external systems and test doubles only: Paotang, OTP,
   SMS, and optional BFF scenario/proxy behavior.
@@ -148,12 +143,11 @@ The core services are `user-service`, `bank-account-service`, `ekyc-service`,
 | --- | --- | --- |
 | `website` | Browser-facing QA application and scenario selector | Calls the configured BFF URL; defaults to `http://localhost:8080` |
 | `bff-service` | Backend-for-Frontend and API orchestration layer | Routes requests, loads accounts for transfer-history filters, and filters transfer results |
-| `user-service` | User profile, Paotang authentication, and OTP workflows | PostgreSQL; Paotang through WireMock |
+| `user-service` | User profile and Paotang authentication workflows | PostgreSQL; Paotang through WireMock |
 | `bank-account-service` | Bank account operations | PostgreSQL |
 | `ekyc-service` | eKYC verification requests and retrieval | PostgreSQL |
 | `transfer-service` | Transfer validation, balance movement, and transfer records | PostgreSQL; updates both account balances and the transfer record in one transaction; history reads only query `transfers` |
-| `sms-service` | Internal HTTP adapter that sends SMS | SMS provider through WireMock |
-| `otp-service` | Core service for generating and verifying OTP codes | Uses sms-service / SMS Provider for SMS delivery |
+| `otp-service` | Core service for generating and verifying OTP codes | Calls SMS Provider through WireMock for SMS delivery |
 | PostgreSQL | Shared local database used by the persistence-backed services | Temporary container-local storage |
 | WireMock | Deterministic external-provider and core-service mocks | Paotang, OTP, SMS, transfer-service, stateless labs, and stateful labs |
 

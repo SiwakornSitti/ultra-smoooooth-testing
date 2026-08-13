@@ -52,7 +52,6 @@ var (
 	bankAccountServiceURL = getEnv("BANK_ACCOUNT_SERVICE_URL", "http://bank-account-service.app.svc.cluster.local")
 	ekycServiceURL        = getEnv("EKYC_SERVICE_URL", "http://ekyc-service.app.svc.cluster.local")
 	transferServiceURL    = getEnv("TRANSFER_SERVICE_URL", "http://transfer-service.app.svc.cluster.local")
-	smsServiceURL         = getEnv("SMS_SERVICE_URL", "http://sms-service.app.svc.cluster.local")
 	otpServiceURL         = getEnv("OTP_SERVICE_URL", "http://otp-service.app.svc.cluster.local")
 )
 
@@ -475,7 +474,7 @@ func sendAccountSMS(r *http.Request, account BankAccount) error {
 	if err != nil {
 		return fmt.Errorf("failed to build SMS request")
 	}
-	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/sms/send", smsServiceURL), bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/otp/send", otpServiceURL), bytes.NewReader(body))
 	if err != nil {
 		return fmt.Errorf("failed to create SMS request")
 	}

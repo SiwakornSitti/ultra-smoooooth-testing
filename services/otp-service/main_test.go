@@ -15,13 +15,13 @@ func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) {
 }
 
 func TestHandleSendOTP(t *testing.T) {
-	originalURL := smsServiceURL
+	originalURL := smsProviderURL
 	originalTransport := http.DefaultClient.Transport
 	defer func() {
-		smsServiceURL = originalURL
+		smsProviderURL = originalURL
 		http.DefaultClient.Transport = originalTransport
 	}()
-	smsServiceURL = "http://sms-service"
+	smsProviderURL = "http://wiremock"
 	http.DefaultClient.Transport = roundTripperFunc(func(r *http.Request) (*http.Response, error) {
 		if r.URL.Path != "/sms/send" {
 			t.Errorf("path = %q; want /sms/send", r.URL.Path)
