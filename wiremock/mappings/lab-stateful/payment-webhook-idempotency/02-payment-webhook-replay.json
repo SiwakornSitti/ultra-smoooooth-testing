@@ -30,8 +30,8 @@
   "requiredScenarioState" : "WEBHOOK_PROCESSED",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful/payment-webhook-idempotency"
+      "folder" : "/lab-stateful/payment-webhook-idempotency/02 - Payment Webhook - Replay"
     }
   },
-  "insertionIndex" : 8
+  "insertionIndex" : 147
 }

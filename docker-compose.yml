@@ -12,8 +12,6 @@ services:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: temporary-password-123
       POSTGRES_DB: app
-    volumes:
-      - postgres-data-v18:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U app -d app"]
       interval: 5s
@@ -46,27 +44,8 @@ services:
       - ./wiremock/mappings:/home/wiremock/mappings
       - ./wiremock/__files:/home/wiremock/__files
       - ./wiremock/extensions:/var/wiremock/extensions:ro
-    develop:
-      watch:
-        - action: sync
-          path: ./wiremock/mappings
-          target: /home/wiremock/mappings
 
   # =========================================================================
-  # NOTIFICATION COMMAND QUEUE
-  # =========================================================================
-  rabbitmq:
-    image: rabbitmq:3.13-management-alpine
-    container_name: poc-rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   # =========================================================================
   # REAL MICROSERVICES
   # =========================================================================
@@ -84,10 +63,9 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
-      PAOTANG_SERVICE_URL: http://wiremock:8080
-      PAOTANG_CLIENT_ID: dummy-client-id
-      PAOTANG_CLIENT_SECRET: dummy-client-secret
-      OTP_SERVICE_URL: http://wiremock:8080
+      PAOTANG_SERVICE_URL: ${PAOTANG_SERVICE_URL:-http://wiremock:8080}
+      PAOTANG_CLIENT_ID: ${PAOTANG_CLIENT_ID:-dummy-client-id}
+      PAOTANG_CLIENT_SECRET: ${PAOTANG_CLIENT_SECRET:-dummy-client-secret}
     depends_on:
       db:
         condition: service_healthy
@@ -97,6 +75,25 @@ services:
       watch:
         - action: rebuild
           path: ./services/user-service
+
+  paotang-service:
+    build:
+      context: ./services/paotang-service
+      dockerfile: Dockerfile
+    container_name: poc-paotang-service
+    ports:
+      - "8083:8080"
+    environment:
+      PORT: "8080"
+      PAOTANG_UPSTREAM_URL: http://wiremock:8080
+      PAOTANG_API_KEY: dummy-paotang-api-key
+    depends_on:
+      wiremock:
+        condition: service_started
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/paotang-service
 
   bank-account-service:
     build:
@@ -112,42 +109,51 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
-      NOTIFICATION_QUEUE: notification.commands
     depends_on:
       db:
-        condition: service_healthy
-      wiremock:
-        condition: service_started
-      rabbitmq:
         condition: service_healthy
     develop:
       watch:
         - action: rebuild
           path: ./services/bank-account-service
 
-  notification-service:
+  sms-service:
     build:
-      context: ./services/notification-service
+      context: ./services/sms-service
       dockerfile: Dockerfile
-    container_name: poc-notification-service
+    container_name: poc-sms-service
     ports:
       - "8086:8080"
     environment:
       PORT: "8080"
-      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
-      NOTIFICATION_QUEUE: notification.commands
-      SMS_SERVICE_URL: http://wiremock:8080
+      SMS_UPSTREAM_URL: http://wiremock:8080
       SMS_API_KEY: dummy-sms-api-key
     depends_on:
       wiremock:
         condition: service_started
-      rabbitmq:
-        condition: service_healthy
     develop:
       watch:
         - action: rebuild
-          path: ./services/notification-service
+          path: ./services/sms-service
+
+  otp-service:
+    build:
+      context: ./services/otp-service
+      dockerfile: Dockerfile
+    container_name: poc-otp-service
+    ports:
+      - "8087:8080"
+    environment:
+      PORT: "8080"
+      OTP_UPSTREAM_URL: http://wiremock:8080
+      OTP_API_KEY: dummy-otp-api-key
+    depends_on:
+      wiremock:
+        condition: service_started
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/otp-service
 
   ekyc-service:
     build:
@@ -185,12 +191,9 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
-      BANK_ACCOUNT_SERVICE_URL: http://bank-account-service:8080
     depends_on:
       db:
         condition: service_healthy
-      bank-account-service:
-        condition: service_started
     develop:
       watch:
         - action: rebuild
@@ -208,22 +211,28 @@ services:
       - "8080:8080"
     environment:
       PORT: "8080"
-      USER_SERVICE_URL: ${USER_SERVICE_URL:-http://user-service:8080}
-      BANK_ACCOUNT_SERVICE_URL: ${BANK_ACCOUNT_SERVICE_URL:-http://bank-account-service:8080}
-      EKYC_SERVICE_URL: ${EKYC_SERVICE_URL:-http://ekyc-service:8080}
-      TRANSFER_SERVICE_URL: ${TRANSFER_SERVICE_URL:-http://transfer-service:8080}
+      USER_SERVICE_URL: ${USER_SERVICE_URL:-http://wiremock:8080}
+      BANK_ACCOUNT_SERVICE_URL: ${BANK_ACCOUNT_SERVICE_URL:-http://wiremock:8080}
+      EKYC_SERVICE_URL: ${EKYC_SERVICE_URL:-http://wiremock:8080}
+      TRANSFER_SERVICE_URL: ${TRANSFER_SERVICE_URL:-http://wiremock:8080}
+      SMS_SERVICE_URL: ${SMS_SERVICE_URL:-http://wiremock:8080}
+      OTP_SERVICE_URL: ${OTP_SERVICE_URL:-http://wiremock:8080}
     depends_on:
       - user-service
+      - paotang-service
       - bank-account-service
       - ekyc-service
       - transfer-service
+      - wiremock
+      - sms-service
+      - otp-service
     develop:
       watch:
         - action: rebuild
           path: ./services/bff-service
 
   # =========================================================================
-  # QA WEBSITE (browser e2e for QA)
+  # WEBSITE (browser e2e)
   # =========================================================================
   website:
     build:
@@ -244,6 +253,3 @@ services:
         - action: sync
           path: ./services/website/public
           target: /app/public
-
-volumes:
-  postgres-data-v18:

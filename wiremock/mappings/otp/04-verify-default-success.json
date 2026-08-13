@@ -1,0 +1,26 @@
+{
+  "id" : "f8e90123-a514-4a36-ef07-34567ab89012",
+  "name" : "OTP - Default Success",
+  "request" : {
+    "urlPath" : "/otp/verify",
+    "method" : "POST"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "verified" : true
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "f8e90123-a514-4a36-ef07-34567ab89012",
+  "persistent" : true,
+  "priority" : 10,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/otp/004 - OTP - Default Success"
+    }
+  },
+  "insertionIndex" : 163
+}

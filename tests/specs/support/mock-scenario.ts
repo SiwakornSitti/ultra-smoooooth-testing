@@ -13,6 +13,15 @@ export const MOCK_SCENARIO = {
   SMS: {
     SUCCESS: "SMS:SUCCESS",
     INVALID_NUMBER: "SMS:INVALID_NUMBER",
+    UNAVAILABLE: "SMS:UNAVAILABLE",
+    RATE_LIMIT: "SMS:RATE_LIMIT",
+    TIMEOUT: "SMS:TIMEOUT",
+    INTERNAL_ERROR: "SMS:INTERNAL_ERROR",
+  },
+  USER: {
+    GET_USER_BLOCKED: "USER:GET_USER_BLOCKED",
+    GET_USER_SUCCESS: "USER:GET_USER_SUCCESS",
+    GET_USER_INVALID: "USER:GET_USER_INVALID",
   },
 } as const;
 
@@ -23,9 +32,10 @@ export function mockScenario(page: Page) {
   const box = { value: "" };
   page.route("**/*", (route) => {
     const headers = { ...route.request().headers() };
-    if (box.value) headers["mock-scenario"] = box.value;
+    if (box.value && !headers["mock-scenario"]) headers["mock-scenario"] = box.value;
     route.continue({ headers });
   });
+
   return (scenario: string) => {
     box.value = scenario;
   };

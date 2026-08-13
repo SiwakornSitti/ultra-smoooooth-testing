@@ -74,10 +74,8 @@ stateDiagram-v2
 
 1. `GET /lab/api/orders/101` in state `Started` ➔ Returns `200 OK` (`status: PENDING`).
 2. `POST /lab/api/orders/101/pay` in state `Started` ➔ Returns `200 OK`, transitions state to `PAID`.
-3. `GET /lab/api/orders/101` in state `PAID` ➔ Returns `200 OK` (`status: PAID`).
-4. `POST /lab/api/orders/101/ship` in state `PAID` ➔ Returns `200 OK`, transitions state to `SHIPPED`.
-5. `GET /lab/api/orders/101` in state `SHIPPED` ➔ Returns `200 OK` (`status: SHIPPED`).
-6. `POST /lab/api/orders/101/ship` in state `SHIPPED` ➔ Returns `400 Bad Request` (`ALREADY_SHIPPED`).
+3. `POST /lab/api/orders/101/ship` in state `PAID` ➔ Returns `200 OK`, transitions state to `SHIPPED`.
+4. `POST /lab/api/orders/101/ship` in state `SHIPPED` ➔ Returns `400 Bad Request` (`ALREADY_SHIPPED`).
 
 ---
 
@@ -103,26 +101,12 @@ stateDiagram-v2
 - **Initial State (`Started`)**: A `payment.succeeded` webhook returns `202 Accepted` and transitions to `WEBHOOK_PROCESSED`.
 - **Next State (`WEBHOOK_PROCESSED`)**: Replaying the same webhook returns `409 Conflict` (`DUPLICATE_WEBHOOK`).
 - **Dynamic fields**: The response echoes `{payment_id}` from the URL and `event_id` from the webhook body.
-- **Serve event listener**: The accepted webhook triggers an internal callback to `POST /lab/api/payment-events` with templated payment and event IDs.
 
 ---
 
 ## 🚀 Running the Lab
 
-### 1. Automated Execution (Playwright & Testcontainers)
-
-Run the automated lab test suite using npm or Makefile:
-
-```bash
-# Using npm from tests directory
-cd tests
-npm run test:lab
-
-# Or using Makefile from workspace root
-make test-lab
-```
-
-### 2. Manual Testing (cURL / WireMock GUI)
+### 1. Manual Testing (cURL / WireMock GUI)
 
 1. Start the Docker ecosystem:
 
@@ -161,10 +145,8 @@ labs/wiremock-stateful/
 │   ├── 00-scenario-state.http        # Reset and inspect order scenario
 │   ├── 01-order-get-pending.http     # Mapping 01: PENDING order
 │   ├── 02-order-pay.http              # Mapping 02: pay order
-│   ├── 03-order-get-paid.http         # Mapping 03: PAID order
-│   ├── 04-order-ship.http             # Mapping 04: ship order
-│   ├── 05-order-get-shipped.http      # Mapping 05: SHIPPED order
-│   └── 06-order-ship-invalid.http     # Mapping 06: duplicate ship rejected
+│   ├── 03-order-ship.http              # Mapping 03: ship order
+│   └── 04-order-ship-invalid.http      # Mapping 04: duplicate ship rejected
 ├── retry-recovery-flow/
 │   ├── 00-scenario-state.http         # Reset and inspect retry scenario
 │   ├── 01-retry-fail-1.http           # Mapping 01: first failure
@@ -173,8 +155,7 @@ labs/wiremock-stateful/
 └── payment-webhook-idempotency/
     ├── 00-scenario-state.http        # Reset and inspect webhook scenario
     ├── 01-payment-webhook-success.http # Mapping 01: webhook accepted
-    ├── 02-payment-webhook-replay.http  # Mapping 02: duplicate rejected
-    └── 03-payment-event-receiver.http  # Mapping 03: callback receiver
+    └── 02-payment-webhook-replay.http  # Mapping 02: duplicate rejected
 
 wiremock/mappings/lab-stateful/
 ├── auth-token-replay-prevention/
@@ -183,19 +164,14 @@ wiremock/mappings/lab-stateful/
 ├── order-fulfillment-lifecycle/
 │   ├── 01-order-get-pending.json     # GET order when PENDING (Started)
 │   ├── 02-order-pay.json             # Pay order (Started -> PAID)
-│   ├── 03-order-get-paid.json        # GET order when PAID
-│   ├── 04-order-ship.json            # Ship order (PAID -> SHIPPED)
-│   ├── 05-order-get-shipped.json     # GET order when SHIPPED
-│   └── 06-order-ship-invalid.json    # Ship order rejected when ALREADY_SHIPPED
+│   ├── 03-order-ship.json             # Ship order (PAID -> SHIPPED)
+│   └── 04-order-ship-invalid.json     # Ship order rejected when ALREADY_SHIPPED
 ├── retry-recovery-flow/
 │   ├── 01-retry-fail-1.json          # 1st attempt failure (Started -> FAIL_1)
 │   ├── 02-retry-fail-2.json          # 2nd attempt failure (FAIL_1 -> FAIL_2)
 │   └── 03-retry-success.json         # 3rd attempt success (FAIL_2 -> 200)
 └── payment-webhook-idempotency/
     ├── 01-payment-webhook-success.json # Payment webhook accepted (Started -> WEBHOOK_PROCESSED)
-    ├── 02-payment-webhook-replay.json  # Duplicate webhook rejected (WEBHOOK_PROCESSED -> 409)
-    └── 03-payment-event-receiver.json  # Callback receiver for serveEventListeners
+    └── 02-payment-webhook-replay.json  # Duplicate webhook rejected (WEBHOOK_PROCESSED -> 409)
 
-tests/specs/labs/
-└── wiremock-stateful.spec.ts         # Playwright test suite validating stateful stubs
 ```

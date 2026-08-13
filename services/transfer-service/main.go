@@ -25,7 +25,6 @@ type FundTransfer struct {
 	SourceAccountID string    `json:"source_account_id"`
 	TargetAccountID string    `json:"target_account_id"`
 	Amount          float64   `json:"amount"`
-	Currency        string    `json:"currency"`
 	Status          string    `json:"status"`
 	CreatedAt       time.Time `json:"created_at"`
 }
@@ -34,7 +33,6 @@ type CreateTransferRequest struct {
 	SourceAccountID string  `json:"source_account_id"`
 	TargetAccountID string  `json:"target_account_id"`
 	Amount          float64 `json:"amount"`
-	Currency        string  `json:"currency"`
 }
 
 type transferFailure struct {
@@ -48,9 +46,8 @@ func (e *transferFailure) Error() string {
 }
 
 type accountBalance struct {
-	ID       string
-	Balance  float64
-	Currency string
+	ID      string
+	Balance float64
 }
 
 type ErrorResponse struct {
@@ -63,6 +60,13 @@ var (
 	transfersStore = make(map[string]FundTransfer)
 	storeMu        sync.RWMutex
 )
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
 
 func writeJSONError(w http.ResponseWriter, message string, code string, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
@@ -130,17 +134,11 @@ func createTransferHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	currency := req.Currency
-	if currency == "" {
-		currency = "THB"
-	}
-
 	transfer := FundTransfer{
 		ID:              generateID("txn"),
 		SourceAccountID: req.SourceAccountID,
 		TargetAccountID: req.TargetAccountID,
 		Amount:          req.Amount,
-		Currency:        currency,
 		Status:          "COMPLETED",
 		CreatedAt:       time.Now().UTC(),
 	}
@@ -186,7 +184,7 @@ func executeMoneyTransfer(ctx context.Context, transfer FundTransfer) error {
 	defer tx.Rollback()
 
 	rows, err := tx.QueryContext(ctx, `
-		SELECT id, balance, currency
+		SELECT id, balance
 		FROM accounts
 		WHERE id = $1 OR id = $2
 		ORDER BY id
@@ -198,7 +196,7 @@ func executeMoneyTransfer(ctx context.Context, transfer FundTransfer) error {
 	accounts := make(map[string]accountBalance, 2)
 	for rows.Next() {
 		var account accountBalance
-		if err := rows.Scan(&account.ID, &account.Balance, &account.Currency); err != nil {
+		if err := rows.Scan(&account.ID, &account.Balance); err != nil {
 			rows.Close()
 			return err
 		}
@@ -211,18 +209,11 @@ func executeMoneyTransfer(ctx context.Context, transfer FundTransfer) error {
 	rows.Close()
 
 	source, sourceOK := accounts[transfer.SourceAccountID]
-	target, targetOK := accounts[transfer.TargetAccountID]
+	_, targetOK := accounts[transfer.TargetAccountID]
 	if !sourceOK || !targetOK {
 		return &transferFailure{
 			message: "source or target account not found",
 			code:    "ACCOUNT_NOT_FOUND",
-			status:  http.StatusBadRequest,
-		}
-	}
-	if source.Currency != transfer.Currency || target.Currency != transfer.Currency {
-		return &transferFailure{
-			message: "source, target, and transfer currencies must match",
-			code:    "CURRENCY_MISMATCH",
 			status:  http.StatusBadRequest,
 		}
 	}
@@ -241,10 +232,10 @@ func executeMoneyTransfer(ctx context.Context, transfer FundTransfer) error {
 		return err
 	}
 	if _, err := tx.ExecContext(ctx, `
-		INSERT INTO transfers (id, source_account_id, target_account_id, amount, currency, status, created_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+		INSERT INTO transfers (id, source_account_id, target_account_id, amount, status, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6)`,
 		transfer.ID, transfer.SourceAccountID, transfer.TargetAccountID, transfer.Amount,
-		transfer.Currency, transfer.Status, transfer.CreatedAt,
+		transfer.Status, transfer.CreatedAt,
 	); err != nil {
 		return err
 	}
@@ -256,9 +247,9 @@ func getAllTransfersHandler(w http.ResponseWriter, r *http.Request) {
 	var transfers []FundTransfer
 
 	if db != nil {
-		query := `SELECT id, source_account_id, target_account_id, amount, currency, status, created_at
-		          FROM transfers ORDER BY created_at DESC`
-		rows, err := db.QueryContext(r.Context(), query)
+		rows, err := db.QueryContext(r.Context(), `
+			SELECT id, source_account_id, target_account_id, amount, status, created_at
+			FROM transfers ORDER BY created_at DESC`)
 		if err != nil {
 			slog.Error("Failed to query transfers from DB", "error", err)
 			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
@@ -269,12 +260,17 @@ func getAllTransfersHandler(w http.ResponseWriter, r *http.Request) {
 		transfers = make([]FundTransfer, 0)
 		for rows.Next() {
 			var t FundTransfer
-			if err := rows.Scan(&t.ID, &t.SourceAccountID, &t.TargetAccountID, &t.Amount, &t.Currency, &t.Status, &t.CreatedAt); err != nil {
+			if err := rows.Scan(&t.ID, &t.SourceAccountID, &t.TargetAccountID, &t.Amount, &t.Status, &t.CreatedAt); err != nil {
 				slog.Error("Failed to scan transfer row", "error", err)
 				writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
 				return
 			}
 			transfers = append(transfers, t)
+		}
+		if err := rows.Err(); err != nil {
+			slog.Error("Failed to iterate transfer rows", "error", err)
+			writeJSONError(w, "Database error", "DB_ERROR", http.StatusInternalServerError)
+			return
 		}
 	} else {
 		storeMu.RLock()
@@ -295,11 +291,11 @@ func getTransferHandler(w http.ResponseWriter, r *http.Request) {
 
 	var transfer FundTransfer
 	if db != nil {
-		query := `SELECT id, source_account_id, target_account_id, amount, currency, status, created_at
+		query := `SELECT id, source_account_id, target_account_id, amount, status, created_at
 		          FROM transfers WHERE id = $1`
 		err := db.QueryRowContext(r.Context(), query, id).Scan(
 			&transfer.ID, &transfer.SourceAccountID, &transfer.TargetAccountID, &transfer.Amount,
-			&transfer.Currency, &transfer.Status, &transfer.CreatedAt,
+			&transfer.Status, &transfer.CreatedAt,
 		)
 		if err == sql.ErrNoRows {
 			writeJSONError(w, "Transfer record not found", "NOT_FOUND", http.StatusNotFound)
@@ -343,10 +339,7 @@ func main() {
 
 	initDB()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8085"
-	}
+	port := getEnv("PORT", "8085")
 
 	router := setupRouter()
 	slog.Info("Transfer service starting", "port", port)

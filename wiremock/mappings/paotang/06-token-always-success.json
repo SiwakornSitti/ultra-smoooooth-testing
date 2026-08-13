@@ -1,0 +1,30 @@
+{
+  "id" : "d5f8e163-7294-4933-bc06-90124ef38004",
+  "name" : "Paotang Token - Always Success (Default Fallback)",
+  "request" : {
+    "urlPath" : "/oauth/token",
+    "method" : "POST"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "access_token" : "mock-access-token",
+      "token_type" : "Bearer",
+      "expires_in" : 3600
+    },
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "d5f8e163-7294-4933-bc06-90124ef38004",
+  "persistent" : true,
+  "priority" : 5,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/paotang/006 - Paotang Token - Always Success"
+    }
+  },
+  "insertionIndex" : 168
+}

@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy test test-integration test-e2e test-lab slides
+.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-integration test-e2e slides
 
 all: build
 
@@ -29,6 +29,37 @@ sync:
 
 tidy: sync
 
+setup: docker-start migrate seed
+	@echo "Docker services, migrations, and seed data are ready."
+
+setup-dev: docker-start migrate seed
+	@echo "Docker services, migrations, and seed data are ready for development."
+	docker compose watch
+
+docker-start:
+	docker compose up -d --build
+
+destroy:
+	docker compose down
+
+migrate:
+	@for file in services/*/db/migration/*.sql; do \
+		echo "Applying $$file..."; \
+		docker compose exec -T db psql -v ON_ERROR_STOP=1 -U app -d app < "$$file" || exit 1; \
+	done
+	@echo "Database migrations applied successfully."
+
+seed:
+	@for file in \
+		services/user-service/db/seed/001-user-service-seed.sql \
+		services/bank-account-service/db/seed/001-bank-account-service-seed.sql \
+		services/ekyc-service/db/seed/001-ekyc-service-seed.sql \
+		services/transfer-service/db/seed/001-transfer-service-seed.sql; do \
+		echo "Applying $$file..."; \
+		docker compose exec -T db psql -v ON_ERROR_STOP=1 -U app -d app < "$$file" || exit 1; \
+	done
+	@echo "Database seed data applied successfully."
+
 test:
 	@for d in services/*; do \
 		if [ -d "$$d" ] && [ -f "$$d/go.mod" ]; then \
@@ -42,9 +73,6 @@ test-integration:
 
 test-e2e:
 	cd tests && npm install && npm run test:e2e
-
-test-lab:
-	cd tests && npm install && npm run test:lab
 
 slides:
 	cd slides && bunx @slidev/cli slides.md

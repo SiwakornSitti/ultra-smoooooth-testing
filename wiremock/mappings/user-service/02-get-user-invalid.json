@@ -1,0 +1,31 @@
+{
+  "id" : "7e502573-0d3c-473d-8ab1-2401826bd177",
+  "name" : "User Service Mock - User Not Found",
+  "request" : {
+    "urlPathPattern" : "/users/.*",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "USER:GET_USER_INVALID"
+      }
+    }
+  },
+  "response" : {
+    "status" : 404,
+    "jsonBody" : {
+      "error" : "User not found"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "7e502573-0d3c-473d-8ab1-2401826bd177",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/user-service/002 - User Service Mock - User Not Found"
+    }
+  },
+  "insertionIndex" : 184
+}

@@ -1,0 +1,33 @@
+{
+  "id" : "112cbffb-5a79-4f5f-b311-2f3ec642c9d3",
+  "name" : "5. Response Template - Echo and Helpers",
+  "request" : {
+    "urlPathPattern" : "/lab/api/stateless/(echo/.*|template-helpers)",
+    "method" : "ANY"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "extracted_path_id" : "{{request.path.[4]}}",
+      "echo_header" : "{{request.headers.X-Request-ID}}",
+      "query_name" : "{{request.query.name}}",
+      "request_id" : "{{request.headers.X-Request-ID}}",
+      "customer_email" : "{{#if request.body}}{{jsonPath request.body '$.customer.email'}}{{/if}}",
+      "generated_token" : "{{randomValue length=12 type='ALPHANUMERIC'}}",
+      "received_at" : "{{now}}"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "112cbffb-5a79-4f5f-b311-2f3ec642c9d3",
+  "persistent" : true,
+  "priority" : 2,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless/005 - Response Template - Echo and Helpers"
+    }
+  },
+  "insertionIndex" : 171
+}

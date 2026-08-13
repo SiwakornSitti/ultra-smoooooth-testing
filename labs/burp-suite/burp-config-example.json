@@ -1,9 +1,25 @@
 {
+  "target": {
+    "scope": {
+      "advanced_mode": true,
+      "exclude": [],
+      "include": [
+        {
+          "enabled": true,
+          "file": "",
+          "host": "^192\\.168\\.1\\.[0-9]{1,3}$",
+          "port": "^\\d+$",
+          "protocol": "^https?$",
+          "path": ".*"
+        }
+      ]
+    }
+  },
   "proxy": {
     "request_listeners": [
       {
         "certificate_mode": "per_host",
-        "listen_mode": "loopback_only",
+        "listen_mode": "all_interfaces",
         "listener_port": 8080,
         "running": true
       }

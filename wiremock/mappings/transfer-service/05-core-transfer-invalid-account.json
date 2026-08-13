@@ -1,0 +1,31 @@
+{
+  "id" : "7ec6f02e-f540-4f00-b8fa-89281087b015",
+  "name" : "Core Mock - Transfer Invalid Account",
+  "request" : {
+    "urlPath" : "/transfers",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "TRANSFER:INVALID_ACCOUNT"
+      }
+    }
+  },
+  "response" : {
+    "status" : 400,
+    "jsonBody" : {
+      "error" : "source or target account not found",
+      "code" : "ACCOUNT_NOT_FOUND"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "7ec6f02e-f540-4f00-b8fa-89281087b015",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/core/005 - Core Mock - Transfer Invalid Account"
+    }
+  },
+  "insertionIndex" : 186
+}

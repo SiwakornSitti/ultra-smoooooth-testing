@@ -1,0 +1,40 @@
+{
+  "id" : "d8e9f0a1-b2c3-4d5e-8f90-123456789abc",
+  "name" : "10. PokeAPI - Mock When Header Matches",
+  "request" : {
+    "urlPathPattern" : "/lab/api/stateless/pokemon/.*",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "POKEAPI:MOCK"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "id" : 132,
+      "name" : "ditto",
+      "base_experience" : 101,
+      "mocked" : true,
+      "types" : [ {
+        "slot" : 1,
+        "type" : {
+          "name" : "normal"
+        }
+      } ]
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "d8e9f0a1-b2c3-4d5e-8f90-123456789abc",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless/010 - PokeAPI - Mock When Header Matches"
+    }
+  },
+  "insertionIndex" : 176
+}

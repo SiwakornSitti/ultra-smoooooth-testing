@@ -23,8 +23,8 @@
   "priority" : 1,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateless"
+      "folder" : "/lab-stateless/002 - Payments - High Value Approved"
     }
   },
-  "insertionIndex" : 59
+  "insertionIndex" : 178
 }

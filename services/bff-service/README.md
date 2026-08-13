@@ -23,6 +23,8 @@ The BFF service acts as the orchestration layer for the application, aggregating
 - `POST /auth/otp/verify`: Proxy for OTP code verification.
 - `GET /health`: Standard health check.
 
+Account creation calls `sms-service` directly after the bank account is created. SMS delivery failures are returned to the caller.
+
 ## 🛠️ Configuration
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -31,3 +33,4 @@ The BFF service acts as the orchestration layer for the application, aggregating
 | `BANK_ACCOUNT_SERVICE_URL` | Internal URL for bank-account-service | `http://bank-account-service.app.svc.cluster.local` |
 | `EKYC_SERVICE_URL` | Internal URL for ekyc-service | `http://ekyc-service.app.svc.cluster.local` |
 | `TRANSFER_SERVICE_URL` | Internal URL for transfer-service | `http://transfer-service.app.svc.cluster.local` |
+| `SMS_SERVICE_URL` | Internal URL for sms-service | `http://sms-service.app.svc.cluster.local` |

@@ -15,14 +15,14 @@
    - Verify persistence in PostgreSQL.
    - Test missing fields and duplicate input handling.
 
-4. **Account creation with asynchronous SMS**
+4. **Account creation with direct SMS**
    - Create an account with `SMS:SUCCESS`.
    - Repeat with `SMS:INVALID_NUMBER` and `SMS:UNAVAILABLE`.
-   - Verify account creation remains successful while notification delivery fails.
+   - Verify account creation returns an SMS delivery failure when SMS delivery fails.
 
-5. **Notification header propagation**
+5. **SMS header propagation**
    - Send `Mock-Scenario` and `Mock-ID` with the account request.
-   - Verify headers are copied into the RabbitMQ command and SMS request.
+   - Verify headers are copied into the SMS request.
    - Confirm the same mock ID appears in the provider response or logs.
 
 6. **BFF aggregation**

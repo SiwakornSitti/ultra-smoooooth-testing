@@ -54,7 +54,6 @@ var (
 	paotangServiceURL   = getEnv("PAOTANG_SERVICE_URL", "http://localhost:8088")
 	paotangClientID     = getEnv("PAOTANG_CLIENT_ID", "")
 	paotangClientSecret = getEnv("PAOTANG_CLIENT_SECRET", "")
-	otpServiceURL       = getEnv("OTP_SERVICE_URL", "http://localhost:8088")
 )
 
 func getEnv(key, fallback string) string {
@@ -136,7 +135,6 @@ func main() {
 	r.HandleFunc("/users/{id}", handleUpdateUser).Methods("PATCH")
 	r.HandleFunc("/users/{id}", handleDeleteUser).Methods("DELETE")
 	r.HandleFunc("/auth/paotang/callback", handlePaotangCallback).Methods("POST")
-	r.HandleFunc("/auth/otp/verify", handleOTPVerify).Methods("POST")
 
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -196,9 +194,7 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, "phone is required", http.StatusBadRequest)
 		return
 	}
-	if u.Status == "" {
-		u.Status = "active"
-	}
+	u.Status = "active"
 	var emailExists bool
 	if err := db.QueryRowContext(r.Context(), "SELECT EXISTS (SELECT 1 FROM users WHERE email = $1)", u.Email).Scan(&emailExists); err != nil {
 		slog.Error("Duplicate user check failed", "error", err)
@@ -253,13 +249,19 @@ func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	slog.Info("Updating user", "user_id", id)
-	_, err := db.ExecContext(r.Context(), "UPDATE users SET name = $1, email = $2, phone = $3 WHERE id = $4", u.Name, u.Email, u.Phone, id)
+	_, err := db.ExecContext(r.Context(), "UPDATE users SET name = COALESCE(NULLIF($1, ''), name), email = COALESCE(NULLIF($2, ''), email), phone = COALESCE(NULLIF($3, ''), phone), status = COALESCE(NULLIF($4, ''), status) WHERE id = $5", u.Name, u.Email, u.Phone, u.Status, id)
 	if err != nil {
 		slog.Error("Update failed", "error", err)
 		writeJSONError(w, "Database error", http.StatusInternalServerError)
 		return
 	}
-	u.ID = id
+	var updated User
+	err = db.QueryRowContext(r.Context(), "SELECT id, name, email, phone, status FROM users WHERE id = $1", id).Scan(&updated.ID, &updated.Name, &updated.Email, &updated.Phone, &updated.Status)
+	if err == nil {
+		u = updated
+	} else {
+		u.ID = id
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(u)
 }
@@ -333,65 +335,4 @@ func handlePaotangCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(tokenResp)
-}
-
-// handleOTPVerify verifies an OTP code sent via SMS, second factor after
-// the Paotang authcode exchange.
-func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
-	var req OTPVerifyRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		slog.Error("Invalid request body", "error", err)
-		writeJSONError(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	slog.Info("Verifying OTP code")
-
-	body, err := json.Marshal(req)
-	if err != nil {
-		slog.Error("Failed to build OTP verify request", "error", err)
-		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	otpReq, err := http.NewRequestWithContext(r.Context(), "POST", otpServiceURL+"/otp/verify", strings.NewReader(string(body)))
-	if err != nil {
-		slog.Error("Failed to build OTP verify request", "error", err)
-		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	otpReq.Header.Set("Content-Type", "application/json")
-	forwardHeaders(r, otpReq)
-
-	resp, err := http.DefaultClient.Do(otpReq)
-	if err != nil {
-		slog.Error("Failed to call OTP service", "error", err)
-		writeJSONError(w, "OTP service unavailable", http.StatusBadGateway)
-		return
-	}
-	defer resp.Body.Close()
-
-	w.Header().Set("Content-Type", "application/json")
-
-	if resp.StatusCode == http.StatusBadRequest {
-		slog.Warn("OTP service rejected code")
-		w.WriteHeader(http.StatusBadRequest)
-		io.Copy(w, resp.Body)
-		return
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		slog.Error("Unexpected OTP service response", "status", resp.StatusCode)
-		writeJSONError(w, "OTP service error", http.StatusBadGateway)
-		return
-	}
-
-	var verifyResp OTPVerifyResponse
-	if err := json.NewDecoder(resp.Body).Decode(&verifyResp); err != nil {
-		slog.Error("Failed to decode OTP response", "error", err)
-		writeJSONError(w, "OTP service error", http.StatusBadGateway)
-		return
-	}
-
-	json.NewEncoder(w).Encode(verifyResp)
 }

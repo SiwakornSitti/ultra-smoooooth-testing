@@ -19,7 +19,7 @@
 4. **User and account creation**
    - Create a user from `/account`.
    - Use the returned user ID to create an account.
-   - Verify the account response and profile status.
+   - Get the user profile and verify the account response and profile status.
 
 5. **SMS failure journey**
    - Select `SMS:INVALID_NUMBER` or `SMS:UNAVAILABLE`.
@@ -28,7 +28,7 @@
 
 6. **Blocked profile journey**
    - Create a blocked user.
-   - Verify the profile displays `BLOCKED`.
+   - Get the user profile and verify it displays `BLOCKED`.
    - Confirm the UI preserves the blocked status.
 
 7. **Transfer journey**

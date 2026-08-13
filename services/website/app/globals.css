@@ -40,7 +40,18 @@ a:hover {
 }
 
 .page-header {
+  position: relative;
   margin-bottom: 1.25rem;
+  padding-right: 5.5rem;
+}
+
+.logout-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 0;
+  padding: 0.5rem 0.75rem;
+  box-shadow: none;
 }
 
 .home-link {
@@ -53,6 +64,21 @@ a:hover {
 
 .home-link:hover {
   color: var(--primary);
+}
+
+.signup-button {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: white;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.signup-button:hover {
+  background: var(--primary-dark);
 }
 
 .eyebrow {
@@ -98,6 +124,140 @@ section[data-testid] {
   box-shadow: var(--shadow);
 }
 
+.account-section {
+  padding: 0.65rem;
+}
+
+.account-section h2 {
+  margin-bottom: 0.5rem;
+}
+
+.account-section label {
+  margin: 0.3rem 0;
+}
+
+.account-section pre {
+  margin-top: 0.45rem;
+}
+
+.account-section button {
+  margin-top: 0.3rem;
+}
+
+.current-balance {
+  margin: -0.05rem 0 0.55rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.profile-summary {
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--surface);
+}
+
+.profile-summary-header,
+.profile-accounts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.profile-customer strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.profile-accounts-header span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-summary-id {
+  color: var(--muted);
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
+.profile-status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--line);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.profile-details {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.85rem 0;
+}
+
+.profile-details div {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.profile-details dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.profile-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.profile-accounts-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.profile-accounts .table-wrapper {
+  margin-top: 0.5rem;
+}
+
+.profile-accounts table {
+  font-size: 0.75rem;
+}
+
+.profile-accounts th,
+.profile-accounts td {
+  padding: 0.45rem;
+}
+
+.profile-accounts td:first-child {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.profile-empty {
+  margin: 0.6rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.ekyc-summary {
+  margin-top: 0.75rem;
+}
+
+.profile-result {
+  margin-top: 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 label {
   display: block;
   margin: 0.75rem 0;
@@ -114,6 +274,11 @@ label {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 700;
+}
+
+.page-header .toggle-field {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .toggle-field input {
@@ -178,6 +343,35 @@ pre {
   word-break: break-word;
 }
 
+.error-message {
+  color: #b42318;
+  font-weight: 700;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 0.65rem;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .home-links {
   display: grid;
   gap: 0.75rem;
@@ -205,14 +399,16 @@ pre {
 
 @media (min-width: 720px) {
   .page-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.9rem;
+    column-count: 2;
+    column-gap: 0.9rem;
   }
 
   .page-grid section[data-testid] {
     margin-top: 0;
+    break-inside: avoid;
+    margin-bottom: 0.9rem;
   }
+
 }
 
 @media (prefers-color-scheme: dark) {

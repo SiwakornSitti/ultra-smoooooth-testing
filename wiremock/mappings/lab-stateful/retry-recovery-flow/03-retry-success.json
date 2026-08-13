@@ -22,8 +22,8 @@
   "requiredScenarioState" : "FAIL_2",
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/lab-stateful/retry-recovery-flow"
+      "folder" : "/lab-stateful/retry-recovery-flow/03 - Unstable Endpoint - Success"
     }
   },
-  "insertionIndex" : 13
+  "insertionIndex" : 152
 }

@@ -14,11 +14,13 @@ mdc: true
 
 <div class="cover-slide">
 
-<div class="cover-eyebrow">🏦 Banking Microservices POC</div>
+<div class="cover-decor-container">
+  <img src="/cover_decor_hero.jpg" class="cover-decor-img" alt="Microservices Integration Grid" />
+</div>
 
 # Ultra Smoooooth Testing
 
-<div class="cover-subtitle">Microservices Integration Testing & Testing Strategy Workshop</div>
+<div class="cover-subtitle">Mock the world. Control the chaos. Test without limits.</div>
 
 <div class="cover-tags">
   <span class="cover-tag">⚙️ Go Workspaces</span>
@@ -28,8 +30,49 @@ mdc: true
   <span class="cover-tag">🐳 Testcontainers</span>
 </div>
 
-<div class="cover-cta" @click="$slidev.nav.next">
-  Start Workshop &nbsp;→
+</div>
+
+---
+transition: slide-left
+---
+
+# 🎯 Testing Strategy & Core Pillars
+
+<div class="subtitle-badge mb-4 text-emerald-400 font-semibold text-center text-lg">Mock the world. Control the chaos. Test without limits.</div>
+
+<div class="grid grid-cols-3 gap-4 my-auto py-2">
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2">🌐 1. Mock the World</h3>
+  <p class="text-sm text-slate-300 mb-3">Virtualize all third-party integrations with WireMock stateful stubs.</p>
+  <ul class="text-xs text-slate-300 space-y-1.5">
+    <li>• OAuth2 & OTP Verification</li>
+    <li>• Paotang Pass Identity API</li>
+    <li>• SMS Gateway Delivery Stubs</li>
+    <li>• Deterministic Mock Scenarios</li>
+  </ul>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2">⚡ 2. Control the Chaos</h3>
+  <p class="text-sm text-slate-300 mb-3">Intercept traffic & inject real-world network edge cases with Burp Suite.</p>
+  <ul class="text-xs text-slate-300 space-y-1.5">
+    <li>• MITM HTTP Traffic Interception</li>
+    <li>• Response Tampering & Faults</li>
+    <li>• Rate Limiting & Latency Testing</li>
+    <li>• Security Boundary Validation</li>
+  </ul>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2">🚀 3. Test Without Limits</h3>
+  <p class="text-sm text-slate-300 mb-3">Execute integration & E2E suites with zero rate limits or sandbox downtime.</p>
+  <ul class="text-xs text-slate-300 space-y-1.5">
+    <li>• Playwright E2E Automation</li>
+    <li>• Go Workspace (`go.work`) Testing</li>
+    <li>• Docker Compose Environment</li>
+    <li>• CI/CD Regression Safeguards</li>
+  </ul>
 </div>
 
 </div>
@@ -38,50 +81,64 @@ mdc: true
 transition: fade-out
 ---
 
-# 🏗 System Architecture
+# 🏗️ Ecosystem System Architecture
 
-<div class="w-full flex justify-center items-center overflow-hidden my-auto py-2">
+<div class="adorable-arch-container mb-3">
+  <img src="/beautiful_arch_img.jpg" class="adorable-arch-img" alt="5-Tier Ecosystem System Architecture" />
+</div>
+
+<div class="w-full flex justify-center items-center overflow-hidden my-auto py-1">
 
 ```mermaid
-flowchart LR
-    subgraph Clients["Client Layer"]
-        Website["QA Website (:3000)"]
-        Burp["Burp Suite Proxy (:8080)"]
+flowchart TD
+    subgraph Clients["🌐 1. Client & Automation Layer (Test Without Limits)"]
+        Website["💻 Website<br/><code>:3000</code>"]
+        BridgeWebsite["📱 Mobile WebView<br/><code>JSBridge</code>"]
+        Playwright["🐦 Playwright E2E<br/><code>Runner</code>"]
+        Burp["🛡️ Burp MITM Proxy<br/><code>:8080</code>"]
     end
 
-    subgraph API_Gateway["Gateway / Orchestration"]
-        BFF["bff-service (:8080)"]
+    subgraph API_Gateway["⚡ 2. Gateway & Orchestration Layer"]
+        BFF["⚙️ bff-service<br/><code>Go :8080</code>"]
     end
 
-    subgraph Core_Services["Independent Domain Microservices (No Inter-Service Calls)"]
-        UserService["user-service (:8081)"]
-        BankService["bank-account-service (:8082)"]
-        EKYCService["ekyc-service (:8084)"]
-        TransferService["transfer-service (:8085)"]
+    subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
+        UserService["👤 user-service<br/><code>:8081</code>"]
+        BankService["🏦 bank-account-service<br/><code>:8082</code>"]
+        EKYCService["🪪 ekyc-service<br/><code>:8084</code>"]
+        TransferService["💸 transfer-service<br/><code>:8085</code>"]
+        SMSService["💬 sms-service<br/><code>:8086</code>"]
     end
 
-    subgraph Persistence["Persistence"]
-        DB[(PostgreSQL :5432)]
+    subgraph Persistence["🗄️ 4. Persistence Layer"]
+        DB[("🐘 PostgreSQL DB<br/><code>:5432</code>")]
     end
 
-    subgraph External_Mocks["External Integration Mocks"]
-        WireMock["WireMock GUI (:8088 / :8080)"]
+    subgraph External_Mocks["🤖 5. External Mocks (Mock The World)"]
+        WireMock["🪝 WireMock Stubs<br/><code>:8088</code>"]
     end
 
     Website -->|REST| BFF
-    Website -.->|Intercept| Burp
-    Burp -.->|Proxied| BFF
+    BridgeWebsite -->|REST + JSBridge| BFF
+    Playwright -->|E2E| Website
+    Playwright -->|E2E| BridgeWebsite
+    Website -.->|MITM Intercept| Burp
+    BridgeWebsite -.->|MITM Intercept| Burp
+    Burp -.->|Proxied REST| BFF
 
     BFF -->|/users| UserService
     BFF -->|/accounts| BankService
     BFF -->|/ekycs| EKYCService
     BFF -->|/transfers| TransferService
+    BFF -->|/sms/send| SMSService
 
     UserService -->|SQL| DB
     BankService -->|SQL| DB
+    TransferService -->|SQL| DB
 
     UserService -->|OAuth & OTP| WireMock
-    BankService -->|SMS Send| WireMock
+    SMSService -->|SMS Send| WireMock
+    EKYCService -->|eKYC Stubs| WireMock
 ```
 
 </div>
@@ -163,7 +220,7 @@ flowchart LR
 
 ---
 
-# 🎯 Workshop Thinking Cases (6–10)
+# 🎯 Workshop Thinking Cases (6–11)
 
 <div class="text-sm pt-1">
 
@@ -174,6 +231,7 @@ flowchart LR
 | **Contract** | **Case 8: Strict REST Schema** | Standardized JSON error response: `{"error": "...", "code": "..."}`. |
 | **Resilience** | **Case 9: Timeout Fault Injection** | 10s latency injection ➔ HTTP client returns `504 Gateway Timeout`. |
 | **Resilience** | **Case 10: Idempotency Key** | Duplicate requests ➔ Returns cached transaction result. |
+| **Mobile Hybrid** | **Case 11: JSBridge Mocking** | Injects mock `window.JSBridge` ➔ Verifies native bridge behavior in WebViews. |
 
 </div>
 
@@ -456,13 +514,10 @@ make sync
 </div>
 <div>
 
-### 🧪 Automated Integration & Labs
+### 🧪 Automated Integration
 ```bash
 # Run Integration Tests with Testcontainers
 make test-integration
-
-# Run WireMock Stateful & Stateless Labs
-make test-lab
 
 # Run Playwright E2E Browser Tests
 make test-e2e

@@ -1,0 +1,36 @@
+{
+  "id" : "4fb75c6f-6b4d-4bd7-a7f1-0b5bb0e4f2c9",
+  "name" : "User Service Mock - User Blocked",
+  "request" : {
+    "urlPathPattern" : "/users/.*",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "USER:GET_USER_BLOCKED"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "id" : "{{request.path.[1]}}",
+      "name" : "Blocked User",
+      "email" : "blocked.user@example.com",
+      "phone" : "+66800000000",
+      "status" : "blocked"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "4fb75c6f-6b4d-4bd7-a7f1-0b5bb0e4f2c9",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/user-service/005 - User Service Mock - User Blocked"
+    }
+  },
+  "insertionIndex" : 187
+}

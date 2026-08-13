@@ -1,0 +1,30 @@
+{
+  "id" : "503610ff-25df-4196-8688-37c5f3cd4f40",
+  "name" : "Bank Account Service Mock - Account Not Found",
+  "request" : {
+    "urlPathPattern" : "/accounts/.*",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "BANK_ACCOUNT:GET_ACCOUNT_NOT_FOUND"
+      }
+    }
+  },
+  "response" : {
+    "status" : 404,
+    "jsonBody" : {
+      "error" : "Account not found"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "503610ff-25df-4196-8688-37c5f3cd4f40",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/bank-account-service/001 - Bank Account Service Mock - Account Not Found"
+    }
+  },
+  "insertionIndex" : 181
+}

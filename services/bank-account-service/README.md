@@ -25,5 +25,3 @@ Domain service responsible for managing financial accounts and balances.
 | `DB_PASSWORD` | Database password |
 | `DB_NAME` | Database name |
 | `PORT` | Listening port (default 8080) |
-| `RABBITMQ_URL` | RabbitMQ connection URL for notification commands |
-| `NOTIFICATION_QUEUE` | Notification command queue name |

@@ -5,13 +5,14 @@ Next.js frontend for exercising the BFF and the service integrations through a b
 ## Pages
 
 - `/`: Workshop landing page.
+- `/signup`: Public user registration before authentication.
 - `/login`: Paotang authcode exchange followed by OTP verification.
 - `/account`: User and bank-account creation, SMS simulation, and profile lookup.
 - `/transfer`: Create a money transfer and view transfer history.
 
 The frontend sends requests to the BFF URL returned by `/api/config`. The runtime endpoint reads `BFF_URL`, so the BFF address does not need to be baked into the production build.
 
-The `/account` and `/transfer` pages require a successful Paotang and OTP login from `/login` in the current browser session.
+The `/account` and `/transfer` pages require a successful Paotang and OTP login from `/login` in the current browser session. User registration at `/signup` does not require authentication.
 
 ## Configuration
 
@@ -31,15 +32,15 @@ npm run dev
 
 Open `http://localhost:3000` after starting the BFF and its dependencies.
 
-## Test with BFF mappings
+## Test with mock scenarios
 
-The BFF contract mappings live in the existing WireMock service under [`wiremock/mappings/bff`](../../wiremock/mappings/bff). Point the browser frontend at WireMock instead of the real BFF:
+Keep the browser pointed at the real BFF (`http://localhost:8080`). WireMock is used by domain services for external-provider scenarios such as `PT_PASS:SUCCESS_ONCE` replay rejection and `SMS:INVALID_NUMBER`; the BFF sends bank-account and transfer requests to WireMock, which handles service scenarios or proxies to the real core services.
 
 ```bash
-BFF_URL=http://localhost:8088 docker compose up --build
+docker compose up --build
 ```
 
-Open `http://localhost:3000`. BFF mock responses require a non-empty `Mock-Scenario` header; requests without it use the low-priority fallback proxy to the real `bff-service:8080`. The mock supports `PT_PASS:SUCCESS_ONCE` replay rejection and `SMS:INVALID_NUMBER` scenarios.
+Open `http://localhost:3000`.
 
 For a production build:
 

@@ -1,0 +1,35 @@
+{
+  "id" : "7e502573-0d3c-473d-8ab1-2401826bd178",
+  "name" : "User Service Mock - User Found",
+  "request" : {
+    "urlPathPattern" : "/users/.*",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "USER:GET_USER_SUCCESS"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "id" : "{{request.path.[1]}}",
+      "name" : "Mock User",
+      "email" : "mock.user@example.com",
+      "phone" : "+66800000000",
+      "status" : "active"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "7e502573-0d3c-473d-8ab1-2401826bd178",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/user-service/003 - User Service Mock - User Found"
+    }
+  },
+  "insertionIndex" : 185
+}

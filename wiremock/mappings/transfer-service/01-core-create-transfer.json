@@ -1,0 +1,35 @@
+{
+  "id" : "f4cd3a0e-7c55-49e9-ac28-f1aae658e1b5",
+  "name" : "Core Mock - Create Transfer",
+  "request" : {
+    "urlPath" : "/transfers",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "TRANSFER:SUCCESS"
+      }
+    }
+  },
+  "response" : {
+    "status" : 201,
+    "jsonBody" : {
+      "id" : "frontend-mock-transfer-001",
+      "source_account_id" : "frontend-mock-account-001",
+      "target_account_id" : "frontend-mock-account-002",
+      "amount" : 100,
+      "currency" : "THB",
+      "status" : "completed"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "f4cd3a0e-7c55-49e9-ac28-f1aae658e1b5",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/core/001 - Core Mock - Create Transfer"
+    }
+  },
+  "insertionIndex" : 188
+}

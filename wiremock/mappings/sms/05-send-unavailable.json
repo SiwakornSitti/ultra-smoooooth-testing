@@ -1,0 +1,32 @@
+{
+  "id" : "203f8566-118c-4e9c-a3c1-44d502fc68af",
+  "name" : "SMS - Service Unavailable",
+  "request" : {
+    "urlPath" : "/sms/send",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "SMS:UNAVAILABLE"
+      }
+    }
+  },
+  "response" : {
+    "status" : 503,
+    "jsonBody" : {
+      "error" : "sms_service_unavailable"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "203f8566-118c-4e9c-a3c1-44d502fc68af",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/sms/005 - SMS - Service Unavailable"
+    }
+  },
+  "insertionIndex" : 157
+}

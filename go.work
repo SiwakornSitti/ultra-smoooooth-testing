@@ -4,7 +4,9 @@ use (
 	./services/bank-account-service
 	./services/bff-service
 	./services/ekyc-service
-	./services/notification-service
+	./services/otp-service
+	./services/paotang-service
+	./services/sms-service
 	./services/transfer-service
 	./services/user-service
 )

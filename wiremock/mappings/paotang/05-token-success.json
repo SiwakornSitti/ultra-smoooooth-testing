@@ -1,0 +1,35 @@
+{
+  "id" : "3bb10442-83d9-445f-93de-61dbe0350348",
+  "name" : "Paotang Token - Success",
+  "request" : {
+    "urlPath" : "/oauth/token",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "PT_PASS:SUCCESS"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "access_token" : "mock-access-token",
+      "token_type" : "Bearer",
+      "expires_in" : 3600
+    },
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "3bb10442-83d9-445f-93de-61dbe0350348",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/paotang/005 - Paotang Token - Success"
+    }
+  },
+  "insertionIndex" : 163
+}

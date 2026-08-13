@@ -1,0 +1,33 @@
+{
+  "id" : "ed568961-0cf7-41a7-a811-c3dec06a1d9f",
+  "name" : "OTP - Success",
+  "request" : {
+    "urlPath" : "/otp/verify",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "OTP:SUCCESS"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "verified" : true
+    },
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Mock-ID" : "{{request.headers.Mock-ID}}"
+    },
+    "transformers" : [ "response-template" ]
+  },
+  "uuid" : "ed568961-0cf7-41a7-a811-c3dec06a1d9f",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/otp/002 - OTP - Success"
+    }
+  },
+  "insertionIndex" : 158
+}

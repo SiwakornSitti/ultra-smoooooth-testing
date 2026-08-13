@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8088
+@adminUser = admin
+@adminPassword = password
+
+### Reset scenario state
+POST {{baseUrl}}/__admin/scenarios/reset
+Authorization: Basic {{adminUser}} {{adminPassword}}
+
+### Setup: transition order to PAID
+POST {{baseUrl}}/lab/api/orders/101/pay
+
+### Mapping 03: ship order and transition to SHIPPED
+POST {{baseUrl}}/lab/api/orders/101/ship

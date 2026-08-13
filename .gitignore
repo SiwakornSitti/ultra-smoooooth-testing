@@ -164,5 +164,7 @@ bin/
 .tokensave/
 skills-lock.json
 
+# Graphify generated graph, report, and extraction cache
+graphify-out/
 
 

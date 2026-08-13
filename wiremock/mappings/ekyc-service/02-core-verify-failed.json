@@ -1,0 +1,31 @@
+{
+  "id" : "847a3bb5-40d5-4768-ad0c-4aad419b04ac",
+  "name" : "eKYC Service Mock - Verify Failed",
+  "request" : {
+    "urlPath" : "/ekycs/verify",
+    "method" : "POST",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "EKYC:VERIFY_FAILED"
+      }
+    }
+  },
+  "response" : {
+    "status" : 422,
+    "jsonBody" : {
+      "error" : "Identity verification failed",
+      "code" : "VERIFICATION_FAILED"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "847a3bb5-40d5-4768-ad0c-4aad419b04ac",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/ekyc-service/002 - eKYC Service Mock - Verify Failed"
+    }
+  },
+  "insertionIndex" : 162
+}

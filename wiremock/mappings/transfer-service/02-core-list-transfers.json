@@ -1,0 +1,35 @@
+{
+  "id" : "df5c2dbc-22ad-49d0-aab0-07a76700fdcc",
+  "name" : "Core Mock - List Transfers",
+  "request" : {
+    "urlPath" : "/transfers",
+    "method" : "GET",
+    "headers" : {
+      "Mock-Scenario" : {
+        "contains" : "TRANSFER:LIST_TRANSFERS"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : [ {
+      "id" : "frontend-mock-transfer-001",
+      "source_account_id" : "00000000-0000-0000-0000-000000000011",
+      "target_account_id" : "00000000-0000-0000-0000-000000000012",
+      "amount" : 100,
+      "currency" : "THB",
+      "status" : "completed"
+    } ],
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "df5c2dbc-22ad-49d0-aab0-07a76700fdcc",
+  "persistent" : true,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/core/002 - Core Mock - List Transfers"
+    }
+  },
+  "insertionIndex" : 187
+}

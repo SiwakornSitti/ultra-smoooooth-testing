@@ -1,0 +1,27 @@
+{
+  "id" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
+  "name" : "7. Slow Endpoint - Fixed Delay",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/slow-endpoint",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "message" : "Delayed response after 500ms"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    },
+    "fixedDelayMilliseconds" : 500
+  },
+  "uuid" : "73a1a326-0e8f-4d99-ba6c-e23f44827f34",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless/007 - Slow Endpoint - Fixed Delay"
+    }
+  },
+  "insertionIndex" : 174
+}
