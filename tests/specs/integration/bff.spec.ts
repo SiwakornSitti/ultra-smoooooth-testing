@@ -11,8 +11,9 @@ import {
   startWiremock,
   startUserService,
   startBankAccountService,
+  startEKYCService,
   startTransferService,
-  startSMSService,
+  startOTPService,
   startBffService,
   stopAll,
   wiremockMapping,
@@ -31,7 +32,8 @@ let wiremockContainer: StartedTestContainer;
 let userServiceContainer: StartedTestContainer;
 let bankAccountServiceContainer: StartedTestContainer;
 let transferServiceContainer: StartedTestContainer;
-let smsServiceContainer: StartedTestContainer;
+let ekycServiceContainer: StartedTestContainer;
+let otpServiceContainer: StartedTestContainer;
 let bffContainer: StartedTestContainer;
 let bffUrl: string;
 
@@ -62,9 +64,10 @@ const directSeedIds: DirectSeedIds = {
 };
 
 test.beforeAll(async () => {
-  // Real-stack integration test: no mocks. Testcontainers spins up a real
-  // Postgres instance, the real user-service and bank-account-service images
-  // (built from their Dockerfiles), and points bff-service at them.
+  // Real-stack integration test: no mocks between core services. Testcontainers
+  // spins up a real Postgres instance, the real domain service images, and points
+  // bff-service directly at them. WireMock stands in only for external 3rd-party
+  // providers (Paotang Pass OAuth, SMS upstream).
   test.setTimeout(180000);
 
   if (process.env.BASE_URL) {
@@ -77,7 +80,7 @@ test.beforeAll(async () => {
   network = await startNetwork();
   dbContainer = await startPostgres(network);
 
-  console.log("Starting WireMock container to stand in for Paotang Pass, OTP...");
+  console.log("Starting WireMock container to stand in for Paotang Pass, SMS...");
   wiremockContainer = await startWiremock(network, "wiremock", [
     wiremockMapping("paotang", { flat: true }),
     wiremockMapping("sms", { flat: true }),
@@ -87,23 +90,22 @@ test.beforeAll(async () => {
     PAOTANG_SERVICE_URL: "http://wiremock:8080",
     PAOTANG_CLIENT_ID: "dummy-client-id",
     PAOTANG_CLIENT_SECRET: "dummy-client-secret",
-    OTP_SERVICE_URL: "http://wiremock:8080",
   });
 
   bankAccountServiceContainer = await startBankAccountService(network, dbContainer, {});
 
   transferServiceContainer = await startTransferService(network, dbContainer);
-  smsServiceContainer = await startSMSService(network, {
-    SMS_UPSTREAM_URL: "http://wiremock:8080",
-    SMS_API_KEY: "dummy-sms-api-key",
+  ekycServiceContainer = await startEKYCService(network, dbContainer);
+  otpServiceContainer = await startOTPService(network, {
+    SMS_PROVIDER_URL: "http://wiremock:8080",
   });
 
   bffContainer = await startBffService(network, {
-    USER_SERVICE_URL: "http://wiremock:8080",
-    BANK_ACCOUNT_SERVICE_URL: "http://wiremock:8080",
-    EKYC_SERVICE_URL: "http://wiremock:8080",
-    TRANSFER_SERVICE_URL: "http://wiremock:8080",
-    SMS_SERVICE_URL: "http://sms-service:8080",
+    USER_SERVICE_URL: "http://user-service:8080",
+    BANK_ACCOUNT_SERVICE_URL: "http://bank-account-service:8080",
+    EKYC_SERVICE_URL: "http://ekyc-service:8080",
+    TRANSFER_SERVICE_URL: "http://transfer-service:8080",
+    OTP_SERVICE_URL: "http://otp-service:8080",
   });
 
   const host = bffContainer.getHost();
@@ -128,7 +130,16 @@ test.beforeAll(async () => {
 
 test.afterAll(async () => {
   await stopAll(
-    [bffContainer, smsServiceContainer, transferServiceContainer, bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
+    [
+      bffContainer,
+      otpServiceContainer,
+      ekycServiceContainer,
+      transferServiceContainer,
+      bankAccountServiceContainer,
+      userServiceContainer,
+      wiremockContainer,
+      dbContainer,
+    ],
     network
   );
 });
