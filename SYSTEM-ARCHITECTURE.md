@@ -164,17 +164,25 @@ The core services are `user-service`, `bank-account-service`, `ekyc-service`,
 
 The BFF is the browser integration boundary. The website must not call
 `user-service`, `bank-account-service`, `ekyc-service`, `transfer-service`, or
-`sms-service` directly.
+`otp-service` directly.
 
 ### External authentication and OTP
 
-`user-service` calls WireMock for Paotang and OTP integrations. This keeps
-external behavior deterministic while allowing tests to select success,
-failure, replay, and other response scenarios.
+`user-service` calls WireMock for Paotang authentication. The BFF routes OTP
+verification to `otp-service` through the WireMock core mappings, while
+`otp-service` sends the OTP message through the WireMock external-provider
+mapping. This keeps authentication behavior deterministic while allowing tests
+to select success, failure, replay, and other response scenarios.
 
 ### SMS flow
 
-The BFF creates the account through `bank-account-service`, then calls `sms-service` through WireMock (`http://wiremock:8080`) when a phone number is present. WireMock either returns a scenario-matched response (e.g. rate limit, timeout, invalid number) or proxies unmatched requests to `sms-service`. `sms-service` then calls the mocked external SMS provider through WireMock. SMS delivery failures are returned to the caller.
+When a phone number is present, the BFF creates the account through
+`bank-account-service`, then requests OTP delivery from `otp-service`. In the
+Compose environment both BFF calls first use WireMock (`http://wiremock:8080`):
+WireMock either returns a scenario-matched core response or proxies the
+unmatched request to the real service. `otp-service` then calls `/sms/send` on
+its configured OTP upstream, which is the WireMock external-provider mapping.
+SMS-provider failures are returned to the caller.
 
 ### Transfer flow
 
@@ -212,12 +220,12 @@ sequenceDiagram
 
 WireMock has two roles in this repository:
 
-- External-provider mock: domain services call WireMock for Paotang, OTP, and
-  SMS behavior.
-- Core-service mocks: the BFF sends bank-account and transfer requests to
-  WireMock; WireMock
-  matches `TRANSFER:*` scenarios or proxies unmatched requests to the real
-  core service.
+- External-provider mock: domain services call WireMock for Paotang and SMS
+  provider behavior.
+- Core-service mocks: the BFF sends user, bank-account, eKYC, transfer, and OTP
+  requests to WireMock. WireMock matches scenario headers such as
+  `TRANSFER:*` or `OTP:*`, or proxies unmatched requests to the real core
+  service.
 
 The repository separates deterministic stateless mappings from scenario-based
 stateful mappings:
@@ -250,19 +258,28 @@ mounts are not part of the Compose startup path.
 
 ## Startup and configuration
 
-Start the complete environment with:
+Start the complete environment, including migrations and seed data, with:
 
 ```bash
-docker compose up --build
+make setup
+```
+
+For an iterative development session with Compose Watch, use:
+
+```bash
+make setup-dev
 ```
 
 The main configuration boundaries are:
 
 - `BFF_URL`: website runtime BFF endpoint.
 - `*_SERVICE_URL`: BFF-to-domain-service endpoints.
-- `PAOTANG_SERVICE_URL` and `OTP_SERVICE_URL`: mocked external-provider endpoints.
-- `SMS_SERVICE_URL`: BFF-to-sms-service endpoint.
-- `SMS_UPSTREAM_URL` and `SMS_API_KEY`: sms-service provider settings.
+- `PAOTANG_SERVICE_URL`: user-service endpoint for Paotang, normally
+  `http://wiremock:8080`.
+- `OTP_SERVICE_URL`: BFF-to-OTP endpoint, normally `http://wiremock:8080` so
+  core OTP mappings can be selected.
+- `OTP_UPSTREAM_URL` and `OTP_API_KEY`: otp-service SMS-provider settings;
+  Compose points the upstream at `http://wiremock:8080`.
 - `WIREMOCK_ADMIN_USER` and `WIREMOCK_ADMIN_PASSWORD`: WireMock admin access.
 
 See [`README.md`](README.md), [`docs/integration.md`](docs/integration.md), and

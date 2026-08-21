@@ -14,7 +14,7 @@
     "status" : 200,
     "jsonBody" : {
       "id" : 132,
-      "name" : "ditto",
+      "name" : "{{request.path.[4]}}",
       "base_experience" : 101,
       "mocked" : true,
       "types" : [ {

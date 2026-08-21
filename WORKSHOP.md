@@ -4,6 +4,10 @@
 
 Welcome to the **Microservices Integration Testing Workshop**! This guide provides a comprehensive framework, architecture overview, setup instructions, and **11 practical thinking cases** for testing microservices in a real-world enterprise banking ecosystem.
 
+## Workshop Overview
+
+This is a hands-on workshop for QA engineers, developers, SDETs, automation engineers, and tech leads to design, build, test, and debug reliable microservices through realistic banking workflows and controlled failure scenarios. Using Go, Docker Compose, WireMock, Playwright, and Burp Suite, participants connect shared requirements and risk discovery with API testing, integration testing, browser automation, service mocking, fault injection, security inspection, service-contract validation, downstream-failure testing, data-integrity checks, and end-to-end verification before production.
+
 ---
 
 ## 🏗️ Ecosystem Architecture
@@ -26,7 +30,7 @@ flowchart TD
         BankService["🏦 bank-account-service<br/><code>Go :8082</code>"]
         EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
         TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
-        SMSService["💬 sms-service<br/><code>Go :8086</code>"]
+        OTPService["🔑 otp-service<br/><code>Go :8087</code>"]
     end
 
     subgraph Persistence["🗄️ 4. Persistence Layer"]
@@ -49,14 +53,14 @@ flowchart TD
     BFF -->|GET/POST /accounts| BankService
     BFF -->|POST/GET /ekycs| EKYCService
     BFF -->|POST/GET /transfers| TransferService
-    BFF -->|POST /sms/send| SMSService
+    BFF -->|POST /auth/otp/verify| OTPService
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
     TransferService -->|Atomic Balance Updates| DB
 
     UserService -->|OAuth & OTP Stubs| WireMock
-    SMSService -->|SMS Delivery Stubs| WireMock
+    OTPService -->|SMS Delivery Stubs| WireMock
     EKYCService -->|Paotang eKYC Stubs| WireMock
 ```
 
@@ -69,7 +73,7 @@ flowchart TD
 | **Docker & Docker Compose** | Orchestrating PostgreSQL, WireMock, and microservice containers. |
 | **Playwright** | Running End-to-End (E2E) browser tests and API integration test suites. |
 | **Burp Suite** | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic. |
-| **Go (v1.26+)** | Workspace development (`go.work`) and executing unit/integration test suites. |
+| **Go (v1.25+)** | Workspace development (`go.work`) and executing unit/integration test suites. |
 | **WireMock GUI** | Stubbing 3rd-party external APIs (Paotang Pass OAuth, SMS Gateway, OTP). |
 
 ---
@@ -118,13 +122,13 @@ flowchart TD
 
 ### 📍 Category 3: External Integrations & Stubbing (WireMock)
 
-#### **Case 5: Outbound SMS Notification Failure**
+#### **Case 5: OTP SMS Delivery Failure**
 
-- **Flow**: `BFF Service` ➔ `Bank Account Service`, then `BFF Service` ➔ `SMS Service` ➔ `WireMock (SMS Gateway)`
-- **Challenge**: Configure WireMock stub to return `503 Service Unavailable` for `POST /sms/send`. Verify that account creation returns an SMS delivery failure.
+- **Flow**: `BFF Service` ➔ `OTP Service` ➔ `WireMock (SMS Provider)`
+- **Challenge**: Configure the SMS provider stub to return `503 Service Unavailable`. Verify that OTP delivery fails cleanly and the response does not report a successful OTP request.
 - **Key Assertions**:
-  - Account creation returns a failed response when SMS delivery fails.
-  - `Mock-Scenario` and `Mock-ID` reach the SMS provider.
+  - OTP delivery returns a typed failure when the SMS provider is unavailable.
+  - `Mock-Scenario` and `Mock-ID` reach the WireMock provider mapping.
 
 #### **Case 6: OAuth Token Exchange (Paotang Pass)**
 
@@ -195,8 +199,8 @@ flowchart TD
 | :--- | :--- | :--- |
 | **Ex 1** | **Build & Sync Microservices** | `make sync && make build` |
 | **Ex 2** | **Run Service Unit Tests** | `make test` |
-| **Ex 3** | **Spin Up Docker Ecosystem** | `docker compose up --build` |
+| **Ex 3** | **Spin Up Docker Ecosystem** | `make setup` |
 | **Ex 4** | **Run Integration Tests** | `make test-integration` |
 | **Ex 5** | **Run Playwright E2E Tests** | `make test-e2e` |
-| **Ex 6** | **WireMock Fault Injection** | Open WireMock GUI at `http://localhost:8088` |
+| **Ex 6** | **WireMock Fault Injection** | Open WireMock GUI at `http://localhost:8088/__admin/` |
 | **Ex 7** | **MITM Traffic Inspection** | Configure Burp Suite Proxy at `http://127.0.0.1:8080` |

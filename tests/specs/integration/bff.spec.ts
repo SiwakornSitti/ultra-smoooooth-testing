@@ -80,11 +80,7 @@ test.beforeAll(async () => {
   console.log("Starting WireMock container to stand in for Paotang Pass, OTP...");
   wiremockContainer = await startWiremock(network, "wiremock", [
     wiremockMapping("paotang", { flat: true }),
-    wiremockMapping("otp", { flat: true }),
     wiremockMapping("sms", { flat: true }),
-    wiremockMapping("transfer-service", { flat: true }),
-    wiremockMapping("bank-account-service", { flat: true }),
-    wiremockMapping("ekyc-service", { flat: true }),
   ]);
 
   userServiceContainer = await startUserService(network, dbContainer, {
