@@ -543,49 +543,6 @@ class: compact-stack-slide
 </div>
 
 ---
-
-# 💬 Part 1 Q&A — Ecosystem Architecture
-
-### Open Floor, Domain Boundaries & Monorepo Questions
-
-<div class="multi-col-grid-2 gap-3 mb-1.5">
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-cyan-500/30">
-  <h3 class="text-cyan-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-cyan-300 block text-sm font-semibold">Q: Why Go Workspaces over separate repos?</strong>
-      Allows atomic cross-service commits, instant refactoring, and zero version drift during local integration runs.
-    </div>
-    <div>
-      <strong class="text-cyan-300 block text-sm font-semibold">Q: How does the BFF protect downstream services?</strong>
-      Acts as an orchestration gateway, aggregating responses and preventing client timeouts via circuit breakers.
-    </div>
-  </div>
-</div>
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
-  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
-      What is the biggest pain point in your current microservices testing setup (shared DBs, slow builds, flaky 3rd parties)?
-    </div>
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
-      Verify local environment: <code>make build</code> &amp; <code>make test</code> to ensure all 6 services compile cleanly.
-    </div>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💬</span>
-  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Any questions on service topology, database boundaries, or monorepo workspace synchronization?</span>
-</div>
-
----
 layout: section
 ---
 
@@ -895,24 +852,47 @@ layout: section
 
 ---
 
-# ⚖️ Priority & Precedence — Example
+# ⚖️ Priority Precedence in Action
 
-### Error Scenario Override vs Default Happy Path
+### Comparing Matched Stubs: Scenario Override vs. Default Route
 
-```json
-// Priority 1: Triggered ONLY when Mock-Scenario header is present
-{
-  "priority": 1,
-  "request": {
-    "method": "POST", "urlPath": "/lab/api/transfers",
-    "headers": { "Mock-Scenario": { "contains": "INSUFFICIENT_FUNDS" } }
-  },
-  "response": { "status": 400, "jsonBody": { "code": "ERR_INSUFFICIENT_FUNDS" } }
-}
-```
+<div class="multi-col-grid-2 gap-3 mb-1.5">
 
-<div class="slide-card text-sm mt-3">
-  ⚡ <strong>Behavior</strong>: Sending <code>Mock-Scenario: INSUFFICIENT_FUNDS</code> overrides Priority 10 and returns <code>400</code>; without header, requests fall through to Priority 10 and return <code>201</code>.
+<div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-rose-500/30">
+  <h3 class="text-rose-400 text-sm mb-0.5">🥇 Case A: Header Present (Priority 1 Wins)</h3>
+  <div class="text-[11px] text-slate-300">
+    <code>POST /lab/api/transfers</code> + <span class="text-amber-300">Mock-Scenario: INSUFFICIENT_FUNDS</span>
+  </div>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-rose-500/40 font-mono text-[11px] text-rose-200 mt-auto">
+    <div class="text-[10px] text-slate-400 font-sans mb-0.5">💥 Evaluated Response:</div>
+    <code>HTTP/1.1 400 Bad Request<br/>
+    {"code": "ERR_INSUFFICIENT_FUNDS"}</code>
+  </div>
+  <p class="text-rose-300/80 text-[11px] leading-tight">
+    Matches Priority 1 error stub explicitly; evaluation terminates immediately.
+  </p>
+</div>
+
+<div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-sm mb-0.5">🥈 Case B: Header Absent (Falls to Priority 10)</h3>
+  <div class="text-[11px] text-slate-300">
+    <code>POST /lab/api/transfers</code> (Standard request, no steer header)
+  </div>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
+    <div class="text-[10px] text-slate-400 font-sans mb-0.5">✅ Evaluated Response:</div>
+    <code>HTTP/1.1 201 Created<br/>
+    {"status": "COMPLETED"}</code>
+  </div>
+  <p class="text-emerald-300/80 text-[11px] leading-tight">
+    Priority 1 check fails (missing header); cascades down to Priority 10 happy path.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Resolution Rule</strong>: Lowest integer priority wins first. Cascades downward until a stub's full criteria (URL, method, headers, body) match.</span>
 </div>
 
 ---
@@ -1164,27 +1144,29 @@ layout: section
 
 ---
 
-# 🎯 WireMock — URL & Path RegEx Matching
+# 🎯 WireMock — Multi-Segment Path RegEx Matching
 
-### Regular Expressions for Dynamic Resource Identifiers
+### Regular Expressions for Nested Sub-Resources & Dynamic Route Patterns
 
 <div class="multi-col-grid-2">
 
 <div class="col-card">
-  <h3 class="text-emerald-400">🌐 Path RegEx Matchers</h3>
+  <h3 class="text-emerald-400">🌐 Path RegEx Pattern Types</h3>
   <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>urlPathPattern</code></strong>: Matches path using regex, safely ignoring query parameters.</li>
-    <li>• <strong><code>urlPattern</code></strong>: Matches the entire URI string including query parameters.</li>
+    <li>• <strong>Standard UUID</strong>: <code>[0-9a-fA-F-]{36}</code> (RFC 4122 identifiers)</li>
+    <li>• <strong>Entity Prefixes</strong>: <code>(ACC|USR|TXN)-[0-9]{6}</code> (Banking domain IDs)</li>
+    <li>• <strong>Date Partitions</strong>: <code>[0-9]{4}-(0[1-9]|1[0-2])</code> (Monthly statements)</li>
+    <li>• <strong>Sub-Resource Hierarchy</strong>: Combines static segments &amp; regex slots.</li>
   </ul>
 </div>
 
 <div class="col-card">
-  <h3 class="text-emerald-400">💡 Dynamic Resource Routing</h3>
+  <h3 class="text-emerald-400">💡 Deep REST Routing Pattern</h3>
   <p class="mb-2">
-    Match standard 36-character UUIDs and dynamic entity identifiers:
+    Route complex nested sub-resources in a single resilient stub without hardcoding database IDs:
   </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    <code>"urlPathPattern": "/api/users/[0-9a-fA-F-]{36}/accounts"</code>
+  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30 font-mono text-emerald-200">
+    <code>/api/users/[0-9a-fA-F-]{36}/accounts/ACC-[0-9]{6}</code>
   </div>
 </div>
 
@@ -1192,25 +1174,29 @@ layout: section
 
 ---
 
-# 🎯 WireMock RegEx — Dynamic UUID Path Example
+# 🎯 WireMock RegEx — Nested Resource Path Example
 
-### Matching UUID Paths in API Stubs
+### Multi-Segment Nested Sub-Resource Routing in API Stubs
 
 ```json
 {
   "request": {
     "method": "GET", 
-    "urlPathPattern": "/lab/api/users/[0-9a-fA-F-]{36}/accounts"
+    "urlPathPattern": "/lab/api/users/[0-9a-fA-F-]{36}/accounts/ACC-[0-9]{6}/statements"
   },
   "response": {
     "status": 200,
-    "jsonBody": { "tier": "PREMIUM" }
+    "jsonBody": {
+      "accountType": "SAVINGS",
+      "currency": "THB",
+      "status": "ACTIVE"
+    }
   }
 }
 ```
 
 <div class="slide-card text-sm mt-3">
-  ✨ <code>urlPathPattern</code> dynamically matches any 36-character UUID user account request while ignoring query parameters.
+  ✨ <code>urlPathPattern</code> matches complex nested resource hierarchies (UUID User ID + <code>ACC-######</code> Account ID) while safely ignoring query parameters like <code>?limit=10&page=1</code>.
 </div>
 
 ---
@@ -2183,49 +2169,6 @@ test.afterEach(async ({ request }) => {
 </div>
 
 ---
-
-# 💬 Part 2 Q&A — WireMock & API Virtualization
-
-### Open Floor, Dynamic Stubs & Stateful Scenarios
-
-<div class="multi-col-grid-2 gap-3 mb-1.5">
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-cyan-500/30">
-  <h3 class="text-cyan-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-cyan-300 block text-sm font-semibold">Q: WireMock vs. Unit-Level Code Mocks?</strong>
-      WireMock exercises real HTTP serialization, header parsing, status codes, and network latency over real TCP sockets.
-    </div>
-    <div>
-      <strong class="text-cyan-300 block text-sm font-semibold">Q: How to prevent scenario state bleed in parallel tests?</strong>
-      Use unique scenario names per test spec, or reset all state machines via <code>POST /__admin/scenarios/reset</code> in test hooks.
-    </div>
-  </div>
-</div>
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
-  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
-      Which third-party external API (payment gateway, SMS, identity) causes the most flakiness in your staging tests?
-    </div>
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
-      Explore stubs in <code>wiremock/mappings/</code> and try triggering <code>Mock-Scenario: INSUFFICIENT_FUNDS</code>.
-    </div>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💬</span>
-  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on Handlebars templating, JSONPath regex matching, or state machine transitions?</span>
-</div>
-
----
 layout: section
 ---
 
@@ -2363,49 +2306,6 @@ class: pt-4 pb-2 px-8
   </div>
 </div>
 
-</div>
-
----
-
-# 💬 Part 3 Q&A — Traffic Interception & Security
-
-### Open Floor, In-Flight Tampering & Fault Injection
-
-<div class="multi-col-grid-2 gap-3 mb-1.5">
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-amber-500/30">
-  <h3 class="text-amber-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-amber-300 block text-sm font-semibold">Q: How does header injection reach WireMock?</strong>
-      Burp injects <code>Mock-Scenario</code> into browser requests. The BFF extracts and propagates it downstream to WireMock stubs.
-    </div>
-    <div>
-      <strong class="text-amber-300 block text-sm font-semibold">Q: Can Burp Suite be automated in CI?</strong>
-      Burp is primarily for exploratory/security testing. In automated CI suites, Playwright's <code>page.route()</code> performs the injection.
-    </div>
-  </div>
-</div>
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
-  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
-      How does your frontend handle unexpected HTTP 500/502 errors or malformed payloads from backend services?
-    </div>
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
-      Configure proxy to <code>localhost:8080</code> and intercept a live login request to tamper with the auth token.
-    </div>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-amber-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💬</span>
-  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on proxy setup, request/response tampering, or security boundary testing?</span>
 </div>
 
 ---
@@ -2627,54 +2527,56 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
 
 ---
 
-# 🧪 Testcontainers — Ephemeral Suite Bootstrapping
+# 🧪 Testcontainers — Network Isolation & Dynamic Ports
 
-
-### Code-Driven Container Lifecycle (`tests/specs/support/containers.ts`)
+### Code-Driven Container Helper Architecture (`tests/specs/support/containers.ts`)
 
 ```typescript
-// 1. Boot isolated Docker bridge network
-const network = await new Network().start();
+// 1. Create isolated Docker bridge network for the test runner session
+export async function startHermeticNetwork() {
+  return await new Network().start();
+}
 
-// 2. Start ephemeral PostgreSQL & WireMock containers
-const db = await startPostgres(network);
-const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
+// 2. Start PostgreSQL & retrieve dynamically mapped random host port
+export async function startPostgres(network: StartedNetwork) {
+  return await new PostgreSqlContainer("postgres:16-alpine")
+    .withNetwork(network)
+    .withNetworkAliases("postgres")
+    .withDatabase("ultrasmooth")
+    .start();
+}
 
-// 3. Start BFF Service wired to dynamic DB & WireMock
-const bff = await startBffService(network, {
-  DB_URL: db.getConnectionString(),
-  WIREMOCK_URL: `http://${wm.getNetworkHost()}:${wm.getMappedPort(8080)}`
-});
+// 3. Inject dynamic connection URLs into application runtime environment
+process.env.DB_URL = postgres.getConnectionString();
+process.env.WIREMOCK_URL = `http://localhost:${wiremock.getMappedPort(8080)}`;
 ```
 
 <div class="slide-card text-sm mt-3">
-  🐳 Dynamically creates isolated networks, boots database and mock containers on random ports, and passes runtime connection strings to services.
+  🔌 <strong>Dynamic Resolution</strong>: Containers communicate internally via network aliases (<code>postgres:5432</code>), while test runners talk via randomized external mapped ports—guaranteeing zero port collisions in CI.
 </div>
 
 ---
 
 # 🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle
 
-### Best Practice Test Suite Initialization in `beforeAll()` Hook
+### Complete Test Hook Pipeline (`beforeAll` Setup & `afterAll` Teardown)
 
 ```typescript
+// tests/specs/integration/bff.spec.ts
 test.beforeAll(async () => {
-  // Step 1: Initialize Ephemeral Containers
-  const network = await startNetwork();
+  // Step 1: Boot isolated containers on dynamic ports
+  const network = await startHermeticNetwork();
   const db = await startPostgres(network);
   const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
 
-  // Step 2: Run Schema Migrations (DDL)
+  // Step 2 & 3: Run exact production DDL migrations & pristine fixture seeds
   await runMigrations(db);
-
-  // Step 3: Run Baseline Seed Data (Fixtures)
   await runSeedData(db);
+});
 
-  // Boot BFF Service wired to dynamic DB & WireMock
-  const bff = await startBffService(network, {
-    DB_URL: db.getConnectionString(),
-    WIREMOCK_URL: `http://${wm.getNetworkHost()}:${wm.getMappedPort(8080)}`
-  });
+test.afterAll(async () => {
+  // Guaranteed cleanup: stop network & dispose session
+  await stopHermeticSuite();
 });
 ```
 
@@ -2688,52 +2590,9 @@ test.beforeAll(async () => {
     <p class="text-slate-300 leading-snug">Executes DDL migration scripts (<code>*.sql</code>) to build exact production schema.</p>
   </div>
   <div class="slide-card p-2.5">
-    <strong class="text-emerald-400 font-bold block mb-1">3. Run Seed Data</strong>
-    <p class="text-slate-300 leading-snug">Inserts pristine reference users, accounts, and balances for deterministic tests.</p>
+    <strong class="text-emerald-400 font-bold block mb-1">3. Guaranteed Teardown</strong>
+    <p class="text-slate-300 leading-snug">Auto-Ryuk teardown cleans up all containers and network bridges upon exit.</p>
   </div>
-</div>
-
----
-
-# 💬 Part 4 Q&A — Hermetic Testcontainers
-
-### Open Floor, Ephemeral Lifecycles & Dynamic Ports
-
-<div class="multi-col-grid-2 gap-3 mb-1.5">
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-cyan-500/30">
-  <h3 class="text-cyan-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-cyan-300 block text-sm font-semibold">Q: Does spinning up containers slow down tests?</strong>
-      Using lightweight Alpine images (e.g. <code>postgres:16-alpine</code>) and parallel startup keeps bootstrap time under 3–5 seconds.
-    </div>
-    <div>
-      <strong class="text-cyan-300 block text-sm font-semibold">Q: What happens if test process is killed abruptly?</strong>
-      The Moby Ryuk sidecar container monitors the test session socket and automatically purges all orphaned containers and networks.
-    </div>
-  </div>
-</div>
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
-  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
-      How often do static port collisions or dirty database records cause false-negative test failures in your CI?
-    </div>
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
-      Run <code>make test-integration</code> and observe dynamic port binding in <code>tests/specs/support/containers.ts</code>.
-    </div>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💬</span>
-  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on Docker socket permissions, Ryuk garbage collection, or database seed strategies?</span>
 </div>
 
 ---
@@ -2981,49 +2840,6 @@ export default defineConfig({
 
 ---
 
-# 💬 Part 5 Q&A — Playwright & E2E Automation
-
-### Open Floor, Locators, Network Steering & Diagnostics
-
-<div class="multi-col-grid-2 gap-3 mb-1.5">
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-purple-500/30">
-  <h3 class="text-purple-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-purple-300 block text-sm font-semibold">Q: How does auto-waiting prevent test flakiness?</strong>
-      Playwright checks attachment, visibility, stability, and event actionability before performing actions—eliminating <code>sleep()</code>.
-    </div>
-    <div>
-      <strong class="text-purple-300 block text-sm font-semibold">Q: Can Playwright test mobile WebViews?</strong>
-      Yes! <code>page.addInitScript()</code> injects mock <code>window.JSBridge</code> interfaces into the browser before page scripts evaluate.
-    </div>
-  </div>
-</div>
-
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
-  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
-  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
-      How do you debug failed UI tests in headless CI today? Have you explored Playwright Trace Viewer?
-    </div>
-    <div>
-      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
-      Run <code>make test-e2e</code> and inspect the generated trace with <code>npx playwright show-trace</code>.
-    </div>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-purple-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💬</span>
-  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on web-first assertions, route interceptors, or hybrid mobile testing?</span>
-</div>
-
----
-
 # 🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet
 
 ### Common Locators, Actions, Web-First Assertions & Network Steering
@@ -3152,6 +2968,28 @@ export default defineConfig({
     <div><code class="text-emerald-300">docker ps --filter "label=org.testcontainers=true"</code><br/><span class="text-slate-400 font-sans">Inspect active ephemeral test containers.</span></div>
     <div><code class="text-emerald-300">bun test tests/specs/e2e/website.spec.ts</code><br/><span class="text-slate-400 font-sans">Run a single targeted test file directly.</span></div>
   </div>
+</div>
+
+</div>
+
+---
+layout: center
+class: text-center
+---
+
+<div class="thank-you-slide">
+
+<div class="text-7xl mb-2">🎬</div>
+
+# Live Demo
+
+<div class="cover-subtitle" style="font-size: 1.6rem; margin-top: 0.5rem;">Hands-On Walkthrough 🚀</div>
+
+<div class="cover-tags" style="margin-top: 1.5rem;">
+  <span class="cover-tag">🪝 WireMock</span>
+  <span class="cover-tag">🛡️ Burp Suite</span>
+  <span class="cover-tag">🐳 Testcontainers</span>
+  <span class="cover-tag">🎭 Playwright</span>
 </div>
 
 </div>
