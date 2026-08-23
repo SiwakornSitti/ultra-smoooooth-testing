@@ -279,10 +279,10 @@ code {
 }
 
 .adorable-arch-container {
-  width: auto;
-  max-width: 760px;
-  max-height: 50vh;
-  margin: 0.25rem auto;
+  width: 100%;
+  max-width: 920px;
+  max-height: 74vh;
+  margin: 0 auto;
   border-radius: 0.85rem;
   overflow: hidden;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(167, 243, 208, 0.2);
@@ -296,7 +296,7 @@ code {
 .adorable-arch-img {
   width: 100%;
   height: auto;
-  max-height: 48vh;
+  max-height: 72vh;
   object-fit: contain;
   display: block;
   transition: transform 0.4s ease;
