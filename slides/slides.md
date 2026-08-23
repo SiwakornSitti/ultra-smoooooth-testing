@@ -920,9 +920,50 @@ layout: section
 
 ---
 
-# 🔍 WireMock — JSONPath Expression Matching
+# 🔍 WireMock — JSONPath Expression Capabilities
 
-### Filter & Assert Payloads with `matchesJsonPath`
+### Comparisons, Logical Filters, Membership & Deep Traversal
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-cyan-400 text-sm mb-0.5">📊 1. Numeric &amp; Logical Filters</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Comparison (<code>&gt;</code>, <code>&lt;</code>, <code>==</code>)</strong>: <code>[?(@.amount &gt; 1000)]</code></li>
+    <li>• <strong>Logical AND (<code>&amp;&amp;</code>)</strong>: <code>[?(@.amount &gt; 1000 &amp;&amp; @.currency == 'THB')]</code></li>
+    <li>• <strong>Logical OR (<code>||</code>)</strong>: <code>[?(@.tier == 'GOLD' || @.tier == 'PLATINUM')]</code></li>
+    <li>• <strong>Logical NOT (<code>!</code>)</strong>: <code>$[?(!@.isBlacklisted)]</code></li>
+  </ul>
+  <div class="bg-slate-900/90 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+    <code>"$.payment[?(@.amount > 1000 && @.currency == 'THB')]"</code>
+  </div>
+</div>
+
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-emerald-400 text-sm mb-0.5">🎯 2. Membership, Existence &amp; Deep Scan</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Set Membership (<code>in</code>, <code>nin</code>)</strong>: <code>[?(@.status in ['PENDING', 'PAID'])]</code></li>
+    <li>• <strong>Field Existence (<code>?(@.field)</code>)</strong>: <code>$[?(@.promoCode)]</code></li>
+    <li>• <strong>Deep Scan (<code>..</code>)</strong>: <code>$..[?(@.sku == 'IPHONE-16')]</code></li>
+    <li>• <strong>Regex Match (<code>=~</code>)</strong>: <code>$[?(@.phone =~ /^0[689]\\d{8}$/)]</code></li>
+  </ul>
+  <div class="bg-slate-900/90 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>"$..items[?(@.status in ['PENDING', 'PROCESSING'])]"</code>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Jayway JsonPath</strong>: Returns a non-empty result set when the filter matches, enabling surgical payload assertions without checking the entire document.</span>
+</div>
+
+---
+
+# 🔍 JSONPath Expression — High-Value Payment Example
+
+### Value Threshold Filtering & Dynamic Approval Routing
 
 ```json
 {
