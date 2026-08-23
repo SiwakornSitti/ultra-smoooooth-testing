@@ -247,6 +247,36 @@ flowchart TB
 
 ---
 
+# 🪝 What is WireMock?
+
+### Programmable HTTP Mock Server for Simulating External Dependencies
+
+<div class="grid grid-cols-2 gap-5 text-sm pt-2">
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🌐 Core Capabilities</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <strong>HTTP Request Matching</strong>: Match incoming requests via exact URLs, regex patterns, headers, query params, and JSON bodies.</li>
+    <li>• <strong>Dynamic Response Templating</strong>: Echo request values and compute dynamic dates/math with Handlebars.</li>
+    <li>• <strong>Chaos & Fault Injection</strong>: Inject latency distributions, dropped sockets, and custom HTTP error codes.</li>
+    <li>• <strong>Stateful Scenario Machines</strong>: Model state transitions (e.g. order lifecycles, single-use auth codes).</li>
+  </ul>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🎯 Why We Use WireMock</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <strong>Isolate External Outages</strong>: Replace flaky 3rd-party SMS & OAuth sandboxes with deterministic stubs.</li>
+    <li>• <strong>Fast & Repeatable</strong>: Sub-millisecond mock responses speed up CI/CD integration pipelines.</li>
+    <li>• <strong>Transparent Proxying</strong>: Record live traffic or proxy unknown requests directly to real providers.</li>
+    <li>• <strong>Container Native</strong>: Runs effortlessly inside Testcontainers and Docker Compose.</li>
+  </ul>
+</div>
+
+</div>
+
+---
+
 # ⚡ WireMock — URL & Path Matching
 
 ### Exact Path Routing, Regex Patterns & Query Strings
