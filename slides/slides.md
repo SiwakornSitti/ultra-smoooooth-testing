@@ -922,41 +922,63 @@ layout: section
 
 # 🔍 WireMock — JSONPath Expression Capabilities
 
-### Comparisons, Logical Filters, Membership & Deep Traversal
+### Advanced Payload Filtering with Jayway JsonPath
 
-<div class="multi-col-grid-2 gap-3 mb-1.5">
+<div class="grid grid-cols-2 gap-3 mb-2">
 
-<div class="col-card p-2.5 space-y-1.5">
-  <h3 class="text-cyan-400 text-sm mb-0.5">📊 1. Numeric &amp; Logical Filters</h3>
-  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Comparison (<code>&gt;</code>, <code>&lt;</code>, <code>==</code>)</strong>: <code>[?(@.amount &gt; 1000)]</code></li>
-    <li>• <strong>Logical AND (<code>&amp;&amp;</code>)</strong>: <code>[?(@.amount &gt; 1000 &amp;&amp; @.currency == 'THB')]</code></li>
-    <li>• <strong>Logical OR (<code>||</code>)</strong>: <code>[?(@.tier == 'GOLD' || @.tier == 'PLATINUM')]</code></li>
-    <li>• <strong>Logical NOT (<code>!</code>)</strong>: <code>$[?(!@.isBlacklisted)]</code></li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
-    <code>"$.payment[?(@.amount > 1000 && @.currency == 'THB')]"</code>
+<div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-cyan-500/30">
+  <div class="text-cyan-400 font-bold text-sm flex items-center gap-1.5">
+    <span>📊</span> <span>1. Numeric Comparison</span>
   </div>
+  <div class="text-cyan-200 text-xs font-mono bg-slate-950/80 p-1.5 rounded border border-cyan-500/30">
+    $.payment[?(@.amount &gt; 1000)]
+  </div>
+  <p class="text-slate-300 text-[11px] leading-tight">
+    Supports <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>==</code>, <code>!=</code> for value thresholds.
+  </p>
 </div>
 
-<div class="col-card p-2.5 space-y-1.5">
-  <h3 class="text-emerald-400 text-sm mb-0.5">🎯 2. Membership, Existence &amp; Deep Scan</h3>
-  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Set Membership (<code>in</code>, <code>nin</code>)</strong>: <code>[?(@.status in ['PENDING', 'PAID'])]</code></li>
-    <li>• <strong>Field Existence (<code>?(@.field)</code>)</strong>: <code>$[?(@.promoCode)]</code></li>
-    <li>• <strong>Deep Scan (<code>..</code>)</strong>: <code>$..[?(@.sku == 'IPHONE-16')]</code></li>
-    <li>• <strong>Regex Match (<code>=~</code>)</strong>: <code>$[?(@.phone =~ /^0[689]\\d{8}$/)]</code></li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <code>"$..items[?(@.status in ['PENDING', 'PROCESSING'])]"</code>
+<div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-indigo-500/30">
+  <div class="text-indigo-400 font-bold text-sm flex items-center gap-1.5">
+    <span>🔀</span> <span>2. Logical Combinations</span>
   </div>
+  <div class="text-indigo-200 text-xs font-mono bg-slate-950/80 p-1.5 rounded border border-indigo-500/30">
+    [?(@.amount &gt; 1000 &amp;&amp; @.currency == 'THB')]
+  </div>
+  <p class="text-slate-300 text-[11px] leading-tight">
+    Combines criteria with <code>&amp;&amp;</code> (AND), <code>||</code> (OR), <code>!</code> (NOT).
+  </p>
+</div>
+
+<div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-amber-500/30">
+  <div class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+    <span>🏷️</span> <span>3. Set Membership &amp; Field Check</span>
+  </div>
+  <div class="text-amber-200 text-xs font-mono bg-slate-950/80 p-1.5 rounded border border-amber-500/30">
+    $.order[?(@.status in ['PENDING', 'PAID'])]
+  </div>
+  <p class="text-slate-300 text-[11px] leading-tight">
+    Allowed lists with <code>in</code> / <code>nin</code>, or existence via <code>$[?(@.promoCode)]</code>.
+  </p>
+</div>
+
+<div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-emerald-500/30">
+  <div class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
+    <span>🎯</span> <span>4. RegEx &amp; Deep Scan</span>
+  </div>
+  <div class="text-emerald-200 text-xs font-mono bg-slate-950/80 p-1.5 rounded border border-emerald-500/30">
+    $..[?(@.sku =~ /^IPHONE-.*/)]
+  </div>
+  <p class="text-slate-300 text-[11px] leading-tight">
+    Regex matching with <code>=~</code> and recursive object scan with <code>..</code>.
+  </p>
 </div>
 
 </div>
 
 <div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
   <span class="text-base">💡</span>
-  <span class="text-slate-200 leading-snug"><strong>Jayway JsonPath</strong>: Returns a non-empty result set when the filter matches, enabling surgical payload assertions without checking the entire document.</span>
+  <span class="text-slate-200 leading-snug"><strong>Evaluation Rule</strong>: When the filter returns a non-empty result set, WireMock evaluates it as <strong>TRUE (200/201 Match)</strong>.</span>
 </div>
 
 ---
