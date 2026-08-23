@@ -28,18 +28,18 @@ Quick navigation reference for all slides in [`slides/slides.md`](slides/slides.
 | **22** | [🥈 Priority Tier 5–10: Default Happy Paths](slides/slides.md#L734) | Standard Business Logic & Route Matchers | `L734` |
 | **23** | [🛡️ Priority Tier 100: Catch-All Proxy](slides/slides.md#L758) | Transparent Fallback to Real Downstream Endpoints | `L758` |
 | **24** | [⚖️ Priority & Precedence — Example](slides/slides.md#L780) | Error Scenario Override vs Default Happy Path | `L780` |
-| **25** | [🎯 WireMock — URL & Path RegEx Matching](slides/slides.md#L802) | Regular Expressions for Dynamic Resource Identifiers | `L802` |
-| **26** | [🎯 WireMock — Header & Query RegEx Matching](slides/slides.md#L830) | Bearer Tokens & Scenario Enums | `L830` |
-| **27** | [🎯 WireMock — Body & JSONPath RegEx Matching](slides/slides.md#L858) | Raw Text Matching vs. Semantic JSON Evaluation | `L858` |
-| **28** | [🎯 WireMock RegEx — Dynamic UUID Path Example](slides/slides.md#L897) | Matching UUID Paths in API Stubs | `L897` |
-| **29** | [🎯 WireMock RegEx — JWT Bearer & Scenario Enum](slides/slides.md#L920) | Strict Token & Scenario Routing | `L920` |
-| **30** | [🎯 WireMock RegEx — Body & Parameter Matching](slides/slides.md#L947) | 13-Digit National ID & Query Version Validation | `L947` |
-| **31** | [🎯 WireMock RegEx — JSONPath Phone Validation](slides/slides.md#L974) | Thai Mobile Number Pattern Matching in Payload | `L974` |
-| **32** | [🔍 JSONPath RegEx Deep Dive — Expression Breakdown](slides/slides.md#L1002) | Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"` | `L1002` |
-| **33** | [📦 WireMock — Semantic JSON Matching](slides/slides.md#L1041) | Robust Structural JSON Equivalence | `L1041` |
-| **34** | [⚙️ WireMock — Body Match Operators & Lenient Flags](slides/slides.md#L1071) | Strict Matchers vs. Resilient Microservice Contracts | `L1071` |
-| **35** | [📦 Body Matching — Example](slides/slides.md#L1116) | Match Request Bodies with `equalToJson` | `L1116` |
-| **36** | [🔍 WireMock — JSONPath Expression Matching](slides/slides.md#L1146) | Filter & Assert Payloads with `matchesJsonPath` | `L1146` |
+| **25** | [📦 WireMock — Semantic JSON Matching](slides/slides.md#L802) | Robust Structural JSON Equivalence | `L802` |
+| **26** | [⚙️ WireMock — Body Match Operators & Lenient Flags](slides/slides.md#L832) | Strict Matchers vs. Resilient Microservice Contracts | `L832` |
+| **27** | [📦 Body Matching — Example](slides/slides.md#L877) | Match Request Bodies with `equalToJson` | `L877` |
+| **28** | [🔍 WireMock — JSONPath Expression Matching](slides/slides.md#L907) | Filter & Assert Payloads with `matchesJsonPath` | `L907` |
+| **29** | [🎯 WireMock — URL & Path RegEx Matching](slides/slides.md#L934) | Regular Expressions for Dynamic Resource Identifiers | `L934` |
+| **30** | [🎯 WireMock RegEx — Dynamic UUID Path Example](slides/slides.md#L962) | Matching UUID Paths in API Stubs | `L962` |
+| **31** | [🎯 WireMock — Header & Query RegEx Matching](slides/slides.md#L985) | Bearer Tokens & Scenario Enums | `L985` |
+| **32** | [🎯 WireMock RegEx — JWT Bearer & Scenario Enum](slides/slides.md#L1013) | Strict Token & Scenario Routing | `L1013` |
+| **33** | [🎯 WireMock — Body & JSONPath RegEx Matching](slides/slides.md#L1040) | Raw Text Matching vs. Semantic JSON Evaluation | `L1040` |
+| **34** | [🎯 WireMock RegEx — Body & Parameter Matching](slides/slides.md#L1079) | 13-Digit National ID & Query Version Validation | `L1079` |
+| **35** | [🎯 WireMock RegEx — JSONPath Phone Validation](slides/slides.md#L1106) | Thai Mobile Number Pattern Matching in Payload | `L1106` |
+| **36** | [🔍 JSONPath RegEx Deep Dive — Expression Breakdown](slides/slides.md#L1134) | Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"` | `L1134` |
 | **37** | [🪄 WireMock — Dynamic Response Templating](slides/slides.md#L1173) | Handlebars Response Templating (`response-template`) | `L1173` |
 | **38** | [🪄 WireMock — Handlebars Request & Encoding Helpers](slides/slides.md#L1202) | Request Model Extraction & Data Encoders | `L1202` |
 | **39** | [📥 WireMock — Extracting Request Data & Echoing IDs](slides/slides.md#L1220) | Reading Path, Query, Header & Body Values into Responses | `L1220` |

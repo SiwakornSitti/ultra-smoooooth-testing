@@ -800,245 +800,6 @@ layout: section
 
 ---
 
-# 🎯 WireMock — URL & Path RegEx Matching
-
-### Regular Expressions for Dynamic Resource Identifiers
-
-<div class="multi-col-grid-2">
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🌐 Path RegEx Matchers</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>urlPathPattern</code></strong>: Matches path using regex, safely ignoring query parameters.</li>
-    <li>• <strong><code>urlPattern</code></strong>: Matches the entire URI string including query parameters.</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">💡 Dynamic Resource Routing</h3>
-  <p class="mb-2">
-    Match standard 36-character UUIDs and dynamic entity identifiers:
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    <code>"urlPathPattern": "/api/users/[0-9a-fA-F-]{36}/accounts"</code>
-  </div>
-</div>
-
-</div>
-
----
-
-# 🎯 WireMock — Header & Query RegEx Matching
-
-### Bearer Tokens & Scenario Enums
-
-<div class="multi-col-grid-2">
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🏷️ Header RegEx Operators</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>matches</code></strong>: Value must satisfy the regular expression pattern.</li>
-    <li>• <strong><code>doesNotMatch</code></strong>: Passes only when regex evaluation fails.</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">💡 Token &amp; Scenario Verification</h3>
-  <p class="mb-2">
-    Validate Bearer JWTs and restrict scenarios strictly to registered enum values:
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    <code>"matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</code>
-  </div>
-</div>
-
-</div>
-
----
-
-# 🎯 WireMock — Body & JSONPath RegEx Matching
-
-### Raw Text Matching vs. Semantic JSON Evaluation
-
-<div class="multi-col-grid-2 gap-3 mb-2">
-
-<div class="col-card p-3 space-y-1.5">
-  <h3 class="text-amber-400 text-base mb-1">📝 1. Raw Body RegEx (<code>matches</code>)</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Evaluation</strong>: Treats entire body as unparsed plain text string.</li>
-    <li>• ⚠️ <strong>Fragile</strong>: Breaks on spaces, line breaks, or key reordering.</li>
-    <li>• <strong>Best For</strong>: Non-JSON payloads (XML, CSV, plain text, form-data).</li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-amber-500/40 font-mono text-xs text-amber-200 mt-auto">
-    <code>{ "matches": ".*\"national_id\"\\s*:\\s*\"[0-9]{13}\".*" }</code>
-  </div>
-</div>
-
-<div class="col-card p-3 space-y-1.5">
-  <h3 class="text-emerald-400 text-base mb-1">🔍 2. Inline JSONPath RegEx (<code>matchesJsonPath</code>)</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Evaluation</strong>: Parses JSON tree first, then evaluates regex on target field.</li>
-    <li>• 🟢 <strong>Immune</strong>: Ignores formatting, whitespace, minification, or key order.</li>
-    <li>• <strong>Best For</strong>: Modern REST APIs &amp; structured JSON microservices.</li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <code>{ "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" }</code>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-emerald-950/50 border-emerald-500/60 p-2.5 flex items-center gap-2 shadow-lg">
-  <span class="text-lg">💡</span>
-  <span class="text-emerald-100 leading-relaxed"><strong>Key Takeaway</strong>: Always prefer <code>matchesJsonPath</code> with the <code>=~</code> regex operator for JSON payloads to guarantee test stability against formatting and whitespace changes.</span>
-</div>
-
----
-
-# 🎯 WireMock RegEx — Dynamic UUID Path Example
-
-### Matching UUID Paths in API Stubs
-
-```json
-{
-  "request": {
-    "method": "GET", 
-    "urlPathPattern": "/lab/api/users/[0-9a-fA-F-]{36}/accounts"
-  },
-  "response": {
-    "status": 200,
-    "jsonBody": { "tier": "PREMIUM" }
-  }
-}
-```
-
-<div class="slide-card text-sm mt-3">
-  ✨ <code>urlPathPattern</code> dynamically matches any 36-character UUID user account request while ignoring query parameters.
-</div>
-
----
-
-# 🎯 WireMock RegEx — JWT Bearer & Scenario Enum
-
-### Strict Token & Scenario Routing
-
-```json
-{
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/transfers",
-    "headers": {
-      "Authorization": { "matches": "Bearer [A-Za-z0-9-_\\.]+" },
-      "Mock-Scenario": { "matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)" }
-    }
-  },
-  "response": {
-    "status": 200,
-    "jsonBody": { "authorized": true }
-  }
-}
-```
-
-<div class="slide-card text-sm mt-3">
-  🔐 Enforces valid JWT Bearer header structures and restricts <code>Mock-Scenario</code> strictly to registered enum choices.
-</div>
-
----
-
-# 🎯 WireMock RegEx — Body & Parameter Matching
-
-### 13-Digit National ID & Query Version Validation
-
-```json
-{
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/ekyc/verify",
-    "queryParameters": { "version": { "matches": "v[1-3].*" } },
-    "bodyPatterns": [
-      { "matches": ".*\"national_id\":\"[0-9]{13}\".*" }
-    ]
-  },
-  "response": {
-    "status": 200,
-    "jsonBody": { "verified": true }
-  }
-}
-```
-
-<div class="slide-card text-sm mt-3">
-  🪪 Asserts a strict 13-digit Thai National ID within request body and routes across API versions (<code>v1</code>, <code>v2</code>, <code>v3</code>).
-</div>
-
----
-
-# 🎯 WireMock RegEx — JSONPath Phone Validation
-
-### Thai Mobile Number Pattern Matching in Payload
-
-```json
-{
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/otp/send",
-    "bodyPatterns": [
-      {
-        "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]"
-      }
-    ]
-  },
-  "response": {
-    "status": 200,
-    "jsonBody": { "status": "sent" }
-  }
-}
-```
-
-<div class="slide-card text-sm mt-3">
-  📱 Extracts and regex-evaluates only the <code>phone</code> field without breaking on whitespace or extra payload keys.
-</div>
-
----
-
-# 🔍 JSONPath RegEx Deep Dive — Expression Breakdown
-
-### Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"`
-
-<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
-
-<div class="slide-card space-y-2 p-3">
-  <h3 class="text-emerald-400 font-bold text-sm">🧩 1. Expression Anatomy</h3>
-  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
-    <div><code class="text-cyan-300">$</code> — <span class="text-slate-300 font-sans">Root object of incoming JSON document</span></div>
-    <div><code class="text-cyan-300">[?( ... )]</code> — <span class="text-slate-300 font-sans">Filter predicate evaluating condition inside</span></div>
-    <div><code class="text-cyan-300">@.phone</code> — <span class="text-slate-300 font-sans">Extracts the <code>phone</code> field on object</span></div>
-    <div><code class="text-amber-300">=~</code> — <span class="text-slate-300 font-sans">Jayway JsonPath <strong>regex match operator</strong></span></div>
-    <div><code class="text-amber-300">/^0[689]\d{8}$/</code> — <span class="text-slate-300 font-sans">10-digit Thai mobile format</span></div>
-  </div>
-  <p class="text-slate-400 text-[11px] pt-1.5 border-t border-slate-700/50">
-    📌 <strong>Regex rule</strong>: Starts with <code>0</code>, second digit <code>6, 8, 9</code>, followed by 8 numeric digits.
-  </p>
-</div>
-
-<div class="slide-card space-y-2 p-3">
-  <h3 class="text-emerald-400 font-bold text-sm">🧪 2. Matching vs Non-Matching</h3>
-  <div class="space-y-1 text-slate-300 text-[11px]">
-    <div class="text-emerald-400 font-semibold">✅ Matches (200 Stub Served):</div>
-    <div>• <code>{"phone": "0812345678"}</code> <span class="text-slate-400 font-sans">(Standard mobile)</span></div>
-    <div>• <code>{"user": "Alice", "phone": "0698765432"}</code> <span class="text-slate-400 font-sans">(Extra fields ignored)</span></div>
-    <div class="text-rose-400 font-semibold pt-1">❌ Rejects (Falls through to 404):</div>
-    <div>• <code>{"phone": "021234567"}</code> <span class="text-slate-400 font-sans">(Landline 02 prefix)</span></div>
-    <div>• <code>{"phone": "081234567"}</code> <span class="text-slate-400 font-sans">(Only 9 digits)</span></div>
-  </div>
-  <p class="text-slate-400 text-[11px] pt-1.5 border-t border-slate-700/50">
-    🛡️ <strong>Schema Safe</strong>: Immune to key ordering and whitespace differences unlike raw body regex.
-  </p>
-</div>
-
-</div>
-
----
-
 # 📦 WireMock — Semantic JSON Matching
 
 ### Robust Structural JSON Equivalence
@@ -1167,6 +928,245 @@ layout: section
 
 <div class="slide-card text-sm mt-3">
   ✅ <strong>Matching request</strong>: <code>POST /lab/api/stateless/payments</code> with <code>{"payment":[{"amount":1500,"currency":"THB"}]}</code> → <code>201 APPROVED</code> / <code>HIGH_VALUE_TRANSACTION</code>.
+</div>
+
+---
+
+# 🎯 WireMock — URL & Path RegEx Matching
+
+### Regular Expressions for Dynamic Resource Identifiers
+
+<div class="multi-col-grid-2">
+
+<div class="col-card">
+  <h3 class="text-emerald-400">🌐 Path RegEx Matchers</h3>
+  <ul class="space-y-1.5 text-slate-300 text-sm">
+    <li>• <strong><code>urlPathPattern</code></strong>: Matches path using regex, safely ignoring query parameters.</li>
+    <li>• <strong><code>urlPattern</code></strong>: Matches the entire URI string including query parameters.</li>
+  </ul>
+</div>
+
+<div class="col-card">
+  <h3 class="text-emerald-400">💡 Dynamic Resource Routing</h3>
+  <p class="mb-2">
+    Match standard 36-character UUIDs and dynamic entity identifiers:
+  </p>
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+    <code>"urlPathPattern": "/api/users/[0-9a-fA-F-]{36}/accounts"</code>
+  </div>
+</div>
+
+</div>
+
+---
+
+# 🎯 WireMock RegEx — Dynamic UUID Path Example
+
+### Matching UUID Paths in API Stubs
+
+```json
+{
+  "request": {
+    "method": "GET", 
+    "urlPathPattern": "/lab/api/users/[0-9a-fA-F-]{36}/accounts"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": { "tier": "PREMIUM" }
+  }
+}
+```
+
+<div class="slide-card text-sm mt-3">
+  ✨ <code>urlPathPattern</code> dynamically matches any 36-character UUID user account request while ignoring query parameters.
+</div>
+
+---
+
+# 🎯 WireMock — Header & Query RegEx Matching
+
+### Bearer Tokens & Scenario Enums
+
+<div class="multi-col-grid-2">
+
+<div class="col-card">
+  <h3 class="text-emerald-400">🏷️ Header RegEx Operators</h3>
+  <ul class="space-y-1.5 text-slate-300 text-sm">
+    <li>• <strong><code>matches</code></strong>: Value must satisfy the regular expression pattern.</li>
+    <li>• <strong><code>doesNotMatch</code></strong>: Passes only when regex evaluation fails.</li>
+  </ul>
+</div>
+
+<div class="col-card">
+  <h3 class="text-emerald-400">💡 Token &amp; Scenario Verification</h3>
+  <p class="mb-2">
+    Validate Bearer JWTs and restrict scenarios strictly to registered enum values:
+  </p>
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+    <code>"matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</code>
+  </div>
+</div>
+
+</div>
+
+---
+
+# 🎯 WireMock RegEx — JWT Bearer & Scenario Enum
+
+### Strict Token & Scenario Routing
+
+```json
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/transfers",
+    "headers": {
+      "Authorization": { "matches": "Bearer [A-Za-z0-9-_\\.]+" },
+      "Mock-Scenario": { "matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": { "authorized": true }
+  }
+}
+```
+
+<div class="slide-card text-sm mt-3">
+  🔐 Enforces valid JWT Bearer header structures and restricts <code>Mock-Scenario</code> strictly to registered enum choices.
+</div>
+
+---
+
+# 🎯 WireMock — Body & JSONPath RegEx Matching
+
+### Raw Text Matching vs. Semantic JSON Evaluation
+
+<div class="multi-col-grid-2 gap-3 mb-2">
+
+<div class="col-card p-3 space-y-1.5">
+  <h3 class="text-amber-400 text-base mb-1">📝 1. Raw Body RegEx (<code>matches</code>)</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Evaluation</strong>: Treats entire body as unparsed plain text string.</li>
+    <li>• ⚠️ <strong>Fragile</strong>: Breaks on spaces, line breaks, or key reordering.</li>
+    <li>• <strong>Best For</strong>: Non-JSON payloads (XML, CSV, plain text, form-data).</li>
+  </ul>
+  <div class="bg-slate-900/90 rounded p-2 border border-amber-500/40 font-mono text-xs text-amber-200 mt-auto">
+    <code>{ "matches": ".*\"national_id\"\\s*:\\s*\"[0-9]{13}\".*" }</code>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-1.5">
+  <h3 class="text-emerald-400 text-base mb-1">🔍 2. Inline JSONPath RegEx (<code>matchesJsonPath</code>)</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Evaluation</strong>: Parses JSON tree first, then evaluates regex on target field.</li>
+    <li>• 🟢 <strong>Immune</strong>: Ignores formatting, whitespace, minification, or key order.</li>
+    <li>• <strong>Best For</strong>: Modern REST APIs &amp; structured JSON microservices.</li>
+  </ul>
+  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>{ "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" }</code>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-emerald-950/50 border-emerald-500/60 p-2.5 flex items-center gap-2 shadow-lg">
+  <span class="text-lg">💡</span>
+  <span class="text-emerald-100 leading-relaxed"><strong>Key Takeaway</strong>: Always prefer <code>matchesJsonPath</code> with the <code>=~</code> regex operator for JSON payloads to guarantee test stability against formatting and whitespace changes.</span>
+</div>
+
+---
+
+# 🎯 WireMock RegEx — Body & Parameter Matching
+
+### 13-Digit National ID & Query Version Validation
+
+```json
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/ekyc/verify",
+    "queryParameters": { "version": { "matches": "v[1-3].*" } },
+    "bodyPatterns": [
+      { "matches": ".*\"national_id\":\"[0-9]{13}\".*" }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": { "verified": true }
+  }
+}
+```
+
+<div class="slide-card text-sm mt-3">
+  🪪 Asserts a strict 13-digit Thai National ID within request body and routes across API versions (<code>v1</code>, <code>v2</code>, <code>v3</code>).
+</div>
+
+---
+
+# 🎯 WireMock RegEx — JSONPath Phone Validation
+
+### Thai Mobile Number Pattern Matching in Payload
+
+```json
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/otp/send",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]"
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": { "status": "sent" }
+  }
+}
+```
+
+<div class="slide-card text-sm mt-3">
+  📱 Extracts and regex-evaluates only the <code>phone</code> field without breaking on whitespace or extra payload keys.
+</div>
+
+---
+
+# 🔍 JSONPath RegEx Deep Dive — Expression Breakdown
+
+### Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"`
+
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
+
+<div class="slide-card space-y-2 p-3">
+  <h3 class="text-emerald-400 font-bold text-sm">🧩 1. Expression Anatomy</h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-cyan-300">$</code> — <span class="text-slate-300 font-sans">Root object of incoming JSON document</span></div>
+    <div><code class="text-cyan-300">[?( ... )]</code> — <span class="text-slate-300 font-sans">Filter predicate evaluating condition inside</span></div>
+    <div><code class="text-cyan-300">@.phone</code> — <span class="text-slate-300 font-sans">Extracts the <code>phone</code> field on object</span></div>
+    <div><code class="text-amber-300">=~</code> — <span class="text-slate-300 font-sans">Jayway JsonPath <strong>regex match operator</strong></span></div>
+    <div><code class="text-amber-300">/^0[689]\d{8}$/</code> — <span class="text-slate-300 font-sans">10-digit Thai mobile format</span></div>
+  </div>
+  <p class="text-slate-400 text-[11px] pt-1.5 border-t border-slate-700/50">
+    📌 <strong>Regex rule</strong>: Starts with <code>0</code>, second digit <code>6, 8, 9</code>, followed by 8 numeric digits.
+  </p>
+</div>
+
+<div class="slide-card space-y-2 p-3">
+  <h3 class="text-emerald-400 font-bold text-sm">🧪 2. Matching vs Non-Matching</h3>
+  <div class="space-y-1 text-slate-300 text-[11px]">
+    <div class="text-emerald-400 font-semibold">✅ Matches (200 Stub Served):</div>
+    <div>• <code>{"phone": "0812345678"}</code> <span class="text-slate-400 font-sans">(Standard mobile)</span></div>
+    <div>• <code>{"user": "Alice", "phone": "0698765432"}</code> <span class="text-slate-400 font-sans">(Extra fields ignored)</span></div>
+    <div class="text-rose-400 font-semibold pt-1">❌ Rejects (Falls through to 404):</div>
+    <div>• <code>{"phone": "021234567"}</code> <span class="text-slate-400 font-sans">(Landline 02 prefix)</span></div>
+    <div>• <code>{"phone": "081234567"}</code> <span class="text-slate-400 font-sans">(Only 9 digits)</span></div>
+  </div>
+  <p class="text-slate-400 text-[11px] pt-1.5 border-t border-slate-700/50">
+    🛡️ <strong>Schema Safe</strong>: Immune to key ordering and whitespace differences unlike raw body regex.
+  </p>
+</div>
+
 </div>
 
 ---
