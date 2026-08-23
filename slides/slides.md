@@ -1778,25 +1778,54 @@ process.env.TESTCONTAINERS_RYUK_DISABLED = "true";
 
 # 🎭 Playwright — Unified UI & API Test Engine
 
-<div class="grid grid-cols-2 gap-4 text-xs pt-1">
+### Modern Full-Stack Integration Testing Advantages
+
+<div class="grid grid-cols-2 gap-5 text-sm pt-2">
 
 <div class="slide-card">
-  <h3 class="text-emerald-400 font-bold mb-2">⚡ Why Playwright for Integration?</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <strong>Unified Testing</strong>: Automate both headless browser DOM interactions and direct backend REST APIs in the same spec.</li>
-    <li>• <strong>Auto-Waiting Assertions</strong>: Eliminates flaky <code>sleep()</code> by auto-waiting for DOM elements, navigations, and network requests.</li>
-    <li>• <strong>Network Interception</strong>: Native <code>page.route()</code> and custom header injection to steer mock scenarios on the fly.</li>
-    <li>• <strong>Rich Tracing & Debugging</strong>: Full video recordings, DOM snapshots, and network HAR archives on failure.</li>
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">⚡ Unified UI + API Automation</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <strong>Dual-Layer Testing</strong>: Automate both headless browser DOM interactions and direct backend REST APIs in the same spec.</li>
+    <li>• <strong>Fast Execution</strong>: Reuses browser contexts and runs parallel isolated workers with zero test bleed.</li>
+    <li>• <strong>No Webdriver Needed</strong>: Direct DevTools protocol connection for sub-millisecond execution.</li>
   </ul>
 </div>
 
 <div class="slide-card">
-  <h3 class="text-emerald-400 font-bold mb-2">🔍 Core Test Primitives</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <code>page.getByTestId("btn-login")</code> — Resilient selector queries.</li>
-    <li>• <code>expect(page).toHaveURL(/.../)</code> — Auto-retrying assertion.</li>
-    <li>• <code>request.post("/api/v1/...")</code> — Headless REST client.</li>
-    <li>• <code>page.setExtraHTTPHeaders(...)</code> — Injects WireMock tags.</li>
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🛡️ Zero-Flake Reliability</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <strong>Auto-Waiting Assertions</strong>: Eliminates flaky <code>sleep()</code> by auto-waiting for elements, navigations, and network requests.</li>
+    <li>• <strong>Network Interception</strong>: Native <code>page.route()</code> and custom header injection to steer mock scenarios on the fly.</li>
+    <li>• <strong>Rich Tracing & Artifacts</strong>: Video recordings, DOM snapshots, and network HAR archives captured automatically on failure.</li>
+  </ul>
+</div>
+
+</div>
+
+---
+
+# 🎭 Playwright — Core Test Primitives & API
+
+### Selectors, Auto-Waiting Assertions & Mock Header Injection
+
+<div class="grid grid-cols-2 gap-5 text-sm pt-2">
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🔍 Locators & Assertions</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <code>page.getByTestId("btn-login")</code> — User-facing resilient DOM queries.</li>
+    <li>• <code>await expect(page).toHaveURL(/.../)</code> — Auto-retrying assertion engine.</li>
+    <li>• <code>const res = await request.post(...)</code> — Built-in headless REST API client.</li>
+    <li>• <code>page.locator("text=Success")</code> — Semantic text matching.</li>
+  </ul>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🔀 Mock Scenario Steering</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <code>page.setExtraHTTPHeaders(...)</code> — Injects WireMock <code>Mock-Scenario</code> tags.</li>
+    <li>• <code>page.route("**/api/**", route => ...)</code> — In-flight request interception.</li>
+    <li>• Seamlessly triggers error stubs (e.g. <code>429 RateLimit</code>, <code>503 Unavailable</code>) directly from browser tests.</li>
   </ul>
 </div>
 
@@ -1808,17 +1837,22 @@ process.env.TESTCONTAINERS_RYUK_DISABLED = "true";
 
 ### Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`)
 
+<div class="grid grid-cols-2 gap-5 text-sm pt-1">
+
+<div>
+
 ```typescript
-test("Paotang login verifies OTP and redirects to dashboard", async ({ page }) => {
+test("Paotang login verifies OTP & redirects", async ({ page }) => {
   const setScenario = mockScenario(page);
   await page.goto(`${websiteUrl}/login`);
 
-  // Step 1: Trigger Paotang OAuth with Mock Scenario Header
+  // Step 1: Paotang OAuth with Mock Scenario
   setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
   await page.getByTestId("btn-paotang-login").click();
-  await expect(page.getByTestId("result-paotang")).toContainText("successfully");
+  await expect(page.getByTestId("result-paotang"))
+    .toContainText("successfully");
 
-  // Step 2: Verify OTP with WireMock Success Stub
+  // Step 2: Verify OTP with WireMock Stub
   setScenario(MOCK_SCENARIO.OTP.SUCCESS);
   await page.getByTestId("btn-verify-otp").click();
 
@@ -1827,8 +1861,26 @@ test("Paotang login verifies OTP and redirects to dashboard", async ({ page }) =
 });
 ```
 
-<div class="slide-card text-xs mt-2">
-  💡 <code>mockScenario(page)</code> injects custom headers into outbound browser requests so WireMock serves deterministic scenario responses.
+</div>
+
+<div class="space-y-3">
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎯 Dynamic Mock Steering</h3>
+  <p class="text-slate-300 leading-relaxed">
+    <code>mockScenario(page)</code> injects custom headers into outbound browser requests so WireMock serves deterministic scenario responses.
+  </p>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">⚡ Auto-Waiting Resiliency</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Playwright waits automatically for animations, network responses, and DOM updates without arbitrary <code>sleep()</code> timers.
+  </p>
+</div>
+
+</div>
+
 </div>
 
 ---

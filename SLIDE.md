@@ -2,7 +2,7 @@
 
 Complete index of the **[Slidev](https://sli.dev)** deck for the **Ultra Smoooooth Testing Workshop** — Microservices Integration Testing, WireMock Stateful Stubs, Burp Suite MITM Proxy, and Testcontainers.
 
-Source: [`slides/slides.md`](slides/slides.md) · cover + 50 numbered slides
+Source: [`slides/slides.md`](slides/slides.md) · cover + 51 numbered slides
 
 ## Run the deck
 
@@ -64,10 +64,11 @@ A PowerPoint export is also available at [`slides/slides-export.pptx`](slides/sl
 | 41 | Automation | 🐳 Docker in Integration Testing — Why Containers? | 1656 | Hermetic test isolation, eliminating "works on my machine", port conflicts, and DB pollution. |
 | 42 | Automation | 🧪 Testcontainers — Programmable Test Infrastructure | 1684 | Dynamic ports, code-driven container lifecycle, Compose comparison, and dynamic bridge networks. |
 | 43 | Automation | 🧪 Moby Ryuk — Container Garbage Collector | 1726 | Heartbeat socket cleanup, zero-leak guarantees, and environment configuration flags. |
-| 44 | Automation | 🎭 Playwright — Unified UI & API Test Engine | 1779 | Why Playwright for integration: unified testing, auto-waiting assertions, network route intercepts, and tracing. |
-| 45 | Automation | 🎭 Playwright — Full-Stack Browser E2E Flow | 1807 | Multi-step authentication flow testing with dynamic mock header injection (`mockScenario(page)`). |
-| 46 | Automation | 🧪 Playwright & Testcontainers — Orchestration | 1836 | Direct REST `APIRequestContext` integration testing against ephemeral containers with teardown reset. |
-| 47 | Automation | 🛠️ Command Cheat Sheet | 1862 | Essential developer commands (`make build`, `make test`, `make test-integration`, `make test-e2e`, `make sync`). |
-| 48 | Workshop | 🎯 Workshop Thinking Cases (1–5) | 1896 | Challenges 1–5: Fund transfers, eKYC gating, atomic rollbacks, race conditions, outbound SMS failure. |
-| 49 | Workshop | 🎯 Workshop Thinking Cases (6–11) | 1912 | Challenges 6–11: OAuth replay, BFF aggregation, REST schema contracts, timeout injection, idempotency, JSBridge. |
-| 50 | Outro | 🎉 Thank You! | 1932 | Closing slide with links to GitHub repository and Workshop Guide. |
+| 44 | Automation | 🎭 Playwright — Unified UI & API Test Engine | 1779 | Modern full-stack testing advantages, dual-layer UI/API automation, and zero-flake auto-waiting. |
+| 45 | Automation | 🎭 Playwright — Core Test Primitives & API | 1807 | Resilient selectors (`getByTestId`), auto-retrying assertions, and dynamic `Mock-Scenario` header injection. |
+| 46 | Automation | 🎭 Playwright — Full-Stack Browser E2E Flow | 1836 | Multi-step authentication flow testing with dynamic mock header injection (`mockScenario(page)`). |
+| 47 | Automation | 🧪 Playwright & Testcontainers — Orchestration | 1888 | Direct REST `APIRequestContext` integration testing against ephemeral containers with teardown reset. |
+| 48 | Automation | 🛠️ Command Cheat Sheet | 1914 | Essential developer commands (`make build`, `make test`, `make test-integration`, `make test-e2e`, `make sync`). |
+| 49 | Workshop | 🎯 Workshop Thinking Cases (1–5) | 1948 | Challenges 1–5: Fund transfers, eKYC gating, atomic rollbacks, race conditions, outbound SMS failure. |
+| 50 | Workshop | 🎯 Workshop Thinking Cases (6–11) | 1964 | Challenges 6–11: OAuth replay, BFF aggregation, REST schema contracts, timeout injection, idempotency, JSBridge. |
+| 51 | Outro | 🎉 Thank You! | 1984 | Closing slide with links to GitHub repository and Workshop Guide. |
