@@ -811,11 +811,13 @@ layout: section
   <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
     <li>• <strong>Character Stream</strong>: Treats JSON as unparsed dumb text.</li>
     <li>• ⚠️ <strong>Spacing Sensitive</strong>: <code>{"a":1}</code> ≠ <code>{"a": 1}</code>.</li>
-    <li>• ⚠️ <strong>Newline Sensitive</strong>: Indented JSON triggers failure.</li>
+    <li>• ⚠️ <strong>Newline Sensitive</strong>: Indented JSON triggers test failure.</li>
     <li>• ⚠️ <strong>Key Order Sensitive</strong>: <code>{"a":1,"b":2}</code> ≠ <code>{"b":2,"a":1}</code>.</li>
   </ul>
-  <div class="bg-rose-950/40 rounded p-1.5 border border-rose-500/40 text-xs text-rose-200 mt-auto">
-    💥 <em>Result</em>: Flaky tests caused by serializer formatting nuances.
+  <div class="bg-rose-950/50 rounded p-1.5 border border-rose-500/40 text-xs text-rose-200 mt-auto flex items-center justify-between font-mono">
+    <span>{"a":1, "b":2}</span>
+    <span class="text-rose-400 font-bold font-sans">❌ NO MATCH</span>
+    <span>{"b":2, "a":1}</span>
   </div>
 </div>
 
@@ -824,11 +826,13 @@ layout: section
   <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
     <li>• <strong>AST Object Parsing</strong>: Parses JSON document tree first.</li>
     <li>• 🟢 <strong>Whitespace Immune</strong>: Ignores spaces, tabs, and linebreaks.</li>
-    <li>• 🟢 <strong>Key Order Agnostic</strong>: Compares key-value pairs semantically.</li>
+    <li>• 🟢 <strong>Key Order Agnostic</strong>: Compares key-values semantically.</li>
     <li>• 🟢 <strong>Cross-Language Safe</strong>: 100% stable across Go, Java, and Node.</li>
   </ul>
-  <div class="bg-emerald-950/40 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <code>{"a":1,"b":2}</code> ≡ <code>{\n&nbsp;&nbsp;"b": 2,\n&nbsp;&nbsp;"a": 1\n}</code>
+  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 text-xs text-emerald-200 mt-auto flex items-center justify-between font-mono">
+    <span>{"a":1, "b":2}</span>
+    <span class="text-emerald-400 font-bold font-sans">✅ EQUIVALENT</span>
+    <span>{"b":2, "a":1}</span>
   </div>
 </div>
 
