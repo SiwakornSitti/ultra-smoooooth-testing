@@ -858,30 +858,38 @@ layout: section
 
 # 🎯 WireMock — Body & JSONPath RegEx Matching
 
-### Payload Validation & Pattern Filtering
+### Raw Text Matching vs. Semantic JSON Evaluation
 
 <div class="multi-col-grid-2">
 
-<div class="col-card">
-  <h3 class="text-emerald-400">📝 Raw Body RegEx</h3>
-  <p class="mb-2">
-    Match unparsed raw payload strings using standard regex patterns:
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    <code>.*"national_id"\\s*:\\s*"[0-9]{13}".*</code>
+<div class="col-card space-y-2">
+  <h3 class="text-amber-400">📝 1. Raw Body RegEx (<code>matches</code>)</h3>
+  <ul class="space-y-1.5 text-slate-200 text-sm leading-relaxed">
+    <li>• <strong>Evaluation</strong>: Treats the entire HTTP body as a flat, unparsed text string.</li>
+    <li>• ⚠️ <strong>Formatting Fragile</strong>: Sensitive to spaces, indentation, and key reordering.</li>
+    <li>• <strong>Best Used For</strong>: Non-JSON formats (XML, CSV, plain text, URL-encoded).</li>
+  </ul>
+  <div class="slide-card text-sm mt-auto bg-slate-900/80 p-2.5 border-amber-500/40 font-mono">
+    <code>"bodyPatterns": [<br/>&nbsp;&nbsp;{ "matches": ".*\"national_id\"\\s*:\\s*\"[0-9]{13}\".*" }<br/>]</code>
   </div>
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🔍 Inline JSONPath RegEx</h3>
-  <p class="mb-2">
-    Evaluate regex inside JSONPath filter predicates without formatting fragility:
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    <code>$[?(@.phone =~ /^0[689][0-9]{8}$/)]</code>
+<div class="col-card space-y-2">
+  <h3 class="text-emerald-400">🔍 2. Inline JSONPath RegEx (<code>matchesJsonPath</code>)</h3>
+  <ul class="space-y-1.5 text-slate-200 text-sm leading-relaxed">
+    <li>• <strong>Evaluation</strong>: Parses JSON tree first, then evaluates regex on the target field.</li>
+    <li>• 🟢 <strong>Whitespace Immune</strong>: Immune to formatting, minification, and key ordering.</li>
+    <li>• <strong>Best Used For</strong>: Modern REST APIs &amp; structured JSON microservices.</li>
+  </ul>
+  <div class="slide-card text-sm mt-auto bg-slate-900/80 p-2.5 border-emerald-500/40 font-mono">
+    <code>"bodyPatterns": [<br/>&nbsp;&nbsp;{ "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" }<br/>]</code>
   </div>
 </div>
 
+</div>
+
+<div class="slide-card text-sm mt-2 bg-slate-900/60 border-cyan-500/40">
+  💡 <strong>Key Takeaway</strong>: Always prefer <code>matchesJsonPath</code> with the <code>=~</code> regex operator for JSON payloads to avoid brittle tests caused by payload reformatting.
 </div>
 
 ---
