@@ -1376,24 +1376,6 @@ layout: section
 
 ---
 
-# 🪄 WireMock — Handlebars Request & Encoding Helpers
-
-### Request Model Extraction & Data Encoders
-
-<div v-pre class="slide-card text-sm p-2.5">
-
-| Helper Type | Syntax Example | Description |
-| :--- | :--- | :--- |
-| **Request Headers** | `{{request.headers.[X-Trace-ID]}}` | Extracts incoming HTTP header value |
-| **Query Parameters** | `{{request.query.page}}` | Extracts query parameter from URL |
-| **JSON Path Body** | `{{jsonPath request.body '$.account.id'}}` | Extracts nested field from request body |
-| **Base64 Encoding** | `{{base64 request.body}}` | Base64 encodes/decodes request payload |
-| **URL Encoding** | `{{urlEncode request.query.target}}` | Encodes URL parameter strings |
-
-</div>
-
----
-
 # 🪄 Dynamic Response Headers & Timezones
 
 ### Injecting In-Flight Tracking IDs, Cookies & Location Headers
@@ -1429,6 +1411,24 @@ layout: section
 <div v-pre class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
   <span class="text-base">💡</span>
   <span class="text-slate-200 leading-snug"><strong>Header Templating</strong>: Response templating applies to both <code>"headers"</code> and <code>"body"</code> blocks, allowing realistic simulation of security cookies and REST redirect protocols.</span>
+</div>
+
+---
+
+# 🪄 WireMock — Handlebars Request & Encoding Helpers
+
+### Request Model Extraction & Data Encoders
+
+<div v-pre class="slide-card text-sm p-2.5">
+
+| Helper Type | Syntax Example | Description |
+| :--- | :--- | :--- |
+| **Request Headers** | `{{request.headers.[X-Trace-ID]}}` | Extracts incoming HTTP header value |
+| **Query Parameters** | `{{request.query.page}}` | Extracts query parameter from URL |
+| **JSON Path Body** | `{{jsonPath request.body '$.account.id'}}` | Extracts nested field from request body |
+| **Base64 Encoding** | `{{base64 request.body}}` | Base64 encodes/decodes request payload |
+| **URL Encoding** | `{{urlEncode request.query.target}}` | Encodes URL parameter strings |
+
 </div>
 
 ---
