@@ -1218,6 +1218,43 @@ layout: section
 
 ---
 
+# 📥 WireMock — Extracting Request Data & Echoing IDs
+
+### Reading Path, Query, Header & Body Values into Responses
+
+<div v-pre class="multi-col-grid-2 gap-3 mb-2">
+
+<div class="col-card p-3 space-y-1.5">
+  <h3 class="text-cyan-400 text-base mb-1">🌐 1. URL Path &amp; Query Params</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Path Segment</strong>: <code>{{request.pathSegments.[2]}}</code><br/><span class="text-slate-400">Extracts <code>USR-99</code> from <code>/api/users/USR-99</code></span></li>
+    <li>• <strong>Query Parameter</strong>: <code>{{request.query.id}}</code><br/><span class="text-slate-400">Extracts <code>ORD-123</code> from <code>/orders?id=ORD-123</code></span></li>
+  </ul>
+  <div class="bg-slate-900/90 rounded p-2 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+    <code>"userId": "{{request.pathSegments.[2]}}",<br/>"orderId": "{{request.query.id}}"</code>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-1.5">
+  <h3 class="text-emerald-400 text-base mb-1">📦 2. Headers &amp; JSON Body Fields</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Header</strong>: <code>{{request.headers.[X-User-Id]}}</code><br/><span class="text-slate-400">Extracts custom incoming tracking headers</span></li>
+    <li>• <strong>JSON Body</strong>: <code>{{jsonPath request.body '$.account.id'}}</code><br/><span class="text-slate-400">Extracts nested JSON payload values</span></li>
+  </ul>
+  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>"accountId": "{{jsonPath request.body '$.account.id'}}",<br/>"traceId": "{{request.headers.[X-Trace-ID]}}"</code>
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2.5 flex items-center gap-2">
+  <span class="text-lg">💡</span>
+  <span class="text-slate-200 leading-relaxed">Always declare <code>"transformers": ["response-template"]</code> in the response block to enable dynamic Handlebars interpolation.</span>
+</div>
+
+---
+
 # 🎲 WireMock — Handlebars Dynamic Data Generators
 
 ### Timestamps, Random IDs & Token Generation
