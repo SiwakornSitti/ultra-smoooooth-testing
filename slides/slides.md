@@ -1004,7 +1004,7 @@ flowchart TB
 
 </div>
 
-<div class="slide-card text-sm mt-3">
+<div v-pre class="slide-card text-sm mt-3">
   🪄 Echoes incoming request headers/body and dynamically generates UUIDs and timestamps on the fly with <code>response-template</code>.
 </div>
 
@@ -1065,7 +1065,7 @@ flowchart TB
 
 </div>
 
-<div class="slide-card text-sm mt-3">
+<div v-pre class="slide-card text-sm mt-3">
   🔀 Supports conditional response branching (`#if eq`), arithmetic fee calculations (`math '*' 0.01`), and relative date offsets.
 </div>
 
@@ -1130,10 +1130,8 @@ flowchart TB
 
 </div>
 
-<div class="slide-card text-sm mt-3">
+<div v-pre class="slide-card text-sm mt-3">
   🔁 Loops through request arrays, applies string transformations (`upper this.sku`), and uses `{{#unless @last}},{{/unless}}` to suppress trailing commas.
-</div>
-
 </div>
 
 ---
