@@ -130,19 +130,19 @@ class: strategy-slide
 
 <div class="multi-col-grid-2">
 
-<div class="col-card space-y-2">
+<div class="col-card space-y-3">
   <h3 class="text-emerald-400">🪝 Architectural Role</h3>
-  <div class="text-xs text-slate-300 space-y-2">
+  <div class="text-sm text-slate-200 space-y-3 leading-relaxed">
     <div>
-      <strong class="text-emerald-300 block">1. Third-Party Simulation</strong>
+      <strong class="text-emerald-300 block text-base font-bold mb-0.5">1. Third-Party Simulation</strong>
       Virtualize Paotang OAuth (<code>/oauth/token</code>) and SMS gateways with lightweight HTTP stubs.
     </div>
     <div>
-      <strong class="text-emerald-300 block">2. Deterministic Edge Cases</strong>
+      <strong class="text-emerald-300 block text-base font-bold mb-0.5">2. Deterministic Edge Cases</strong>
       Instantly test token expiration, rate-limit throttling, HTTP 503, and network timeouts on demand.
     </div>
     <div>
-      <strong class="text-emerald-300 block">3. Zero Limits &amp; Zero Billing</strong>
+      <strong class="text-emerald-300 block text-base font-bold mb-0.5">3. Zero Limits &amp; Zero Billing</strong>
       Execute thousands of CI/CD test runs without provider sandboxes or billing quotas.
     </div>
   </div>
@@ -183,19 +183,19 @@ class: strategy-slide
 
 <div class="multi-col-grid-2">
 
-<div class="col-card space-y-2">
+<div class="col-card space-y-3">
   <h3 class="text-amber-400">🔀 MITM Interception Role</h3>
-  <div class="text-xs text-slate-300 space-y-2">
+  <div class="text-sm text-slate-200 space-y-3 leading-relaxed">
     <div>
-      <strong class="text-amber-300 block">1. Transparent In-Flight Proxy</strong>
+      <strong class="text-amber-300 block text-base font-bold mb-0.5">1. Transparent In-Flight Proxy</strong>
       Sits between browser / mobile WebViews and backend services to inspect and alter HTTP traffic.
     </div>
     <div>
-      <strong class="text-amber-300 block">2. Mock-Scenario Header Steering</strong>
+      <strong class="text-amber-300 block text-base font-bold mb-0.5">2. Mock-Scenario Header Steering</strong>
       Inject <code>Mock-Scenario: PAOTANG:SUCCESS</code> on the fly to steer stubs without code modifications.
     </div>
     <div>
-      <strong class="text-amber-300 block">3. Response Status &amp; Payload Tampering</strong>
+      <strong class="text-amber-300 block text-base font-bold mb-0.5">3. Response Status &amp; Payload Tampering</strong>
       Mutate backend responses into HTTP 401/500 to test frontend fallback UI banners and error handling.
     </div>
   </div>
@@ -216,7 +216,7 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS
 }
 ```
 
-  <div class="text-[11px] text-slate-400 mt-1">
+  <div class="text-sm text-slate-200 mt-2 font-medium">
     💡 Injects scenario headers directly in-flight before forwarding to BFF.
   </div>
 </div>
@@ -231,19 +231,19 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS
 
 <div class="multi-col-grid-2">
 
-<div class="col-card space-y-2">
+<div class="col-card space-y-3">
   <h3 class="text-cyan-400">🐳 Hermetic Lifecycle Role</h3>
-  <div class="text-xs text-slate-300 space-y-2">
+  <div class="text-sm text-slate-200 space-y-3 leading-relaxed">
     <div>
-      <strong class="text-cyan-300 block">1. Ephemeral On-Demand Instances</strong>
+      <strong class="text-cyan-300 block text-base font-bold mb-0.5">1. Ephemeral On-Demand Instances</strong>
       Spins up clean PostgreSQL 16 and WireMock instances directly inside test suite hooks.
     </div>
     <div>
-      <strong class="text-cyan-300 block">2. Dynamic Randomized Ports</strong>
+      <strong class="text-cyan-300 block text-base font-bold mb-0.5">2. Dynamic Randomized Ports</strong>
       Assigns randomized host ports to eliminate port collisions across developer workstations &amp; CI.
     </div>
     <div>
-      <strong class="text-cyan-300 block">3. Guaranteed Ryuk Teardown</strong>
+      <strong class="text-cyan-300 block text-base font-bold mb-0.5">3. Guaranteed Ryuk Teardown</strong>
       Automatic Moby Ryuk container removes all network bridges and volumes—zero orphan leaks.
     </div>
   </div>
@@ -278,19 +278,19 @@ process.env.WIREMOCK_PORT = wiremock.getMappedPort(8080).toString();
 
 <div class="multi-col-grid-2">
 
-<div class="col-card space-y-2">
+<div class="col-card space-y-3">
   <h3 class="text-purple-400">🎭 Full-Stack Test Engine</h3>
-  <div class="text-xs text-slate-300 space-y-2">
+  <div class="text-sm text-slate-200 space-y-3 leading-relaxed">
     <div>
-      <strong class="text-purple-300 block">1. Unified UI + API Testing</strong>
+      <strong class="text-purple-300 block text-base font-bold mb-0.5">1. Unified UI + API Testing</strong>
       Drive browser DOM interactions and headless REST verification in the same test spec.
     </div>
     <div>
-      <strong class="text-purple-300 block">2. Web-First Auto-Waiting</strong>
+      <strong class="text-purple-300 block text-base font-bold mb-0.5">2. Web-First Auto-Waiting</strong>
       Eliminates flaky <code>sleep()</code> by dynamically awaiting element visibility and network idle.
     </div>
     <div>
-      <strong class="text-purple-300 block">3. Post-Mortem CI Tracing</strong>
+      <strong class="text-purple-300 block text-base font-bold mb-0.5">3. Post-Mortem CI Tracing</strong>
       Captures DOM snapshots, action timelines, and network waterfalls for failure analysis.
     </div>
   </div>
@@ -553,7 +553,7 @@ layout: section
   <p class="mb-2">
     Use <strong><code>urlPath</code></strong> for stable REST endpoints when query strings vary, and <strong><code>urlPathPattern</code></strong> for dynamic path parameters (e.g. UUIDs, IDs).
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     🎯 <em>Example</em>: <code>/lab/api/users/[0-9a-f-]+</code> safely matches any valid UUID path without hardcoding.
   </div>
 </div>
@@ -583,7 +583,7 @@ layout: section
   <p class="mb-2">
     Steer test scenarios dynamically via custom headers while verifying authorization tokens and security boundaries.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     💉 <em>Header Steering</em>: Allows frontend tests and Burp MITM to select specific mock responses dynamically without restarting services.
   </div>
 </div>
@@ -612,7 +612,7 @@ layout: section
   <p class="mb-2">
     WireMock evaluates HTTP method, path, headers, and query parameters simultaneously. <strong>All defined matchers must evaluate to true</strong> for a match.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     ⚖️ If any single matcher fails, WireMock cascades evaluation to the next priority stub.
   </div>
 </div>
@@ -686,7 +686,7 @@ layout: section
   <p class="mb-2">
     Lower integer value = <strong>Higher Precedence</strong> (<code>1 &gt; 5 &gt; 10 &gt; 100</code>). WireMock stops evaluation on the first matching highest-priority stub.
   </p>
-  <ul class="space-y-1 text-slate-300 text-xs mt-auto">
+  <ul class="space-y-1 text-slate-300 text-sm mt-auto">
     <li>• <strong>Priority 1</strong>: Specific Error & Fault Overrides</li>
     <li>• <strong>Priority 5–10</strong>: Default Happy Path Stubs</li>
     <li>• <strong>Priority 100</strong>: Catch-All Proxy Fallback</li>
@@ -698,7 +698,7 @@ layout: section
   <p class="mb-2">
     If the <code>"priority"</code> field is omitted in a JSON mapping file, WireMock automatically assigns a default priority of <strong>5</strong>.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     💡 <em>Resolution</em>: Highest priority (lowest number) wins. If stubs share the same priority, the most recently loaded stub takes precedence.
   </div>
 </div>
@@ -819,7 +819,7 @@ layout: section
   <p class="mb-2">
     Match standard 36-character UUIDs and dynamic entity identifiers:
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     <code>"urlPathPattern": "/api/users/[0-9a-fA-F-]{36}/accounts"</code>
   </div>
 </div>
@@ -847,7 +847,7 @@ layout: section
   <p class="mb-2">
     Validate Bearer JWTs and restrict scenarios strictly to registered enum values:
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     <code>"matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</code>
   </div>
 </div>
@@ -867,7 +867,7 @@ layout: section
   <p class="mb-2">
     Match unparsed raw payload strings using standard regex patterns:
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     <code>.*"national_id"\\s*:\\s*"[0-9]{13}".*</code>
   </div>
 </div>
@@ -877,7 +877,7 @@ layout: section
   <p class="mb-2">
     Evaluate regex inside JSONPath filter predicates without formatting fragility:
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     <code>$[?(@.phone =~ /^0[689][0-9]{8}$/)]</code>
   </div>
 </div>
@@ -995,7 +995,7 @@ layout: section
 
 ### Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"`
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <div class="slide-card space-y-2 p-3">
   <h3 class="text-emerald-400 font-bold text-sm">🧩 1. Expression Anatomy</h3>
@@ -1041,7 +1041,7 @@ layout: section
   <p class="mb-2">
     Raw string comparison fails when key ordering changes or formatting differs. <code>equalToJson</code> parses payloads into ASTs to perform <strong>semantic equivalence</strong>.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     ✨ <code>{"a":1,"b":2}</code> and <code>{"b": 2, \n "a": 1}</code> evaluate as <strong>100% identical</strong>.
   </div>
 </div>
@@ -1051,7 +1051,7 @@ layout: section
   <p class="mb-2">
     Guarantees integration tests pass reliably regardless of serialization nuances across Go, Next.js, and Java client runtimes.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     🛡️ Eliminates false test failures caused by whitespace, linebreaks, or map key ordering differences.
   </div>
 </div>
@@ -1078,7 +1078,7 @@ layout: section
 
 <div class="col-card">
   <h3 class="text-emerald-400">⚙️ Lenient Contract Flags</h3>
-  <ul class="space-y-2 text-slate-300 text-xs">
+  <ul class="space-y-2 text-slate-200 text-sm">
     <li>• <strong><code>ignoreExtraElements: true</code></strong>: Ignores new or unknown fields in request payload (supports non-breaking schema evolution).</li>
     <li>• <strong><code>ignoreArrayOrder: true</code></strong>: Treats JSON arrays as unordered sets rather than strict sequences.</li>
   </ul>
@@ -1400,7 +1400,7 @@ layout: section
 
 ### Real-World Latency Simulation (`delayDistribution`)
 
-<div class="jitter-grid text-xs">
+<div class="jitter-grid text-sm">
 
 <div class="slide-card space-y-2">
   <div>
@@ -1420,7 +1420,7 @@ layout: section
 ```
   </div>
 
-  <p class="text-slate-400 text-xs mt-2 pt-1 border-t border-slate-700/50">📌 <strong>median</strong>: 50th-percentile ms &nbsp;|&nbsp; <strong>sigma</strong>: tail spread</p>
+  <p class="text-slate-300 text-sm mt-2 pt-1 border-t border-slate-700/50">📌 <strong>median</strong>: 50th-percentile ms &nbsp;|&nbsp; <strong>sigma</strong>: tail spread</p>
 </div>
 
 <div class="slide-card space-y-2">
@@ -1441,7 +1441,7 @@ layout: section
 ```
   </div>
 
-  <p class="text-slate-400 text-xs mt-2 pt-1 border-t border-slate-700/50">📌 <strong>lower</strong>: min delay ms &nbsp;|&nbsp; <strong>upper</strong>: max delay ms</p>
+  <p class="text-slate-300 text-sm mt-2 pt-1 border-t border-slate-700/50">📌 <strong>lower</strong>: min delay ms &nbsp;|&nbsp; <strong>upper</strong>: max delay ms</p>
 </div>
 
 </div>
@@ -1482,7 +1482,7 @@ layout: section
 <div class="col-card">
   <h3 class="text-emerald-400">🏷️ scenarioName</h3>
   <p class="mb-2"><strong>Scenario Identifier</strong>: Groups related stub mappings into a single isolated state machine instance.</p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
     <code>"scenarioName": "order-lifecycle"</code>
   </div>
 </div>
@@ -1490,7 +1490,7 @@ layout: section
 <div class="col-card">
   <h3 class="text-emerald-400">🚦 requiredScenarioState</h3>
   <p class="mb-2"><strong>Precondition Guard</strong>: Required state for this stub to match. Always begins in default state <code>"Started"</code>.</p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
     <code>"requiredScenarioState": "Started"</code>
   </div>
 </div>
@@ -1498,7 +1498,7 @@ layout: section
 <div class="col-card">
   <h3 class="text-emerald-400">🔄 newScenarioState</h3>
   <p class="mb-2"><strong>State Transition</strong>: Target state to transition into <em>after</em> serving response. If omitted, state persists.</p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
     <code>"newScenarioState": "PAID"</code>
   </div>
 </div>
@@ -1535,7 +1535,7 @@ flowchart LR
 
 </div>
 
-<div class="slide-card text-xs mt-2">
+<div class="slide-card text-sm mt-2">
   ⚡ <strong>Deterministic Routing</strong>: The exact same HTTP endpoint produces completely different responses based on the caller's historical interaction sequence.
 </div>
 
@@ -1545,7 +1545,7 @@ flowchart LR
 
 ### OAuth Authorization Code & OTP Replay Attack Prevention
 
-<div class="jitter-grid text-xs">
+<div class="jitter-grid text-sm">
 
 <div class="slide-card space-y-2">
   <div>
@@ -1568,7 +1568,7 @@ flowchart LR
 }
 ```
   </div>
-  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> &amp; transitions state to <code>TOKEN_ISSUED</code></p>
+  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> &amp; transitions state to <code>TOKEN_ISSUED</code></p>
 </div>
 
 <div class="slide-card space-y-2">
@@ -1591,7 +1591,7 @@ flowchart LR
 }
 ```
   </div>
-  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🔴 <strong>Returns 400 Bad Request</strong> (Code already consumed)</p>
+  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🔴 <strong>Returns 400 Bad Request</strong> (Code already consumed)</p>
 </div>
 
 </div>
@@ -1628,7 +1628,7 @@ flowchart LR
 }
 ```
 
-<div class="slide-card text-xs mt-2">
+<div class="slide-card text-sm mt-2">
   📦 Shipping is allowed only after <code>PAID</code>. A duplicate ship attempt triggers a <code>400 Bad Request</code> stub.
 </div>
 
@@ -1654,7 +1654,7 @@ flowchart LR
 
 </div>
 
-<div class="jitter-grid text-xs">
+<div class="jitter-grid text-sm">
 
 <div class="slide-card space-y-1">
   <h3 class="text-rose-400 font-bold">💥 Flapping Failures (Attempts 1 &amp; 2)</h3>
@@ -1691,7 +1691,7 @@ flowchart LR
 
 ### At-Least-Once Delivery & Duplicate Message Detection
 
-<div class="jitter-grid text-xs">
+<div class="jitter-grid text-sm">
 
 <div class="slide-card space-y-2">
   <div>
@@ -1714,7 +1714,7 @@ flowchart LR
 }
 ```
   </div>
-  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🟢 <strong>Returns 202 Accepted</strong> (First-time processing)</p>
+  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🟢 <strong>Returns 202 Accepted</strong> (First-time processing)</p>
 </div>
 
 <div class="slide-card space-y-2">
@@ -1737,7 +1737,7 @@ flowchart LR
 }
 ```
   </div>
-  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🟡 <strong>Returns 409 Conflict</strong> (Idempotent guard)</p>
+  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🟡 <strong>Returns 409 Conflict</strong> (Idempotent guard)</p>
 </div>
 
 </div>
@@ -1748,7 +1748,7 @@ flowchart LR
 
 ### Preventing State Bleed with the WireMock Admin API
 
-<div class="slide-card text-xs space-y-2.5 pt-2">
+<div class="slide-card text-sm space-y-2.5 pt-2">
 
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-sm">🔄 Automatic Scenario Reset in Test Teardown</h3>
@@ -1766,12 +1766,12 @@ test.afterEach(async ({ request }) => {
 
 <div class="grid grid-cols-2 gap-3 pt-1 border-t border-slate-700/50">
   <div>
-    <h4 class="text-cyan-400 font-semibold text-xs mb-0.5">🔍 Inspect Active Scenario States</h4>
-    <code class="text-xs text-slate-300">curl http://localhost:8088/__admin/scenarios</code>
+    <h4 class="text-cyan-400 font-semibold text-sm mb-0.5">🔍 Inspect Active Scenario States</h4>
+    <code class="text-sm text-slate-200">curl http://localhost:8088/__admin/scenarios</code>
   </div>
   <div>
-    <h4 class="text-cyan-400 font-semibold text-xs mb-0.5">⚡ Fast-Forward State for Test Setup</h4>
-    <code class="text-xs text-slate-300">PUT /__admin/scenarios/{name}/state {"state": "PAID"}</code>
+    <h4 class="text-cyan-400 font-semibold text-sm mb-0.5">⚡ Fast-Forward State for Test Setup</h4>
+    <code class="text-sm text-slate-200">PUT /__admin/scenarios/{name}/state {"state": "PAID"}</code>
   </div>
 </div>
 
@@ -1814,7 +1814,7 @@ class: pt-4 pb-2 px-8
   <p class="mb-2">
     Pause outbound HTTP requests mid-flight to inspect payloads, inject custom <code>Mock-Scenario</code> headers, or tamper with parameters before reaching the gateway.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-amber-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-amber-500/30">
     💉 <em>Scenario</em>: Force specific error conditions without code modifications.
   </div>
 </div>
@@ -1824,7 +1824,7 @@ class: pt-4 pb-2 px-8
   <p class="mb-2">
     Pause inbound HTTP responses to alter status codes (<code>200 ➔ 500/403</code>) and mutate JSON payloads to test frontend error handling and UI fallback resilience.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     🛡️ <em>Resilience</em>: Verify UI gracefully handles partial outages and error banners.
   </div>
 </div>
@@ -1868,7 +1868,7 @@ Mock-Scenario: PT_PASS:SUCCESS_ONCE
   <p class="mb-2">
     Maintains a complete chronological record of every outbound request and inbound response with filtering by status code, method, host, or payload size.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     🔍 Filter by regex or status code (e.g. <code>4xx / 5xx</code>) to isolate regressions instantly.
   </div>
 </div>
@@ -1878,7 +1878,7 @@ Mock-Scenario: PT_PASS:SUCCESS_ONCE
   <p class="mb-2">
     Instantly isolate failing API calls and right-click to send requests directly to <strong>Repeater</strong> for manual replay or <strong>Intruder</strong> for boundary fuzzing.
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
     ⚡ One-click handoff between live logging, manual replay, and parameter fuzzing.
   </div>
 </div>
@@ -1934,14 +1934,14 @@ layout: section
   <p class="mb-2">
     Testcontainers is a <strong>code SDK</strong> (TypeScript/Go/Java), not a standalone container engine. It communicates via the local Docker socket (<code>/var/run/docker.sock</code>).
   </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-amber-500/30">
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-amber-500/30">
     🎯 <strong>Zero Host Tooling</strong>: Docker is the <em>only</em> tool needed. No local DBs or Java runtimes on host!
   </div>
 </div>
 
 <div class="col-card">
   <h3 class="text-emerald-400">🛠️ Supported Container Runtimes</h3>
-  <ul class="space-y-1 text-slate-300 text-xs">
+  <ul class="space-y-1 text-slate-200 text-sm">
     <li>• <strong>Docker Desktop / Docker CE</strong>: Default on macOS, Windows, Linux, and CI.</li>
     <li>• <strong>OrbStack / Colima</strong>: Ultra-fast, lightweight macOS open-source alternatives.</li>
     <li>• <strong>Podman / Rancher Desktop</strong>: Compatible via standard Docker socket emulation.</li>
@@ -1957,7 +1957,7 @@ layout: section
 
 ### Flakiness, Collisions & State Bleed in Shared Test Infrastructure
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <v-clicks>
 
@@ -2019,7 +2019,7 @@ layout: section
 
 ### Isolated, Disposable & Predictable Infrastructure On-Demand
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <v-clicks>
 
@@ -2207,8 +2207,8 @@ layout: section
 
 <div class="col-card">
   <h3 class="text-emerald-400">🎯 4-Stage Actionability Lifecycle</h3>
-  <p class="mb-2 text-slate-300 text-xs">Playwright automatically awaits all 4 conditions before clicking or filling:</p>
-  <ul class="space-y-1.5 text-slate-300 text-xs">
+  <p class="mb-2 text-slate-200 text-sm">Playwright automatically awaits all 4 conditions before clicking or filling:</p>
+  <ul class="space-y-1.5 text-slate-200 text-sm">
     <li>1️⃣ <strong>Attached</strong> — Element exists in the DOM tree</li>
     <li>2️⃣ <strong>Visible</strong> — Non-zero bounding box, not <code>display: none</code></li>
     <li>3️⃣ <strong>Stable</strong> — Completed CSS animations &amp; transitions</li>
@@ -2261,7 +2261,7 @@ export function mockScenario(page: Page) {
 }
 ```
 
-<div class="slide-card text-xs mt-2">
+<div class="slide-card text-sm mt-2">
   🔀 Injects custom <code>Mock-Scenario</code> headers dynamically. Supports multi-scenario arguments (e.g. <code>setScenario(PAOTANG.SUCCESS, OTP.SUCCESS)</code>) to steer multiple downstream WireMock stubs simultaneously.
 </div>
 
@@ -2287,7 +2287,7 @@ test("Biometric verification via native JSBridge", async ({ page }) => {
 });
 ```
 
-<div class="slide-card text-xs mt-2">
+<div class="slide-card text-sm mt-2">
   📱 <strong>Zero Mock Servers Needed</strong>: Playwright injects the native device bridge (<code>window.JSBridge</code>) directly into browser contexts before scripts execute via <code>page.addInitScript()</code>, eliminating separate mock servers.
 </div>
 
@@ -2318,7 +2318,7 @@ test("Paotang login verifies OTP & redirects", async ({ page }) => {
 });
 ```
 
-<div class="slide-card text-xs mt-2">
+<div class="slide-card text-sm mt-2">
   🎯 Combines DOM click actions, dynamic network header steering, and auto-waiting URL assertions in a single deterministic test.
 </div>
 
@@ -2345,7 +2345,7 @@ test.afterEach(async ({ request }) => {
 });
 ```
 
-<div class="slide-card text-xs mt-2">
+<div class="slide-card text-sm mt-2">
   🎭 Built-in <code>request</code> fixture executes backend REST tests against live containerized services with zero browser overhead.
 </div>
 
@@ -2355,7 +2355,7 @@ test.afterEach(async ({ request }) => {
 
 ### Record Every Action, DOM Snapshot & Network Request for Post-Mortem Debugging
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <div class="slide-card p-3">
   <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
@@ -2406,7 +2406,7 @@ export default defineConfig({
 
 ### Common Locators, Actions, Web-First Assertions & Network Steering
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <div class="slide-card p-3">
   <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
@@ -2442,7 +2442,7 @@ export default defineConfig({
 
 ### Interactive UI, Debugging, Filtering & Code Generation
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <div class="slide-card p-3">
   <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
@@ -2474,7 +2474,7 @@ export default defineConfig({
 
 ### Dynamic Stubs, State Resets & Verification Endpoints
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <div class="slide-card p-3">
   <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
@@ -2506,7 +2506,7 @@ export default defineConfig({
 
 ### Everyday Monorepo, Build & Hermetic Test Commands
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
 <div class="slide-card p-3">
   <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
