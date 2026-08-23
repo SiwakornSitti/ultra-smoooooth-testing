@@ -39,7 +39,7 @@ mdc: true
 
 ### Mock the world. Control the chaos. Test without limits.
 
-<div class="space-y-3 pt-2 text-sm">
+<div class="space-y-2 pt-1 text-sm">
 
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🌐 1. Mock the World (WireMock)</h3>
@@ -56,9 +56,16 @@ mdc: true
 </div>
 
 <div class="slide-card">
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🚀 3. Test Without Limits (Playwright & Testcontainers)</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 3. Hermetic Infrastructure (Testcontainers)</h3>
   <p class="text-slate-300 leading-relaxed">
-    Execute full-stack integration and E2E browser tests against disposable, hermetic Docker containers with zero state pollution or port conflicts.
+    Execute integration suites against isolated, ephemeral Docker containers with dynamic ports and guaranteed Ryuk teardown.
+  </p>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 4. Test Without Limits (Playwright)</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Drive unified browser DOM interactions and headless REST API validation with zero-flake auto-waiting assertions and rich tracing.
   </p>
 </div>
 
@@ -128,30 +135,61 @@ mdc: true
 
 ---
 
-# 🚀 Pillar 3: Test Without Limits — Playwright & Testcontainers
+# 🐳 Pillar 3: Hermetic Infrastructure — Testcontainers
 
-### Hermetic Disposability & Full-Stack Test Automation
+### Isolated Ephemeral Containers, Dynamic Ports & Automatic Teardown
 
 <div class="slide-card text-sm space-y-3 pt-2">
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 Disposable Ephemeral Infrastructure</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 Code-Driven Ephemeral Infrastructure</h3>
   <p class="text-slate-300 leading-relaxed">
-    Testcontainers spins up fresh PostgreSQL and WireMock containers with dynamic port allocations for every test suite, torn down automatically by Moby Ryuk.
+    Spins up fresh PostgreSQL, Redis, and WireMock instances on demand inside test lifecycle hooks, providing pristine isolation for every test run.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 Unified UI & Headless API Testing</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔌 Dynamic Port Binding & Parallelism</h3>
   <p class="text-slate-300 leading-relaxed">
-    Playwright drives real browser DOM interactions while simultaneously executing direct backend REST API requests in the exact same test file.
+    Assigns randomized ephemeral host ports to eliminate port conflict errors and allow parallel execution across developer workstations and CI runners.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Zero Flakiness & Full Tracing</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🧹 Guaranteed Teardown with Moby Ryuk</h3>
   <p class="text-slate-300 leading-relaxed">
-    Auto-waiting assertions eliminate arbitrary <code>sleep()</code> timers, while failure recordings and HAR archives provide instant root-cause analysis.
+    A lightweight background watchdog monitors the test runner socket and cleanly removes containers, networks, and volumes even if processes crash.
+  </p>
+</div>
+
+</div>
+
+---
+
+# 🎭 Pillar 4: Test Without Limits — Playwright
+
+### Unified Browser Automation, REST API Testing & Zero Flakiness
+
+<div class="slide-card text-sm space-y-3 pt-2">
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 Unified UI + Headless API Testing</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Drives real browser DOM interactions while simultaneously executing direct backend REST API requests in the exact same spec file.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Auto-Waiting & Zero Flakiness</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Auto-waiting assertions eliminate arbitrary <code>sleep()</code> timers by dynamically awaiting element visibility, actionability, and network idle.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">📊 Rich Diagnostics & Trace Recording</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Captures full execution traces, step-by-step DOM snapshots, console logs, and network HAR archives for instant root-cause debugging.
   </p>
 </div>
 
@@ -262,7 +300,7 @@ flowchart LR
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">⚛️ Next.js 19 QA Web Frontend</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">⚛️ Next.js 19</h3>
   <p class="text-slate-300 leading-relaxed">
     Modern React 19 application with Tailwind CSS and interactive JSBridge integration for testing complex end-to-end user workflows.
   </p>
@@ -281,9 +319,9 @@ flowchart LR
 
 # 🧪 Technology Stack — Testing & Security Infrastructure
 
-### Mocking, MITM Proxy & Container Orchestration
+### Mocking, MITM Proxy, Ephemeral Containers & E2E Engine
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div class="slide-card text-sm space-y-2.5 pt-2">
 
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🪝 WireMock (API Virtualization)</h3>
@@ -300,9 +338,16 @@ flowchart LR
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 Playwright & 🐳 Testcontainers</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 Testcontainers (Ephemeral Infrastructure)</h3>
   <p class="text-slate-300 leading-relaxed">
-    Executes integration and E2E suites against ephemeral, code-managed Docker containers with guaranteed teardown by Moby Ryuk.
+    Spins up disposable PostgreSQL and WireMock Docker containers with dynamic ports and automatic Moby Ryuk garbage collection.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 Playwright (Full-Stack Test Runner)</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Drives headless browser E2E workflows and direct backend REST API integration tests with auto-waiting assertions and tracing.
   </p>
 </div>
 
@@ -312,47 +357,73 @@ flowchart LR
 
 # 🧱 Core Microservices
 
-<div class="w-full flex justify-center items-center my-auto py-1">
+### Domain Boundaries, Storage & Hermetic Integrations
 
-```mermaid
+<div class="topology-diagram w-full flex justify-center items-center my-auto py-1">
+
+```mermaid {scale: 0.72}
 flowchart TB
-    Website["💻 Website"] --> BFF["⚙️ BFF Service"]
-    subgraph CORE["Core Microservices"]
-        BFF --> User["👤 User Service"]
-        BFF --> Bank["🏦 Bank Account Service"]
-        BFF --> EKYC["🪪 EKYC Service"]
-        BFF --> Transfer["💸 Transfer Service"]
-        BFF --> OTP["🔑 OTP Service"]
-    end
-    User --> PG[("🐘 PostgreSQL")]
-    Bank --> PG
-    EKYC --> PG
-    Transfer --> PG
-
-    subgraph EXTERNAL["🌐 3rd-Party External Providers"]
-        Paotang["💳 Paotang OAuth Provider"]
-        SMSGateway["📡 SMS Gateway Provider"]
+    subgraph GATEWAY["⚡ API Orchestration"]
+        BFF["⚙️ bff-service<br/><code>:8080</code>"]
     end
 
-    User -.->|OAuth Exchange| WM["🪝 WireMock<br/>(Stub / Proxy)"]
-    OTP -.->|SMS Delivery| WM
+    subgraph SERVICES["🏡 Domain Microservices"]
+        direction LR
+        UserService["👤 user-service<br/><code>:8081</code>"]
+        BankService["🏦 bank-account-service<br/><code>:8082</code>"]
+        EKYCService["🪪 ekyc-service<br/><code>:8084</code>"]
+        TransferService["💸 transfer-service<br/><code>:8085</code>"]
+        OTPService["🔑 otp-service<br/><code>:8087</code>"]
+    end
 
-    WM -.->|Live Proxy / Fallback| Paotang
-    WM -.->|Live Proxy / Fallback| SMSGateway
+    subgraph DATA["🗄️ Persistence"]
+        DB[("🐘 PostgreSQL DB<br/><code>:5432</code>")]
+    end
 
-    style CORE fill:#0f172a,stroke:#10b981,color:#e2e8f0
-    style EXTERNAL fill:#0f172a,stroke:#f59e0b,color:#e2e8f0
-    style BFF fill:#065f46,stroke:#10b981,color:#fff
-    style PG fill:#1e3a8a,stroke:#3b82f6,color:#fff
-    style WM fill:#7c2d12,stroke:#f97316,color:#fff
-    style Paotang fill:#451a03,stroke:#f59e0b,color:#fde68a
-    style SMSGateway fill:#451a03,stroke:#f59e0b,color:#fde68a
+    subgraph MOCKS["🤖 External Stubs & Upstream"]
+        WireMock["🪝 WireMock Mock Server<br/><code>:8088</code>"]
+        Paotang["💳 Paotang OAuth"]
+        SMS["📡 SMS Gateway"]
+    end
+
+    BFF --> UserService
+    BFF --> BankService
+    BFF --> EKYCService
+    BFF --> TransferService
+    BFF --> OTPService
+
+    UserService -->|Read / Write| DB
+    BankService -->|Ledger Balances| DB
+    TransferService -->|ACID Transfers| DB
+
+    UserService -.->|OAuth Token Exchange| WireMock
+    OTPService -.->|Dispatch SMS OTP| WireMock
+
+    WireMock -.->|Proxy Fallback| Paotang
+    WireMock -.->|Proxy Fallback| SMS
+
+    classDef gateway fill:#1d4ed8,stroke:#93c5fd,color:#ffffff,stroke-width:2px
+    classDef service fill:#047857,stroke:#6ee7b7,color:#ffffff,stroke-width:2px
+    classDef db fill:#4338ca,stroke:#c4b5fd,color:#ffffff,stroke-width:2px
+    classDef mock fill:#b45309,stroke:#fcd34d,color:#fff7ed,stroke-width:2px
+    classDef ext fill:#78350f,stroke:#fbbf24,color:#fef3c7,stroke-width:1.5px
+
+    class BFF gateway
+    class UserService,BankService,EKYCService,TransferService,OTPService service
+    class DB db
+    class WireMock mock
+    class Paotang,SMS ext
+
+    style GATEWAY fill:#0f172a,stroke:#3b82f6,stroke-width:1.5px,color:#93c5fd
+    style SERVICES fill:#052e2b,stroke:#10b981,stroke-width:1.5px,color:#a7f3d0
+    style DATA fill:#1e1b4b,stroke:#6366f1,stroke-width:1.5px,color:#c7d2fe
+    style MOCKS fill:#451a03,stroke:#f59e0b,stroke-width:1.5px,color:#fde68a
 ```
 
 </div>
 
-<div class="text-center text-sm text-gray-400 pt-1">
-  BFF orchestrates · services own domain data · WireMock isolates all 3rd-party external providers
+<div class="slide-card text-sm mt-2">
+  💡 <strong>Architectural Boundaries</strong>: BFF orchestrates client calls · Services manage isolated domains with PostgreSQL persistence · WireMock isolates third-party OAuth & SMS providers.
 </div>
 
 ---
@@ -1624,6 +1695,31 @@ process.env.TESTCONTAINERS_RYUK_DISABLED = "true";
 
 ---
 
+# 🧪 Testcontainers — Ephemeral Suite Bootstrapping
+
+### Code-Driven Container Lifecycle (`tests/specs/support/containers.ts`)
+
+```typescript
+// 1. Boot isolated Docker bridge network
+const network = await new Network().start();
+
+// 2. Start ephemeral PostgreSQL & WireMock containers
+const db = await startPostgres(network);
+const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
+
+// 3. Start BFF Service wired to dynamic DB & WireMock
+const bff = await startBffService(network, {
+  DB_URL: db.getConnectionString(),
+  WIREMOCK_URL: `http://${wm.getNetworkHost()}:${wm.getMappedPort(8080)}`
+});
+```
+
+<div class="slide-card text-sm mt-3">
+  🐳 Dynamically creates isolated networks, boots database and mock containers on random ports, and passes runtime connection strings to services.
+</div>
+
+---
+
 # 🎭 Playwright — Unified UI & API Test Engine
 
 ### Modern Full-Stack Integration Testing Advantages
@@ -1703,23 +1799,20 @@ test("Paotang login verifies OTP & redirects", async ({ page }) => {
 
 ---
 
-# 🧪 Playwright & Testcontainers — Orchestration
+# 🎭 Playwright — Direct API Integration Testing
 
-### API Testing with Dynamic Ephemeral Containers (`bff.spec.ts`)
+### Headless REST Verification & Scenario Resets (`bff.spec.ts`)
 
 ```typescript
-test.beforeAll(async () => {
-  const network = await startNetwork();
-  const db = await startPostgres(network);
-  const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
-  const bff = await startBffService(network, { DB_URL: db.getConnectionString() });
-});
-
 test("fund transfer returns 201 Created and persists transaction", async ({ request }) => {
   const res = await request.post(`${bffUrl}/api/v1/transfers`, {
+    headers: { "Mock-Scenario": "TRANSFER:SUCCESS" },
     data: { amount: 500, from_account: "ACC-001", to_account: "ACC-002" }
   });
+
   expect(res.status()).toBe(201);
+  const body = await res.json();
+  expect(body.status).toBe("COMPLETED");
 });
 
 test.afterEach(async ({ request }) => {
@@ -1728,7 +1821,7 @@ test.afterEach(async ({ request }) => {
 ```
 
 <div class="slide-card text-sm mt-3">
-  🐳 Spins up ephemeral PostgreSQL and WireMock containers per test suite and resets state machines in <code>test.afterEach</code>.
+  🎭 Executes direct REST API requests with built-in Playwright <code>request</code> client, validates status/payload contracts, and cleans mock states in <code>test.afterEach</code>.
 </div>
 
 ---
