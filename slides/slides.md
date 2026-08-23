@@ -800,32 +800,43 @@ layout: section
 
 ---
 
-# 📦 WireMock — Semantic JSON Matching
+# 📦 WireMock — Semantic JSON Matching (`equalToJson`)
 
-### Robust Structural JSON Equivalence
+### Data & Structural Meaning vs. Raw Character Matching
 
-<div class="multi-col-grid-2">
+<div class="multi-col-grid-2 gap-3 mb-2">
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🧩 Semantic vs Literal Comparison</h3>
-  <p class="mb-2">
-    Raw string comparison fails when key ordering changes or formatting differs. <code>equalToJson</code> parses payloads into ASTs to perform <strong>semantic equivalence</strong>.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    ✨ <code>{"a":1,"b":2}</code> and <code>{"b": 2, \n "a": 1}</code> evaluate as <strong>100% identical</strong>.
+<div class="col-card p-3 space-y-2">
+  <h3 class="text-rose-400 text-base mb-1">❌ Literal String Comparison (Raw Text)</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Character-by-Character</strong>: Treats JSON as a dumb text stream.</li>
+    <li>• ⚠️ <strong>Breaks on Spacing</strong>: <code>{"a":1}</code> ≠ <code>{"a": 1}</code>.</li>
+    <li>• ⚠️ <strong>Breaks on Newlines</strong>: Indented / pretty-printed JSON fails.</li>
+    <li>• ⚠️ <strong>Breaks on Key Order</strong>: <code>{"a":1,"b":2}</code> ≠ <code>{"b":2,"a":1}</code>.</li>
+  </ul>
+  <div class="bg-rose-950/40 rounded p-2 border border-rose-500/40 text-xs text-rose-200 mt-auto">
+    💥 <em>Result</em>: Flaky tests caused by serializer formatting nuances.
   </div>
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🛡️ Schema Invariance &amp; Interop</h3>
-  <p class="mb-2">
-    Guarantees integration tests pass reliably regardless of serialization nuances across Go, Next.js, and Java client runtimes.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    🛡️ Eliminates false test failures caused by whitespace, linebreaks, or map key ordering differences.
+<div class="col-card p-3 space-y-2">
+  <h3 class="text-emerald-400 text-base mb-1">✅ Semantic JSON Matching (<code>equalToJson</code>)</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>AST Object Parsing</strong>: Parses JSON document tree first.</li>
+    <li>• 🟢 <strong>Whitespace Immune</strong>: Ignores spaces, tabs, and linebreaks.</li>
+    <li>• 🟢 <strong>Key Order Agnostic</strong>: Compares key-value pairs semantically.</li>
+    <li>• 🟢 <strong>Cross-Language Safe</strong>: Interoperates across Go, Java, and Node.</li>
+  </ul>
+  <div class="bg-emerald-950/40 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>{"a":1,"b":2}</code> ≡ <code>{\n&nbsp;&nbsp;"b": 2,\n&nbsp;&nbsp;"a": 1\n}</code>
   </div>
 </div>
 
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2.5 flex items-center gap-2 shadow-lg">
+  <span class="text-lg">💡</span>
+  <span class="text-slate-200 leading-relaxed"><strong>Key Principle</strong>: <code>equalToJson</code> validates the <em>data contract and values</em> rather than accidental formatting or serialization differences.</span>
 </div>
 
 ---
