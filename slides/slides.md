@@ -1328,13 +1328,19 @@ layout: section
   </div>
   
   <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-[11px] text-cyan-200">
-    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Template:</div>
-    <code>"userId": "{{request.pathSegments.[2]}}",<br/>"orderId": "{{request.query.id}}"</code>
+    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
+    <code>{<br/>
+    &nbsp;&nbsp;"userId": "{{request.pathSegments.[2]}}",<br/>
+    &nbsp;&nbsp;"orderId": "{{request.query.id}}"<br/>
+    }</code>
   </div>
 
   <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
-    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Result:</div>
-    <code>"userId": "USR-99",<br/>"orderId": "ORD-123"</code>
+    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
+    <code>{<br/>
+    &nbsp;&nbsp;"userId": "USR-99",<br/>
+    &nbsp;&nbsp;"orderId": "ORD-123"<br/>
+    }</code>
   </div>
 </div>
 
@@ -1345,13 +1351,19 @@ layout: section
   </div>
   
   <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-[11px] text-cyan-200">
-    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Template:</div>
-    <code>"userId": "{{request.headers.[X-User-Id]}}",<br/>"accountId": "{{jsonPath request.body '$.account.id'}}"</code>
+    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
+    <code>{<br/>
+    &nbsp;&nbsp;"userId": "{{request.headers.[X-User-Id]}}",<br/>
+    &nbsp;&nbsp;"accountId": "{{jsonPath request.body '$.account.id'}}"<br/>
+    }</code>
   </div>
 
   <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
-    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Result:</div>
-    <code>"userId": "U-88",<br/>"accountId": "ACC-55"</code>
+    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
+    <code>{<br/>
+    &nbsp;&nbsp;"userId": "U-88",<br/>
+    &nbsp;&nbsp;"accountId": "ACC-55"<br/>
+    }</code>
   </div>
 </div>
 
