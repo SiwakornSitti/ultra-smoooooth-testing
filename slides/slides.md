@@ -2042,7 +2042,7 @@ class: pt-4 pb-2 px-8
     <span class="text-cyan-400">POST</span> /api/v1/users HTTP/1.1<br/>
     Host: localhost:8080<br/>
     Content-Type: application/json<br/>
-    <strong class="text-amber-300 bg-amber-950/60 px-1 rounded">Mock-Scenario: PT_PASS:SUCCESS_ONCE</strong><br/>
+    <strong class="text-amber-300 bg-amber-950/60 px-1 rounded">Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS</strong><br/>
     <br/>
     {<br/>
     &nbsp;&nbsp;"username": "testuser",<br/>
@@ -2050,7 +2050,7 @@ class: pt-4 pb-2 px-8
     }
   </div>
   <p class="text-amber-300/80 text-[11px] leading-tight mt-auto">
-    Burp intercepts packet in-flight and injects header to steer WireMock stubs.
+    Burp intercepts packet in-flight and injects multiple scenarios to steer all downstream mocks at once.
   </p>
 </div>
 
@@ -2058,7 +2058,7 @@ class: pt-4 pb-2 px-8
 
 <div class="slide-card text-xs bg-slate-900/70 border-amber-500/50 p-2 flex items-center gap-2 shadow-lg">
   <span class="text-base">💡</span>
-  <span class="text-slate-200 leading-snug"><strong>MITM Advantage</strong>: Dynamically steers downstream API virtualization stubs without requiring any source code or configuration changes in the application under test.</span>
+  <span class="text-slate-200 leading-snug"><strong>Multi-Scenario MITM</strong>: Dynamically steers multiple downstream WireMock stubs simultaneously (e.g. OAuth + OTP + Core Banking) without modifying application source code.</span>
 </div>
 
 ---
