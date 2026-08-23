@@ -860,36 +860,37 @@ layout: section
 
 ### Raw Text Matching vs. Semantic JSON Evaluation
 
-<div class="multi-col-grid-2">
+<div class="multi-col-grid-2 gap-3 mb-2">
 
-<div class="col-card space-y-2">
-  <h3 class="text-amber-400">📝 1. Raw Body RegEx (<code>matches</code>)</h3>
-  <ul class="space-y-1.5 text-slate-200 text-sm leading-relaxed">
-    <li>• <strong>Evaluation</strong>: Treats the entire HTTP body as a flat, unparsed text string.</li>
-    <li>• ⚠️ <strong>Formatting Fragile</strong>: Sensitive to spaces, indentation, and key reordering.</li>
-    <li>• <strong>Best Used For</strong>: Non-JSON formats (XML, CSV, plain text, URL-encoded).</li>
+<div class="col-card p-3 space-y-1.5">
+  <h3 class="text-amber-400 text-base mb-1">📝 1. Raw Body RegEx (<code>matches</code>)</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Evaluation</strong>: Treats entire body as unparsed plain text string.</li>
+    <li>• ⚠️ <strong>Fragile</strong>: Breaks on spaces, line breaks, or key reordering.</li>
+    <li>• <strong>Best For</strong>: Non-JSON payloads (XML, CSV, plain text, form-data).</li>
   </ul>
-  <div class="slide-card text-sm mt-auto bg-slate-900/80 p-2.5 border-amber-500/40 font-mono">
-    <code>"bodyPatterns": [<br/>&nbsp;&nbsp;{ "matches": ".*\"national_id\"\\s*:\\s*\"[0-9]{13}\".*" }<br/>]</code>
+  <div class="bg-slate-900/90 rounded p-2 border border-amber-500/40 font-mono text-xs text-amber-200 mt-auto">
+    <code>{ "matches": ".*\"national_id\"\\s*:\\s*\"[0-9]{13}\".*" }</code>
   </div>
 </div>
 
-<div class="col-card space-y-2">
-  <h3 class="text-emerald-400">🔍 2. Inline JSONPath RegEx (<code>matchesJsonPath</code>)</h3>
-  <ul class="space-y-1.5 text-slate-200 text-sm leading-relaxed">
-    <li>• <strong>Evaluation</strong>: Parses JSON tree first, then evaluates regex on the target field.</li>
-    <li>• 🟢 <strong>Whitespace Immune</strong>: Immune to formatting, minification, and key ordering.</li>
-    <li>• <strong>Best Used For</strong>: Modern REST APIs &amp; structured JSON microservices.</li>
+<div class="col-card p-3 space-y-1.5">
+  <h3 class="text-emerald-400 text-base mb-1">🔍 2. Inline JSONPath RegEx (<code>matchesJsonPath</code>)</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Evaluation</strong>: Parses JSON tree first, then evaluates regex on target field.</li>
+    <li>• 🟢 <strong>Immune</strong>: Ignores formatting, whitespace, minification, or key order.</li>
+    <li>• <strong>Best For</strong>: Modern REST APIs &amp; structured JSON microservices.</li>
   </ul>
-  <div class="slide-card text-sm mt-auto bg-slate-900/80 p-2.5 border-emerald-500/40 font-mono">
-    <code>"bodyPatterns": [<br/>&nbsp;&nbsp;{ "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" }<br/>]</code>
+  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>{ "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" }</code>
   </div>
 </div>
 
 </div>
 
-<div class="slide-card text-sm mt-2 bg-slate-900/60 border-cyan-500/40">
-  💡 <strong>Key Takeaway</strong>: Always prefer <code>matchesJsonPath</code> with the <code>=~</code> regex operator for JSON payloads to avoid brittle tests caused by payload reformatting.
+<div class="slide-card text-xs bg-emerald-950/50 border-emerald-500/60 p-2.5 flex items-center gap-2 shadow-lg">
+  <span class="text-lg">💡</span>
+  <span class="text-emerald-100 leading-relaxed"><strong>Key Takeaway</strong>: Always prefer <code>matchesJsonPath</code> with the <code>=~</code> regex operator for JSON payloads to guarantee test stability against formatting and whitespace changes.</span>
 </div>
 
 ---
