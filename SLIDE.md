@@ -1,74 +1,76 @@
-# 📊 Presentation Slides
+# 📑 Slide Deck Index & Reference Guide (`SLIDE.md`)
 
-Complete index of the **[Slidev](https://sli.dev)** deck for the **Ultra Smoooooth Testing Workshop** — Microservices Integration Testing, WireMock Stateful Stubs, Burp Suite MITM Proxy, and Testcontainers.
+> **Presentation File**: [`slides/slides.md`](slides/slides.md)
+> **Total Slides**: **68** | **Layout**: **Single-Focus Full-Width per Slide**
+> **Interactive Server**: `http://localhost:3030` (`make slides`)
 
-Source: [`slides/slides.md`](slides/slides.md) · cover + 51 numbered slides
-
-## Run the deck
-
-```bash
-# Launch interactive Slidev presentation
-make slides
-
-# or directly
-cd slides && bunx @slidev/cli slides.md
-```
-
-A PowerPoint export is also available at [`slides/slides-export.pptx`](slides/slides-export.pptx).
-
-## Slide index & scopes
-
-| # | Section | Title | Line | Brief Scope & Purpose |
-|---|---------|-------|------|-----------------------|
-| — | Intro | Ultra Smoooooth Testing (cover) | 22 | Workshop title card introducing core tech stack & philosophy. |
-| 1 | Intro | 🎯 Testing Strategy & Core Pillars | 40 | 3 pillars: Mock the World (WireMock), Control the Chaos (Burp), Test Without Limits (Playwright + Testcontainers). |
-| 2 | Intro | 🏗️ Ecosystem System Architecture | 85 | Isometric visual overview of multi-tier banking test architecture. |
-| 3 | Intro | 🗺️ Detailed Service Topology & Flow | 95 | Mermaid flowchart detailing service routes, ports, DB, and proxy paths. |
-| 4 | Intro | 🛠️ Technology Stack & Infrastructure | 176 | Monorepo setup: Go Workspaces (`go.work`), Next.js 19, PostgreSQL, Docker Compose. |
-| 5 | Intro | 🧱 Core Microservices | 203 | Domain service graph (`bff`, `user`, `bank`, `ekyc`, `transfer`, `otp`) with DB, WireMock, & 3rd-party providers. |
-| 6 | WireMock | 🪝 What is WireMock? — Core Capabilities | 250 | Programmable HTTP server capabilities: precision request matching, Handlebars templating, chaos engineering, state machines. |
-| 7 | WireMock | 🎯 Why WireMock in Testing? | 276 | Hermetic isolation, zero 3rd-party sandbox flakiness, transparent proxying, and container-native velocity. |
-| 8 | WireMock | ⚡ WireMock — URL & Path Matching | 303 | Path matchers (`url`, `urlPath`, `urlPathPattern`, `urlPattern`) and query string handling. |
-| 9 | WireMock | ⚡ WireMock — Header Matching Operators | 332 | Header matchers (`equalTo`, `matches`, `contains`, `absent`) and auth/scenario steering. |
-| 10 | WireMock | ⚡ WireMock — Query Parameter & Cookie Filters | 361 | Parameter flags, cookie assertions, and simultaneous multi-criteria conjunction rules. |
-| 11 | WireMock | ⚡ Request Matching — URL & Header Example | 390 | Multi-criteria stub combining dynamic URL regex and Bearer JWT header validation. |
-| 12 | WireMock | ⚡ Request Matching — Query Parameter Example | 443 | Query flag filtering (`?active=true`) and multi-parameter numeric matching (`?limit=10`). |
-| 13 | WireMock | ⚖️ WireMock — Priority & Matching Precedence | 496 | Resolution order, priority tier hierarchy (1 = Faults, 5–10 = Happy Paths, 100 = Proxy), and evaluation rules. |
-| 14 | WireMock | ⚖️ Priority & Precedence — Example | 531 | Practical comparison of specific error override (Priority 1) vs default catch-all happy path (Priority 10). |
-| 15 | WireMock | 🎯 WireMock — URL & Header RegEx Matching | 593 | URL path regex (`urlPathPattern`/`urlPattern`) and header matching (`matches`/`doesNotMatch`). |
-| 16 | WireMock | 🎯 WireMock — Body & JSONPath RegEx Matching | 625 | Raw body regex vs inline JSONPath evaluation (`$[?(@.field =~ /^regex$/)]`). |
-| 17 | WireMock | 🎯 WireMock RegEx — URL & Header Examples | 657 | Practical examples for dynamic UUID paths, Bearer JWT token regex, and Scenario enum branches. |
-| 18 | WireMock | 🎯 WireMock RegEx — Body & Parameter Matching | 715 | 13-digit National ID body regex and multi-version query parameter routing. |
-| 19 | WireMock | 🎯 WireMock RegEx — JSONPath Phone Validation | 770 | Thai mobile phone number validation using inline JSONPath regex evaluation. |
-| 20 | WireMock | 📦 WireMock — Body & Semantic JSON Matching | 821 | Semantic vs literal body comparison concepts, matching operators, and lenient matching flags. |
-| 21 | WireMock | 📦 Body Matching — Example | 860 | Practical account opening stub using `equalToJson`, `ignoreExtraElements`, and `ignoreArrayOrder`. |
-| 22 | WireMock | 🔍 WireMock — JSONPath Expression Matching | 895 | Advanced payload inspection using `matchesJsonPath` (conditional comparisons, value ranges, regex). |
-| 23 | WireMock | 🪄 WireMock — Dynamic Response Templating | 935 | Handlebars dynamic templating overview with `response-template`. |
-| 24 | WireMock | 🪄 WireMock — Handlebars Helper Reference | 975 | Request model extraction (`headers`, `query`, `pathSegments`), base64 encoding, and dynamic data generators. |
-| 25 | WireMock | 🪄 Handlebars Logic & Math — Example | 1014 | Dynamic conditionals (`#if eq`), arithmetic calculations (`math '*' 0.01`), and transformer setup. |
-| 26 | WireMock | 🪄 WireMock — Handlebars String & Iteration Helpers | 1063 | String manipulation (`upper`, `lower`, `trim`, `replace`), regex extractors, `#each` loops, and sizing. |
-| 27 | WireMock | 🪄 Handlebars Array Iteration — Example | 1103 | Practical example generating dynamic arrays with `{{#each}}`, loop indices (`@index`), and trailing comma handling. |
-| 28 | WireMock | 🔍 WireMock — Handlebars jsonPath Extraction | 1152 | Deep field traversal (`$.user.id`), default fallbacks (`default='GUEST'`), and array indexing inside Handlebars. |
-| 29 | WireMock | 🔍 Handlebars jsonPath — Example | 1193 | Echoing nested request attributes, applying default tiers, and dynamic array size computation. |
-| 30 | WireMock | ⏱️ WireMock — Fixed Latency & Timeout Testing | 1247 | Deterministic delay injection via `fixedDelayMilliseconds` to verify client HTTP timeout thresholds. |
-| 31 | WireMock | 🎲 WireMock — Random Jitter & Latency Distributions | 1293 | Simulating real-world latency spikes via `delayDistribution` (`lognormal`, `uniform`, `normal`). |
-| 32 | WireMock | 💥 WireMock — Network Fault Injection | 1332 | Simulating hard network socket failures (`CONNECTION_RESET_BY_PEER`, `MALFORMED_RESPONSE_CHUNK`, `EMPTY_RESPONSE`). |
-| 33 | WireMock | 🔄 WireMock Stateful Stubbing | 1365 | Scenario state machine concepts, replay prevention, and `POST /__admin/scenarios/reset`. |
-| 34 | WireMock | 🔄 WireMock Stateful — Example | 1406 | Practical stateful mapping (`04-order-pay.json`) transitioning `Started → PAID`. |
-| 35 | Burp Suite | 🔀 Burp Suite — Proxy Intercept | 1454 | MITM proxy concepts to inspect, pause, and modify HTTP requests in flight. |
-| 36 | Burp Suite | 🔀 Proxy Intercept — Example | 1468 | Before & after request payload tampering and mock header injection. |
-| 37 | Burp Suite | 🔁 Burp Suite — Repeater | 1510 | Manual request replay for edge cases, error contracts, and payload variations. |
-| 38 | Burp Suite | 🔁 Repeater — Example | 1538 | Contract error validation (`400 Bad Request`, `422 Unprocessable`) with diff comparison. |
-| 39 | Burp Suite | 💣 Burp Suite — Intruder | 1590 | Automated fuzzing & attack modes (Sniper, Cluster Bomb, rate limits, brute force). |
-| 40 | Burp Suite | 💣 Intruder — Example | 1618 | IDOR and horizontal privilege escalation fuzzing across sequential account IDs. |
-| 41 | Burp Suite | 📋 Burp Suite — Logger / HTTP History | 1675 | Complete HTTP traffic capture, filtering, search, and CI/CD audit exports. |
-| 42 | Burp Suite | 📋 Logger — Example | 1689 | Filtering logs and exporting JSON traffic evidence for test verification. |
-| 43 | Automation | 🐳 Docker in Integration Testing — Why Containers? | 1709 | Hermetic test isolation, eliminating "works on my machine", port conflicts, and DB pollution. |
-| 44 | Automation | 🧪 Testcontainers — Programmable Test Infrastructure | 1737 | Dynamic ports, code-driven container lifecycle, Compose comparison, and dynamic bridge networks. |
-| 45 | Automation | 🧪 Moby Ryuk — Container Garbage Collector | 1779 | Heartbeat socket cleanup, zero-leak guarantees, and environment configuration flags. |
-| 46 | Automation | 🎭 Playwright — Unified UI & API Test Engine | 1832 | Modern full-stack testing advantages, dual-layer UI/API automation, and zero-flake auto-waiting. |
-| 47 | Automation | 🎭 Playwright — Core Test Primitives & API | 1860 | Resilient selectors (`getByTestId`), auto-retrying assertions, and dynamic `Mock-Scenario` header injection. |
-| 48 | Automation | 🎭 Playwright — Full-Stack Browser E2E Flow | 1889 | Multi-step authentication flow testing with dynamic mock header injection (`mockScenario(page)`). |
-| 49 | Automation | 🧪 Playwright & Testcontainers — Orchestration | 1941 | Direct REST `APIRequestContext` integration testing against ephemeral containers with teardown reset. |
-| 50 | Automation | 🛠️ Command Cheat Sheet | 1967 | Essential developer commands (`make build`, `make test`, `make test-integration`, `make test-e2e`, `make sync`). |
-| 51 | Outro | 🎉 Thank You! | 2004 | Closing slide with links to GitHub repository and Workshop Guide. |
+| # | Slide Title | Subtitle / Focus | Line in `slides.md` |
+| :--- | :--- | :--- | :--- |
+| **1** | [Ultra Smoooooth Testing](slides/slides.md#L15) | — | `L15` |
+| **2** | [🎯 Testing Strategy & Core Pillars](slides/slides.md#L37) | Mock the world. Control the chaos. Test without limits. | `L37` |
+| **3** | [🌐 Pillar 1: Mock the World — WireMock](slides/slides.md#L68) | Eliminating External API Dependencies & Sandbox Flakiness | `L68` |
+| **4** | [⚡ Pillar 2: Control the Chaos — Burp Suite](slides/slides.md#L99) | Live MITM Traffic Inspection, Fault Injection & Security Boundaries | `L99` |
+| **5** | [🚀 Pillar 3: Test Without Limits — Playwright & Testcontainers](slides/slides.md#L130) | Hermetic Disposability & Full-Stack Test Automation | `L130` |
+| **6** | [🏗️ Ecosystem System Architecture](slides/slides.md#L161) | — | `L161` |
+| **7** | [🗺️ Detailed Service Topology & Flow](slides/slides.md#L169) | — | `L169` |
+| **8** | [⚙️ Technology Stack — Core Runtime & Services](slides/slides.md#L250) | Monorepo Workspaces, Modern Web & Relational Persistence | `L250` |
+| **9** | [🧪 Technology Stack — Testing & Security Infrastructure](slides/slides.md#L281) | Mocking, MITM Proxy & Container Orchestration | `L281` |
+| **10** | [🧱 Core Microservices](slides/slides.md#L312) | — | `L312` |
+| **11** | [🪝 What is WireMock? — Core Capabilities](slides/slides.md#L359) | Programmable HTTP Mock Server for External API Simulation | `L359` |
+| **12** | [🎯 Why WireMock in Testing?](slides/slides.md#L390) | Hermetic Test Isolation, CI Parity & Live Transparent Proxying | `L390` |
+| **13** | [⚡ WireMock — URL & Path Matching](slides/slides.md#L421) | Exact Path Routing, Regex Patterns & Query Strings | `L421` |
+| **14** | [⚡ WireMock — Header Matching Operators](slides/slides.md#L448) | Exact Matches, Substrings, Regex & Absence Checks | `L448` |
+| **15** | [⚡ WireMock — Query Parameter & Cookie Filters](slides/slides.md#L475) | Parameter Flags, Cookie Assertions & Multi-Criteria Conjunction | `L475` |
+| **16** | [⚡ Request Matching — URL & Header Example](slides/slides.md#L501) | Regex Path Routing & Bearer JWT Validation | `L501` |
+| **17** | [⚡ Request Matching — Query Parameter Example](slides/slides.md#L528) | Query Flag Filtering & Multi-Criteria Evaluation | `L528` |
+| **18** | [⚖️ WireMock — Priority & Matching Precedence](slides/slides.md#L555) | Resolution Hierarchy for Overlapping Stub Mappings | `L555` |
+| **19** | [🥇 Priority Tier 1: Specific Error Overrides](slides/slides.md#L579) | Fault Injection & Error Contracts | `L579` |
+| **20** | [🥈 Priority Tier 5–10: Default Happy Paths](slides/slides.md#L611) | Standard Business Logic & Route Matchers | `L611` |
+| **21** | [🛡️ Priority Tier 100: Catch-All Proxy](slides/slides.md#L642) | Transparent Fallback to Real Downstream Endpoints | `L642` |
+| **22** | [⚖️ Priority & Precedence — Example](slides/slides.md#L671) | Error Scenario Override vs Default Happy Path | `L671` |
+| **23** | [🎯 WireMock — URL & Path RegEx Matching](slides/slides.md#L693) | Regular Expressions for Dynamic Resource Identifiers | `L693` |
+| **24** | [🎯 WireMock — Header & Query RegEx Matching](slides/slides.md#L718) | Bearer Tokens & Scenario Enums | `L718` |
+| **25** | [🎯 WireMock — Body & JSONPath RegEx Matching](slides/slides.md#L743) | Payload Validation & Pattern Filtering | `L743` |
+| **26** | [🎯 WireMock RegEx — Dynamic UUID Path Example](slides/slides.md#L767) | Matching UUID Paths in API Stubs | `L767` |
+| **27** | [🎯 WireMock RegEx — JWT Bearer & Scenario Enum](slides/slides.md#L790) | Strict Token & Scenario Routing | `L790` |
+| **28** | [🎯 WireMock RegEx — Body & Parameter Matching](slides/slides.md#L817) | 13-Digit National ID & Query Version Validation | `L817` |
+| **29** | [🎯 WireMock RegEx — JSONPath Phone Validation](slides/slides.md#L844) | Thai Mobile Number Pattern Matching in Payload | `L844` |
+| **30** | [📦 WireMock — Semantic JSON Matching](slides/slides.md#L872) | Robust Structural JSON Equivalence | `L872` |
+| **31** | [⚙️ WireMock — Body Match Operators & Lenient Flags](slides/slides.md#L896) | Matching Operators & Lenient Contract Flags | `L896` |
+| **32** | [📦 Body Matching — Example](slides/slides.md#L924) | Match Request Bodies with `equalToJson` | `L924` |
+| **33** | [🔍 WireMock — JSONPath Expression Matching](slides/slides.md#L954) | Filter & Assert Payloads with `matchesJsonPath` | `L954` |
+| **34** | [🪄 WireMock — Dynamic Response Templating](slides/slides.md#L983) | Handlebars Response Templating (`response-template`) | `L983` |
+| **35** | [🪄 WireMock — Handlebars Request & Encoding Helpers](slides/slides.md#L1008) | Request Model Extraction & Data Encoders | `L1008` |
+| **36** | [🎲 WireMock — Handlebars Dynamic Data Generators](slides/slides.md#L1026) | Timestamps, Random IDs & Token Generation | `L1026` |
+| **37** | [🪄 Handlebars Logic & Math — Example](slides/slides.md#L1043) | Conditionals, Dynamic Math & Response Configuration | `L1043` |
+| **38** | [🔤 WireMock — Handlebars String Transformation Helpers](slides/slides.md#L1069) | String Manipulation & Substring Extractors | `L1069` |
+| **39** | [🔁 WireMock — Handlebars Array & Iteration Helpers](slides/slides.md#L1087) | Array Looping, Sizing & Variable Lookups | `L1087` |
+| **40** | [🪄 Handlebars Array Iteration — Example](slides/slides.md#L1105) | Generating Dynamic Arrays with `{{#each}}` and Indexing | `L1105` |
+| **41** | [🔍 WireMock — Handlebars jsonPath Traversal & Indexing](slides/slides.md#L1136) | Deep Object Traversal & Array Indexing | `L1136` |
+| **42** | [🛡️ WireMock — Safe Default Fallbacks & Dynamic Sizing](slides/slides.md#L1160) | Graceful Fallbacks & Array Counting | `L1160` |
+| **43** | [🔍 Handlebars jsonPath — Example](slides/slides.md#L1184) | Echoing Nested Request Payloads & Handling Missing Fields | `L1184` |
+| **44** | [⏱️ WireMock — Fixed Latency & Timeout Testing](slides/slides.md#L1208) | Deterministic Delay Injection (`fixedDelayMilliseconds`) | `L1208` |
+| **45** | [🎲 WireMock — Random Jitter & Latency Distributions](slides/slides.md#L1232) | Real-World Latency Simulation (`delayDistribution`) | `L1232` |
+| **46** | [💥 WireMock — Network Fault Injection](slides/slides.md#L1260) | Simulating Hard Network Failures & Socket Errors | `L1260` |
+| **47** | [🔄 WireMock Stateful Stubbing](slides/slides.md#L1282) | Scenario State Machines & Replay Prevention | `L1282` |
+| **48** | [🔄 WireMock Stateful — Example](slides/slides.md#L1308) | Scenario State Machine Stub: `04-order-pay.json` | `L1308` |
+| **49** | [🔀 Burp Suite — Proxy Intercept](slides/slides.md#L1334) | Transparent MITM HTTP Traffic Interception | `L1334` |
+| **50** | [🔀 Proxy Intercept — Example](slides/slides.md#L1358) | Before & After Request Header Injection | `L1358` |
+| **51** | [🔁 Burp Suite — Repeater](slides/slides.md#L1380) | Manual Request Replay & Contract Validation | `L1380` |
+| **52** | [🔁 Repeater — Example](slides/slides.md#L1404) | Boundary & Error Contract Testing (`transfers.spec.ts`) | `L1404` |
+| **53** | [💣 Burp Suite — Intruder Attack Modes](slides/slides.md#L1428) | Automated Payload Fuzzing & Parameter Attacks | `L1428` |
+| **54** | [💣 Burp Suite — Security & IDOR Discovery](slides/slides.md#L1447) | Horizontal Privilege Escalation & Rate Limits | `L1447` |
+| **55** | [💣 Intruder — Example](slides/slides.md#L1466) | IDOR Detection Across Sequential Account IDs | `L1466` |
+| **56** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L1497) | Real-Time Traffic Auditing & HAR Exports | `L1497` |
+| **57** | [📋 Logger — Example](slides/slides.md#L1521) | Filter & Export for CI Evidence | `L1521` |
+| **58** | [❌ The Shared Environment Problem in Testing](slides/slides.md#L1540) | Flakiness, Collisions & State Bleed | `L1540` |
+| **59** | [✅ The Hermetic Containerized Solution](slides/slides.md#L1560) | Isolated, Disposable & Predictable Infrastructure | `L1560` |
+| **60** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L1580) | Dynamic Ports & Code-Driven Orchestration | `L1580` |
+| **61** | [🧪 Moby Ryuk — Container Garbage Collector](slides/slides.md#L1598) | Automatic Socket-Driven Teardown for Containers, Networks & Volumes | `L1598` |
+| **62** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L1624) | Modern Full-Stack Integration Testing Advantages | `L1624` |
+| **63** | [🎭 Playwright — Core Test Primitives & API](slides/slides.md#L1648) | Selectors, Auto-Waiting Assertions & Mock Header Injection | `L1648` |
+| **64** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L1674) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) | `L1674` |
+| **65** | [🧪 Playwright & Testcontainers — Orchestration](slides/slides.md#L1703) | API Testing with Dynamic Ephemeral Containers (`bff.spec.ts`) | `L1703` |
+| **66** | [🏗 Local Development — Command Cheat Sheet](slides/slides.md#L1733) | Build, Unit Test & Monorepo Synchronization | `L1733` |
+| **67** | [🧪 Automated Integration — Command Cheat Sheet](slides/slides.md#L1753) | Testcontainers & Playwright E2E Test Execution | `L1753` |
+| **68** | [🎉 Thank You!](slides/slides.md#L1775) | Happy Ultra Smoooooth Testing | `L1775` |
