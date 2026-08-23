@@ -182,6 +182,58 @@ h3 {
   object-fit: contain;
 }
 
+/* Slide 11: keep the service topology between the heading and its callout. */
+.microservices-slide .microservices-diagram {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 0.25rem;
+}
+
+.microservices-slide .microservices-diagram .mermaid {
+  height: 100%;
+}
+
+.microservices-slide .microservices-diagram .mermaid svg {
+  max-height: calc(100vh - 17rem) !important;
+  object-fit: contain;
+}
+
+.microservices-slide .microservices-callout {
+  flex: 0 0 auto;
+  margin-top: 0.35rem;
+  padding: 0.7rem 1rem;
+  line-height: 1.35;
+}
+
+/* Slide 10: keep the four infrastructure blocks inside the viewport. */
+.compact-stack-slide h1 {
+  margin-bottom: 0.5rem !important;
+  line-height: 1.08 !important;
+}
+
+.compact-stack-slide > h3 {
+  font-size: 1.1rem !important;
+  margin-bottom: 0.35rem !important;
+}
+
+.compact-stack-slide .slide-card {
+  padding: 0.7rem 1rem;
+}
+
+.compact-stack-slide .slide-card > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.3rem !important;
+}
+
+.compact-stack-slide .slide-card h3 {
+  font-size: 1.05rem !important;
+  margin-bottom: 0.2rem !important;
+}
+
+.compact-stack-slide .slide-card p {
+  font-size: 0.82rem !important;
+  line-height: 1.3 !important;
+}
+
 /* Clear & Legible Tables */
 .slidev-page table,
 table {

@@ -316,6 +316,8 @@ flowchart LR
 </div>
 
 ---
+class: compact-stack-slide
+---
 
 # 🧪 Technology Stack — Testing & Security Infrastructure
 
@@ -354,74 +356,70 @@ flowchart LR
 </div>
 
 ---
+class: microservices-slide
+---
 
 # 🧱 Core Microservices
 
 ### Domain Boundaries, Storage & Hermetic Integrations
 
-<div class="topology-diagram w-full flex justify-center items-center my-auto py-1">
+<div class="topology-diagram microservices-diagram w-full flex justify-center items-center">
 
-```mermaid {scale: 0.65}
+```mermaid {scale: 0.58}
 flowchart LR
-    subgraph GATEWAY["⚡ API Orchestration"]
-        BFF["⚙️ bff-service<br/><code>:8080</code>"]
+    BFF["⚙️ bff-service<br/>:8080<br/>API Gateway"]
+
+    subgraph DOMAINS["🏡 Core Microservices Domain"]
+        subgraph PERSISTENT["Transactional Data"]
+            direction TB
+            UserService["👤 user-service<br/>:8081"]
+            BankService["🏦 bank-account-service<br/>:8082"]
+            TransferService["💸 transfer-service<br/>:8085"]
+        end
+        subgraph VERIFY["Verification & Auth"]
+            direction TB
+            EKYCService["🪪 ekyc-service<br/>:8084"]
+            OTPService["🔑 otp-service<br/>:8087"]
+        end
     end
 
-    subgraph SERVICES["🏡 Domain Microservices"]
-        UserService["👤 user-service<br/><code>:8081</code>"]
-        BankService["🏦 bank-account-service<br/><code>:8082</code>"]
-        EKYCService["🪪 ekyc-service<br/><code>:8084</code>"]
-        TransferService["💸 transfer-service<br/><code>:8085</code>"]
-        OTPService["🔑 otp-service<br/><code>:8087</code>"]
-    end
-
-    subgraph DATA["🗄️ Persistence"]
-        DB[("🐘 PostgreSQL DB<br/><code>:5432</code>")]
-    end
-
-    subgraph MOCKS["🤖 External Stubs & Upstream"]
-        WireMock["🪝 WireMock Mock Server<br/><code>:8088</code>"]
-        Paotang["💳 Paotang OAuth"]
-        SMS["📡 SMS Gateway"]
+    subgraph INFRA["🗄️ Persistence & External Stubs"]
+        direction TB
+        DB[("🐘 PostgreSQL DB<br/>:5432")]
+        WM["🪝 WireMock Mock Server<br/>:8088<br/>OAuth & SMS"]
     end
 
     BFF --> UserService
     BFF --> BankService
-    BFF --> EKYCService
     BFF --> TransferService
+    BFF --> EKYCService
     BFF --> OTPService
 
-    UserService -->|Read / Write| DB
-    BankService -->|Ledger Balances| DB
-    TransferService -->|ACID Transfers| DB
-
-    UserService -.->|OAuth Token Exchange| WireMock
-    OTPService -.->|Dispatch SMS OTP| WireMock
-
-    WireMock -.->|Proxy Fallback| Paotang
-    WireMock -.->|Proxy Fallback| SMS
+    UserService -.->|SQL| DB
+    BankService -.->|SQL| DB
+    TransferService -.->|SQL| DB
+    UserService -.->|Paotang OAuth| WM
+    OTPService -.->|SMS Dispatch| WM
 
     classDef gateway fill:#1d4ed8,stroke:#93c5fd,color:#ffffff,stroke-width:2px
     classDef service fill:#047857,stroke:#6ee7b7,color:#ffffff,stroke-width:2px
     classDef db fill:#4338ca,stroke:#c4b5fd,color:#ffffff,stroke-width:2px
     classDef mock fill:#b45309,stroke:#fcd34d,color:#fff7ed,stroke-width:2px
-    classDef ext fill:#78350f,stroke:#fbbf24,color:#fef3c7,stroke-width:1.5px
 
     class BFF gateway
     class UserService,BankService,EKYCService,TransferService,OTPService service
     class DB db
-    class WireMock mock
-    class Paotang,SMS ext
+    class WM mock
 
-    style GATEWAY fill:#0f172a,stroke:#3b82f6,stroke-width:1.5px,color:#93c5fd
-    style SERVICES fill:#052e2b,stroke:#10b981,stroke-width:1.5px,color:#a7f3d0
-    style DATA fill:#1e1b4b,stroke:#6366f1,stroke-width:1.5px,color:#c7d2fe
-    style MOCKS fill:#451a03,stroke:#f59e0b,stroke-width:1.5px,color:#fde68a
+    style DOMAINS fill:#052e2b,stroke:#10b981,stroke-width:1.5px,color:#a7f3d0
+    style PERSISTENT fill:#0f172a,stroke:#059669,stroke-width:1px,color:#d1fae5
+    style VERIFY fill:#0f172a,stroke:#059669,stroke-width:1px,color:#d1fae5
+    style INFRA fill:#1e1b4b,stroke:#6366f1,stroke-width:1.5px,color:#c7d2fe
 ```
 
 </div>
 
-<div class="slide-card text-sm mt-2">
+<div class="slide-card microservices-callout text-sm">
   💡 <strong>Architectural Boundaries</strong>: BFF orchestrates client calls · Services manage isolated domains with PostgreSQL persistence · WireMock isolates third-party OAuth & SMS providers.
 </div>
 
