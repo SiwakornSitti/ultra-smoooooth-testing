@@ -247,29 +247,52 @@ flowchart TB
 
 ---
 
-# 🪝 What is WireMock?
+# 🪝 What is WireMock? — Core Capabilities
 
-### Programmable HTTP Mock Server for Simulating External Dependencies
+### Programmable HTTP Mock Server for External API Simulation
 
 <div class="grid grid-cols-2 gap-5 text-sm pt-2">
 
 <div class="slide-card">
-  <h3 class="text-emerald-400 font-bold mb-2 text-base">🌐 Core Capabilities</h3>
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🌐 Request Matching & Templating</h3>
   <ul class="space-y-2 text-slate-300">
-    <li>• <strong>HTTP Request Matching</strong>: Match incoming requests via exact URLs, regex patterns, headers, query params, and JSON bodies.</li>
-    <li>• <strong>Dynamic Response Templating</strong>: Echo request values and compute dynamic dates/math with Handlebars.</li>
-    <li>• <strong>Chaos & Fault Injection</strong>: Inject latency distributions, dropped sockets, and custom HTTP error codes.</li>
-    <li>• <strong>Stateful Scenario Machines</strong>: Model state transitions (e.g. order lifecycles, single-use auth codes).</li>
+    <li>• <strong>Precision Matching</strong>: Match requests via exact URLs, regex patterns, headers, query params, and JSON bodies.</li>
+    <li>• <strong>Dynamic Response Templating</strong>: Echo request attributes, generate dynamic dates, and compute math via Handlebars.</li>
   </ul>
 </div>
 
 <div class="slide-card">
-  <h3 class="text-emerald-400 font-bold mb-2 text-base">🎯 Why We Use WireMock</h3>
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">⚡ Chaos Engineering & State Machines</h3>
   <ul class="space-y-2 text-slate-300">
-    <li>• <strong>Isolate External Outages</strong>: Replace flaky 3rd-party SMS & OAuth sandboxes with deterministic stubs.</li>
-    <li>• <strong>Fast & Repeatable</strong>: Sub-millisecond mock responses speed up CI/CD integration pipelines.</li>
-    <li>• <strong>Transparent Proxying</strong>: Record live traffic or proxy unknown requests directly to real providers.</li>
-    <li>• <strong>Container Native</strong>: Runs effortlessly inside Testcontainers and Docker Compose.</li>
+    <li>• <strong>Chaos & Fault Injection</strong>: Inject latency distributions, dropped TCP sockets, and custom HTTP error codes.</li>
+    <li>• <strong>Stateful Scenario Machines</strong>: Model multi-step lifecycles (e.g. <code>Started → PAID</code>) and single-use tokens.</li>
+  </ul>
+</div>
+
+</div>
+
+---
+
+# 🎯 Why WireMock in Testing?
+
+### Hermetic Test Isolation, CI Parity & Live Transparent Proxying
+
+<div class="grid grid-cols-2 gap-5 text-sm pt-2">
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🛡️ Hermetic Isolation & Zero Outages</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <strong>Eliminate Sandbox Flakiness</strong>: Replace third-party SMS & OAuth test environments with reliable, deterministic local stubs.</li>
+    <li>• <strong>Zero Cost & Rate Limits</strong>: Run unlimited integration suites without hitting API billing quotas or rate limits.</li>
+  </ul>
+</div>
+
+<div class="slide-card">
+  <h3 class="text-emerald-400 font-bold mb-2 text-base">🚀 Velocity & Container Parity</h3>
+  <ul class="space-y-2 text-slate-300">
+    <li>• <strong>Sub-Millisecond Feedback</strong>: Fast local responses accelerate developer test loops and CI/CD pipelines.</li>
+    <li>• <strong>Transparent Proxy & Recording</strong>: Capture live traffic into JSON stubs or proxy unknown routes to real providers.</li>
+    <li>• <strong>Container Native</strong>: Seamless execution inside Testcontainers and Docker Compose.</li>
   </ul>
 </div>
 
