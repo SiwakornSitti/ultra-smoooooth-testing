@@ -1315,24 +1315,6 @@ layout: section
 
 ---
 
-# 🪄 WireMock — Handlebars Request & Encoding Helpers
-
-### Request Model Extraction & Data Encoders
-
-<div v-pre class="slide-card text-sm p-2.5">
-
-| Helper Type | Syntax Example | Description |
-| :--- | :--- | :--- |
-| **Request Headers** | `{{request.headers.[X-Trace-ID]}}` | Extracts incoming HTTP header value |
-| **Query Parameters** | `{{request.query.page}}` | Extracts query parameter from URL |
-| **JSON Path Body** | `{{jsonPath request.body '$.account.id'}}` | Extracts nested field from request body |
-| **Base64 Encoding** | `{{base64 request.body}}` | Base64 encodes/decodes request payload |
-| **URL Encoding** | `{{urlEncode request.query.target}}` | Encodes URL parameter strings |
-
-</div>
-
----
-
 # 📥 WireMock — Extracting Request Data & Echoing IDs
 
 ### Reading Path, Query, Header & Body Values into Responses
@@ -1366,6 +1348,24 @@ layout: section
 <div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2.5 flex items-center gap-2">
   <span class="text-lg">💡</span>
   <span class="text-slate-200 leading-relaxed">Always declare <code>"transformers": ["response-template"]</code> in the response block to enable dynamic Handlebars interpolation.</span>
+</div>
+
+---
+
+# 🪄 WireMock — Handlebars Request & Encoding Helpers
+
+### Request Model Extraction & Data Encoders
+
+<div v-pre class="slide-card text-sm p-2.5">
+
+| Helper Type | Syntax Example | Description |
+| :--- | :--- | :--- |
+| **Request Headers** | `{{request.headers.[X-Trace-ID]}}` | Extracts incoming HTTP header value |
+| **Query Parameters** | `{{request.query.page}}` | Extracts query parameter from URL |
+| **JSON Path Body** | `{{jsonPath request.body '$.account.id'}}` | Extracts nested field from request body |
+| **Base64 Encoding** | `{{base64 request.body}}` | Base64 encodes/decodes request payload |
+| **URL Encoding** | `{{urlEncode request.query.target}}` | Encodes URL parameter strings |
+
 </div>
 
 ---

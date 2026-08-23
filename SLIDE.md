@@ -43,8 +43,8 @@ Quick navigation reference for all slides in [`slides/slides.md`](slides/slides.
 | **37** | [🎯 WireMock RegEx — JSONPath Phone Validation](slides/slides.md#L1221) | Thai Mobile Number Pattern Matching in Payload | `L1221` |
 | **38** | [🔍 JSONPath RegEx Deep Dive — Expression Breakdown](slides/slides.md#L1249) | Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"` | `L1249` |
 | **39** | [🪄 WireMock — Dynamic Response Templating](slides/slides.md#L1288) | Handlebars Response Templating (`response-template`) | `L1288` |
-| **40** | [🪄 WireMock — Handlebars Request & Encoding Helpers](slides/slides.md#L1317) | Request Model Extraction & Data Encoders | `L1317` |
-| **41** | [📥 WireMock — Extracting Request Data & Echoing IDs](slides/slides.md#L1335) | Reading Path, Query, Header & Body Values into Responses | `L1335` |
+| **40** | [📥 WireMock — Extracting Request Data & Echoing IDs](slides/slides.md#L1317) | Reading Path, Query, Header & Body Values into Responses | `L1317` |
+| **41** | [🪄 WireMock — Handlebars Request & Encoding Helpers](slides/slides.md#L1354) | Request Model Extraction & Data Encoders | `L1354` |
 | **42** | [🪄 Dynamic Response Headers & Timezones](slides/slides.md#L1372) | Injecting In-Flight Tracking IDs, Cookies & Location Headers | `L1372` |
 | **43** | [🎲 WireMock — Handlebars Dynamic Data Generators](slides/slides.md#L1411) | Timestamps, Random IDs & Token Generation | `L1411` |
 | **44** | [🪄 Handlebars Logic & Math — Example](slides/slides.md#L1428) | Conditionals, Dynamic Math & Response Configuration | `L1428` |
