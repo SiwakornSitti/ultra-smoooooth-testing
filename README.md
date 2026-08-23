@@ -16,11 +16,10 @@ boundaries.
 
 ```mermaid
 flowchart TD
-    subgraph Clients["🌐 1. Client & Automation Layer (Test Without Limits)"]
-        Website["💻 Website<br/><code>Next.js :3000</code>"]
-        BridgeWebsite["📱 Mobile WebView<br/><code>Mocked JSBridge</code>"]
-        Playwright["🐦 Playwright E2E<br/><code>Automation Runner</code>"]
-        Burp["🛡️ Burp MITM Proxy<br/><code>:8080 (Control Chaos)</code>"]
+    subgraph Clients["🌐 1. Client & Automation Layer (Playwright & Burp)"]
+        Website["💻 Web Application<br/><code>Next.js :3000</code>"]
+        Playwright["🎭 Playwright E2E<br/><code>Automation Runner</code>"]
+        Burp["🛡️ Burp MITM Proxy<br/><code>:8080 (Traffic Control)</code>"]
     end
 
     subgraph API_Gateway["⚡ 2. Gateway & Orchestration Layer"]
@@ -39,18 +38,15 @@ flowchart TD
         DB[("🐘 PostgreSQL DB<br/><code>:5432</code>")]
     end
 
-    subgraph External_Mocks["🤖 5. External Mocks (Mock The World)"]
+    subgraph External_Mocks["🤖 5. External Mocks (WireMock Virtualization)"]
         WireMock["🪝 WireMock Stubs<br/><code>:8088 / :8080</code>"]
         PaotangProvider["💳 Paotang Provider"]
         SMSProvider["📡 SMS Provider"]
     end
 
     Website -->|HTTP REST| BFF
-    BridgeWebsite -->|REST + JSBridge Native Bridge| BFF
-    Playwright -->|Automated E2E| Website
-    Playwright -->|Automated E2E| BridgeWebsite
+    Playwright -->|Automated E2E + page.addInitScript| Website
     Website -.->|MITM Traffic Intercept| Burp
-    BridgeWebsite -.->|MITM Traffic Intercept| Burp
     Burp -.->|Proxied Traffic| BFF
 
     BFF -->|GET/POST /users| UserService

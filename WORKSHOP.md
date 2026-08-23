@@ -14,11 +14,10 @@ This is a hands-on workshop for QA engineers, developers, SDETs, automation engi
 
 ```mermaid
 flowchart TD
-    subgraph Clients["🌐 1. Client & Automation Layer (Test Without Limits)"]
-        Website["💻 Website<br/><code>Next.js :3000</code>"]
-        BridgeWebsite["📱 Mobile WebView<br/><code>Mocked JSBridge</code>"]
-        Playwright["🐦 Playwright E2E<br/><code>Automation Runner</code>"]
-        Burp["🛡️ Burp MITM Proxy<br/><code>:8080 (Control Chaos)</code>"]
+    subgraph Clients["🌐 1. Client & Automation Layer (Playwright & Burp)"]
+        Website["💻 Web Application<br/><code>Next.js :3000</code>"]
+        Playwright["🎭 Playwright E2E<br/><code>Automation Runner</code>"]
+        Burp["🛡️ Burp MITM Proxy<br/><code>:8080 (Traffic Control)</code>"]
     end
 
     subgraph API_Gateway["⚡ 2. Gateway & Orchestration Layer"]
@@ -37,16 +36,13 @@ flowchart TD
         DB[("🐘 PostgreSQL DB<br/><code>:5432</code>")]
     end
 
-    subgraph External_Mocks["🤖 5. External Mocks (Mock The World)"]
+    subgraph External_Mocks["🤖 5. External Mocks (WireMock Virtualization)"]
         WireMock["🪝 WireMock Stubs<br/><code>:8088 / :8080</code>"]
     end
 
     Website -->|HTTP REST| BFF
-    BridgeWebsite -->|REST + JSBridge Native Bridge| BFF
-    Playwright -->|Automated E2E| Website
-    Playwright -->|Automated E2E| BridgeWebsite
+    Playwright -->|Automated E2E + page.addInitScript| Website
     Website -.->|MITM Traffic Intercept| Burp
-    BridgeWebsite -.->|MITM Traffic Intercept| Burp
     Burp -.->|Proxied Traffic| BFF
 
     BFF -->|GET/POST /users| UserService
@@ -182,10 +178,10 @@ flowchart TD
 
 ### 📍 Category 6: Mobile Web Hybrid & Native Bridge Testing
 
-#### **Case 11: Mobile WebView JSBridge Native Feature Mocking**
+#### **Case 11: Mobile WebView JSBridge Native Feature Mocking via Playwright**
 
-- **Flow**: `Playwright / E2E Runner` ➔ `Mobile WebView Website (Mocked JSBridge)` ➔ `window.JSBridge` ➔ `BFF Service`
-- **Challenge**: Simulate a hybrid mobile app container in web browsers. Inject mock `window.JSBridge` native objects (e.g. `getNativeDeviceInfo()`, `requestBiometricAuth()`, `openNativeCamera()`) to verify mobile WebApp behavior without requiring physical iOS/Android builds.
+- **Flow**: `Playwright / E2E Runner (page.addInitScript)` ➔ `Web Application (window.JSBridge injected)` ➔ `BFF Service`
+- **Challenge**: Simulate a hybrid mobile app container in web browsers. Instead of running a dedicated mock server, Playwright injects mock `window.JSBridge` native objects (e.g. `getNativeDeviceInfo()`, `requestBiometricAuth()`, `openNativeCamera()`) directly into the browser context to verify mobile WebApp behavior without requiring physical iOS/Android builds.
 - **Key Assertions**:
   - `window.JSBridge.getNativeDeviceInfo()` resolves with mock device metadata (`{ platform: "iOS", appVersion: "2.4.0" }`).
   - Biometric trigger sends verified payload to `BFF Service`.

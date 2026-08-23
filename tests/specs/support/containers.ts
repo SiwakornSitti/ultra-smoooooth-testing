@@ -300,25 +300,6 @@ export async function startWebsite(
     .start();
 }
 
-export async function startMockJsBridgeWebsite(
-  network: StartedNetwork,
-  bffContainer: StartedTestContainer,
-  env?: Record<string, string>
-): Promise<StartedTestContainer> {
-  console.log("Starting mock-jsbridge-website container...");
-  return new GenericContainer("mock-jsbridge-website:test")
-    .withNetwork(network)
-    .withNetworkAliases("mock-jsbridge-website")
-    .withExposedPorts(3000)
-    .withEnvironment({
-      BFF_URL: `http://${bffContainer.getHost()}:${bffContainer.getMappedPort(PORT)}`,
-      HOSTNAME: "0.0.0.0",
-      ...env,
-    })
-    .withWaitStrategy(Wait.forHttp("/", 3000))
-    .start();
-}
-
 export async function stopAll(
   containers: (StartedTestContainer | undefined)[],
   network?: StartedNetwork

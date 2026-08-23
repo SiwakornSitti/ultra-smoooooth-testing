@@ -14,7 +14,6 @@ In the logical system architecture, core services communicate with backend domai
 ```mermaid
 flowchart LR
     Browser[Website\nNext.js :3000]
-    BridgeWebsite[Website with mocked\nJSBridge\nNext.js :3000]
     Burp[Optional Burp Suite\nMITM proxy]
     BFF[BFF Service\nGo :8080]
 
@@ -30,8 +29,6 @@ flowchart LR
     SMSProvider[SMS Provider]
 
     Browser -->|REST| BFF
-    BridgeWebsite -.->|REST + mocked JSBridge| Burp
-    BridgeWebsite -->|direct REST| BFF
     Burp -->|proxied REST| BFF
     Browser -.->|optional interception| Burp
 
@@ -60,7 +57,6 @@ For local development and automated testing, Docker Compose inserts WireMock in 
 ```mermaid
 flowchart LR
     Browser[Website\nNext.js :3000]
-    BridgeWebsite[Website with mocked\nJSBridge\nNext.js :3000]
     Burp[Optional Burp Suite\nMITM proxy]
     BFF[BFF Service\nGo :8080]
 
@@ -77,8 +73,6 @@ flowchart LR
     SMSProvider[SMS Provider]
 
     Browser -->|REST| BFF
-    BridgeWebsite -.->|REST + mocked JSBridge| Burp
-    BridgeWebsite -->|direct REST| BFF
     Burp -->|proxied REST| BFF
     Browser -.->|optional interception| Burp
 
