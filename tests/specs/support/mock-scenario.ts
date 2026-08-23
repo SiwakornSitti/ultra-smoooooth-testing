@@ -36,7 +36,8 @@ export function mockScenario(page: Page) {
     route.continue({ headers });
   });
 
-  return (scenario: string) => {
-    box.value = scenario;
+  return (...scenarios: (string | undefined)[]) => {
+    box.value = scenarios.filter(Boolean).join(",");
   };
 }
+

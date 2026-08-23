@@ -102,13 +102,12 @@ test.afterAll(async () => {
 
 async function login(page: Page) {
   const setScenario = mockScenario(page);
+  setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS, MOCK_SCENARIO.OTP.SUCCESS);
   await page.goto(`${websiteUrl}/login`);
 
-  setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
   await page.getByTestId("btn-paotang-login").click();
   await expect(page.getByTestId("result-paotang")).toContainText("successfully");
 
-  setScenario(MOCK_SCENARIO.OTP.SUCCESS);
   await page.getByTestId("btn-verify-otp").click();
   await expect(page).toHaveURL(/\/$/);
 }

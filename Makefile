@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-integration test-e2e slides
+.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-integration test-e2e test-all build-slides lint check slides
 
 all: build
 
@@ -74,5 +74,22 @@ test-integration:
 test-e2e:
 	cd tests && npm install && npm run test:e2e
 
+test-all: test test-integration test-e2e
+	@echo "All unit, integration, and E2E test suites executed successfully!"
+
+build-slides:
+	@echo "Building static Slidev presentation..."
+	cd slides && npx @slidev/cli build --base /
+
+lint:
+	@echo "Checking Go formatting..."
+	@gofmt -l services/
+	@echo "Checking TypeScript types..."
+	@cd tests && npx tsc --noEmit
+
+check: test lint
+	@echo "All checks passed successfully!"
+
 slides:
 	cd slides && bunx @slidev/cli slides.md
+

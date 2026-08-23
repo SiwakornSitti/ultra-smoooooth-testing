@@ -91,8 +91,8 @@ Before setting up and running the microservices ecosystem, ensure the following 
 | **Docker & Docker Compose** | Docker Desktop 4.x+ | Orchestrating containerized services (PostgreSQL, WireMock, microservices). |
 | **Burp Suite** | Community / Professional | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic between frontend, BFF, and microservices. |
 | **Playwright** | v1.40+ | **Test Runner**: Executing end-to-end (E2E) browser automation tests and API integration test suites (`specs/e2e`, `specs/integration`). |
-| **Go** | 1.27+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
-| **Node.js & npm** | Node v18+ / npm v9+ | Building the Website and running Playwright test suites. |
+| **Go** | 1.25+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
+| **Node.js / Bun** | Node v20+ / Bun v1.2+ | Building the Website and running Playwright test suites. |
 
 ---
 
@@ -101,13 +101,13 @@ Before setting up and running the microservices ecosystem, ensure the following 
 This repository uses **Go Workspaces (`go.work`)** to manage multiple Go modules seamlessly:
 
 ```work
-go 1.27.0
+go 1.25.7
 
 use (
  ./services/bank-account-service
  ./services/bff-service
  ./services/ekyc-service
- ./services/sms-service
+ ./services/otp-service
  ./services/transfer-service
  ./services/user-service
 )
@@ -124,8 +124,14 @@ make build
 # Sync workspace dependencies & tidy all service go.mod files
 make sync
 
-# Run unit & contract tests across all services
+# Run unit tests across all microservices
 make test
+
+# Run all test suites (Unit + Testcontainers + Playwright E2E)
+make test-all
+
+# Lint formatting and type-check TypeScript test suites
+make lint
 
 # Clean compiled binaries
 make clean

@@ -34,6 +34,57 @@ mdc: true
 </div>
 
 ---
+layout: default
+---
+
+# 📋 Workshop Agenda
+
+### What We'll Cover Today
+
+<div class="slide-card text-xs space-y-2 pt-2">
+
+<v-clicks>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-0.5 text-sm">🏗️ Part 1 — Ecosystem Architecture</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Go Workspace monorepo, microservices topology, and technology stack overview.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-0.5 text-sm">🪝 Part 2 — WireMock Deep Dive</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Request matching, priority stubs, Handlebars templating, fault injection, and stateful scenario machines.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-0.5 text-sm">🛡️ Part 3 — Burp Suite MITM</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Dual-direction HTTP intercept, Repeater manual exploration, Intruder fuzzing, and Logger traffic auditing.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-0.5 text-sm">🐳 Part 4 — Testcontainers (Hermetic Infrastructure)</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Ephemeral container lifecycle, dynamic port binding, and automated suite bootstrapping.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-0.5 text-sm">🎭 Part 5 — Playwright (Test Without Limits)</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Web-first locators, dynamic route mock steering, hybrid mobile JSBridge, and CI trace diagnostics.
+  </p>
+</div>
+
+</v-clicks>
+
+</div>
+
+---
 class: strategy-slide
 ---
 
@@ -43,33 +94,41 @@ class: strategy-slide
 
 <div class="strategy-grid text-sm">
 
+<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🌐 1. Mock the World (WireMock)</h3>
   <p class="text-slate-300 leading-relaxed">
     Virtualize all third-party external integrations with deterministic stateful stubs, dynamic Handlebars responses, and zero sandbox dependencies.
   </p>
 </div>
+</v-click>
 
+<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">⚡ 2. Control the Chaos (Burp Suite)</h3>
   <p class="text-slate-300 leading-relaxed">
     Intercept live HTTP traffic in-flight, tamper with payloads, inject fault scenarios, and probe security/IDOR boundaries.
   </p>
 </div>
+</v-click>
 
+<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 3. Hermetic Infrastructure (Testcontainers)</h3>
   <p class="text-slate-300 leading-relaxed">
     Execute integration suites against isolated, ephemeral Docker containers with dynamic ports and guaranteed Ryuk teardown.
   </p>
 </div>
+</v-click>
 
+<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 4. Test Without Limits (Playwright)</h3>
   <p class="text-slate-300 leading-relaxed">
     Drive unified browser DOM interactions and headless REST API validation with zero-flake auto-waiting assertions and rich tracing.
   </p>
 </div>
+</v-click>
 
 </div>
 
@@ -80,6 +139,8 @@ class: strategy-slide
 ### Eliminating External API Dependencies & Sandbox Flakiness
 
 <div class="slide-card text-sm space-y-3 pt-2">
+
+<v-clicks>
 
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🪝 Complete External Virtualization</h3>
@@ -102,6 +163,8 @@ class: strategy-slide
   </p>
 </div>
 
+</v-clicks>
+
 </div>
 
 ---
@@ -112,6 +175,8 @@ class: strategy-slide
 
 <div class="slide-card text-sm space-y-3 pt-2">
 
+<v-clicks>
+
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🔀 Transparent In-Flight Interception</h3>
   <p class="text-slate-300 leading-relaxed">
@@ -120,18 +185,20 @@ class: strategy-slide
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔁 Rapid Manual Edge-Case Exploration</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">💉 Mock Scenario Header Injection</h3>
   <p class="text-slate-300 leading-relaxed">
-    Replay and manipulate requests in Repeater to discover payload vulnerabilities and verify schema error contracts before writing automated tests.
+    Inject custom <code>Mock-Scenario</code> routing headers into live browser traffic to steer downstream WireMock stubs without code changes.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">💣 Automated Parameter Fuzzing & IDOR Probes</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">📥 Response Tampering &amp; UI Resilience</h3>
   <p class="text-slate-300 leading-relaxed">
-    Fuzz sequential resource IDs and auth tokens with Intruder to uncover broken object-level authorization (IDOR) and rate-limit leaks.
+    Intercept and mutate backend response status codes and JSON payloads to validate frontend error handling and fallback UI behaviors.
   </p>
 </div>
+
+</v-clicks>
 
 </div>
 
@@ -142,6 +209,8 @@ class: strategy-slide
 ### Isolated Ephemeral Containers, Dynamic Ports & Automatic Teardown
 
 <div class="slide-card text-sm space-y-3 pt-2">
+
+<v-clicks>
 
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 Code-Driven Ephemeral Infrastructure</h3>
@@ -158,11 +227,13 @@ class: strategy-slide
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🧹 Guaranteed Teardown with Moby Ryuk</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🧹 Automatic Lifecycle Cleanup</h3>
   <p class="text-slate-300 leading-relaxed">
-    A lightweight background watchdog monitors the test runner socket and cleanly removes containers, networks, and volumes even if processes crash.
+    Guarantees clean removal of containers, bridge networks, and attached volumes upon test completion to prevent orphan resource leaks.
   </p>
 </div>
+
+</v-clicks>
 
 </div>
 
@@ -191,15 +262,23 @@ class: strategy-slide
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">📊 Rich Diagnostics & Trace Recording</h3>
   <p class="text-slate-300 leading-relaxed">
-    Captures full execution traces, step-by-step DOM snapshots, console logs, and network HAR archives for instant root-cause debugging.
+    Captures full execution traces, step-by-step DOM snapshots, console logs, and network activity for instant root-cause debugging.
   </p>
 </div>
 
 </div>
 
 ---
+layout: section
+---
+
+# 🏗️ Part 1
+## Ecosystem Architecture
+
+---
 
 # 🗺️ Detailed Service Topology & Flow
+
 
 <div class="topology-diagram w-full flex justify-center items-center my-auto py-1">
 
@@ -350,76 +429,16 @@ class: compact-stack-slide
 </div>
 
 ---
-class: microservices-slide
+layout: section
 ---
 
-# 🧱 Core Microservices
-
-### Domain Boundaries, Storage & Hermetic Integrations
-
-<div class="topology-diagram microservices-diagram w-full flex justify-center items-center">
-
-```mermaid {scale: 0.58}
-flowchart LR
-    BFF["⚙️ bff-service<br/>:8080<br/>API Gateway"]
-
-    subgraph DOMAINS["🏡 Core Microservices Domain"]
-        subgraph PERSISTENT["Transactional Data"]
-            direction TB
-            UserService["👤 user-service<br/>:8081"]
-            BankService["🏦 bank-account-service<br/>:8082"]
-            TransferService["💸 transfer-service<br/>:8085"]
-        end
-        subgraph VERIFY["Verification & Auth"]
-            direction TB
-            EKYCService["🪪 ekyc-service<br/>:8084"]
-            OTPService["🔑 otp-service<br/>:8087"]
-        end
-    end
-
-    subgraph INFRA["🗄️ Persistence & External Stubs"]
-        direction TB
-        DB[("🐘 PostgreSQL DB<br/>:5432")]
-        WM["🪝 WireMock Mock Server<br/>:8088<br/>OAuth & SMS"]
-    end
-
-    BFF --> UserService
-    BFF --> BankService
-    BFF --> TransferService
-    BFF --> EKYCService
-    BFF --> OTPService
-
-    UserService -.->|SQL| DB
-    BankService -.->|SQL| DB
-    TransferService -.->|SQL| DB
-    UserService -.->|Paotang OAuth| WM
-    OTPService -.->|SMS Dispatch| WM
-
-    classDef gateway fill:#1d4ed8,stroke:#93c5fd,color:#ffffff,stroke-width:2px
-    classDef service fill:#047857,stroke:#6ee7b7,color:#ffffff,stroke-width:2px
-    classDef db fill:#4338ca,stroke:#c4b5fd,color:#ffffff,stroke-width:2px
-    classDef mock fill:#b45309,stroke:#fcd34d,color:#fff7ed,stroke-width:2px
-
-    class BFF gateway
-    class UserService,BankService,EKYCService,TransferService,OTPService service
-    class DB db
-    class WM mock
-
-    style DOMAINS fill:#052e2b,stroke:#10b981,stroke-width:1.5px,color:#a7f3d0
-    style PERSISTENT fill:#0f172a,stroke:#059669,stroke-width:1px,color:#d1fae5
-    style VERIFY fill:#0f172a,stroke:#059669,stroke-width:1px,color:#d1fae5
-    style INFRA fill:#1e1b4b,stroke:#6366f1,stroke-width:1.5px,color:#c7d2fe
-```
-
-</div>
-
-<div class="slide-card microservices-callout text-sm">
-  💡 <strong>Architectural Boundaries</strong>: BFF orchestrates client calls · Services manage isolated domains with PostgreSQL persistence · WireMock isolates third-party OAuth & SMS providers.
-</div>
+# 🪝 Part 2
+## WireMock — Mock the World
 
 ---
 
 # 🪝 What is WireMock? — Core Capabilities
+
 
 ### Programmable HTTP Mock Server for External API Simulation
 
@@ -1296,27 +1315,52 @@ flowchart LR
 
 ### Real-World Latency Simulation (`delayDistribution`)
 
+<div class="jitter-grid text-xs">
+
+<div class="slide-card space-y-2">
+  <div>
+    <h3 class="text-emerald-400 font-bold mb-1">📈 Log-Normal</h3>
+    <p class="text-slate-300 mb-2">Fast median + realistic long-tail spikes — models real network traffic.</p>
+
 ```json
 {
-  "request": {
-    "method": "GET",
-    "urlPath": "/lab/api/rates"
-  },
   "response": {
-    "status": 200,
     "delayDistribution": {
       "type": "lognormal",
       "median": 150,
       "sigma": 0.5
-    },
-    "jsonBody": { "USD_THB": 35.85 }
+    }
   }
 }
 ```
+  </div>
 
-<div class="slide-card text-sm mt-3">
-  🎲 <strong>Supported Distributions</strong>: <code>lognormal</code> (fast median + long-tail spikes), <code>uniform</code> (flat min–max bounds), and <code>normal</code> (Gaussian mean/stdDev).
+  <p class="text-slate-400 text-xs mt-2 pt-1 border-t border-slate-700/50">📌 <strong>median</strong>: 50th-percentile ms &nbsp;|&nbsp; <strong>sigma</strong>: tail spread</p>
 </div>
+
+<div class="slide-card space-y-2">
+  <div>
+    <h3 class="text-emerald-400 font-bold mb-1">📊 Uniform</h3>
+    <p class="text-slate-300 mb-2">Flat random delay between a fixed min and max — predictable jitter band.</p>
+
+```json
+{
+  "response": {
+    "delayDistribution": {
+      "type": "uniform",
+      "lower": 100,
+      "upper": 500
+    }
+  }
+}
+```
+  </div>
+
+  <p class="text-slate-400 text-xs mt-2 pt-1 border-t border-slate-700/50">📌 <strong>lower</strong>: min delay ms &nbsp;|&nbsp; <strong>upper</strong>: max delay ms</p>
+</div>
+
+</div>
+
 
 ---
 
@@ -1342,15 +1386,139 @@ flowchart LR
 
 ---
 
-# 🔄 WireMock Stateful Stubbing
+# 🔄 WireMock — Stateful Scenario Primitives
 
-### Scenario State Machines & Replay Prevention
+### Transforming Stateless HTTP Mocks into Finite State Machines
+
+<div class="slide-card text-sm space-y-3 pt-2">
+
+<v-clicks>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🏷️ 1. <code>scenarioName</code> (Scenario Identifier)</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Groups related stub mappings into a single isolated state machine (e.g. <code>"order-fulfillment-lifecycle"</code>).
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🚦 2. <code>requiredScenarioState</code> (State Precondition)</h3>
+  <p class="text-slate-300 leading-relaxed">
+    The state required for this stub to match. Every scenario automatically starts in the default state <strong><code>"Started"</code></strong>.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔄 3. <code>newScenarioState</code> (State Transition)</h3>
+  <p class="text-slate-300 leading-relaxed">
+    The target state to transition into <em>after</em> the stub matches and serves its response. If omitted, state remains unchanged.
+  </p>
+</div>
+
+</v-clicks>
+
+</div>
+
+---
+
+# 🔄 WireMock — Scenario Execution Flow
+
+### State-Aware Request Evaluation & Transition Mechanics
 
 <div class="w-full flex justify-center py-2">
 
-```mermaid {scale: 1.15}
+```mermaid {scale: 0.85}
 flowchart LR
-    S([Start]) --> Started["State: Started"]
+    Req["📨 Incoming HTTP<br/>Request"] --> Check["🔍 Match URL, Method,<br/>Headers, Body?"]
+    Check -- Yes --> StateCheck{"🚦 Scenario in<br/>requiredScenarioState?"}
+    Check -- No --> Next["⏭️ Evaluate Next Stub<br/>(or 404)"]
+    StateCheck -- Yes --> Serve["✅ Serve Configured<br/>HTTP Response"]
+    StateCheck -- No --> Next
+    Serve --> Trans["🔄 Transition State to<br/>newScenarioState"]
+
+    classDef pass fill:#064e3b,stroke:#34d399,color:#f8fafc,stroke-width:2px;
+    classDef fail fill:#450a0a,stroke:#f87171,color:#fca5a5,stroke-width:2px;
+    classDef proc fill:#1e293b,stroke:#64748b,color:#f8fafc,stroke-width:2px;
+
+    class Serve,Trans pass;
+    class Next fail;
+    class Req,Check,StateCheck proc;
+```
+
+</div>
+
+<div class="slide-card text-xs mt-2">
+  ⚡ <strong>Deterministic Routing</strong>: The exact same HTTP endpoint produces completely different responses based on the caller's historical interaction sequence.
+</div>
+
+---
+
+# 🔄 Stateful Pattern 1: Single-Use Tokens & Replays
+
+### OAuth Authorization Code & OTP Replay Attack Prevention
+
+<div class="jitter-grid text-xs">
+
+<div class="slide-card space-y-2">
+  <div>
+    <h3 class="text-emerald-400 font-bold mb-1">✅ 1st Call: Exchange Token</h3>
+    <p class="text-slate-300 mb-2"><code>Started</code> ➔ <code>TOKEN_ISSUED</code>: Consumes auth code and issues token.</p>
+
+```json
+{
+  "scenarioName": "auth-token-flow",
+  "requiredScenarioState": "Started",
+  "newScenarioState": "TOKEN_ISSUED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/oauth/token"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": { "access_token": "jwt_abc123" }
+  }
+}
+```
+  </div>
+  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> &amp; transitions state to <code>TOKEN_ISSUED</code></p>
+</div>
+
+<div class="slide-card space-y-2">
+  <div>
+    <h3 class="text-rose-400 font-bold mb-1">🚨 2nd Call: Replay Rejected</h3>
+    <p class="text-slate-300 mb-2"><code>TOKEN_ISSUED</code>: Replay attempt fails with invalid grant.</p>
+
+```json
+{
+  "scenarioName": "auth-token-flow",
+  "requiredScenarioState": "TOKEN_ISSUED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/oauth/token"
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": { "error": "invalid_grant" }
+  }
+}
+```
+  </div>
+  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🔴 <strong>Returns 400 Bad Request</strong> (Code already consumed)</p>
+</div>
+
+</div>
+
+---
+
+# 🔄 Stateful Pattern 2: Multi-Step Order Lifecycle
+
+### Modeling Sequential Domain State Transitions
+
+<div class="w-full flex justify-center py-2">
+
+```mermaid {scale: 1.0}
+flowchart LR
+    S([Start]) --> Started["State: Started<br/>(PENDING)"]
     Started -->|POST /orders/101/pay| PAID["State: PAID"]
     PAID -->|POST /orders/101/ship| SHIPPED["State: SHIPPED"]
     SHIPPED -->|POST /orders/101/ship| ERR["⚠️ 400 ALREADY_SHIPPED"]
@@ -1362,59 +1530,215 @@ flowchart LR
 
 </div>
 
-<div class="slide-card text-sm mt-3">
-  🔄 Model multi-step business lifecycles and single-use tokens; call <code>POST /__admin/scenarios/reset</code> in test teardown to restore back to <code>Started</code>.
-</div>
-
----
-
-# 🔄 WireMock Stateful — Example
-
-### Scenario State Machine Stub: `04-order-pay.json`
-
 ```json
 {
   "scenarioName": "order-fulfillment-lifecycle",
-  "requiredScenarioState": "Started",
-  "newScenarioState": "PAID",
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/orders/101/pay"
-  },
-  "response": { 
-    "status": 200,
-    "jsonBody": { "status": "PAYMENT_SUCCESS" }
-  }
+  "requiredScenarioState": "PAID",
+  "newScenarioState": "SHIPPED",
+  "request": { "method": "POST", "urlPath": "/lab/api/orders/101/ship" },
+  "response": { "status": 200, "jsonBody": { "status": "ORDER_SHIPPED" } }
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  🔄 Transitions scenario state to <code>PAID</code> on first payment. Subsequent calls fail and trigger a <code>409 Conflict</code> or <code>404</code> stub.
+<div class="slide-card text-xs mt-2">
+  📦 Shipping is allowed only after <code>PAID</code>. A duplicate ship attempt triggers a <code>400 Bad Request</code> stub.
 </div>
 
 ---
 
-# 🔀 Burp Suite — Proxy Intercept
+# 🔄 Stateful Pattern 3: Transient Failure & Retries
 
-### Transparent MITM HTTP Traffic Interception
+### Testing Client Exponential Backoff & Circuit Breakers
+
+<div class="w-full flex justify-center py-1">
+
+```mermaid {scale: 0.9}
+flowchart LR
+    S([Start]) --> Att1["Attempt 1: Started<br/>💥 503 Unavailable"]
+    Att1 --> Att2["Attempt 2: FAIL_1<br/>💥 503 Unavailable"]
+    Att2 --> Att3["Attempt 3: FAIL_2<br/>✅ 200 OK Recovered"]
+
+    classDef fail fill:#450a0a,stroke:#f87171,color:#fca5a5,stroke-width:2px;
+    classDef pass fill:#064e3b,stroke:#34d399,color:#f8fafc,stroke-width:2px;
+    class Att1,Att2 fail;
+    class Att3 pass;
+```
+
+</div>
+
+<div class="jitter-grid text-xs">
+
+<div class="slide-card space-y-1">
+  <h3 class="text-rose-400 font-bold">💥 Flapping Failures (Attempts 1 &amp; 2)</h3>
+
+```json
+{
+  "scenarioName": "retry-flow",
+  "requiredScenarioState": "Started",
+  "newScenarioState": "FAIL_1",
+  "request": { "method": "GET", "urlPath": "/lab/api/flaky" },
+  "response": { "status": 503, "jsonBody": { "error": "Flapping" } }
+}
+```
+</div>
+
+<div class="slide-card space-y-1">
+  <h3 class="text-emerald-400 font-bold">✅ Self-Healing Recovery (Attempt 3)</h3>
+
+```json
+{
+  "scenarioName": "retry-flow",
+  "requiredScenarioState": "FAIL_2",
+  "request": { "method": "GET", "urlPath": "/lab/api/flaky" },
+  "response": { "status": 200, "jsonBody": { "status": "RECOVERED" } }
+}
+```
+</div>
+
+</div>
+
+---
+
+# 🔄 Stateful Pattern 4: Webhook Idempotency
+
+### At-Least-Once Delivery & Duplicate Message Detection
+
+<div class="jitter-grid text-xs">
+
+<div class="slide-card space-y-2">
+  <div>
+    <h3 class="text-emerald-400 font-bold mb-1">📨 1st Delivery: Processed</h3>
+    <p class="text-slate-300 mb-2"><code>Started</code> ➔ <code>WEBHOOK_PROCESSED</code>: Accepts payment event.</p>
+
+```json
+{
+  "scenarioName": "webhook-idempotency",
+  "requiredScenarioState": "Started",
+  "newScenarioState": "WEBHOOK_PROCESSED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/payments/pay_123/webhook"
+  },
+  "response": {
+    "status": 202,
+    "jsonBody": { "status": "ACCEPTED" }
+  }
+}
+```
+  </div>
+  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🟢 <strong>Returns 202 Accepted</strong> (First-time processing)</p>
+</div>
+
+<div class="slide-card space-y-2">
+  <div>
+    <h3 class="text-amber-400 font-bold mb-1">🛡️ 2nd Delivery: Duplicate</h3>
+    <p class="text-slate-300 mb-2"><code>WEBHOOK_PROCESSED</code>: Detects duplicate and rejects.</p>
+
+```json
+{
+  "scenarioName": "webhook-idempotency",
+  "requiredScenarioState": "WEBHOOK_PROCESSED",
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/payments/pay_123/webhook"
+  },
+  "response": {
+    "status": 409,
+    "jsonBody": { "error": "DUPLICATE_EVENT" }
+  }
+}
+```
+  </div>
+  <p class="text-slate-400 text-xs pt-1 border-t border-slate-700/50">🟡 <strong>Returns 409 Conflict</strong> (Idempotent guard)</p>
+</div>
+
+</div>
+
+---
+
+# 🧹 WireMock — State Management & Test Isolation
+
+### Preventing State Bleed with the WireMock Admin API
+
+<div class="slide-card text-xs space-y-2.5 pt-2">
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-sm">🔄 Automatic Scenario Reset in Test Teardown</h3>
+  <p class="text-slate-300 leading-relaxed mb-1">
+    Call <code>POST /__admin/scenarios/reset</code> in your test runner's <code>afterEach</code> hook to reset all state machines back to <code>"Started"</code>.
+  </p>
+
+```typescript
+test.afterEach(async ({ request }) => {
+  // Reset all WireMock state machines to 'Started' after every spec
+  await request.post(`${wiremockUrl}/__admin/scenarios/reset`);
+});
+```
+</div>
+
+<div class="grid grid-cols-2 gap-3 pt-1 border-t border-slate-700/50">
+  <div>
+    <h4 class="text-cyan-400 font-semibold text-xs mb-0.5">🔍 Inspect Active Scenario States</h4>
+    <code class="text-xs text-slate-300">curl http://localhost:8088/__admin/scenarios</code>
+  </div>
+  <div>
+    <h4 class="text-cyan-400 font-semibold text-xs mb-0.5">⚡ Fast-Forward State for Test Setup</h4>
+    <code class="text-xs text-slate-300">PUT /__admin/scenarios/{name}/state {"state": "PAID"}</code>
+  </div>
+</div>
+
+</div>
+
+
+---
+layout: section
+---
+
+# 🛡️ Part 3
+## Burp Suite — Control the Chaos
+
+---
+class: py-4
+---
+
+# 🔀 Burp Suite — Request & Response Intercept
+
+### Bi-Directional In-Flight Traffic Interception & Tampering
+
+<div class="flex justify-center items-center mt-1">
+  <div class="adorable-arch-container">
+    <img src="/burp_duplex_intercept.jpg" class="adorable-arch-img" alt="Burp Suite Request and Response Interception Flow" />
+  </div>
+</div>
+
+---
+
+# 🔀 Burp Suite — Proxy Intercept Capabilities
+
+### Dual-Direction Traffic Control: Requests and Responses
 
 <div class="slide-card text-sm space-y-3 pt-2">
 
+<v-clicks>
+
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🌐 Transparent MITM Proxy</h3>
+  <h3 class="text-amber-400 font-bold mb-1 text-base">📤 1. Request Interception (Client ➔ Server)</h3>
   <p class="text-slate-300 leading-relaxed">
-    Sits directly between client applications (browsers, mobile WebViews) and the BFF gateway to inspect, pause, and modify HTTP traffic in flight.
+    Pause outbound HTTP requests mid-flight to inject custom <code>Mock-Scenario</code> headers, tamper with form parameters, or test unauthorized API calls before reaching the gateway.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">💉 Mock Header & Payload Injection</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">📥 2. Response Interception (Server ➔ Client)</h3>
   <p class="text-slate-300 leading-relaxed">
-    Inject custom <code>Mock-Scenario</code> headers or tamper with request JSON bodies to steer WireMock stubs without code modifications.
+    Pause inbound HTTP responses to alter status codes (e.g. <code>200 ➔ 500/403</code>), mutate JSON payloads (e.g. simulate edge-case error bodies), and test frontend resilience without backend code changes.
   </p>
 </div>
 
+</v-clicks>
+
 </div>
+
 
 ---
 
@@ -1440,181 +1764,161 @@ Mock-Scenario: PT_PASS:SUCCESS_ONCE
 
 ---
 
-# 🔁 Burp Suite — Repeater
-
-### Manual Request Replay & Contract Validation
-
-<div class="slide-card text-sm space-y-3 pt-2">
-
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔁 Interactive Request Replay</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Capture any request once, modify payload boundaries, and replay unlimited times with sub-second feedback to explore edge cases before writing automated tests.
-  </p>
-</div>
-
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎯 Verification Scenarios</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Validate <code>400 Bad Request</code> error shapes, test negative amounts / overflow, and ensure malicious injection strings never trigger <code>500</code> server crashes.
-  </p>
-</div>
-
-</div>
-
----
-
-# 🔁 Repeater — Example
-
-### Boundary & Error Contract Testing (`transfers.spec.ts`)
-
-```typescript
-// 1. Normal transfer (201 Created)
-const res1 = await request.post("/api/v1/transfers", {
-  data: { amount: 500, to_account: "ACC-002" }
-});
-expect(res1.status()).toBe(201);
-
-// 2. Negative amount (400 Bad Request)
-const res2 = await request.post("/api/v1/transfers", {
-  data: { amount: -1, to_account: "ACC-002" }
-});
-expect(res2.status()).toBe(400);
-```
-
-<div class="slide-card text-sm mt-3">
-  🧪 Manual Repeater edge cases are converted directly into permanent Playwright regression safeguards.
-</div>
-
----
-
-# 💣 Burp Suite — Intruder Attack Modes
-
-### Automated Payload Fuzzing & Parameter Attacks
-
-<div class="slide-card text-sm space-y-3 pt-2">
-
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎯 Attack Modes Overview</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <strong>Sniper Mode</strong>: Fuzzes a single target parameter position (e.g. <code>§id§</code>) through an entire wordlist.</li>
-    <li>• <strong>Cluster Bomb</strong>: Multi-position permutation attack across usernames and passwords.</li>
-    <li>• <strong>Pitchfork</strong>: Multi-position synchronized parallel pairing.</li>
-  </ul>
-</div>
-
-</div>
-
----
-
-# 💣 Burp Suite — Security & IDOR Discovery
-
-### Horizontal Privilege Escalation & Rate Limits
-
-<div class="slide-card text-sm space-y-3 pt-2">
-
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Vulnerability Discovery</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <strong>IDOR Detection</strong>: Detect unauthorized access to other customers' accounts (<code>ACC-002</code>).</li>
-    <li>• <strong>Rate Limit Validation</strong>: Stress test OTP/login endpoints to verify <code>429 Too Many Requests</code> triggers.</li>
-    <li>• <strong>Hidden Parameter Discovery</strong>: Uncover unadvertised admin flags or debug parameters.</li>
-  </ul>
-</div>
-
-</div>
-
----
-
-# 💣 Intruder — Example
-
-### IDOR Detection Across Sequential Account IDs
-
-```http
-GET /api/v1/accounts/§ACCOUNT_ID§ HTTP/1.1
-Host: localhost:8080
-Authorization: Bearer <user_token>
-
-Payloads: ACC-001, ACC-002, ACC-003, ACC-999...
-```
-
-<div class="slide-card mt-3 text-sm">
-  <table class="w-full">
-    <thead>
-      <tr class="text-slate-400 border-b border-slate-700">
-        <th class="text-left pb-1">Payload</th>
-        <th class="text-left pb-1">Status</th>
-        <th class="text-left pb-1">Verdict</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-slate-800 text-slate-300">
-      <tr><td><code>ACC-001</code></td><td><span class="text-emerald-400">200 OK</span></td><td>✅ Own account (Authorized)</td></tr>
-      <tr><td><code>ACC-002</code></td><td><span class="text-rose-400 font-bold">200 OK</span></td><td>🚨 <strong>IDOR Leak! (Horizontal breach)</strong></td></tr>
-      <tr><td><code>ACC-999</code></td><td><span class="text-slate-400">404</span></td><td>✅ Not found</td></tr>
-    </tbody>
-  </table>
-</div>
-
----
-
 # 📋 Burp Suite — Logger / HTTP History
 
-### Real-Time Traffic Auditing & HAR Exports
+
+### Real-Time Traffic Auditing & Inspection
 
 <div class="slide-card text-sm space-y-3 pt-2">
 
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">📋 Real-Time Audit Trail</h3>
   <p class="text-slate-300 leading-relaxed">
-    Maintains a complete record of every outbound request and inbound response with filtering by status code, method, host, or payload size.
+    Maintains a complete chronological record of every outbound request and inbound response with filtering by status code, method, host, or payload size.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">📦 CI/CD HAR Export</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔍 Rapid Troubleshooting &amp; Tool Handoff</h3>
   <p class="text-slate-300 leading-relaxed">
-    Export full traffic sessions as <strong>HAR files</strong> for automated regression diffing and test evidence in CI pipelines.
+    Instantly isolate failing API calls (<code>4xx / 5xx</code>) and right-click to send requests directly to <strong>Repeater</strong> for manual replay or <strong>Intruder</strong> for boundary fuzzing.
   </p>
 </div>
 
 </div>
 
 ---
+layout: section
+---
 
-# 📋 Logger — Example
+# 🐳 Part 4
+## Testcontainers — Hermetic Infrastructure
 
-### Filter & Export for CI Evidence
+---
 
-```bash
-# Export HTTP traffic from test session as HAR
-Save as session.har
+# 🐳 What is Testcontainers? — Core Concepts
 
-# Compare baseline against current test run in CI:
-npx playwright har-diff baseline.har session.har
-→ Detect any new unexpected 500 errors or missing headers
-```
+### Programmable Docker Infrastructure Directly in Your Test Suite
 
-<div class="slide-card text-sm mt-3">
-  📋 Automatically compares network traffic across pull requests to catch unintended backend contract regressions.
+<div class="slide-card text-sm space-y-3 pt-2">
+
+<v-clicks>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">📦 Code-Driven Ephemeral Containers</h3>
+  <p class="text-slate-300 leading-relaxed">
+    An open-source library that allows test code (TypeScript, Go, Java, Python) to provision and manage real Docker containers (databases, mock servers, brokers) directly as test fixtures.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔌 Dynamic Port Forwarding & Zero Host Conflicts</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Exposes containers on randomized host ports mapped dynamically at runtime, completely eliminating port collisions during parallel test executions.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔄 Native Test Lifecycle Integration</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Boots containers in <code>beforeAll()</code> hooks, seeds initial database migrations, injects dynamic connection URLs into microservices, and guarantees cleanup on test completion.
+  </p>
+</div>
+
+</v-clicks>
+
+</div>
+
+---
+
+# 🐳 Do We Need Docker for Testcontainers?
+
+### Docker Daemon Requirement & Supported Runtimes
+
+<div class="slide-card text-sm space-y-3 pt-2">
+
+<div>
+  <h3 class="text-amber-400 font-bold mb-1 text-base">🔌 Yes — Docker API Socket is Required</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Testcontainers is a <strong>code SDK</strong> (TypeScript/Go/Java), not a standalone container engine. It connects to the local Docker socket (<code>/var/run/docker.sock</code>) to pull images, configure dynamic ports, and manage container lifecycles.
+  </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛠️ Supported Container Runtimes</h3>
+  <ul class="space-y-1 text-slate-300">
+    <li>• <strong>Docker Desktop / Docker CE</strong>: Standard default on macOS, Windows, Linux, and CI runners.</li>
+    <li>• <strong>OrbStack / Colima</strong>: Ultra-fast, lightweight macOS open-source alternatives.</li>
+    <li>• <strong>Podman / Rancher Desktop</strong>: Fully compatible via standard Docker socket emulation.</li>
+    <li>• <strong>Testcontainers Cloud</strong>: Offloads container execution to cloud workers with zero local Docker.</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-3">
+  🎯 <strong>Zero Host Tooling</strong>: Docker is the <em>only</em> tool needed. No local PostgreSQL, Redis, Kafka, or Java runtimes required on developer machines!
 </div>
 
 ---
 
 # ❌ The Shared Environment Problem in Testing
 
-### Flakiness, Collisions & State Bleed
+### Flakiness, Collisions & State Bleed in Shared Test Infrastructure
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
 
-<div>
-  <h3 class="text-rose-400 font-bold mb-1 text-base">⚠️ Shared Environment Pitfalls</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <strong>State Pollution</strong>: Test A mutates database records; Test B fails intermittently due to dirty state.</li>
-    <li>• <strong>Port Collisions</strong>: Hardcoded <code>:5432</code> or <code>:8080</code> ports conflict with other local processes.</li>
-    <li>• <strong>"Works on My Machine"</strong>: Discrepancies between local macOS workstations, Linux CI runners, and staging.</li>
-    <li>• <strong>Flaky Cleanups</strong>: Crashed test suites leave orphan DB records and background zombie processes.</li>
-  </ul>
+<v-clicks>
+
+<div class="slide-card p-3">
+  <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>💥</span> 1. State Pollution &amp; Deadlocks
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    Test A mutates shared rows; Test B fails due to dirty state, foreign key conflicts, or missing row resets.
+  </p>
+  <div class="mt-1.5 text-rose-300/90 font-mono text-[11px]">
+    🚨 Flaky when test suites run concurrently.
+  </div>
 </div>
+
+<div class="slide-card p-3">
+  <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>🔌</span> 2. Hardcoded Port Collisions
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    Static bindings to <code>:5432</code> or <code>:8080</code> crash when local tools or parallel CI jobs compete for sockets.
+  </p>
+  <div class="mt-1.5 text-rose-300/90 font-mono text-[11px]">
+    🚨 <code>bind: address already in use</code> error.
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-amber-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>💻</span> 3. "Works on My Machine" Drift
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    Discrepancies between local macOS, Linux CI runners, and staging create false-positives and hidden regressions.
+  </p>
+  <div class="mt-1.5 text-amber-300/90 font-mono text-[11px]">
+    🚨 Passes locally, but fails in GitHub Actions.
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>🧟</span> 4. Flaky Teardowns &amp; Zombie Leaks
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    When tests crash unexpectedly, orphan DB connections and background processes linger indefinitely.
+  </p>
+  <div class="mt-1.5 text-rose-300/90 font-mono text-[11px]">
+    🚨 Leaks system memory and locks resources.
+  </div>
+</div>
+
+</v-clicks>
 
 </div>
 
@@ -1622,19 +1926,61 @@ npx playwright har-diff baseline.har session.har
 
 # ✅ The Hermetic Containerized Solution
 
-### Isolated, Disposable & Predictable Infrastructure
+### Isolated, Disposable & Predictable Infrastructure On-Demand
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 Containerized Testing Benefits</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <strong>Hermetic Isolation</strong>: Every test suite executes against dedicated, pristine container instances.</li>
-    <li>• <strong>Production Parity</strong>: Exactly matches production PostgreSQL versions and network bridge topology.</li>
-    <li>• <strong>Zero Host Tooling</strong>: Developers only need Docker installed — no local database engines or Go binaries required.</li>
-    <li>• <strong>Guaranteed CI Parity</strong>: The exact same containerized test orchestration runs locally and in GitHub Actions.</li>
-  </ul>
+<v-clicks>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>🛡️</span> 1. Hermetic Test Isolation
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    Dedicated, pristine PostgreSQL and WireMock container per test suite with zero data bleed.
+  </p>
+  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+    ✨ 100% deterministic &amp; safe parallel execution.
+  </div>
 </div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>🏭</span> 2. 100% Production Parity
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    Runs the exact PostgreSQL 16 Alpine image and migrations used in production.
+  </p>
+  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+    ✨ Catches real SQL syntax &amp; schema bugs early.
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>🚀</span> 3. Zero Host Tooling Required
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    Developers only need Docker installed — no local DBs or Java runtimes required.
+  </p>
+  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+    ✨ Instant onboarding with <code>bun test</code>.
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
+    <span>🔄</span> 4. Guaranteed CI / Local Parity
+  </h3>
+  <p class="text-slate-300 leading-relaxed">
+    Identical TypeScript orchestration executes on local workstations and headless GitHub Actions.
+  </p>
+  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+    ✨ Green locally = Guaranteed green in CI.
+  </div>
+</div>
+
+</v-clicks>
 
 </div>
 
@@ -1651,40 +1997,15 @@ npx playwright har-diff baseline.har session.har
 | **Lifecycle** | Manual `docker compose up` | **Code-managed in test runner** |
 | **Port Binding** | Fixed host ports (collisions) | **Random dynamic host ports** |
 | **Parallelism** | Hard to run in parallel | **Isolated parallel test suites** |
-| **Teardown** | Leaks on process crash | **Guaranteed cleanup via Ryuk** |
+| **Teardown** | Leaks on process crash | **Automatic cleanup on test exit** |
 | **Control** | Static YAML configuration | **Native TypeScript / Go APIs** |
 
 </div>
 
 ---
 
-# 🧪 Moby Ryuk — Container Garbage Collector
-
-### Automatic Socket-Driven Teardown for Containers, Networks & Volumes
-
-```typescript
-// tests/specs/support/containers.ts
-import { GenericContainer, Network } from "testcontainers";
-
-// 1. Ryuk starts automatically on first container call:
-const network = await new Network().start();
-const wm = await new GenericContainer("wiremock/wiremock:latest")
-  .withNetwork(network)
-  .withExposedPorts(8080)
-  .start();
-
-// 2. Debug Mode: Keep containers alive to inspect DB / UI
-// $ TESTCONTAINERS_RYUK_DISABLED=true bun test
-process.env.TESTCONTAINERS_RYUK_DISABLED = "true";
-```
-
-<div class="slide-card text-sm mt-3">
-  🔌 Ryuk monitors the test runner's TCP socket and wipes all labeled containers, networks, and volumes if tests finish or crash (<code>kill -9</code>).
-</div>
-
----
-
 # 🧪 Testcontainers — Ephemeral Suite Bootstrapping
+
 
 ### Code-Driven Container Lifecycle (`tests/specs/support/containers.ts`)
 
@@ -1709,52 +2030,182 @@ const bff = await startBffService(network, {
 
 ---
 
+# 🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle
+
+### Best Practice Test Suite Initialization in `beforeAll()` Hook
+
+```typescript
+test.beforeAll(async () => {
+  // Step 1: Initialize Ephemeral Containers
+  const network = await startNetwork();
+  const db = await startPostgres(network);
+  const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
+
+  // Step 2: Run Schema Migrations (DDL)
+  await runMigrations(db);
+
+  // Step 3: Run Baseline Seed Data (Fixtures)
+  await runSeedData(db);
+
+  // Boot BFF Service wired to dynamic DB & WireMock
+  const bff = await startBffService(network, {
+    DB_URL: db.getConnectionString(),
+    WIREMOCK_URL: `http://${wm.getNetworkHost()}:${wm.getMappedPort(8080)}`
+  });
+});
+```
+
+<div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+  <div class="slide-card p-2.5">
+    <strong class="text-emerald-400 font-bold block mb-1">1. Ephemeral Containers</strong>
+    <p class="text-slate-300 leading-snug">Spins up fresh isolated PostgreSQL &amp; WireMock instances on dynamic ports.</p>
+  </div>
+  <div class="slide-card p-2.5">
+    <strong class="text-emerald-400 font-bold block mb-1">2. Run Schema Migrations</strong>
+    <p class="text-slate-300 leading-snug">Executes DDL migration scripts (<code>*.sql</code>) to build exact production schema.</p>
+  </div>
+  <div class="slide-card p-2.5">
+    <strong class="text-emerald-400 font-bold block mb-1">3. Run Seed Data</strong>
+    <p class="text-slate-300 leading-snug">Inserts pristine reference users, accounts, and balances for deterministic tests.</p>
+  </div>
+</div>
+
+---
+layout: section
+---
+
+# 🎭 Part 5
+## Playwright — Test Without Limits
+
+---
+
 # 🎭 Playwright — Unified UI & API Test Engine
 
-### Modern Full-Stack Integration Testing Advantages
+
+### Modern Full-Stack Integration Testing Architecture
 
 <div class="slide-card text-sm space-y-3 pt-2">
 
+<v-clicks>
+
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">⚡ Unified UI + API Automation</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">⚡ Native DevTools Protocol (Zero WebDriver Overhead)</h3>
   <p class="text-slate-300 leading-relaxed">
-    Automate headless browser DOM interactions and direct backend REST APIs in the same spec file without WebDriver overhead.
+    Communicates directly with browser engines via Chromium DevTools / BiDi protocols for sub-millisecond execution speed without flaky external drivers.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Zero-Flake Reliability</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Pristine Browser Context Isolation</h3>
   <p class="text-slate-300 leading-relaxed">
-    Auto-waiting assertions eliminate fragile <code>sleep()</code> calls, while native network routing (<code>page.route()</code>) steers mock scenarios on the fly.
+    Every test executes in an isolated incognito browser context with zero cookie, localStorage, or session bleed across concurrent workers.
   </p>
+</div>
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🌐 Unified UI DOM + Direct Headless REST API</h3>
+  <p class="text-slate-300 leading-relaxed">
+    Drive real browser workflows and execute backend API requests simultaneously in the exact same spec file.
+  </p>
+</div>
+
+</v-clicks>
+
+</div>
+
+---
+
+# 🎭 Playwright — Web-First Locators & Auto-Waiting
+
+### Eliminating Flaky `sleep()` Calls with Actionability Checks
+
+<div class="slide-card text-xs space-y-2 pt-2">
+
+<div>
+  <h3 class="text-emerald-400 font-bold mb-1 text-sm">🎯 4-Stage Actionability Lifecycle</h3>
+  <p class="text-slate-300 mb-1">
+    Playwright automatically waits for elements before performing actions (e.g. <code>.click()</code>, <code>.fill()</code>):
+  </p>
+  <ul class="text-slate-300 space-y-0.5 ml-2">
+    <li>1️⃣ <strong>Attached</strong> — Element exists in the DOM tree</li>
+    <li>2️⃣ <strong>Visible</strong> — Non-zero bounding box, not <code>display: none</code></li>
+    <li>3️⃣ <strong>Stable</strong> — Not undergoing CSS animation/transitions</li>
+    <li>4️⃣ <strong>Receives Events</strong> — Not obscured by overlay modal dialogs</li>
+  </ul>
+</div>
+
+<div class="pt-1 border-t border-slate-700/50">
+
+```typescript
+// ❌ Bad: Fragile manual sleep
+await page.waitForTimeout(5000);
+await page.locator("#btn-submit").click();
+
+// ✅ Good: Resilient locator + auto-retrying web-first assertion
+const submitBtn = page.getByTestId("btn-submit");
+await expect(submitBtn).toBeEnabled();
+await submitBtn.click();
+```
+
 </div>
 
 </div>
 
 ---
 
-# 🎭 Playwright — Core Test Primitives & API
+# 🎭 Playwright — Network Route Interception
 
-### Selectors, Auto-Waiting Assertions & Mock Header Injection
+### Dynamic Mock Header Injection with `page.route()`
 
-<div class="slide-card text-sm space-y-3 pt-2">
+```typescript
+// tests/specs/support/mock-scenario.ts
+export function mockScenario(page: Page) {
+  const box = { value: "" };
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔍 Locators & Assertions</h3>
-  <ul class="space-y-1 text-slate-300">
-    <li>• <code>page.getByTestId("btn-login")</code> — User-facing resilient DOM locators.</li>
-    <li>• <code>await expect(page).toHaveURL(/.../)</code> — Auto-retrying assertion engine.</li>
-    <li>• <code>const res = await request.post(...)</code> — Built-in headless REST API client.</li>
-  </ul>
+  // Intercept every outgoing browser fetch/XHR request
+  page.route("**/*", (route) => {
+    const headers = { ...route.request().headers() };
+    if (box.value && !headers["mock-scenario"]) {
+      headers["mock-scenario"] = box.value; // Inject WireMock steer header
+    }
+    route.continue({ headers });
+  });
+
+  // Supports multiple simultaneous scenario tags: setScenario(tag1, tag2, ...)
+  return (...scenarios: (string | undefined)[]) => {
+    box.value = scenarios.filter(Boolean).join(",");
+  };
+}
+```
+
+<div class="slide-card text-xs mt-2">
+  🔀 Injects custom <code>Mock-Scenario</code> headers dynamically. Supports multi-scenario arguments (e.g. <code>setScenario(PAOTANG.SUCCESS, OTP.SUCCESS)</code>) to steer multiple downstream WireMock stubs simultaneously.
 </div>
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔀 Mock Scenario Steering</h3>
-  <p class="text-slate-300 leading-relaxed">
-    <code>page.setExtraHTTPHeaders(...)</code> injects WireMock <code>Mock-Scenario</code> tags directly into browser fetch requests.
-  </p>
-</div>
+---
 
+# 🎭 Playwright — Hybrid Mobile WebView & JSBridge
+
+### Mocking Native Device APIs with `page.addInitScript()`
+
+```typescript
+test("Biometric verification via native JSBridge", async ({ page }) => {
+  // Inject mock JSBridge object into browser window before page scripts run
+  await page.addInitScript(() => {
+    (window as any).JSBridge = {
+      verifyBiometrics: async () => ({ success: true, token: "bio_token_9988" }),
+      getDeviceInfo: () => ({ platform: "iOS", model: "iPhone15,2" })
+    };
+  });
+
+  await page.goto(`${websiteUrl}/webview/biometrics`);
+  await page.getByTestId("btn-scan-face").click();
+  await expect(page.getByTestId("auth-status")).toHaveText("Verified via FaceID");
+});
+```
+
+<div class="slide-card text-xs mt-2">
+  📱 Simulates hybrid mobile environments (Paotang Mobile App WebViews) by injecting native device bridges before page scripts execute.
 </div>
 
 ---
@@ -1766,15 +2217,17 @@ const bff = await startBffService(network, {
 ```typescript
 test("Paotang login verifies OTP & redirects", async ({ page }) => {
   const setScenario = mockScenario(page);
+
+  // Set multiple mock scenarios at once (OAuth + OTP):
+  setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS, MOCK_SCENARIO.OTP.SUCCESS);
+
   await page.goto(`${websiteUrl}/login`);
 
   // Step 1: Paotang OAuth with Mock Scenario
-  setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
   await page.getByTestId("btn-paotang-login").click();
   await expect(page.getByTestId("result-paotang")).toContainText("successfully");
 
   // Step 2: Verify OTP with WireMock Stub
-  setScenario(MOCK_SCENARIO.OTP.SUCCESS);
   await page.getByTestId("btn-verify-otp").click();
 
   // Step 3: Assert redirected to dashboard
@@ -1782,8 +2235,8 @@ test("Paotang login verifies OTP & redirects", async ({ page }) => {
 });
 ```
 
-<div class="slide-card text-sm mt-3">
-  🎯 <code>mockScenario(page)</code> sets the <code>Mock-Scenario</code> header on browser requests so WireMock serves deterministic scenario responses.
+<div class="slide-card text-xs mt-2">
+  🎯 Combines DOM click actions, dynamic network header steering, and auto-waiting URL assertions in a single deterministic test.
 </div>
 
 ---
@@ -1809,45 +2262,191 @@ test.afterEach(async ({ request }) => {
 });
 ```
 
-<div class="slide-card text-sm mt-3">
-  🎭 Executes direct REST API requests with built-in Playwright <code>request</code> client, validates status/payload contracts, and cleans mock states in <code>test.afterEach</code>.
+<div class="slide-card text-xs mt-2">
+  🎭 Built-in <code>request</code> fixture executes backend REST tests against live containerized services with zero browser overhead.
 </div>
 
 ---
 
-# 🏗 Local Development — Command Cheat Sheet
+# 🎭 Playwright — Tracing & Diagnostics in CI
 
-### Build, Unit Test & Monorepo Synchronization
+### Record Every Action, DOM Snapshot & Network Request for Post-Mortem Debugging
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🚀 Essential Local Commands</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <code>make build</code> — Compiles all 6 Go service binaries into <code>./bin/</code>.</li>
-    <li>• <code>make test</code> — Executes unit tests across all microservices.</li>
-    <li>• <code>make sync</code> — Synchronizes Go workspace (<code>go.work</code>) dependencies.</li>
-    <li>• <code>make slides</code> — Launches the interactive Slidev presentation locally.</li>
-  </ul>
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🎬</span> 1. Enable Recording in Config
+  </h3>
+  <div class="text-slate-300 space-y-1.5">
+    <p class="leading-relaxed">Configure <code>playwright.config.ts</code> to automatically capture traces upon test failure:</p>
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    // 'off' | 'on' | 'retain-on-failure'
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+  },
+});
+```
+
+    <div class="text-[11px] text-slate-400 font-mono">
+      💡 Only saves traces on failed tests to save CI storage.
+    </div>
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🔍</span> 2. Open &amp; Inspect Trace Viewer
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">npx playwright show-trace &lt;path/trace.zip&gt;</code><br/><span class="text-slate-400 font-sans">Opens local interactive trace GUI.</span></div>
+    <div><code class="text-emerald-300">https://trace.playwright.dev</code><br/><span class="text-slate-400 font-sans">Drop zip file in browser (100% client-side privacy).</span></div>
+  </div>
+  <div class="mt-2 pt-2 border-t border-slate-700/50 text-[11px] text-slate-300 space-y-0.5">
+    <div>• <strong>Filmstrip Timeline</strong>: Time-travel through page renders.</div>
+    <div>• <strong>DOM Snapshots</strong>: Interactive before/after HTML inspection.</div>
+    <div>• <strong>Network Activity</strong>: Request/response bodies and mock headers.</div>
+    <div>• <strong>Console &amp; Source</strong>: Stack trace mapped to TypeScript lines.</div>
+  </div>
+</div>
+
+</div>
+
+
+---
+
+# 🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet
+
+### Common Locators, Actions, Web-First Assertions & Network Steering
+
+<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>📍</span> Locators &amp; Browser Actions
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">page.getByTestId("btn-login").click()</code><br/><span class="text-slate-400 font-sans">Clicks resilient test ID locator with auto-waiting.</span></div>
+    <div><code class="text-emerald-300">page.getByRole("button", { name: "Pay" })</code><br/><span class="text-slate-400 font-sans">Finds accessibility role element with accessible name.</span></div>
+    <div><code class="text-emerald-300">locator.fill("0812345678")</code><br/><span class="text-slate-400 font-sans">Clears existing input and types text cleanly.</span></div>
+    <div><code class="text-emerald-300">locator.selectOption("ACTIVE")</code><br/><span class="text-slate-400 font-sans">Selects option in <code>&lt;select&gt;</code> dropdown by value or label.</span></div>
+    <div><code class="text-emerald-300">locator.press("Enter")</code><br/><span class="text-slate-400 font-sans">Dispatches keyboard key press event to element.</span></div>
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🎯</span> Web-First Assertions &amp; Route Mocking
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">await expect(locator).toBeVisible()</code><br/><span class="text-slate-400 font-sans">Auto-retrying assertion until element is in DOM &amp; visible.</span></div>
+    <div><code class="text-emerald-300">await expect(locator).toHaveText("Success")</code><br/><span class="text-slate-400 font-sans">Asserts element inner text matches expected string.</span></div>
+    <div><code class="text-emerald-300">await expect(page).toHaveURL(/\/dashboard$/)</code><br/><span class="text-slate-400 font-sans">Asserts browser navigation completes to URL pattern.</span></div>
+    <div><code class="text-emerald-300">await expect(locator).toBeDisabled()</code><br/><span class="text-slate-400 font-sans">Asserts button/input is in disabled state.</span></div>
+    <div><code class="text-emerald-300">page.route("**/*", route =&gt; route.continue())</code><br/><span class="text-slate-400 font-sans">Intercepts network requests to inject headers or stubs.</span></div>
+  </div>
 </div>
 
 </div>
 
 ---
 
-# 🧪 Automated Integration — Command Cheat Sheet
+# 🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet
 
-### Testcontainers & Playwright E2E Test Execution
+### Interactive UI, Debugging, Filtering & Code Generation
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🧪 Integration & E2E Commands</h3>
-  <ul class="space-y-1.5 text-slate-300">
-    <li>• <code>make test-integration</code> — Runs full integration suite with Testcontainers & WireMock.</li>
-    <li>• <code>make test-e2e</code> — Executes Playwright browser end-to-end tests against real containers.</li>
-    <li>• <code>TESTCONTAINERS_RYUK_DISABLED=true bun test</code> — Keeps containers alive for post-mortem debugging.</li>
-  </ul>
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🖥️</span> Interactive UI &amp; Inspector
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">npx playwright test --ui</code><br/><span class="text-slate-400 font-sans">Opens time-travel UI debugger with watch mode.</span></div>
+    <div><code class="text-emerald-300">npx playwright test --debug</code><br/><span class="text-slate-400 font-sans">Step-by-step execution with Playwright Inspector.</span></div>
+    <div><code class="text-emerald-300">npx playwright test --headed</code><br/><span class="text-slate-400 font-sans">Runs tests visually inside visible browser windows.</span></div>
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🎯</span> Filtering, Codegen &amp; Traces
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">npx playwright test -g "login"</code><br/><span class="text-slate-400 font-sans">Runs only tests matching regex pattern title.</span></div>
+    <div><code class="text-emerald-300">npx playwright codegen &lt;url&gt;</code><br/><span class="text-slate-400 font-sans">Record browser interactions to generate test code.</span></div>
+    <div><code class="text-emerald-300">npx playwright show-trace &lt;zip&gt;</code><br/><span class="text-slate-400 font-sans">Inspect network, DOM snapshots, and console logs.</span></div>
+  </div>
+</div>
+
+</div>
+
+---
+
+# 🪝 WireMock — Admin API & Testing Cheat Sheet
+
+### Dynamic Stubs, State Resets & Verification Endpoints
+
+<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🔄</span> State Management &amp; Stub Control
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">POST /__admin/scenarios/reset</code><br/><span class="text-slate-400 font-sans">Resets all state machines back to Started state.</span></div>
+    <div><code class="text-emerald-300">POST /__admin/mappings/reset</code><br/><span class="text-slate-400 font-sans">Restores stubs to initial JSON files on disk.</span></div>
+    <div><code class="text-emerald-300">POST /__admin/mappings</code><br/><span class="text-slate-400 font-sans">Dynamically creates a new stub at runtime.</span></div>
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🔍</span> Request Verification &amp; Diagnostics
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">GET /__admin/requests</code><br/><span class="text-slate-400 font-sans">Fetch journal of all incoming requests received.</span></div>
+    <div><code class="text-emerald-300">GET /__admin/requests/unmatched</code><br/><span class="text-slate-400 font-sans">Find requests that received 404 unmatched errors.</span></div>
+    <div><code class="text-emerald-300">POST /__admin/requests/reset</code><br/><span class="text-slate-400 font-sans">Clears the request log journal between test runs.</span></div>
+  </div>
+</div>
+
+</div>
+
+---
+
+# 🐳 Testcontainers & Local Dev — Command Cheat Sheet
+
+### Everyday Monorepo, Build & Hermetic Test Commands
+
+<div class="grid grid-cols-2 gap-3 mt-1 text-xs">
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🚀</span> Monorepo &amp; Local Services
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">make build</code><br/><span class="text-slate-400 font-sans">Compiles all 6 Go service binaries into <code>./bin/</code>.</span></div>
+    <div><code class="text-emerald-300">make test</code><br/><span class="text-slate-400 font-sans">Runs fast isolated Go unit tests across workspace.</span></div>
+    <div><code class="text-emerald-300">make sync</code><br/><span class="text-slate-400 font-sans">Synchronizes Go multi-module workspace (<code>go.work</code>).</span></div>
+    <div><code class="text-emerald-300">make slides</code><br/><span class="text-slate-400 font-sans">Starts Slidev presentation on <code>http://localhost:3030</code>.</span></div>
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🧪</span> Integration &amp; E2E Testing
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">make test-integration</code><br/><span class="text-slate-400 font-sans">Runs hermetic BFF integration suite with Testcontainers.</span></div>
+    <div><code class="text-emerald-300">make test-e2e</code><br/><span class="text-slate-400 font-sans">Executes full browser E2E tests with Playwright.</span></div>
+    <div><code class="text-emerald-300">docker ps --filter "label=org.testcontainers=true"</code><br/><span class="text-slate-400 font-sans">Inspect active ephemeral test containers.</span></div>
+    <div><code class="text-emerald-300">bun test tests/specs/e2e/website.spec.ts</code><br/><span class="text-slate-400 font-sans">Run a single targeted test file directly.</span></div>
+  </div>
 </div>
 
 </div>
@@ -1857,7 +2456,23 @@ layout: center
 class: text-center
 ---
 
-# 🎉 Thank You!
-## Happy Ultra Smoooooth Testing
+<div class="thank-you-slide">
 
-[GitHub Repository](https://github.com/SiwakornSitti/ultra-smoooooth-testing) • [Workshop Guide](WORKSHOP.md)
+# 🎉 Thank You!
+
+<div class="cover-subtitle" style="font-size: 1.4rem; margin-top: 0.5rem;">Happy Ultra Smoooooth Testing 🚀</div>
+
+<div class="thank-you-recap">
+  <div class="thank-you-pill">🪝 WireMock — Mock the World</div>
+  <div class="thank-you-pill">🛡️ Burp Suite — Control the Chaos</div>
+  <div class="thank-you-pill">🐳 Testcontainers — Hermetic Infrastructure</div>
+  <div class="thank-you-pill">🎭 Playwright — Test Without Limits</div>
+</div>
+
+<div class="thank-you-links">
+  <a href="https://github.com/SiwakornSitti/ultra-smoooooth-testing" target="_blank" class="thank-you-link">⭐ GitHub Repository</a>
+  <span class="text-slate-500">•</span>
+  <a href="WORKSHOP.md" class="thank-you-link">📖 Workshop Guide</a>
+</div>
+
+</div>

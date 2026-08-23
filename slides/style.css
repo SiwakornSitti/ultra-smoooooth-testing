@@ -182,29 +182,6 @@ h3 {
   object-fit: contain;
 }
 
-/* Slide 11: keep the service topology between the heading and its callout. */
-.microservices-slide .microservices-diagram {
-  flex: 1 1 auto;
-  min-height: 0;
-  margin-top: 0.25rem;
-}
-
-.microservices-slide .microservices-diagram .mermaid {
-  height: 100%;
-}
-
-.microservices-slide .microservices-diagram .mermaid svg {
-  max-height: calc(100vh - 17rem) !important;
-  object-fit: contain;
-}
-
-.microservices-slide .microservices-callout {
-  flex: 0 0 auto;
-  margin-top: 0.35rem;
-  padding: 0.7rem 1rem;
-  line-height: 1.35;
-}
-
 /* Slide 10: keep the four infrastructure blocks inside the viewport. */
 .compact-stack-slide h1 {
   margin-bottom: 0.5rem !important;
@@ -355,13 +332,13 @@ code {
 }
 
 .adorable-arch-container {
-  width: 100%;
-  max-width: 920px;
-  max-height: 74vh;
-  margin: 0 auto;
-  border-radius: 0.85rem;
+  width: fit-content;
+  max-width: 100%;
+  max-height: 48vh;
+  margin: 0.25rem auto 0 auto;
+  border-radius: 0.65rem;
   overflow: hidden;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(167, 243, 208, 0.2);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(167, 243, 208, 0.15);
   border: 1.5px solid rgba(52, 211, 153, 0.35);
   background: #0f172a;
   display: flex;
@@ -370,9 +347,10 @@ code {
 }
 
 .adorable-arch-img {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: auto;
-  max-height: 72vh;
+  max-height: 46vh;
   object-fit: contain;
   display: block;
   transition: transform 0.4s ease;
@@ -442,3 +420,109 @@ code {
   pointer-events: auto !important;
   transform: none !important;
 }
+
+/* ===== SECTION DIVIDER SLIDES ===== */
+.slidev-layout.section {
+  background: linear-gradient(135deg, #0f172a 0%, #0c2236 50%, #0f172a 100%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.slidev-layout.section h1 {
+  font-size: 3.5rem !important;
+  font-weight: 800 !important;
+  color: transparent !important;
+  background: linear-gradient(135deg, #34d399 0%, #6ee7b7 60%, #a7f3d0 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.slidev-layout.section h2 {
+  font-size: 1.6rem !important;
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+  margin-top: 0 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* ===== TABLE ROW HOVER ===== */
+table tr:hover td {
+  background: rgba(52, 211, 153, 0.07);
+  transition: background 0.15s ease;
+}
+
+/* ===== THANK YOU SLIDE ===== */
+.thank-you-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.thank-you-recap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.thank-you-pill {
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 9999px;
+  padding: 0.5rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #a7f3d0;
+  backdrop-filter: blur(4px);
+}
+
+.thank-you-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.25rem;
+  font-size: 1.05rem;
+}
+
+.thank-you-link {
+  color: #34d399;
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px dashed rgba(52, 211, 153, 0.4);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.thank-you-link:hover {
+  color: #6ee7b7;
+  border-color: rgba(110, 231, 183, 0.7);
+}
+
+/* Equal-height 2-column grid with gap for comparison slides */
+.jitter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+  margin-top: 0.75rem;
+}
+
+.jitter-grid .slide-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 0;
+}
+
+
