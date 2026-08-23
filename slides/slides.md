@@ -361,14 +361,13 @@ flowchart LR
 
 <div class="topology-diagram w-full flex justify-center items-center my-auto py-1">
 
-```mermaid {scale: 0.72}
-flowchart TB
+```mermaid {scale: 0.65}
+flowchart LR
     subgraph GATEWAY["⚡ API Orchestration"]
         BFF["⚙️ bff-service<br/><code>:8080</code>"]
     end
 
     subgraph SERVICES["🏡 Domain Microservices"]
-        direction LR
         UserService["👤 user-service<br/><code>:8081</code>"]
         BankService["🏦 bank-account-service<br/><code>:8082</code>"]
         EKYCService["🪪 ekyc-service<br/><code>:8084</code>"]
