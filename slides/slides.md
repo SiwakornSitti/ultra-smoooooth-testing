@@ -800,6 +800,43 @@ layout: section
 
 ---
 
+# 🔀 Multi-Scenario Steering — Comma-Separated Headers
+
+### Steer Multiple Downstream Services from a Single Test Request
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-cyan-400 text-sm mb-0.5">📤 1. Injected Steering Header</h3>
+  <p class="text-slate-300 text-xs leading-relaxed">
+    Playwright or Burp Suite injects a single comma-separated header targeting multiple downstream dependencies:
+  </p>
+  <div class="bg-slate-950/80 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+    <code>Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED,TRANSFER:FAIL</code>
+  </div>
+</div>
+
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-emerald-400 text-sm mb-0.5">🎯 2. Independent Stub Matching (<code>contains</code>)</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Paotang Stub</strong>: <code>"contains": "PAOTANG:SUCCESS"</code> ➔ <span class="text-emerald-400 font-semibold">200 OK</span></li>
+    <li>• <strong>OTP Stub</strong>: <code>"contains": "OTP:EXPIRED"</code> ➔ <span class="text-rose-400 font-semibold">400 Expired</span></li>
+    <li>• <strong>Transfer Stub</strong>: <code>"contains": "TRANSFER:FAIL"</code> ➔ <span class="text-rose-400 font-semibold">500 Error</span></li>
+  </ul>
+  <div class="bg-slate-950/80 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>"headers": { "Mock-Scenario": { "contains": "OTP:EXPIRED" } }</code>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Orchestration Benefit</strong>: Using <code>contains</code> instead of <code>equalTo</code> allows a single test case to orchestrate complex multi-service branch paths simultaneously.</span>
+</div>
+
+---
+
 # 📦 WireMock — Semantic JSON Matching (`equalToJson`)
 
 ### Data & Structural Meaning vs. Raw Character Matching
