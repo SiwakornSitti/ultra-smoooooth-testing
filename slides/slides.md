@@ -985,6 +985,8 @@ flowchart TB
 
 ### Handlebars Response Templating (`response-template`)
 
+<div v-pre>
+
 ```json
 {
   "request": {
@@ -999,6 +1001,8 @@ flowchart TB
   }
 }
 ```
+
+</div>
 
 <div class="slide-card text-sm mt-3">
   🪄 Echoes incoming request headers/body and dynamically generates UUIDs and timestamps on the fly with <code>response-template</code>.
@@ -1138,7 +1142,7 @@ flowchart TB
 
 ### Deep Object Traversal & Array Indexing
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div v-pre class="slide-card text-sm space-y-3 pt-2">
 
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🎯 Deep Field Traversal</h3>
@@ -1162,7 +1166,7 @@ flowchart TB
 
 ### Graceful Fallbacks & Array Counting
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div v-pre class="slide-card text-sm space-y-3 pt-2">
 
 <div>
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Safe Default Fallbacks</h3>
@@ -1200,7 +1204,7 @@ flowchart TB
 
 </div>
 
-<div class="slide-card text-sm mt-3">
+<div v-pre class="slide-card text-sm mt-3">
   🎯 Extracts nested customer IDs and array elements, applies safe default tiers (<code>default='SILVER'</code>), and counts total items dynamically.
 </div>
 
