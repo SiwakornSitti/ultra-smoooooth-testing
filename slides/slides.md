@@ -1204,7 +1204,7 @@ layout: section
 
 ### Request Model Extraction & Data Encoders
 
-<div v-pre class="slide-card text-sm pt-2">
+<div v-pre class="slide-card text-sm p-2.5">
 
 | Helper Type | Syntax Example | Description |
 | :--- | :--- | :--- |
@@ -1222,7 +1222,7 @@ layout: section
 
 ### Timestamps, Random IDs & Token Generation
 
-<div v-pre class="slide-card text-sm pt-2">
+<div v-pre class="slide-card text-sm p-2.5">
 
 | Generator | Syntax Example | Generated Output |
 | :--- | :--- | :--- |
@@ -1255,7 +1255,7 @@ layout: section
 
 </div>
 
-<div v-pre class="slide-card text-sm mt-3">
+<div v-pre class="slide-card text-sm mt-2">
   🔀 Supports conditional response branching (`#if eq`), arithmetic fee calculations (`math '*' 0.01`), and relative date offsets.
 </div>
 
@@ -1265,7 +1265,7 @@ layout: section
 
 ### String Manipulation & Substring Extractors
 
-<div v-pre class="slide-card text-sm pt-2">
+<div v-pre class="slide-card text-sm p-2.5">
 
 | Helper | Syntax Example | Description |
 | :--- | :--- | :--- |
@@ -1283,7 +1283,7 @@ layout: section
 
 ### Array Looping, Sizing & Variable Lookups
 
-<div v-pre class="slide-card text-sm pt-2">
+<div v-pre class="slide-card text-sm p-2.5">
 
 | Helper | Syntax Example | Description |
 | :--- | :--- | :--- |

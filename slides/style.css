@@ -347,20 +347,38 @@ table {
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
-  font-size: 1.05rem;
-  margin: 0.75rem 0;
+  font-size: 0.95rem;
+  margin: 0.25rem 0;
 }
 
 table th {
-  background-color: rgba(52, 211, 153, 0.15);
+  background-color: rgba(52, 211, 153, 0.18);
   color: #a7f3d0;
   font-weight: 600;
   text-align: left;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.95rem;
 }
 
 table th, table td {
-  padding: 0.75rem 1rem;
+  padding: 0.35rem 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.15);
+  line-height: 1.4;
+}
+
+table td code {
+  font-size: 0.88rem;
+  padding: 0.1rem 0.35rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 0.25rem;
+}
+
+.slide-card table {
+  margin: 0;
+}
+
+.slide-card:has(table) {
+  padding: 0.5rem 0.75rem;
 }
 
 /* Legible Code Blocks & Pre Blocks */
