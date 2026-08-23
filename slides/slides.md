@@ -2017,20 +2017,48 @@ class: pt-4 pb-2 px-8
 
 ### Before & After Request Header Injection
 
-```http
-POST http://localhost:8080/api/v1/users HTTP/1.1
-Host: localhost:8080
-Content-Type: application/json
-Mock-Scenario: PT_PASS:SUCCESS_ONCE
+<div class="multi-col-grid-2 gap-3 mb-1.5">
 
-{
-  "username": "testuser",
-  "password": "secret"
-}
-```
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-slate-700/40">
+  <h3 class="text-slate-300 text-sm mb-0.5">📤 1. Before (Original Request from App)</h3>
+  <div class="bg-slate-950/90 rounded p-2 border border-slate-700/50 font-mono text-xs text-slate-300">
+    <span class="text-cyan-400">POST</span> /api/v1/users HTTP/1.1<br/>
+    Host: localhost:8080<br/>
+    Content-Type: application/json<br/>
+    <br/>
+    {<br/>
+    &nbsp;&nbsp;"username": "testuser",<br/>
+    &nbsp;&nbsp;"password": "secret"<br/>
+    }
+  </div>
+  <p class="text-slate-400 text-[11px] leading-tight mt-auto">
+    Standard request dispatched by frontend or test runner without special headers.
+  </p>
+</div>
 
-<div class="slide-card text-sm mt-3">
-  💉 Burp intercepts the outbound user creation request and injects <code>Mock-Scenario: PT_PASS:SUCCESS_ONCE</code> to steer the downstream OAuth mock.
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-amber-500/40">
+  <h3 class="text-amber-400 text-sm mb-0.5">💉 2. After (Burp MITM Injected)</h3>
+  <div class="bg-slate-950/90 rounded p-2 border border-amber-500/40 font-mono text-xs text-slate-300">
+    <span class="text-cyan-400">POST</span> /api/v1/users HTTP/1.1<br/>
+    Host: localhost:8080<br/>
+    Content-Type: application/json<br/>
+    <strong class="text-amber-300 bg-amber-950/60 px-1 rounded">Mock-Scenario: PT_PASS:SUCCESS_ONCE</strong><br/>
+    <br/>
+    {<br/>
+    &nbsp;&nbsp;"username": "testuser",<br/>
+    &nbsp;&nbsp;"password": "secret"<br/>
+    }
+  </div>
+  <p class="text-amber-300/80 text-[11px] leading-tight mt-auto">
+    Burp intercepts packet in-flight and injects header to steer WireMock stubs.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-amber-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>MITM Advantage</strong>: Dynamically steers downstream API virtualization stubs without requiring any source code or configuration changes in the application under test.</span>
 </div>
 
 ---

@@ -67,25 +67,25 @@ Quick navigation reference for all slides in [`slides/slides.md`](slides/slides.
 | **61** | [🔀 Burp Suite — Request & Response Intercept](slides/slides.md#L1969) | Bi-Directional In-Flight Traffic Interception & Tampering | `L1969` |
 | **62** | [🔀 Burp Suite — Proxy Intercept Capabilities](slides/slides.md#L1981) | Dual-Direction Traffic Control: Requests and Responses | `L1981` |
 | **63** | [🔀 Proxy Intercept — Example](slides/slides.md#L2015) | Before & After Request Header Injection | `L2015` |
-| **64** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L2037) | Real-Time Traffic Auditing & Inspection | `L2037` |
-| **65** | [🐳 Part 4](slides/slides.md#L2069) | Testcontainers — Hermetic Infrastructure | `L2069` |
-| **66** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L2074) | Programmable Docker Infrastructure Directly in Your Test Suite | `L2074` |
-| **67** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L2103) | Docker Daemon Requirement & Supported Runtimes | `L2103` |
-| **68** | [❌ The Shared Environment Problem in Testing](slides/slides.md#L2133) | Flakiness, Collisions & State Bleed in Shared Test Infrastructure | `L2133` |
-| **69** | [✅ The Hermetic Containerized Solution](slides/slides.md#L2195) | Isolated, Disposable & Predictable Infrastructure On-Demand | `L2195` |
-| **70** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L2257) | Dynamic Ports & Code-Driven Orchestration | `L2257` |
-| **71** | [🧪 Testcontainers — Ephemeral Suite Bootstrapping](slides/slides.md#L2275) | Code-Driven Container Lifecycle (`tests/specs/support/containers.ts`) | `L2275` |
-| **72** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L2301) | Best Practice Test Suite Initialization in `beforeAll()` Hook | `L2301` |
-| **73** | [🎭 Part 5](slides/slides.md#L2345) | Playwright — Full-Stack E2E Automation | `L2345` |
-| **74** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L2350) | Modern Full-Stack Integration Testing Architecture | `L2350` |
-| **75** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L2379) | Eliminating Flaky `sleep()` Calls with Actionability Checks | `L2379` |
-| **76** | [🎭 Playwright — Network Route Interception](slides/slides.md#L2416) | Dynamic Mock Header Injection with `page.route()` | `L2416` |
-| **77** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L2447) | Mocking Native Device APIs with `page.addInitScript()` | `L2447` |
-| **78** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L2473) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) | `L2473` |
-| **79** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L2504) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) | `L2504` |
-| **80** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L2531) | Record Every Action, DOM Snapshot & Network Request for Post-Mortem Debugging | `L2531` |
-| **81** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L2582) | Common Locators, Actions, Web-First Assertions & Network Steering | `L2582` |
-| **82** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L2618) | Interactive UI, Debugging, Filtering & Code Generation | `L2618` |
-| **83** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L2650) | Dynamic Stubs, State Resets & Verification Endpoints | `L2650` |
-| **84** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L2682) | Everyday Monorepo, Build & Hermetic Test Commands | `L2682` |
-| **85** | [🎉 Thank You!](slides/slides.md#L2719) | — | `L2719` |
+| **64** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L2065) | Real-Time Traffic Auditing & Inspection | `L2065` |
+| **65** | [🐳 Part 4](slides/slides.md#L2097) | Testcontainers — Hermetic Infrastructure | `L2097` |
+| **66** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L2102) | Programmable Docker Infrastructure Directly in Your Test Suite | `L2102` |
+| **67** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L2131) | Docker Daemon Requirement & Supported Runtimes | `L2131` |
+| **68** | [❌ The Shared Environment Problem in Testing](slides/slides.md#L2161) | Flakiness, Collisions & State Bleed in Shared Test Infrastructure | `L2161` |
+| **69** | [✅ The Hermetic Containerized Solution](slides/slides.md#L2223) | Isolated, Disposable & Predictable Infrastructure On-Demand | `L2223` |
+| **70** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L2285) | Dynamic Ports & Code-Driven Orchestration | `L2285` |
+| **71** | [🧪 Testcontainers — Ephemeral Suite Bootstrapping](slides/slides.md#L2303) | Code-Driven Container Lifecycle (`tests/specs/support/containers.ts`) | `L2303` |
+| **72** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L2329) | Best Practice Test Suite Initialization in `beforeAll()` Hook | `L2329` |
+| **73** | [🎭 Part 5](slides/slides.md#L2373) | Playwright — Full-Stack E2E Automation | `L2373` |
+| **74** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L2378) | Modern Full-Stack Integration Testing Architecture | `L2378` |
+| **75** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L2407) | Eliminating Flaky `sleep()` Calls with Actionability Checks | `L2407` |
+| **76** | [🎭 Playwright — Network Route Interception](slides/slides.md#L2444) | Dynamic Mock Header Injection with `page.route()` | `L2444` |
+| **77** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L2475) | Mocking Native Device APIs with `page.addInitScript()` | `L2475` |
+| **78** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L2501) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) | `L2501` |
+| **79** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L2532) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) | `L2532` |
+| **80** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L2559) | Record Every Action, DOM Snapshot & Network Request for Post-Mortem Debugging | `L2559` |
+| **81** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L2610) | Common Locators, Actions, Web-First Assertions & Network Steering | `L2610` |
+| **82** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L2646) | Interactive UI, Debugging, Filtering & Code Generation | `L2646` |
+| **83** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L2678) | Dynamic Stubs, State Resets & Verification Endpoints | `L2678` |
+| **84** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L2710) | Everyday Monorepo, Build & Hermetic Test Commands | `L2710` |
+| **85** | [🎉 Thank You!](slides/slides.md#L2747) | — | `L2747` |
