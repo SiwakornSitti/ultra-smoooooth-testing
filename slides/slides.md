@@ -1071,28 +1071,45 @@ layout: section
 
 # ⚙️ WireMock — Body Match Operators & Lenient Flags
 
-### Matching Operators & Lenient Contract Flags
+### Strict Matchers vs. Resilient Microservice Contracts
 
-<div class="multi-col-grid-2">
+<div class="multi-col-grid-2 gap-3 mb-2">
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🛠️ Body Match Operators</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>equalToJson</code></strong>: Semantic JSON equivalence check.</li>
+<div class="col-card p-3 space-y-2">
+  <h3 class="text-cyan-400 text-base mb-1">🛠️ Core Body Match Operators</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong><code>equalToJson</code></strong>: Semantic JSON equivalence (AST-based).</li>
     <li>• <strong><code>equalToXml</code></strong>: Semantic XML payload comparison.</li>
-    <li>• <strong><code>matches</code></strong>: Regular expression on raw body string.</li>
-    <li>• <strong><code>contains</code></strong>: Substring occurrence check.</li>
+    <li>• <strong><code>matches</code></strong>: Regular expression across raw body text.</li>
+    <li>• <strong><code>contains</code></strong>: Simple substring occurrence check.</li>
   </ul>
+  <div class="bg-slate-900/90 rounded p-2 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+    <code>{ "equalToJson": "{\"type\":\"SAVINGS\"}" }</code>
+  </div>
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">⚙️ Lenient Contract Flags</h3>
-  <ul class="space-y-2 text-slate-200 text-sm">
-    <li>• <strong><code>ignoreExtraElements: true</code></strong>: Ignores new or unknown fields in request payload (supports non-breaking schema evolution).</li>
-    <li>• <strong><code>ignoreArrayOrder: true</code></strong>: Treats JSON arrays as unordered sets rather than strict sequences.</li>
+<div class="col-card p-3 space-y-2">
+  <h3 class="text-emerald-400 text-base mb-1">⚙️ Lenient Flags (Avoid Flaky Tests)</h3>
+  <ul class="space-y-1.5 text-slate-200 text-xs leading-relaxed">
+    <li>
+      • <strong><code>ignoreExtraElements: true</code></strong><br/>
+      <span class="text-slate-400">Ignores extra fields (e.g. <code>traceId</code>, <code>timestamp</code>) for schema evolution.</span>
+    </li>
+    <li>
+      • <strong><code>ignoreArrayOrder: true</code></strong><br/>
+      <span class="text-slate-400">Treats arrays as sets (<code>[A, B]</code> matches <code>[B, A]</code>).</span>
+    </li>
   </ul>
+  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>"ignoreExtraElements": true, "ignoreArrayOrder": true</code>
+  </div>
 </div>
 
+</div>
+
+<div class="slide-card text-xs bg-cyan-950/50 border-cyan-500/60 p-2.5 flex items-center gap-2 shadow-lg">
+  <span class="text-lg">💡</span>
+  <span class="text-cyan-100 leading-relaxed"><strong>Why Use Lenient Flags?</strong> Prevents false test failures when upstream microservices add non-breaking fields or return database records in non-deterministic array orders.</span>
 </div>
 
 ---
