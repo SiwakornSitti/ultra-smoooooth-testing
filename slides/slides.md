@@ -804,39 +804,39 @@ layout: section
 
 ### Data & Structural Meaning vs. Raw Character Matching
 
-<div class="multi-col-grid-2 gap-3 mb-2">
+<div class="multi-col-grid-2 gap-3 mb-1.5">
 
-<div class="col-card p-3 space-y-2">
-  <h3 class="text-rose-400 text-base mb-1">❌ Literal String Comparison (Raw Text)</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Character-by-Character</strong>: Treats JSON as a dumb text stream.</li>
-    <li>• ⚠️ <strong>Breaks on Spacing</strong>: <code>{"a":1}</code> ≠ <code>{"a": 1}</code>.</li>
-    <li>• ⚠️ <strong>Breaks on Newlines</strong>: Indented / pretty-printed JSON fails.</li>
-    <li>• ⚠️ <strong>Breaks on Key Order</strong>: <code>{"a":1,"b":2}</code> ≠ <code>{"b":2,"a":1}</code>.</li>
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-rose-400 text-sm mb-0.5">❌ Literal String Matching (Raw Text)</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Character Stream</strong>: Treats JSON as unparsed dumb text.</li>
+    <li>• ⚠️ <strong>Spacing Sensitive</strong>: <code>{"a":1}</code> ≠ <code>{"a": 1}</code>.</li>
+    <li>• ⚠️ <strong>Newline Sensitive</strong>: Indented JSON triggers failure.</li>
+    <li>• ⚠️ <strong>Key Order Sensitive</strong>: <code>{"a":1,"b":2}</code> ≠ <code>{"b":2,"a":1}</code>.</li>
   </ul>
-  <div class="bg-rose-950/40 rounded p-2 border border-rose-500/40 text-xs text-rose-200 mt-auto">
+  <div class="bg-rose-950/40 rounded p-1.5 border border-rose-500/40 text-xs text-rose-200 mt-auto">
     💥 <em>Result</em>: Flaky tests caused by serializer formatting nuances.
   </div>
 </div>
 
-<div class="col-card p-3 space-y-2">
-  <h3 class="text-emerald-400 text-base mb-1">✅ Semantic JSON Matching (<code>equalToJson</code>)</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-emerald-400 text-sm mb-0.5">✅ Semantic JSON Matching (<code>equalToJson</code>)</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
     <li>• <strong>AST Object Parsing</strong>: Parses JSON document tree first.</li>
     <li>• 🟢 <strong>Whitespace Immune</strong>: Ignores spaces, tabs, and linebreaks.</li>
     <li>• 🟢 <strong>Key Order Agnostic</strong>: Compares key-value pairs semantically.</li>
-    <li>• 🟢 <strong>Cross-Language Safe</strong>: Interoperates across Go, Java, and Node.</li>
+    <li>• 🟢 <strong>Cross-Language Safe</strong>: 100% stable across Go, Java, and Node.</li>
   </ul>
-  <div class="bg-emerald-950/40 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+  <div class="bg-emerald-950/40 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
     <code>{"a":1,"b":2}</code> ≡ <code>{\n&nbsp;&nbsp;"b": 2,\n&nbsp;&nbsp;"a": 1\n}</code>
   </div>
 </div>
 
 </div>
 
-<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2.5 flex items-center gap-2 shadow-lg">
-  <span class="text-lg">💡</span>
-  <span class="text-slate-200 leading-relaxed"><strong>Key Principle</strong>: <code>equalToJson</code> validates the <em>data contract and values</em> rather than accidental formatting or serialization differences.</span>
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Key Principle</strong>: <code>equalToJson</code> validates the <em>data contract and values</em> rather than accidental serializer formatting differences.</span>
 </div>
 
 ---
@@ -845,24 +845,24 @@ layout: section
 
 ### Strict Matchers vs. Resilient Microservice Contracts
 
-<div class="multi-col-grid-2 gap-3 mb-2">
+<div class="multi-col-grid-2 gap-3 mb-1.5">
 
-<div class="col-card p-3 space-y-2">
-  <h3 class="text-cyan-400 text-base mb-1">🛠️ Core Body Match Operators</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-cyan-400 text-sm mb-0.5">🛠️ Core Body Match Operators</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
     <li>• <strong><code>equalToJson</code></strong>: Semantic JSON equivalence (AST-based).</li>
     <li>• <strong><code>equalToXml</code></strong>: Semantic XML payload comparison.</li>
     <li>• <strong><code>matches</code></strong>: Regular expression across raw body text.</li>
     <li>• <strong><code>contains</code></strong>: Simple substring occurrence check.</li>
   </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+  <div class="bg-slate-900/90 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
     <code>{ "equalToJson": "{\"type\":\"SAVINGS\"}" }</code>
   </div>
 </div>
 
-<div class="col-card p-3 space-y-2">
-  <h3 class="text-emerald-400 text-base mb-1">⚙️ Lenient Flags (Avoid Flaky Tests)</h3>
-  <ul class="space-y-1.5 text-slate-200 text-xs leading-relaxed">
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-emerald-400 text-sm mb-0.5">⚙️ Lenient Flags (Avoid Flaky Tests)</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
     <li>
       • <strong><code>ignoreExtraElements: true</code></strong><br/>
       <span class="text-slate-400">Ignores extra fields (e.g. <code>traceId</code>, <code>timestamp</code>) for schema evolution.</span>
@@ -872,16 +872,16 @@ layout: section
       <span class="text-slate-400">Treats arrays as sets (<code>[A, B]</code> matches <code>[B, A]</code>).</span>
     </li>
   </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+  <div class="bg-slate-900/90 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
     <code>"ignoreExtraElements": true, "ignoreArrayOrder": true</code>
   </div>
 </div>
 
 </div>
 
-<div class="slide-card text-xs bg-cyan-950/50 border-cyan-500/60 p-2.5 flex items-center gap-2 shadow-lg">
-  <span class="text-lg">💡</span>
-  <span class="text-cyan-100 leading-relaxed"><strong>Why Use Lenient Flags?</strong> Prevents false test failures when upstream microservices add non-breaking fields or return database records in non-deterministic array orders.</span>
+<div class="slide-card text-xs bg-cyan-950/50 border-cyan-500/60 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-cyan-100 leading-snug"><strong>Why Use Lenient Flags?</strong> Prevents false test failures when upstream microservices add non-breaking fields or return database records in non-deterministic array orders.</span>
 </div>
 
 ---
