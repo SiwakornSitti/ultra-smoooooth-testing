@@ -1319,35 +1319,47 @@ layout: section
 
 ### Reading Path, Query, Header & Body Values into Responses
 
-<div v-pre class="multi-col-grid-2 gap-3 mb-2">
+<div v-pre class="multi-col-grid-2 gap-3 mb-1.5">
 
-<div class="col-card p-3 space-y-1.5">
-  <h3 class="text-cyan-400 text-base mb-1">🌐 1. URL Path &amp; Query Params</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Path Segment</strong>: <code>{{request.pathSegments.[2]}}</code><br/><span class="text-slate-400">Extracts <code>USR-99</code> from <code>/api/users/USR-99</code></span></li>
-    <li>• <strong>Query Parameter</strong>: <code>{{request.query.id}}</code><br/><span class="text-slate-400">Extracts <code>ORD-123</code> from <code>/orders?id=ORD-123</code></span></li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-cyan-500/30">
+  <h3 class="text-cyan-400 text-sm mb-0.5">🌐 1. URL Path &amp; Query Params</h3>
+  <div class="text-[11px] text-slate-300">
+    <strong>Incoming</strong>: <code>GET /api/users/USR-99?id=ORD-123</code>
+  </div>
+  
+  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-[11px] text-cyan-200">
+    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Template:</div>
     <code>"userId": "{{request.pathSegments.[2]}}",<br/>"orderId": "{{request.query.id}}"</code>
   </div>
+
+  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
+    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Result:</div>
+    <code>"userId": "USR-99",<br/>"orderId": "ORD-123"</code>
+  </div>
 </div>
 
-<div class="col-card p-3 space-y-1.5">
-  <h3 class="text-emerald-400 text-base mb-1">📦 2. Headers &amp; JSON Body Fields</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Header</strong>: <code>{{request.headers.[X-User-Id]}}</code><br/><span class="text-slate-400">Extracts custom incoming tracking headers</span></li>
-    <li>• <strong>JSON Body</strong>: <code>{{jsonPath request.body '$.account.id'}}</code><br/><span class="text-slate-400">Extracts nested JSON payload values</span></li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <code>"accountId": "{{jsonPath request.body '$.account.id'}}",<br/>"traceId": "{{request.headers.[X-Trace-ID]}}"</code>
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-sm mb-0.5">📦 2. Headers &amp; JSON Body Fields</h3>
+  <div class="text-[11px] text-slate-300">
+    <strong>Incoming</strong>: <code>X-User-Id: U-88</code> + Body <code>{"account":{"id":"ACC-55"}}</code>
+  </div>
+  
+  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-[11px] text-cyan-200">
+    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Template:</div>
+    <code>"userId": "{{request.headers.[X-User-Id]}}",<br/>"accountId": "{{jsonPath request.body '$.account.id'}}"</code>
+  </div>
+
+  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
+    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Result:</div>
+    <code>"userId": "U-88",<br/>"accountId": "ACC-55"</code>
   </div>
 </div>
 
 </div>
 
-<div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2.5 flex items-center gap-2">
-  <span class="text-lg">💡</span>
-  <span class="text-slate-200 leading-relaxed">Always declare <code>"transformers": ["response-template"]</code> in the response block to enable dynamic Handlebars interpolation.</span>
+<div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug">Always declare <code>"transformers": ["response-template"]</code> in the response block to enable dynamic Handlebars interpolation.</span>
 </div>
 
 ---
