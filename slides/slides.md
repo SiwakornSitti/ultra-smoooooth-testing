@@ -859,8 +859,8 @@ layout: section
     <li>• <strong><code>matches</code></strong>: Regular expression across raw body text.</li>
     <li>• <strong><code>contains</code></strong>: Simple substring occurrence check.</li>
   </ul>
-  <div class="bg-slate-900/90 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
-    <code>{ "equalToJson": "{\"type\":\"SAVINGS\"}" }</code>
+  <div class="bg-slate-900/90 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto text-center">
+    <code>{ "equalToJson": "{ \"type\": \"SAVINGS\" }" }</code>
   </div>
 </div>
 
@@ -876,8 +876,8 @@ layout: section
       <span class="text-slate-400">Treats arrays as sets (<code>[A, B]</code> matches <code>[B, A]</code>).</span>
     </li>
   </ul>
-  <div class="bg-slate-900/90 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <code>"ignoreExtraElements": true, "ignoreArrayOrder": true</code>
+  <div class="bg-slate-900/90 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto text-center">
+    <code>{ "ignoreExtraElements": true, "ignoreArrayOrder": true }</code>
   </div>
 </div>
 
