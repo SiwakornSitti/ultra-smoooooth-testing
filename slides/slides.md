@@ -390,28 +390,28 @@ flowchart TB
 
 # 🎯 Why WireMock in Testing?
 
-### Hermetic Test Isolation, CI Parity & Live Transparent Proxying
+### Deterministic Isolation, Zero Sandbox Flakiness & Fast Test Execution
 
 <div class="slide-card text-sm space-y-3 pt-2">
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Hermetic Isolation & Zero Outages</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Hermetic Isolation & Zero Provider Outages</h3>
   <p class="text-slate-300 leading-relaxed">
-    Eliminate sandbox downtime by replacing third-party SMS & OAuth test environments with reliable, deterministic local stubs.
+    Eliminates third-party sandbox flakiness and maintenance windows by simulating SMS, OAuth, and banking APIs with deterministic local stubs.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🚀 Sub-Millisecond CI/CD Feedback</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">⚡ Sub-Millisecond Speed & Zero API Quota Limits</h3>
   <p class="text-slate-300 leading-relaxed">
-    Local in-memory stubs execute in sub-milliseconds, accelerating developer test feedback loops without consuming paid API quotas.
+    Executes tests in sub-milliseconds with zero remote network roundtrips, zero API credit costs, and zero provider rate-limit throttling.
   </p>
 </div>
 
 <div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔄 Transparent Live Proxy & Recording</h3>
+  <h3 class="text-emerald-400 font-bold mb-1 text-base">🔄 Transparent Live Proxy & Traffic Recording</h3>
   <p class="text-slate-300 leading-relaxed">
-    Capture real network traffic directly into JSON stub mappings or proxy unknown routes to live providers during migration phases.
+    Records real-world HTTP traffic directly into JSON stub definitions and transparently proxies unmapped routes to live upstream providers.
   </p>
 </div>
 

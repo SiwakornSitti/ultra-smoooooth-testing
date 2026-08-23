@@ -17,7 +17,7 @@
 | **9** | [🧪 Technology Stack — Testing & Security Infrastructure](slides/slides.md#L281) | Mocking, MITM Proxy & Container Orchestration | `L281` |
 | **10** | [🧱 Core Microservices](slides/slides.md#L312) | — | `L312` |
 | **11** | [🪝 What is WireMock? — Core Capabilities](slides/slides.md#L359) | Programmable HTTP Mock Server for External API Simulation | `L359` |
-| **12** | [🎯 Why WireMock in Testing?](slides/slides.md#L390) | Hermetic Test Isolation, CI Parity & Live Transparent Proxying | `L390` |
+| **12** | [🎯 Why WireMock in Testing?](slides/slides.md#L390) | Deterministic Isolation, Zero Sandbox Flakiness & Fast Test Execution | `L390` |
 | **13** | [⚡ WireMock — URL & Path Matching](slides/slides.md#L421) | Exact Path Routing, Regex Patterns & Query Strings | `L421` |
 | **14** | [⚡ WireMock — Header Matching Operators](slides/slides.md#L448) | Exact Matches, Substrings, Regex & Absence Checks | `L448` |
 | **15** | [⚡ WireMock — Query Parameter & Cookie Filters](slides/slides.md#L475) | Parameter Flags, Cookie Assertions & Multi-Criteria Conjunction | `L475` |
