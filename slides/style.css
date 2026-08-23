@@ -234,6 +234,30 @@ h3 {
   line-height: 1.3 !important;
 }
 
+/* Slide 2: show all four strategy pillars without bottom overflow. */
+.strategy-slide .strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.strategy-slide .strategy-grid .slide-card {
+  margin-bottom: 0;
+  padding: 0.8rem 1rem;
+}
+
+.strategy-slide .strategy-grid h3 {
+  font-size: 1.05rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.strategy-slide .strategy-grid p {
+  font-size: 0.82rem !important;
+  line-height: 1.3 !important;
+}
+
 /* Clear & Legible Tables */
 .slidev-page table,
 table {

@@ -34,12 +34,14 @@ mdc: true
 </div>
 
 ---
+class: strategy-slide
+---
 
 # 🎯 Testing Strategy & Core Pillars
 
 ### Mock the world. Control the chaos. Test without limits.
 
-<div class="space-y-2 pt-1 text-sm">
+<div class="strategy-grid text-sm">
 
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🌐 1. Mock the World (WireMock)</h3>
@@ -193,14 +195,6 @@ mdc: true
   </p>
 </div>
 
-</div>
-
----
-
-# 🏗️ Ecosystem System Architecture
-
-<div class="adorable-arch-container my-auto">
-  <img src="/adorable_arch_art.jpg" class="adorable-arch-img" alt="5-Tier Ecosystem System Architecture" />
 </div>
 
 ---
@@ -1031,20 +1025,18 @@ flowchart LR
     "method": "POST",
     "urlPath": "/lab/api/stateless/payments",
     "bodyPatterns": [
-      { "matchesJsonPath": "$.payment[?(@.amount > 1000)]" },
-      { "matchesJsonPath": "$.payment[?(@.currency == 'THB')]" },
-      { "matchesJsonPath": "$[?(@.recipient.mobile =~ /^08[0-9]{8}$/)]" }
+      { "matchesJsonPath": "$.payment[?(@.amount > 1000)]" }
     ]
   },
   "response": {
     "status": 201,
-    "jsonBody": { "status": "APPROVED", "flag": "HIGH_VALUE" }
+    "jsonBody": { "status": "APPROVED", "flag": "HIGH_VALUE_TRANSACTION" }
   }
 }
 ```
 
 <div class="slide-card text-sm mt-3">
-  🔍 Compares numeric ranges (<code>&gt; 1000</code>), exact currencies, and evaluates inline regex without fragile string parsing.
+  ✅ <strong>Matching request</strong>: <code>POST /lab/api/stateless/payments</code> with <code>{"payment":[{"amount":1500,"currency":"THB"}]}</code> → <code>201 APPROVED</code> / <code>HIGH_VALUE_TRANSACTION</code>.
 </div>
 
 ---
