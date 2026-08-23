@@ -13,6 +13,7 @@ import {
   startEKYCService,
   startOTPService,
   startBffService,
+  startWebsite,
   runSeedData,
   stopAll,
   wiremockMapping,
@@ -70,24 +71,7 @@ test.beforeAll(async () => {
     OTP_SERVICE_URL: "http://otp-service:8080",
   });
 
-  console.log("Starting website container...");
-  websiteContainer = await new GenericContainer("website:test")
-    .withNetwork(network)
-    .withNetworkAliases("website")
-    .withExposedPorts(3000)
-    .withEnvironment({
-      // Browser JS runs on the test host (Playwright), not inside the Docker
-      // network, so it needs the host-mapped bff-service address, not the
-      // container network alias.
-      BFF_URL: `http://${bffContainer.getHost()}:${bffContainer.getMappedPort(PORT)}`,
-      // Docker auto-sets HOSTNAME to the container ID; Next.js standalone
-      // server.js binds to $HOSTNAME instead of all interfaces, so without
-      // this override the app binds to an unreachable address and the wait
-      // strategy (and host port mapping) can't reach it.
-      HOSTNAME: "0.0.0.0",
-    })
-    .withWaitStrategy(Wait.forHttp("/", 3000))
-    .start();
+  websiteContainer = await startWebsite(network, bffContainer);
 
   const host = websiteContainer.getHost();
   const port = websiteContainer.getMappedPort(3000);

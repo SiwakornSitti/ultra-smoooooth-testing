@@ -6,6 +6,17 @@ import * as path from "path";
 // Postgres, WireMock, and the real user-service/bank-account-service/bff-service
 // images. Extracted because all specs previously duplicated this boilerplate
 // with only env/alias differences.
+//
+// Moby Ryuk (https://github.com/testcontainers/moby-ryuk):
+// Testcontainers automatically runs Ryuk to monitor the test runner's TCP socket
+// and garbage-collect all labeled containers, networks, and volumes if tests finish
+// or crash unexpectedly.
+//
+// Debugging tip:
+// Set TESTCONTAINERS_RYUK_DISABLED=true to keep containers alive after test run.
+if (process.env.TESTCONTAINERS_RYUK_DISABLED === "true") {
+  console.log("ℹ️  Moby Ryuk is disabled: containers will persist after test completion for debugging.");
+}
 
 export const DB_USER = "app";
 export const DB_PASSWORD = "temporary-password-123";
@@ -267,6 +278,44 @@ export async function startBffService(
       ...env,
     })
     .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
+    .start();
+}
+
+export async function startWebsite(
+  network: StartedNetwork,
+  bffContainer: StartedTestContainer,
+  env?: Record<string, string>
+): Promise<StartedTestContainer> {
+  console.log("Starting website container...");
+  return new GenericContainer("website:test")
+    .withNetwork(network)
+    .withNetworkAliases("website")
+    .withExposedPorts(3000)
+    .withEnvironment({
+      BFF_URL: `http://${bffContainer.getHost()}:${bffContainer.getMappedPort(PORT)}`,
+      HOSTNAME: "0.0.0.0",
+      ...env,
+    })
+    .withWaitStrategy(Wait.forHttp("/", 3000))
+    .start();
+}
+
+export async function startMockJsBridgeWebsite(
+  network: StartedNetwork,
+  bffContainer: StartedTestContainer,
+  env?: Record<string, string>
+): Promise<StartedTestContainer> {
+  console.log("Starting mock-jsbridge-website container...");
+  return new GenericContainer("mock-jsbridge-website:test")
+    .withNetwork(network)
+    .withNetworkAliases("mock-jsbridge-website")
+    .withExposedPorts(3000)
+    .withEnvironment({
+      BFF_URL: `http://${bffContainer.getHost()}:${bffContainer.getMappedPort(PORT)}`,
+      HOSTNAME: "0.0.0.0",
+      ...env,
+    })
+    .withWaitStrategy(Wait.forHttp("/", 3000))
     .start();
 }
 
