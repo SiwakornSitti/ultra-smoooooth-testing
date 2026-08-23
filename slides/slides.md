@@ -34,6 +34,70 @@ mdc: true
 </div>
 
 ---
+class: pt-3 pb-2 px-8
+---
+
+# ⚠️ The Integration Testing Crisis
+
+### Why Traditional Microservice Testing Fails in Practice
+
+<div class="grid grid-cols-2 gap-3 mt-1.5">
+
+<v-clicks>
+
+<div class="slide-card p-3 border-rose-500/40 bg-rose-950/20">
+  <h3 class="text-rose-400 font-bold mb-1 text-base flex items-center gap-1.5">
+    <span>🌪️</span> 1. The Flakiness Spiral
+  </h3>
+  <p class="text-slate-300 text-xs leading-relaxed">
+    Shared staging databases and unstable 3rd-party sandboxes cause <strong>40%+ false-positive CI failures</strong>. Teams start ignoring red pipelines.
+  </p>
+  <div class="mt-1.5 text-rose-300 font-mono text-[11px]">
+    🚨 "Just re-run CI until it passes" anti-pattern.
+  </div>
+</div>
+
+<div class="slide-card p-3 border-amber-500/40 bg-amber-950/20">
+  <h3 class="text-amber-400 font-bold mb-1 text-base flex items-center gap-1.5">
+    <span>⏳</span> 2. The Debugging Black Hole
+  </h3>
+  <p class="text-slate-300 text-xs leading-relaxed">
+    Engineers waste <strong>5+ hours/week</strong> triaging "works on my machine" drift, port collisions, and orphan background zombie processes.
+  </p>
+  <div class="mt-1.5 text-amber-300 font-mono text-[11px]">
+    🚨 Discrepancy between macOS and Linux CI runners.
+  </div>
+</div>
+
+<div class="slide-card p-3 border-amber-500/40 bg-amber-950/20">
+  <h3 class="text-amber-400 font-bold mb-1 text-base flex items-center gap-1.5">
+    <span>💸</span> 3. Third-Party Sandbox Quotas &amp; Lock-in
+  </h3>
+  <p class="text-slate-300 text-xs leading-relaxed">
+    Payment and SMS provider test environments have <strong>rate limits, maintenance windows, and billing costs</strong> that block parallel pull requests.
+  </p>
+  <div class="mt-1.5 text-amber-300 font-mono text-[11px]">
+    🚨 Blocked deployments waiting on sandbox stability.
+  </div>
+</div>
+
+<div class="slide-card p-3 border-emerald-500/40 bg-emerald-950/20">
+  <h3 class="text-emerald-400 font-bold mb-1 text-base flex items-center gap-1.5">
+    <span>🎯</span> 4. The Goal: Ultra Smoooooth
+  </h3>
+  <p class="text-slate-300 text-xs leading-relaxed">
+    Achieve <strong>100% deterministic, hermetic, sub-second test execution</strong> on local laptops and CI with zero shared infrastructure flakiness.
+  </p>
+  <div class="mt-1.5 text-emerald-300 font-mono text-[11px]">
+    ✨ Green locally = Guaranteed green in CI.
+  </div>
+</div>
+
+</v-clicks>
+
+</div>
+
+---
 class: agenda-slide pt-4 pb-2 px-8
 ---
 
@@ -324,6 +388,11 @@ layout: section
 # 🏗️ Part 1
 ## Ecosystem Architecture
 
+<p class="section-narrative">
+  Before we can eliminate test flakiness, we need to understand our system topology: a Go Workspace monorepo, 6 microservices, PostgreSQL, and external provider integrations.
+</p>
+
+
 ---
 
 # 🗺️ Detailed Service Topology & Flow
@@ -474,11 +543,59 @@ class: compact-stack-slide
 </div>
 
 ---
+
+# 💬 Part 1 Q&A — Ecosystem Architecture
+
+### Open Floor, Domain Boundaries & Monorepo Questions
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-cyan-500/30">
+  <h3 class="text-cyan-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-cyan-300 block text-sm font-semibold">Q: Why Go Workspaces over separate repos?</strong>
+      Allows atomic cross-service commits, instant refactoring, and zero version drift during local integration runs.
+    </div>
+    <div>
+      <strong class="text-cyan-300 block text-sm font-semibold">Q: How does the BFF protect downstream services?</strong>
+      Acts as an orchestration gateway, aggregating responses and preventing client timeouts via circuit breakers.
+    </div>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
+      What is the biggest pain point in your current microservices testing setup (shared DBs, slow builds, flaky 3rd parties)?
+    </div>
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
+      Verify local environment: <code>make build</code> &amp; <code>make test</code> to ensure all 6 services compile cleanly.
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💬</span>
+  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Any questions on service topology, database boundaries, or monorepo workspace synchronization?</span>
+</div>
+
+---
 layout: section
 ---
 
 # 🪝 Part 2
 ## WireMock — External API Virtualization
+
+<p class="section-narrative">
+  We know our architecture, but external third-party dependencies (OAuth, SMS) are unpredictable and fragile. How do we virtualize external APIs deterministically? Enter WireMock.
+</p>
+
 
 ---
 
@@ -499,7 +616,7 @@ layout: section
 </div>
 
 <div class="col-card">
-  <h3 class="text-emerald-400">⚡ Chaos &amp; FSMs</h3>
+  <h3 class="text-emerald-400">⚡ Chaos &amp; FSM (Finite State Machine)</h3>
   <p>Inject network latency, dropped TCP sockets, and model multi-step lifecycles (e.g. <code>Started → PAID</code>) with automatic test reset.</p>
 </div>
 
@@ -1761,7 +1878,7 @@ layout: section
 
 # 🔄 WireMock — Stateful Scenario Primitives
 
-### Transforming Stateless HTTP Mocks into Finite State Machines
+### Transforming Stateless HTTP Mocks into Finite State Machines (FSM)
 
 <div class="multi-col-grid-3">
 
@@ -2065,6 +2182,48 @@ test.afterEach(async ({ request }) => {
 
 </div>
 
+---
+
+# 💬 Part 2 Q&A — WireMock & API Virtualization
+
+### Open Floor, Dynamic Stubs & Stateful Scenarios
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-cyan-500/30">
+  <h3 class="text-cyan-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-cyan-300 block text-sm font-semibold">Q: WireMock vs. Unit-Level Code Mocks?</strong>
+      WireMock exercises real HTTP serialization, header parsing, status codes, and network latency over real TCP sockets.
+    </div>
+    <div>
+      <strong class="text-cyan-300 block text-sm font-semibold">Q: How to prevent scenario state bleed in parallel tests?</strong>
+      Use unique scenario names per test spec, or reset all state machines via <code>POST /__admin/scenarios/reset</code> in test hooks.
+    </div>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
+      Which third-party external API (payment gateway, SMS, identity) causes the most flakiness in your staging tests?
+    </div>
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
+      Explore stubs in <code>wiremock/mappings/</code> and try triggering <code>Mock-Scenario: INSUFFICIENT_FUNDS</code>.
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💬</span>
+  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on Handlebars templating, JSONPath regex matching, or state machine transitions?</span>
+</div>
 
 ---
 layout: section
@@ -2072,6 +2231,11 @@ layout: section
 
 # 🛡️ Part 3
 ## Burp Suite — MITM Traffic Control & Interception
+
+<p class="section-narrative">
+  WireMock virtualizes downstream services, but what about manipulating live in-flight traffic between web/mobile clients and backend gateways without modifying code? Enter Burp Suite.
+</p>
+
 
 ---
 class: pt-4 pb-2 px-8
@@ -2202,11 +2366,59 @@ class: pt-4 pb-2 px-8
 </div>
 
 ---
+
+# 💬 Part 3 Q&A — Traffic Interception & Security
+
+### Open Floor, In-Flight Tampering & Fault Injection
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-amber-500/30">
+  <h3 class="text-amber-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-amber-300 block text-sm font-semibold">Q: How does header injection reach WireMock?</strong>
+      Burp injects <code>Mock-Scenario</code> into browser requests. The BFF extracts and propagates it downstream to WireMock stubs.
+    </div>
+    <div>
+      <strong class="text-amber-300 block text-sm font-semibold">Q: Can Burp Suite be automated in CI?</strong>
+      Burp is primarily for exploratory/security testing. In automated CI suites, Playwright's <code>page.route()</code> performs the injection.
+    </div>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
+      How does your frontend handle unexpected HTTP 500/502 errors or malformed payloads from backend services?
+    </div>
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
+      Configure proxy to <code>localhost:8080</code> and intercept a live login request to tamper with the auth token.
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-amber-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💬</span>
+  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on proxy setup, request/response tampering, or security boundary testing?</span>
+</div>
+
+---
 layout: section
 ---
 
 # 🐳 Part 4
 ## Testcontainers — Hermetic Infrastructure
+
+<p class="section-narrative">
+  We can intercept traffic and mock external APIs, but what about local stateful infrastructure? How do we eliminate port collisions and dirty database state? Enter Testcontainers.
+</p>
+
 
 ---
 
@@ -2268,59 +2480,61 @@ layout: section
 </div>
 
 ---
+class: hermetic-grid-slide pt-3 pb-2 px-8
+---
 
 # ❌ The Shared Environment Problem in Testing
 
 ### Flakiness, Collisions & State Bleed in Shared Test Infrastructure
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
+<div class="grid grid-cols-2 gap-2.5 mt-1 text-sm">
 
 <v-clicks>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>💥</span> 1. State Pollution &amp; Deadlocks
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     Test A mutates shared rows; Test B fails due to dirty state, foreign key conflicts, or missing row resets.
   </p>
-  <div class="mt-1.5 text-rose-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-rose-300/90 font-mono text-[10px]">
     🚨 Flaky when test suites run concurrently.
   </div>
 </div>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>🔌</span> 2. Hardcoded Port Collisions
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     Static bindings to <code>:5432</code> or <code>:8080</code> crash when local tools or parallel CI jobs compete for sockets.
   </p>
-  <div class="mt-1.5 text-rose-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-rose-300/90 font-mono text-[10px]">
     🚨 <code>bind: address already in use</code> error.
   </div>
 </div>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-amber-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>💻</span> 3. "Works on My Machine" Drift
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     Discrepancies between local macOS, Linux CI runners, and staging create false-positives and hidden regressions.
   </p>
-  <div class="mt-1.5 text-amber-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-amber-300/90 font-mono text-[10px]">
     🚨 Passes locally, but fails in GitHub Actions.
   </div>
 </div>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>🧟</span> 4. Flaky Teardowns &amp; Zombie Leaks
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     When tests crash unexpectedly, orphan DB connections and background processes linger indefinitely.
   </p>
-  <div class="mt-1.5 text-rose-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-rose-300/90 font-mono text-[10px]">
     🚨 Leaks system memory and locks resources.
   </div>
 </div>
@@ -2330,59 +2544,61 @@ layout: section
 </div>
 
 ---
+class: hermetic-grid-slide pt-3 pb-2 px-8
+---
 
 # ✅ The Hermetic Containerized Solution
 
 ### Isolated, Disposable & Predictable Infrastructure On-Demand
 
-<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
+<div class="grid grid-cols-2 gap-2.5 mt-1 text-sm">
 
 <v-clicks>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>🛡️</span> 1. Hermetic Test Isolation
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     Dedicated, pristine PostgreSQL and WireMock container per test suite with zero data bleed.
   </p>
-  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
     ✨ 100% deterministic &amp; safe parallel execution.
   </div>
 </div>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>🏭</span> 2. 100% Production Parity
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     Runs the exact PostgreSQL 16 Alpine image and migrations used in production.
   </p>
-  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
     ✨ Catches real SQL syntax &amp; schema bugs early.
   </div>
 </div>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>🚀</span> 3. Zero Host Tooling Required
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     Developers only need Docker installed — no local DBs or Java runtimes required.
   </p>
-  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
     ✨ Instant onboarding with <code>bun test</code>.
   </div>
 </div>
 
-<div class="slide-card p-3">
+<div class="slide-card p-2.5">
   <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>🔄</span> 4. Guaranteed CI / Local Parity
   </h3>
-  <p class="text-slate-300 leading-relaxed">
+  <p class="text-slate-300 leading-relaxed text-xs">
     Identical TypeScript orchestration executes on local workstations and headless GitHub Actions.
   </p>
-  <div class="mt-1.5 text-emerald-300/90 font-mono text-[11px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
     ✨ Green locally = Guaranteed green in CI.
   </div>
 </div>
@@ -2478,11 +2694,59 @@ test.beforeAll(async () => {
 </div>
 
 ---
+
+# 💬 Part 4 Q&A — Hermetic Testcontainers
+
+### Open Floor, Ephemeral Lifecycles & Dynamic Ports
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-cyan-500/30">
+  <h3 class="text-cyan-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-cyan-300 block text-sm font-semibold">Q: Does spinning up containers slow down tests?</strong>
+      Using lightweight Alpine images (e.g. <code>postgres:16-alpine</code>) and parallel startup keeps bootstrap time under 3–5 seconds.
+    </div>
+    <div>
+      <strong class="text-cyan-300 block text-sm font-semibold">Q: What happens if test process is killed abruptly?</strong>
+      The Moby Ryuk sidecar container monitors the test session socket and automatically purges all orphaned containers and networks.
+    </div>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
+      How often do static port collisions or dirty database records cause false-negative test failures in your CI?
+    </div>
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
+      Run <code>make test-integration</code> and observe dynamic port binding in <code>tests/specs/support/containers.ts</code>.
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💬</span>
+  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on Docker socket permissions, Ryuk garbage collection, or database seed strategies?</span>
+</div>
+
+---
 layout: section
 ---
 
 # 🎭 Part 5
 ## Playwright — Full-Stack E2E Automation
+
+<p class="section-narrative">
+  Our infrastructure is hermetic and our mocks are deterministic. Now, who drives the full user journey from browser DOM to backend REST APIs with zero flakiness? Enter Playwright.
+</p>
+
 
 ---
 
@@ -2715,6 +2979,48 @@ export default defineConfig({
 
 </div>
 
+---
+
+# 💬 Part 5 Q&A — Playwright & E2E Automation
+
+### Open Floor, Locators, Network Steering & Diagnostics
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-purple-500/30">
+  <h3 class="text-purple-400 text-base mb-1">🙋‍♂️ Frequently Asked Questions</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-purple-300 block text-sm font-semibold">Q: How does auto-waiting prevent test flakiness?</strong>
+      Playwright checks attachment, visibility, stability, and event actionability before performing actions—eliminating <code>sleep()</code>.
+    </div>
+    <div>
+      <strong class="text-purple-300 block text-sm font-semibold">Q: Can Playwright test mobile WebViews?</strong>
+      Yes! <code>page.addInitScript()</code> injects mock <code>window.JSBridge</code> interfaces into the browser before page scripts evaluate.
+    </div>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-base mb-1">💭 Discussion &amp; Hands-On Checkpoint</h3>
+  <div class="text-xs text-slate-200 space-y-2 leading-relaxed">
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">💡 Discussion Prompt:</strong>
+      How do you debug failed UI tests in headless CI today? Have you explored Playwright Trace Viewer?
+    </div>
+    <div>
+      <strong class="text-emerald-300 block text-sm font-semibold">🛠️ Workshop Checkpoint:</strong>
+      Run <code>make test-e2e</code> and inspect the generated trace with <code>npx playwright show-trace</code>.
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-purple-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💬</span>
+  <span class="text-slate-200 leading-snug"><strong>Open Floor</strong>: Questions on web-first assertions, route interceptors, or hybrid mobile testing?</span>
+</div>
 
 ---
 
@@ -2848,6 +3154,47 @@ export default defineConfig({
   </div>
 </div>
 
+</div>
+
+---
+
+# 💬 Open Q&A & Key Takeaways
+
+### Bringing All 4 Pillars Together for Ultra Smoooooth Testing
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-3 space-y-1.5 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-base mb-1">🎯 The 4 Core Pillars Summary</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• 🪝 <strong>WireMock</strong>: Deterministic 3rd-party virtualization &amp; state machines.</li>
+    <li>• 🛡️ <strong>Burp Suite</strong>: Live in-flight traffic inspection &amp; fault injection.</li>
+    <li>• 🐳 <strong>Testcontainers</strong>: Ephemeral, isolated, zero-drift infrastructure.</li>
+    <li>• 🎭 <strong>Playwright</strong>: Unified full-stack UI &amp; REST API automation.</li>
+  </ul>
+  <div class="bg-slate-950/80 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <span>✨ Result: Fast, reliable, deterministic tests with zero flakiness.</span>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-1.5 bg-slate-900/60 border-cyan-500/30">
+  <h3 class="text-cyan-400 text-base mb-1">🚀 Next Steps &amp; Resources</h3>
+  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
+    <li>• 📖 <strong>Follow the Guide</strong>: Walk through all labs in <code>WORKSHOP.md</code>.</li>
+    <li>• 💻 <strong>Fork &amp; Experiment</strong>: Try adding a new microservice or stub.</li>
+    <li>• 🤝 <strong>Adopt in Your Team</strong>: Start by replacing shared test DBs or sandboxes.</li>
+    <li>• ⭐ <strong>Star the Repo</strong>: <code>SiwakornSitti/ultra-smoooooth-testing</code>.</li>
+  </ul>
+  <div class="bg-slate-950/80 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+    <span>💡 Ask anything — architecture, implementation, or tooling!</span>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">🎙️</span>
+  <span class="text-slate-200 leading-snug"><strong>Floor Open for Questions</strong>: Any thoughts, edge cases, or real-world adoption challenges?</span>
 </div>
 
 ---
