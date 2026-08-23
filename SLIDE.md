@@ -2,7 +2,7 @@
 
 Complete index of the **[Slidev](https://sli.dev)** deck for the **Ultra Smoooooth Testing Workshop** — Microservices Integration Testing, WireMock Stateful Stubs, Burp Suite MITM Proxy, and Testcontainers.
 
-Source: [`slides/slides.md`](slides/slides.md) · cover + 51 numbered slides
+Source: [`slides/slides.md`](slides/slides.md) · cover + 49 numbered slides
 
 ## Run the deck
 
@@ -69,6 +69,4 @@ A PowerPoint export is also available at [`slides/slides-export.pptx`](slides/sl
 | 46 | Automation | 🎭 Playwright — Full-Stack Browser E2E Flow | 1836 | Multi-step authentication flow testing with dynamic mock header injection (`mockScenario(page)`). |
 | 47 | Automation | 🧪 Playwright & Testcontainers — Orchestration | 1888 | Direct REST `APIRequestContext` integration testing against ephemeral containers with teardown reset. |
 | 48 | Automation | 🛠️ Command Cheat Sheet | 1914 | Essential developer commands (`make build`, `make test`, `make test-integration`, `make test-e2e`, `make sync`). |
-| 49 | Workshop | 🎯 Workshop Thinking Cases (1–5) | 1948 | Challenges 1–5: Fund transfers, eKYC gating, atomic rollbacks, race conditions, outbound SMS failure. |
-| 50 | Workshop | 🎯 Workshop Thinking Cases (6–11) | 1964 | Challenges 6–11: OAuth replay, BFF aggregation, REST schema contracts, timeout injection, idempotency, JSBridge. |
-| 51 | Outro | 🎉 Thank You! | 1984 | Closing slide with links to GitHub repository and Workshop Guide. |
+| 49 | Outro | 🎉 Thank You! | 1951 | Closing slide with links to GitHub repository and Workshop Guide. |
