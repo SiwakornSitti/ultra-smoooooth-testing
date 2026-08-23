@@ -45,47 +45,49 @@ Quick navigation reference for all slides in [`slides/slides.md`](slides/slides.
 | **39** | [🪄 WireMock — Dynamic Response Templating](slides/slides.md#L1288) | Handlebars Response Templating (`response-template`) | `L1288` |
 | **40** | [🪄 WireMock — Handlebars Request & Encoding Helpers](slides/slides.md#L1317) | Request Model Extraction & Data Encoders | `L1317` |
 | **41** | [📥 WireMock — Extracting Request Data & Echoing IDs](slides/slides.md#L1335) | Reading Path, Query, Header & Body Values into Responses | `L1335` |
-| **42** | [🎲 WireMock — Handlebars Dynamic Data Generators](slides/slides.md#L1372) | Timestamps, Random IDs & Token Generation | `L1372` |
-| **43** | [🪄 Handlebars Logic & Math — Example](slides/slides.md#L1389) | Conditionals, Dynamic Math & Response Configuration | `L1389` |
-| **44** | [🔤 WireMock — Handlebars String Transformation Helpers](slides/slides.md#L1415) | String Manipulation & Substring Extractors | `L1415` |
-| **45** | [🔁 WireMock — Handlebars Array & Iteration Helpers](slides/slides.md#L1433) | Array Looping, Sizing & Variable Lookups | `L1433` |
-| **46** | [🪄 Handlebars Array Iteration — Example](slides/slides.md#L1451) | Generating Dynamic Arrays with `{{#each}}` and Indexing | `L1451` |
-| **47** | [🔍 WireMock — Handlebars jsonPath Traversal & Indexing](slides/slides.md#L1480) | Deep Object Traversal & Array Indexing | `L1480` |
-| **48** | [🛡️ WireMock — Safe Default Fallbacks & Dynamic Sizing](slides/slides.md#L1504) | Graceful Fallbacks & Array Counting | `L1504` |
-| **49** | [🔍 Handlebars jsonPath — Example](slides/slides.md#L1528) | Echoing Nested Request Payloads & Handling Missing Fields | `L1528` |
-| **50** | [⏱️ WireMock — Fixed Latency & Timeout Testing](slides/slides.md#L1552) | Deterministic Delay Injection (`fixedDelayMilliseconds`) | `L1552` |
-| **51** | [🎲 WireMock — Random Jitter & Latency Distributions](slides/slides.md#L1576) | Real-World Latency Simulation (`delayDistribution`) | `L1576` |
-| **52** | [💥 WireMock — Network Fault Injection](slides/slides.md#L1629) | Simulating Hard Network Failures & Socket Errors | `L1629` |
-| **53** | [🔄 WireMock — Stateful Scenario Primitives](slides/slides.md#L1651) | Transforming Stateless HTTP Mocks into Finite State Machines | `L1651` |
-| **54** | [🔄 WireMock — Scenario Execution Flow](slides/slides.md#L1689) | State-Aware Request Evaluation & Transition Mechanics | `L1689` |
-| **55** | [🔄 Stateful Pattern 1: Single-Use Tokens & Replays](slides/slides.md#L1721) | OAuth Authorization Code & OTP Replay Attack Prevention | `L1721` |
-| **56** | [🔄 Stateful Pattern 2: Multi-Step Order Lifecycle](slides/slides.md#L1778) | Modeling Sequential Domain State Transitions | `L1778` |
-| **57** | [🔄 Stateful Pattern 3: Transient Failure & Retries](slides/slides.md#L1814) | Testing Client Exponential Backoff & Circuit Breakers | `L1814` |
-| **58** | [🔄 Stateful Pattern 4: Webhook Idempotency](slides/slides.md#L1867) | At-Least-Once Delivery & Duplicate Message Detection | `L1867` |
-| **59** | [🧹 WireMock — State Management & Test Isolation](slides/slides.md#L1924) | Preventing State Bleed with the WireMock Admin API | `L1924` |
-| **60** | [🛡️ Part 3](slides/slides.md#L1962) | Burp Suite — MITM Traffic Control & Interception | `L1962` |
-| **61** | [🔀 Burp Suite — Request & Response Intercept](slides/slides.md#L1969) | Bi-Directional In-Flight Traffic Interception & Tampering | `L1969` |
-| **62** | [🔀 Burp Suite — Proxy Intercept Capabilities](slides/slides.md#L1981) | Dual-Direction Traffic Control: Requests and Responses | `L1981` |
-| **63** | [🔀 Proxy Intercept — Example](slides/slides.md#L2015) | Before & After Request Header Injection | `L2015` |
-| **64** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L2065) | Real-Time Traffic Auditing & Inspection | `L2065` |
-| **65** | [🐳 Part 4](slides/slides.md#L2097) | Testcontainers — Hermetic Infrastructure | `L2097` |
-| **66** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L2102) | Programmable Docker Infrastructure Directly in Your Test Suite | `L2102` |
-| **67** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L2131) | Docker Daemon Requirement & Supported Runtimes | `L2131` |
-| **68** | [❌ The Shared Environment Problem in Testing](slides/slides.md#L2161) | Flakiness, Collisions & State Bleed in Shared Test Infrastructure | `L2161` |
-| **69** | [✅ The Hermetic Containerized Solution](slides/slides.md#L2223) | Isolated, Disposable & Predictable Infrastructure On-Demand | `L2223` |
-| **70** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L2285) | Dynamic Ports & Code-Driven Orchestration | `L2285` |
-| **71** | [🧪 Testcontainers — Ephemeral Suite Bootstrapping](slides/slides.md#L2303) | Code-Driven Container Lifecycle (`tests/specs/support/containers.ts`) | `L2303` |
-| **72** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L2329) | Best Practice Test Suite Initialization in `beforeAll()` Hook | `L2329` |
-| **73** | [🎭 Part 5](slides/slides.md#L2373) | Playwright — Full-Stack E2E Automation | `L2373` |
-| **74** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L2378) | Modern Full-Stack Integration Testing Architecture | `L2378` |
-| **75** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L2407) | Eliminating Flaky `sleep()` Calls with Actionability Checks | `L2407` |
-| **76** | [🎭 Playwright — Network Route Interception](slides/slides.md#L2444) | Dynamic Mock Header Injection with `page.route()` | `L2444` |
-| **77** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L2475) | Mocking Native Device APIs with `page.addInitScript()` | `L2475` |
-| **78** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L2501) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) | `L2501` |
-| **79** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L2532) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) | `L2532` |
-| **80** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L2559) | Record Every Action, DOM Snapshot & Network Request for Post-Mortem Debugging | `L2559` |
-| **81** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L2610) | Common Locators, Actions, Web-First Assertions & Network Steering | `L2610` |
-| **82** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L2646) | Interactive UI, Debugging, Filtering & Code Generation | `L2646` |
-| **83** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L2678) | Dynamic Stubs, State Resets & Verification Endpoints | `L2678` |
-| **84** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L2710) | Everyday Monorepo, Build & Hermetic Test Commands | `L2710` |
-| **85** | [🎉 Thank You!](slides/slides.md#L2747) | — | `L2747` |
+| **42** | [🪄 Dynamic Response Headers & Timezones](slides/slides.md#L1372) | Injecting In-Flight Tracking IDs, Cookies & Location Headers | `L1372` |
+| **43** | [🎲 WireMock — Handlebars Dynamic Data Generators](slides/slides.md#L1411) | Timestamps, Random IDs & Token Generation | `L1411` |
+| **44** | [🪄 Handlebars Logic & Math — Example](slides/slides.md#L1428) | Conditionals, Dynamic Math & Response Configuration | `L1428` |
+| **45** | [🔤 WireMock — Handlebars String Transformation Helpers](slides/slides.md#L1454) | String Manipulation & Substring Extractors | `L1454` |
+| **46** | [🔁 WireMock — Handlebars Array & Iteration Helpers](slides/slides.md#L1472) | Array Looping, Sizing & Variable Lookups | `L1472` |
+| **47** | [🪄 Handlebars Array Iteration — Example](slides/slides.md#L1490) | Generating Dynamic Arrays with `{{#each}}` and Indexing | `L1490` |
+| **48** | [🔍 WireMock — Handlebars jsonPath Traversal & Indexing](slides/slides.md#L1519) | Deep Object Traversal & Array Indexing | `L1519` |
+| **49** | [🛡️ WireMock — Safe Default Fallbacks & Dynamic Sizing](slides/slides.md#L1543) | Graceful Fallbacks & Array Counting | `L1543` |
+| **50** | [🔍 Handlebars jsonPath — Example](slides/slides.md#L1567) | Echoing Nested Request Payloads & Handling Missing Fields | `L1567` |
+| **51** | [📁 File-Based Response Templates (`bodyFileName`)](slides/slides.md#L1591) | Decoupling Large Dynamic JSON/XML Payloads from Mapping Stubs | `L1591` |
+| **52** | [⏱️ WireMock — Fixed Latency & Timeout Testing](slides/slides.md#L1638) | Deterministic Delay Injection (`fixedDelayMilliseconds`) | `L1638` |
+| **53** | [🎲 WireMock — Random Jitter & Latency Distributions](slides/slides.md#L1662) | Real-World Latency Simulation (`delayDistribution`) | `L1662` |
+| **54** | [💥 WireMock — Network Fault Injection](slides/slides.md#L1715) | Simulating Hard Network Failures & Socket Errors | `L1715` |
+| **55** | [🔄 WireMock — Stateful Scenario Primitives](slides/slides.md#L1737) | Transforming Stateless HTTP Mocks into Finite State Machines | `L1737` |
+| **56** | [🔄 WireMock — Scenario Execution Flow](slides/slides.md#L1775) | State-Aware Request Evaluation & Transition Mechanics | `L1775` |
+| **57** | [🔄 Stateful Pattern 1: Single-Use Tokens & Replays](slides/slides.md#L1807) | OAuth Authorization Code & OTP Replay Attack Prevention | `L1807` |
+| **58** | [🔄 Stateful Pattern 2: Multi-Step Order Lifecycle](slides/slides.md#L1864) | Modeling Sequential Domain State Transitions | `L1864` |
+| **59** | [🔄 Stateful Pattern 3: Transient Failure & Retries](slides/slides.md#L1900) | Testing Client Exponential Backoff & Circuit Breakers | `L1900` |
+| **60** | [🔄 Stateful Pattern 4: Webhook Idempotency](slides/slides.md#L1953) | At-Least-Once Delivery & Duplicate Message Detection | `L1953` |
+| **61** | [🧹 WireMock — State Management & Test Isolation](slides/slides.md#L2010) | Preventing State Bleed with the WireMock Admin API | `L2010` |
+| **62** | [🛡️ Part 3](slides/slides.md#L2048) | Burp Suite — MITM Traffic Control & Interception | `L2048` |
+| **63** | [🔀 Burp Suite — Request & Response Intercept](slides/slides.md#L2055) | Bi-Directional In-Flight Traffic Interception & Tampering | `L2055` |
+| **64** | [🔀 Burp Suite — Proxy Intercept Capabilities](slides/slides.md#L2067) | Dual-Direction Traffic Control: Requests and Responses | `L2067` |
+| **65** | [🔀 Proxy Intercept — Example](slides/slides.md#L2101) | Before & After Request Header Injection | `L2101` |
+| **66** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L2151) | Real-Time Traffic Auditing & Inspection | `L2151` |
+| **67** | [🐳 Part 4](slides/slides.md#L2183) | Testcontainers — Hermetic Infrastructure | `L2183` |
+| **68** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L2188) | Programmable Docker Infrastructure Directly in Your Test Suite | `L2188` |
+| **69** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L2217) | Docker Daemon Requirement & Supported Runtimes | `L2217` |
+| **70** | [❌ The Shared Environment Problem in Testing](slides/slides.md#L2247) | Flakiness, Collisions & State Bleed in Shared Test Infrastructure | `L2247` |
+| **71** | [✅ The Hermetic Containerized Solution](slides/slides.md#L2309) | Isolated, Disposable & Predictable Infrastructure On-Demand | `L2309` |
+| **72** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L2371) | Dynamic Ports & Code-Driven Orchestration | `L2371` |
+| **73** | [🧪 Testcontainers — Ephemeral Suite Bootstrapping](slides/slides.md#L2389) | Code-Driven Container Lifecycle (`tests/specs/support/containers.ts`) | `L2389` |
+| **74** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L2415) | Best Practice Test Suite Initialization in `beforeAll()` Hook | `L2415` |
+| **75** | [🎭 Part 5](slides/slides.md#L2459) | Playwright — Full-Stack E2E Automation | `L2459` |
+| **76** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L2464) | Modern Full-Stack Integration Testing Architecture | `L2464` |
+| **77** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L2493) | Eliminating Flaky `sleep()` Calls with Actionability Checks | `L2493` |
+| **78** | [🎭 Playwright — Network Route Interception](slides/slides.md#L2530) | Dynamic Mock Header Injection with `page.route()` | `L2530` |
+| **79** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L2561) | Mocking Native Device APIs with `page.addInitScript()` | `L2561` |
+| **80** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L2587) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) | `L2587` |
+| **81** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L2618) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) | `L2618` |
+| **82** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L2645) | Record Every Action, DOM Snapshot & Network Request for Post-Mortem Debugging | `L2645` |
+| **83** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L2696) | Common Locators, Actions, Web-First Assertions & Network Steering | `L2696` |
+| **84** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L2732) | Interactive UI, Debugging, Filtering & Code Generation | `L2732` |
+| **85** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L2764) | Dynamic Stubs, State Resets & Verification Endpoints | `L2764` |
+| **86** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L2796) | Everyday Monorepo, Build & Hermetic Test Commands | `L2796` |
+| **87** | [🎉 Thank You!](slides/slides.md#L2833) | — | `L2833` |

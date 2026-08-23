@@ -1370,6 +1370,45 @@ layout: section
 
 ---
 
+# 🪄 Dynamic Response Headers & Timezones
+
+### Injecting In-Flight Tracking IDs, Cookies & Location Headers
+
+<div v-pre class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-cyan-400 text-sm mb-0.5">🏷️ Dynamic Header Interpolation</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Echo Correlation ID</strong>: Preserves end-to-end tracing across services.</li>
+    <li>• <strong>Dynamic Session Cookie</strong>: Generates random hex/alphanumeric tokens.</li>
+    <li>• <strong>Dynamic 201 Location</strong>: Constructs REST resource URI on the fly.</li>
+  </ul>
+  <div class="bg-slate-950/80 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
+    <code>"X-Trace-ID": "{{request.headers.[X-Trace-ID]}}",<br/>"Location": "/api/orders/{{randomValue type='UUID'}}"</code>
+  </div>
+</div>
+
+<div class="col-card p-2.5 space-y-1.5">
+  <h3 class="text-emerald-400 text-sm mb-0.5">🕒 Timezones &amp; Unix Epoch Timestamps</h3>
+  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
+    <li>• <strong>Bangkok Timezone</strong>: <code>{{now timezone='Asia/Bangkok' format='yyyy-MM-dd HH:mm:ss'}}</code></li>
+    <li>• <strong>Past Expiry (-1 day)</strong>: <code>{{now offset='-1 days'}}</code> (Expired token test)</li>
+    <li>• <strong>Unix Epoch Milliseconds</strong>: <code>{{now format='epoch'}}</code> (Timestamp numbers)</li>
+  </ul>
+  <div class="bg-slate-950/80 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <code>"timestamp": {{now format='epoch'}},<br/>"expiresAt": "{{now offset='30 minutes'}}"</code>
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Header Templating</strong>: Response templating applies to both <code>"headers"</code> and <code>"body"</code> blocks, allowing realistic simulation of security cookies and REST redirect protocols.</span>
+</div>
+
+---
+
 # 🎲 WireMock — Handlebars Dynamic Data Generators
 
 ### Timestamps, Random IDs & Token Generation
@@ -1546,6 +1585,53 @@ layout: section
 
 <div v-pre class="slide-card text-sm mt-3">
   🎯 Extracts nested customer IDs and array elements, applies safe default tiers (<code>default='SILVER'</code>), and counts total items dynamically.
+</div>
+
+---
+
+# 📁 File-Based Response Templates (`bodyFileName`)
+
+### Decoupling Large Dynamic JSON/XML Payloads from Mapping Stubs
+
+<div v-pre class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-slate-700/40">
+  <h3 class="text-cyan-400 text-sm mb-0.5">📑 1. Mapping Stub (<code>mappings/order.json</code>)</h3>
+  <div class="bg-slate-950/90 rounded p-2 border border-cyan-500/30 font-mono text-xs text-cyan-200">
+    {<br/>
+    &nbsp;&nbsp;"request": { "method": "POST", "urlPath": "/api/orders" },<br/>
+    &nbsp;&nbsp;"response": {<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;"status": 201,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;<strong class="text-amber-300">"bodyFileName": "orders/created.json"</strong>,<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;"transformers": ["response-template"]<br/>
+    &nbsp;&nbsp;}<br/>
+    }
+  </div>
+  <p class="text-slate-400 text-[11px] leading-tight mt-auto">
+    Mapping file remains clean and concise; delegates body rendering to template.
+  </p>
+</div>
+
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/40">
+  <h3 class="text-emerald-400 text-sm mb-0.5">📦 2. Template File (<code>__files/orders/created.json</code>)</h3>
+  <div class="bg-slate-950/90 rounded p-2 border border-emerald-500/30 font-mono text-xs text-emerald-200">
+    {<br/>
+    &nbsp;&nbsp;"orderId": "{{randomValue type='UUID'}}",<br/>
+    &nbsp;&nbsp;"userId": "{{jsonPath request.body '$.userId'}}",<br/>
+    &nbsp;&nbsp;"total": {{math (jsonPath request.body '$.price') '*' 1.07}},<br/>
+    &nbsp;&nbsp;"createdAt": "{{now timezone='Asia/Bangkok' format='yyyy-MM-dd HH:mm:ss'}}"<br/>
+    }
+  </div>
+  <p class="text-emerald-300/80 text-[11px] leading-tight mt-auto">
+    Full Handlebars expressions evaluate dynamically when served from <code>__files/</code>.
+  </p>
+</div>
+
+</div>
+
+<div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Best Practice for Large Payloads</strong>: Keeps mapping JSONs lightweight and readable while allowing complex 100+ line JSON/XML template files to live under <code>__files/</code>.</span>
 </div>
 
 ---
