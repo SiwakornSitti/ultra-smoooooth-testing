@@ -109,6 +109,40 @@ func (m *mockRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 	return m.roundTrip(req)
 }
 
+func TestHandleWorkshopReset(t *testing.T) {
+	originalTransport := http.DefaultClient.Transport
+	originalURL := utilityServiceURL
+	defer func() {
+		http.DefaultClient.Transport = originalTransport
+		utilityServiceURL = originalURL
+	}()
+
+	utilityServiceURL = "http://utility-service"
+	http.DefaultClient.Transport = &mockRoundTripper{roundTrip: func(req *http.Request) (*http.Response, error) {
+		if req.Method != http.MethodPost {
+			t.Errorf("method = %s; want %s", req.Method, http.MethodPost)
+		}
+		if req.URL.Path != "/reset" {
+			t.Errorf("path = %s; want /reset", req.URL.Path)
+		}
+		rec := httptest.NewRecorder()
+		rec.WriteHeader(http.StatusOK)
+		rec.Body.WriteString(`{"status":"reset"}`)
+		return rec.Result(), nil
+	}}
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/workshop/reset", nil)
+	handleWorkshopReset(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d; want %d", rec.Code, http.StatusOK)
+	}
+	if got := strings.TrimSpace(rec.Body.String()); got != `{"status":"reset"}` {
+		t.Fatalf("body = %s; want reset response", got)
+	}
+}
+
 func TestProxyHandlers(t *testing.T) {
 	origClient := http.DefaultClient.Transport
 	defer func() { http.DefaultClient.Transport = origClient }()

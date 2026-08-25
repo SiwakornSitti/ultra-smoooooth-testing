@@ -19,6 +19,7 @@ The BFF service acts as the orchestration layer for the application, aggregating
 - `POST /api/v1/transfers`: Proxy to execute fund transfers.
 - `GET /api/v1/transfers`: Proxy to list all fund transfers.
 - `GET /api/v1/transfers/{id}`: Proxy to fetch fund transfer details.
+- `POST /api/v1/workshop/reset`: Reset local workshop data to its seeded defaults.
 - `POST /auth/paotang/callback`: Proxy for Paotang Pass OAuth callback.
 - `POST /auth/otp/verify`: Proxy for OTP code verification.
 - `GET /health`: Standard health check.
@@ -34,3 +35,4 @@ Account creation calls `otp-service` after the bank account is created. OTP serv
 | `EKYC_SERVICE_URL` | Internal URL for ekyc-service | `http://ekyc-service.app.svc.cluster.local` |
 | `TRANSFER_SERVICE_URL` | Internal URL for transfer-service | `http://transfer-service.app.svc.cluster.local` |
 | `OTP_SERVICE_URL` | Internal URL for otp-service | `http://otp-service.app.svc.cluster.local` |
+| `UTILITY_SERVICE_URL` | Internal URL for utility-service | `http://utility-service.app.svc.cluster.local` |

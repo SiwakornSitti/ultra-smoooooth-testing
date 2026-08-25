@@ -113,7 +113,7 @@ returns a matching scenario response or proxies an unmatched request to the
 real core service.
 
 The core services are `user-service`, `bank-account-service`, `ekyc-service`,
-`transfer-service`, and `otp-service`.
+`transfer-service`, `utility-service`, and `otp-service`.
 
 ## Tech lead awareness
 
@@ -141,6 +141,7 @@ The core services are `user-service`, `bank-account-service`, `ekyc-service`,
 | `bank-account-service` | Bank account operations | PostgreSQL |
 | `ekyc-service` | eKYC verification requests and retrieval | PostgreSQL |
 | `transfer-service` | Transfer validation, balance movement, and transfer records | PostgreSQL; updates both account balances and the transfer record in one transaction; history reads only query `transfers` |
+| `utility-service` | Workshop data maintenance | PostgreSQL; restores the seeded workshop data on reset |
 | `otp-service` | Core service for generating and verifying OTP codes | Calls SMS Provider through WireMock for SMS delivery |
 | PostgreSQL | Shared local database used by the persistence-backed services | Temporary container-local storage |
 | WireMock | Deterministic external-provider and core-service mocks | Paotang, OTP, SMS, transfer-service, stateless labs, and stateful labs |
@@ -157,8 +158,8 @@ The core services are `user-service`, `bank-account-service`, `ekyc-service`,
 4. The synchronous result travels back through the BFF to the browser.
 
 The BFF is the browser integration boundary. The website must not call
-`user-service`, `bank-account-service`, `ekyc-service`, `transfer-service`, or
-`otp-service` directly.
+`user-service`, `bank-account-service`, `ekyc-service`, `transfer-service`,
+`utility-service`, or `otp-service` directly.
 
 ### External authentication and OTP
 

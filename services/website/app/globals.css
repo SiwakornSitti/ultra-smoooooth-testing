@@ -42,7 +42,15 @@ a:hover {
 .page-header {
   position: relative;
   margin-bottom: 1.25rem;
-  padding-right: 5.5rem;
+  padding-right: 13.5rem;
+}
+
+.header-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
 }
 
 .logout-button {
@@ -56,6 +64,34 @@ a:hover {
 }
 
 .logout-button:hover:not(:disabled) {
+  background: #a5223f;
+}
+
+.page-header .logout-button {
+  position: static;
+}
+
+.workshop-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.reset-default-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0;
+  background: var(--danger);
+}
+
+.reset-danger-icon {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.reset-default-button:hover:not(:disabled) {
   background: #a5223f;
 }
 

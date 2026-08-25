@@ -53,6 +53,7 @@ var (
 	ekycServiceURL        = getEnv("EKYC_SERVICE_URL", "http://ekyc-service.app.svc.cluster.local")
 	transferServiceURL    = getEnv("TRANSFER_SERVICE_URL", "http://transfer-service.app.svc.cluster.local")
 	otpServiceURL         = getEnv("OTP_SERVICE_URL", "http://otp-service.app.svc.cluster.local")
+	utilityServiceURL     = getEnv("UTILITY_SERVICE_URL", "http://utility-service.app.svc.cluster.local")
 )
 
 func forwardHeaders(in *http.Request, out *http.Request) {
@@ -135,6 +136,7 @@ func main() {
 	r.HandleFunc("/api/v1/transfers", handleCreateTransfer).Methods("POST")
 	r.HandleFunc("/api/v1/transfers", handleGetAllTransfers).Methods("GET")
 	r.HandleFunc("/api/v1/transfers/{id}", handleGetTransfer).Methods("GET")
+	r.HandleFunc("/api/v1/workshop/reset", handleWorkshopReset).Methods("POST")
 	r.HandleFunc("/auth/paotang/callback", proxyPaotangCallback).Methods("POST")
 	r.HandleFunc("/auth/otp/verify", handleOTPVerify).Methods("POST")
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -457,6 +459,26 @@ func handleGetAccount(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		writeJSONError(w, "Bank account service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = io.Copy(w, resp.Body)
+}
+
+func handleWorkshopReset(w http.ResponseWriter, r *http.Request) {
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/reset", utilityServiceURL), nil)
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		writeJSONError(w, "Workshop reset service unavailable", http.StatusServiceUnavailable)
 		return
 	}
 	defer resp.Body.Close()

@@ -7,4 +7,5 @@ use (
 	./services/otp-service
 	./services/transfer-service
 	./services/user-service
+	./services/utility-service
 )

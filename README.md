@@ -31,6 +31,7 @@ flowchart TD
         BankService["🏦 bank-account-service<br/><code>Go :8082</code>"]
         EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
         TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
+        UtilityService["🧰 utility-service<br/><code>Go :8086</code>"]
         OTPService["🔑 otp-service<br/><code>Go :8087</code>"]
     end
 
@@ -53,11 +54,13 @@ flowchart TD
     BFF -->|GET/POST /accounts| BankService
     BFF -->|POST/GET /ekycs| EKYCService
     BFF -->|POST/GET /transfers| TransferService
+    BFF -->|POST /reset| UtilityService
     BFF -->|POST /auth/otp/verify| OTPService
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
     TransferService -->|Atomic Balance Updates| DB
+    UtilityService -->|Restore seeded workshop data| DB
 
     UserService -->|OAuth via WireMock| WireMock
     OTPService -->|Send SMS via WireMock| WireMock
@@ -72,6 +75,7 @@ flowchart TD
 - **`bank-account-service`** (`:8082`): Bank account management microservice backed by PostgreSQL.
 - **`ekyc-service`** (`:8084`): Electronic Know Your Customer identity verification service (`POST /ekycs/verify`, `GET /ekycs/{id}`).
 - **`transfer-service`** (`:8085`): Money movement and transfer history service; atomically updates source and target account balances.
+- **`utility-service`** (`:8086`): Workshop utility service that restores the seeded database state.
 - **`otp-service`** (`:8087`): OTP generation and verification microservice that delegates SMS message delivery to SMS Provider via WireMock.
 - **`website`** (`:3000`): Next.js 16 web client interface.
 - **`wiremock`** (`:8088`): WireMock GUI mocking third-party integrations (Paotang Pass, OTP, SMS).
@@ -105,6 +109,7 @@ use (
  ./services/ekyc-service
  ./services/otp-service
  ./services/transfer-service
+ ./services/utility-service
  ./services/user-service
 )
 ```

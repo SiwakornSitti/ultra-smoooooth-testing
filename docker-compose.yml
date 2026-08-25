@@ -162,6 +162,28 @@ services:
         - action: rebuild
           path: ./services/transfer-service
 
+  utility-service:
+    build:
+      context: ./services/utility-service
+      dockerfile: Dockerfile
+    container_name: poc-utility-service
+    ports:
+      - "8086:8080"
+    environment:
+      PORT: "8080"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: app
+      DB_PASSWORD: temporary-password-123
+      DB_NAME: app
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./services/utility-service
+
   # =========================================================================
   # BACKEND FOR FRONTEND (BFF) SERVICE
   # =========================================================================
@@ -179,11 +201,13 @@ services:
       EKYC_SERVICE_URL: ${EKYC_SERVICE_URL:-http://wiremock:8080}
       TRANSFER_SERVICE_URL: ${TRANSFER_SERVICE_URL:-http://wiremock:8080}
       OTP_SERVICE_URL: ${OTP_SERVICE_URL:-http://wiremock:8080}
+      UTILITY_SERVICE_URL: http://utility-service:8080
     depends_on:
       - user-service
       - bank-account-service
       - ekyc-service
       - transfer-service
+      - utility-service
       - wiremock
       - otp-service
     develop:

@@ -27,6 +27,7 @@ export default function Home() {
   const [ekycResult, setEkycResult] = useState("");
   const [ekycData, setEkycData] = useState<EkycResult | null>(null);
   const [ekycScenario, setEkycScenario] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
 
   useEffect(() => {
     setAuthenticated(window.sessionStorage.getItem(AUTH_SESSION_KEY) === "true");
@@ -62,6 +63,24 @@ export default function Home() {
     }
   }
 
+  async function resetDefaultData() {
+    if (!window.confirm("Reset all workshop data to the default seeded values? This cannot be undone.")) return;
+
+    setIsResetting(true);
+    try {
+      const res = await fetch(`${bffUrl}/api/v1/workshop/reset`, { method: "POST" });
+      if (res.ok) {
+        window.location.reload();
+        return;
+      }
+      window.alert("Unable to reset workshop data.");
+    } catch {
+      window.alert("Unable to reset workshop data.");
+    } finally {
+      setIsResetting(false);
+    }
+  }
+
   if (authenticated === null) {
     return null;
   }
@@ -77,20 +96,38 @@ export default function Home() {
         <p className="eyebrow">Ultra Smoooooth Testing</p>
         <h1>Website</h1>
         <p className="subtitle">Mock the world. Control the chaos. Test without limits.</p>
-        <LogoutButton />
-        <label className="toggle-field">
-          <input
-            data-testid="toggle-mock-controls"
-            type="checkbox"
-            checked={showMockControls}
-            onChange={(e) => {
-              const enabled = e.target.checked;
-              setShowMockControls(enabled);
-              setEkycScenario("");
-            }}
-          />
-          <span>Show mock controls</span>
-        </label>
+        <div className="header-actions">
+          <LogoutButton />
+          <button
+            className="reset-default-button"
+            data-testid="btn-reset-default-data"
+            type="button"
+            disabled={!bffUrl || isResetting}
+            onClick={resetDefaultData}
+          >
+            <svg className="reset-danger-icon" aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M12 3 2.5 20h19L12 3Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+              <path d="M12 9v4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="12" cy="17.25" r="1" fill="currentColor" />
+            </svg>
+            {isResetting ? "Resetting…" : "Reset workshop data"}
+          </button>
+        </div>
+        <section className="workshop-controls" aria-label="Workshop controls">
+          <label className="toggle-field">
+            <input
+              data-testid="toggle-mock-controls"
+              type="checkbox"
+              checked={showMockControls}
+              onChange={(e) => {
+                const enabled = e.target.checked;
+                setShowMockControls(enabled);
+                setEkycScenario("");
+              }}
+            />
+            <span>Show mock controls</span>
+          </label>
+        </section>
       </header>
       <div className="page-grid">
         <AccountPanel bffUrl={bffUrl} showMockControls={showMockControls} />
