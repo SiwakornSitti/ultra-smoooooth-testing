@@ -87,6 +87,17 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
   const selectableAccounts = showMockControls ? [...accounts, INVALID_ACCOUNT_OPTION] : accounts;
   const sourceAccount = accounts.find((account) => account.id === sourceAccountId);
 
+  async function refreshAccounts() {
+    const res = await fetch(`${bffUrl}/api/v1/accounts`);
+    const data = await parseResponse(res);
+    if (!res.ok || !Array.isArray(data)) return;
+
+    setAccounts((current) => data.map((account) => ({
+      ...account,
+      ownerName: current.find((existing) => existing.id === account.id)?.ownerName,
+    })));
+  }
+
   async function submitTransfer() {
     setTransferResult("Loading...");
     const res = await fetch(`${bffUrl}/api/v1/transfers?customer_id=${historyCustomerId}`, {
@@ -104,7 +115,12 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
       }),
     });
     const data = await parseResponse(res);
-    setTransferResult(res.ok ? `Transfer ${data.status || "completed"}.` : `Error: ${data.error || "Transfer failed"}`);
+    if (res.ok) {
+      await refreshAccounts();
+      setTransferResult(`Transfer ${data.status || "completed"}.`);
+      return;
+    }
+    setTransferResult(`Error: ${data.error || "Transfer failed"}`);
   }
 
   async function listTransfers() {

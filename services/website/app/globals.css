@@ -51,7 +51,12 @@ a:hover {
   right: 0;
   margin-top: 0;
   padding: 0.5rem 0.75rem;
-  box-shadow: none;
+  background: var(--danger);
+  box-shadow: 0 8px 18px rgba(196, 50, 80, 0.22);
+}
+
+.logout-button:hover:not(:disabled) {
+  background: #a5223f;
 }
 
 .home-link {

@@ -88,6 +88,17 @@ export default function TransferPage() {
   const selectableAccounts = [...accounts, INVALID_ACCOUNT_OPTION];
   const sourceAccount = accounts.find((account) => account.id === sourceAccountId);
 
+  async function refreshAccounts() {
+    const res = await fetch(`${bffUrl}/api/v1/accounts`);
+    const data = await parseResponse(res);
+    if (!res.ok || !Array.isArray(data)) return;
+
+    setAccounts((current) => data.map((account) => ({
+      ...account,
+      ownerName: current.find((existing) => existing.id === account.id)?.ownerName,
+    })));
+  }
+
   async function submitTransfer() {
     setTransferResult("Loading...");
     const res = await fetch(`${bffUrl}/api/v1/transfers?customer_id=${historyCustomerId}`, {
@@ -105,7 +116,12 @@ export default function TransferPage() {
       }),
     });
     const data = await parseResponse(res);
-    setTransferResult(res.ok ? `Transfer ${data.status || "completed"}.` : `Error: ${responseError(data, "Transfer failed")}`);
+    if (res.ok) {
+      await refreshAccounts();
+      setTransferResult(`Transfer ${data.status || "completed"}.`);
+      return;
+    }
+    setTransferResult(`Error: ${responseError(data, "Transfer failed")}`);
   }
 
   async function listTransfers() {
