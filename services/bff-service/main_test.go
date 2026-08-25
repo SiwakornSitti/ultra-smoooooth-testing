@@ -143,6 +143,42 @@ func TestHandleWorkshopReset(t *testing.T) {
 	}
 }
 
+func TestHandleGetAllTransfersDoesNotFilterMockScenario(t *testing.T) {
+	originalTransport := http.DefaultClient.Transport
+	originalTransferServiceURL := transferServiceURL
+	defer func() {
+		http.DefaultClient.Transport = originalTransport
+		transferServiceURL = originalTransferServiceURL
+	}()
+
+	transferServiceURL = "http://transfer-service"
+	http.DefaultClient.Transport = &mockRoundTripper{roundTrip: func(req *http.Request) (*http.Response, error) {
+		if req.URL.Path == "/accounts" {
+			t.Fatal("mock list scenario must not fetch accounts for filtering")
+		}
+		rec := httptest.NewRecorder()
+		rec.WriteHeader(http.StatusOK)
+		rec.Body.WriteString(`[{"id":"mock-transfer","source_account_id":"seeded-source","target_account_id":"seeded-target","amount":100,"status":"COMPLETED"}]`)
+		return rec.Result(), nil
+	}}
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/transfers?customer_id=other-customer&account_no=99999999", nil)
+	req.Header.Set("Mock-Scenario", "TRANSFER:LIST_TRANSFERS")
+	handleGetAllTransfers(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d; want %d", rec.Code, http.StatusOK)
+	}
+	var transfers []Transfer
+	if err := json.NewDecoder(rec.Body).Decode(&transfers); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if len(transfers) != 1 || transfers[0].ID != "mock-transfer" {
+		t.Fatalf("transfers = %#v; want mock transfer", transfers)
+	}
+}
+
 func TestProxyHandlers(t *testing.T) {
 	origClient := http.DefaultClient.Transport
 	defer func() { http.DefaultClient.Transport = origClient }()

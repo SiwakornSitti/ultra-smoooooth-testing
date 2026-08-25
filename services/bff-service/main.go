@@ -814,7 +814,7 @@ func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {
 
 	customerID := r.URL.Query().Get("customer_id")
 	accountNo := r.URL.Query().Get("account_no")
-	if customerID != "" || accountNo != "" {
+	if !strings.Contains(r.Header.Get("Mock-Scenario"), "TRANSFER:") && (customerID != "" || accountNo != "") {
 		accounts, err := fetchAllAccounts(r)
 		if err != nil {
 			slog.Error("Failed to fetch accounts for transfer history", "error", err)

@@ -282,14 +282,14 @@ test.describe("QA website full e2e flow", () => {
     await login(page);
     await page.goto(`${websiteUrl}/transfer`);
 
-    await page.getByTestId("input-transfer-amount").fill("100");
+    await page.getByTestId("input-transfer-amount").fill("10");
     await page.getByTestId("btn-submit-transfer").click();
 
     await expect(page.getByTestId("result-transfer")).toContainText("Transfer COMPLETED");
     await expect(page.getByTestId("source-account-balance")).toContainText("800.00");
 
     await page.getByTestId("btn-list-transfers").click();
-    await expect(page.getByTestId("result-transfers")).toContainText("100");
+    await expect(page.getByTestId("result-transfers")).toContainText("10");
     await expect(page.getByTestId("result-transfers")).toContainText("COMPLETED");
   });
 

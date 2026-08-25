@@ -130,56 +130,59 @@ export default function Home() {
         </section>
       </header>
       <div className="page-grid">
-        <AccountPanel bffUrl={bffUrl} showMockControls={showMockControls} />
-        <TransferPanel bffUrl={bffUrl} showMockControls={showMockControls} />
-
-        <section data-testid="section-ekyc">
-          <p className="eyebrow">Identity</p>
-          <h2>eKYC verification</h2>
-          <label>
-            Customer name{" "}
-            <select
-              data-testid="input-ekyc-customer-id"
-              value={customerId}
-              onChange={(e) => {
-                const customer = EKYC_CUSTOMERS.find((item) => item.id === e.target.value);
-                const user = users.find((item) => item.id === e.target.value);
-                if (customer) {
-                  setCustomerId(customer.id);
-                  setNationalId(customer.nationalId);
-                  setFullName(customer.name);
-                } else if (user) {
-                  setCustomerId(user.id);
-                  setNationalId(getOrCreateNationalId(user.id));
-                  setFullName(user.name);
-                }
-              }}
-            >
-              {(users.length > 0 ? users : EKYC_CUSTOMERS).map((customer) => (
-                <option key={customer.id} value={customer.id}>{customer.name}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            National ID{" "}
-            <input data-testid="input-ekyc-national-id" value={nationalId} disabled />
-          </label>
-          {showMockControls && (
+        <div className="workspace-column">
+          <AccountPanel bffUrl={bffUrl} showMockControls={showMockControls} />
+        </div>
+        <div className="workspace-column">
+          <section data-testid="section-ekyc">
+            <p className="eyebrow">Identity</p>
+            <h2>eKYC verification</h2>
             <label>
-              eKYC Mock Scenario{" "}
-              <select data-testid="select-ekyc-scenario" value={ekycScenario} onChange={(e) => setEkycScenario(e.target.value)}>
-                <option value="">Real service</option>
-                <option value={MOCK_SCENARIO.EKYC.VERIFY_APPROVED}>{MOCK_SCENARIO.EKYC.VERIFY_APPROVED}</option>
-                <option value={MOCK_SCENARIO.EKYC.VERIFY_FAILED}>{MOCK_SCENARIO.EKYC.VERIFY_FAILED}</option>
+              Customer name{" "}
+              <select
+                data-testid="input-ekyc-customer-id"
+                value={customerId}
+                onChange={(e) => {
+                  const customer = EKYC_CUSTOMERS.find((item) => item.id === e.target.value);
+                  const user = users.find((item) => item.id === e.target.value);
+                  if (customer) {
+                    setCustomerId(customer.id);
+                    setNationalId(customer.nationalId);
+                    setFullName(customer.name);
+                  } else if (user) {
+                    setCustomerId(user.id);
+                    setNationalId(getOrCreateNationalId(user.id));
+                    setFullName(user.name);
+                  }
+                }}
+              >
+                {(users.length > 0 ? users : EKYC_CUSTOMERS).map((customer) => (
+                  <option key={customer.id} value={customer.id}>{customer.name}</option>
+                ))}
               </select>
             </label>
-          )}
-          <button data-testid="btn-submit-ekyc" onClick={verifyIdentity} disabled={!bffUrl}>
-            Verify Identity
-          </button>
-          {ekycResult && <p data-testid="result-ekyc">{ekycResult}</p>}
-          {ekycData && <EkycSummary result={ekycData} />}
-        </section>
+            <label>
+              National ID{" "}
+              <input data-testid="input-ekyc-national-id" value={nationalId} disabled />
+            </label>
+            {showMockControls && (
+              <label>
+                eKYC Mock Scenario{" "}
+                <select data-testid="select-ekyc-scenario" value={ekycScenario} onChange={(e) => setEkycScenario(e.target.value)}>
+                  <option value="">Real service</option>
+                  <option value={MOCK_SCENARIO.EKYC.VERIFY_APPROVED}>{MOCK_SCENARIO.EKYC.VERIFY_APPROVED}</option>
+                  <option value={MOCK_SCENARIO.EKYC.VERIFY_FAILED}>{MOCK_SCENARIO.EKYC.VERIFY_FAILED}</option>
+                </select>
+              </label>
+            )}
+            <button data-testid="btn-submit-ekyc" onClick={verifyIdentity} disabled={!bffUrl}>
+              Verify Identity
+            </button>
+            {ekycResult && <p data-testid="result-ekyc">{ekycResult}</p>}
+            {ekycData && <EkycSummary result={ekycData} />}
+          </section>
+          <TransferPanel bffUrl={bffUrl} showMockControls={showMockControls} />
+        </div>
       </div>
     </main>
   );

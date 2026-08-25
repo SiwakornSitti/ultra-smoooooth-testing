@@ -38,7 +38,7 @@ export function TransferPanel({ bffUrl, showMockControls }: TransferPanelProps) 
   const [accounts, setAccounts] = useState<AccountOption[]>([...ACCOUNT_OPTIONS]);
   const [sourceAccountId, setSourceAccountId] = useState<string>(ACCOUNT_OPTIONS[0].id);
   const [targetAccountId, setTargetAccountId] = useState<string>(ACCOUNT_OPTIONS[1].id);
-  const [amount, setAmount] = useState("100");
+  const [amount, setAmount] = useState("10");
   const [transferResult, setTransferResult] = useState("");
   const [transfersResult, setTransfersResult] = useState("");
   const [transfers, setTransfers] = useState<TransferRecord[]>([]);

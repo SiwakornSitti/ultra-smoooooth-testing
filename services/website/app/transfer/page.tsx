@@ -46,7 +46,7 @@ export default function TransferPage() {
   const [accounts, setAccounts] = useState<AccountOption[]>([...ACCOUNT_OPTIONS]);
   const [sourceAccountId, setSourceAccountId] = useState<string>(ACCOUNT_OPTIONS[0].id);
   const [targetAccountId, setTargetAccountId] = useState<string>(ACCOUNT_OPTIONS[1].id);
-  const [amount, setAmount] = useState("100");
+  const [amount, setAmount] = useState("10");
   const [transferResult, setTransferResult] = useState("");
   const [userScenario, setUserScenario] = useState("");
   const [transferScenario, setTransferScenario] = useState("");

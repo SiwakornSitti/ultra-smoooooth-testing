@@ -334,6 +334,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
       </section>
 
       <section className="account-section profile-panel" data-testid="section-verify-profile" id="section-verify-profile">
+        <p className="eyebrow">Customer workspace</p>
         <h2>Get User Profile</h2>
         <label>
           User ID{" "}
@@ -445,6 +446,7 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
         <label>
           Update Status{" "}
           <select
+            className="status-select"
             data-testid="select-update-user-status"
             value={updateStatus}
             onChange={(e) => setUpdateStatus(e.target.value)}
