@@ -14,8 +14,8 @@
   "priority" : 100,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/transfer-service/006 - Proxy - Real Transfer Service"
+      "folder" : "/transfer-service/001 - Proxy - Real Transfer Service"
     }
   },
-  "insertionIndex" : 189
+  "insertionIndex" : 54
 }

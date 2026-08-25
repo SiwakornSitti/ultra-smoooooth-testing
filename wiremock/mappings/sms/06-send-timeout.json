@@ -12,7 +12,6 @@
   },
   "response" : {
     "status" : 504,
-    "fixedDelayMilliseconds" : 5000,
     "jsonBody" : {
       "error" : "gateway_timeout",
       "message" : "SMS gateway response timed out"
@@ -21,6 +20,7 @@
       "Content-Type" : "application/json",
       "Mock-ID" : "{{request.headers.Mock-ID}}"
     },
+    "fixedDelayMilliseconds" : 5000,
     "transformers" : [ "response-template" ]
   },
   "uuid" : "b3f6d941-5072-4712-ab84-78902cd16e02",
@@ -31,5 +31,5 @@
       "folder" : "/sms/006 - SMS - Timeout"
     }
   },
-  "insertionIndex" : 159
+  "insertionIndex" : 11
 }
