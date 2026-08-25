@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 // Backend error responses (e.g. http.Error in Go) are plain text, not JSON —
 // fall back to raw text so the UI doesn't throw on non-JSON error bodies.
 export async function parseResponse(res: Response) {
@@ -11,16 +9,12 @@ export async function parseResponse(res: Response) {
   }
 }
 
-// Runtime-fetched bff-service URL — see app/api/config/route.ts. Avoids
-// baking a build-time NEXT_PUBLIC_* value in before the container's port is known.
+// BFF URL resolved directly from environment variables
 export function useBffUrl() {
-  const [bffUrl, setBffUrl] = useState("");
-
-  useEffect(() => {
-    fetch("/api/config")
-      .then((r) => r.json())
-      .then((cfg) => setBffUrl(cfg.bffUrl));
-  }, []);
-
-  return bffUrl;
+  return (
+    process.env.NEXT_PUBLIC_BFF_URL ||
+    process.env.BFF_URL ||
+    "http://localhost.com:8080"
+  );
 }
+

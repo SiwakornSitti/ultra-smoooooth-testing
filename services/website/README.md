@@ -10,7 +10,7 @@ Next.js frontend for exercising the BFF and the service integrations through a b
 - `/account`: User and bank-account creation, SMS simulation, and profile lookup.
 - `/transfer`: Create a money transfer and view transfer history.
 
-The frontend sends requests to the BFF URL returned by `/api/config`. The runtime endpoint reads `BFF_URL`, so the BFF address does not need to be baked into the production build.
+The frontend sends requests to the BFF URL configured via `NEXT_PUBLIC_BFF_URL` (or `BFF_URL`), defaulting to `http://localhost:8080`.
 
 The `/account` and `/transfer` pages require a successful Paotang and OTP login from `/login` in the current browser session. User registration at `/signup` does not require authentication.
 
@@ -18,7 +18,7 @@ The `/account` and `/transfer` pages require a successful Paotang and OTP login 
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `BFF_URL` | BFF base URL used by the runtime config endpoint | `http://localhost:8080` |
+| `NEXT_PUBLIC_BFF_URL` / `BFF_URL` | BFF base URL used by the frontend | `http://localhost:8080` |
 | `PORT` | Next.js listening port | `3000` |
 
 ## Run locally

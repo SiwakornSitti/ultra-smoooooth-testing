@@ -293,6 +293,7 @@ export async function startWebsite(
     .withExposedPorts(3000)
     .withEnvironment({
       BFF_URL: `http://${bffContainer.getHost()}:${bffContainer.getMappedPort(PORT)}`,
+      NEXT_PUBLIC_BFF_URL: `http://${bffContainer.getHost()}:${bffContainer.getMappedPort(PORT)}`,
       HOSTNAME: "0.0.0.0",
       ...env,
     })

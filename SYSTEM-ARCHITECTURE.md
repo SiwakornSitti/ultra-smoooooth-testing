@@ -78,11 +78,11 @@ flowchart LR
 
     BFF --> MockCore
 
-    MockCore -.->|unmatched request proxy| User
-    MockCore -.->|unmatched request proxy| Account
-    MockCore -.->|unmatched request proxy| EKYC
-    MockCore -.->|unmatched request proxy| Transfer
-    MockCore -.->|unmatched request proxy| OTP
+    MockCore -.->|Unmatched request proxy| User
+    MockCore -.->|Unmatched request proxy| Account
+    MockCore -.->|Unmatched request proxy| EKYC
+    MockCore -.->|Unmatched request proxy| Transfer
+    MockCore -.->|Unmatched request proxy| OTP
 
     User --> DB
     Account --> DB
@@ -150,8 +150,7 @@ The core services are `user-service`, `bank-account-service`, `ekyc-service`,
 
 ### Normal application flow
 
-1. The website reads `/api/config` and sends API requests to the configured BFF
-   endpoint.
+1. The website sends API requests to the configured BFF endpoint (configured via `NEXT_PUBLIC_BFF_URL` / `BFF_URL`).
 2. The BFF translates the frontend contract into calls to the appropriate
    domain service.
 3. Domain services validate and persist their own operation data in PostgreSQL.
