@@ -1,6 +1,6 @@
 # OTP Service
 
-Core microservice that generates and verifies One-Time Passwords (OTP), delegating message delivery to the configured SMS Provider (`sms-service` or WireMock).
+Core microservice that generates and verifies One-Time Passwords (OTP), delegating message delivery to the configured SMS provider (normally WireMock in local Compose).
 
 ## Endpoints
 
@@ -13,4 +13,4 @@ Core microservice that generates and verifies One-Time Passwords (OTP), delegati
 | Variable | Description | Default |
 |---|---|---|
 | `PORT` | Listening port | `8080` |
-| `SMS_SERVICE_URL` | SMS Provider / Service base URL | `http://wiremock:8080` |
+| `SMS_PROVIDER_URL` | SMS provider base URL | `http://wiremock:8080` |

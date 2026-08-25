@@ -108,8 +108,7 @@ services:
       - "8087:8080"
     environment:
       PORT: "8080"
-      OTP_UPSTREAM_URL: http://wiremock:8080
-      OTP_API_KEY: dummy-otp-api-key
+      SMS_PROVIDER_URL: http://wiremock:8080
     depends_on:
       wiremock:
         condition: service_started
@@ -213,4 +212,3 @@ services:
         - action: sync
           path: ./services/website/public
           target: /app/public
-

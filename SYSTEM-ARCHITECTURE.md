@@ -272,8 +272,8 @@ The main configuration boundaries are:
   `http://wiremock:8080`.
 - `OTP_SERVICE_URL`: BFF-to-OTP endpoint, normally `http://wiremock:8080` so
   core OTP mappings can be selected.
-- `OTP_UPSTREAM_URL` and `OTP_API_KEY`: otp-service SMS-provider settings;
-  Compose points the upstream at `http://wiremock:8080`.
+- `SMS_PROVIDER_URL`: otp-service SMS-provider endpoint; Compose points it at
+  `http://wiremock:8080`.
 - `WIREMOCK_ADMIN_USER` and `WIREMOCK_ADMIN_PASSWORD`: WireMock admin access.
 
 See [`README.md`](README.md), [`docs/integration.md`](docs/integration.md), and

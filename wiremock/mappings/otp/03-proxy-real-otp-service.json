@@ -1,20 +1,20 @@
 {
   "id" : "7e8f9012-9403-4925-de06-23456fa78901",
-  "name" : "Proxy - Real OTP Service from SMS Container",
+  "name" : "Proxy - Real OTP Service",
   "request" : {
     "urlPathPattern" : "/otp(/.*)?",
     "method" : "ANY"
   },
   "response" : {
     "status" : 200,
-    "proxyBaseUrl" : "http://sms-service:8080"
+    "proxyBaseUrl" : "http://otp-service:8080"
   },
   "uuid" : "7e8f9012-9403-4925-de06-23456fa78901",
   "persistent" : true,
   "priority" : 5,
   "metadata" : {
     "wiremock-gui" : {
-      "folder" : "/otp/003 - Proxy - Real OTP Service from SMS Container"
+      "folder" : "/otp/003 - Proxy - Real OTP Service"
     }
   },
   "insertionIndex" : 162

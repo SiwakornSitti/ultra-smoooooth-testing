@@ -81,6 +81,13 @@ func handleSendOTP(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		var providerError struct {
+			Error string `json:"error"`
+		}
+		if json.NewDecoder(resp.Body).Decode(&providerError) == nil && providerError.Error != "" {
+			writeJSONError(w, providerError.Error, resp.StatusCode)
+			return
+		}
 		writeJSONError(w, "Failed to send OTP via SMS", resp.StatusCode)
 		return
 	}

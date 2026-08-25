@@ -468,8 +468,7 @@ func handleGetAccount(w http.ResponseWriter, r *http.Request) {
 
 func sendAccountSMS(r *http.Request, account BankAccount) error {
 	body, err := json.Marshal(map[string]string{
-		"to":      account.Phone,
-		"message": "Your new account has been created.",
+		"phone": account.Phone,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to build SMS request")

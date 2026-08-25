@@ -295,3 +295,57 @@ func TestHandleCreateTransferBlocksTargetUser(t *testing.T) {
 		t.Fatalf("blocked target transfer status = %d; want %d", rec.Code, http.StatusForbidden)
 	}
 }
+
+func TestHandleCreateAccountDeliversSMSWithScenario(t *testing.T) {
+	originalTransport := http.DefaultClient.Transport
+	originalBankAccountServiceURL := bankAccountServiceURL
+	originalOTPServiceURL := otpServiceURL
+	defer func() {
+		http.DefaultClient.Transport = originalTransport
+		bankAccountServiceURL = originalBankAccountServiceURL
+		otpServiceURL = originalOTPServiceURL
+	}()
+
+	bankAccountServiceURL = "http://bank-account-service"
+	otpServiceURL = "http://otp-service"
+	calledSMS := false
+	http.DefaultClient.Transport = &mockRoundTripper{roundTrip: func(req *http.Request) (*http.Response, error) {
+		if req.Header.Get("Mock-Scenario") != "SMS:SUCCESS" {
+			t.Errorf("Mock-Scenario = %q; want SMS:SUCCESS", req.Header.Get("Mock-Scenario"))
+		}
+
+		rec := httptest.NewRecorder()
+		switch req.URL.Path {
+		case "/accounts":
+			rec.WriteHeader(http.StatusCreated)
+			rec.Body.WriteString(`{"id":"account-123","user_id":"user-123","balance":1000,"phone":"+66800000000"}`)
+		case "/otp/send":
+			calledSMS = true
+			var body struct {
+				Phone string `json:"phone"`
+			}
+			if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+				t.Errorf("decode OTP request: %v", err)
+			} else if body.Phone != "+66800000000" {
+				t.Errorf("OTP phone = %q; want +66800000000", body.Phone)
+			}
+			rec.WriteHeader(http.StatusOK)
+			rec.Body.WriteString(`{"status":"sent"}`)
+		default:
+			rec.WriteHeader(http.StatusNotFound)
+		}
+		return rec.Result(), nil
+	}}
+
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/accounts", strings.NewReader(`{"user_id":"user-123","balance":1000,"phone":"+66800000000"}`))
+	req.Header.Set("Mock-Scenario", "SMS:SUCCESS")
+	handleCreateAccount(rec, req)
+
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("status = %d; want %d", rec.Code, http.StatusCreated)
+	}
+	if !calledSMS {
+		t.Fatal("expected account creation to send SMS")
+	}
+}
