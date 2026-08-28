@@ -1,0 +1,640 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"log/slog"
+	"net/http"
+	"strings"
+
+	"github.com/gorilla/mux"
+)
+
+// Request logging middleware
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("Incoming request", "method", r.Method, "url", r.URL.String(), "path", r.URL.Path)
+		next.ServeHTTP(w, r)
+	})
+}
+
+// corsMiddleware allows browser-based callers (e.g. the website, served
+// from a different origin/port) to call this API directly.
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Mock-Scenario, Mock-ID, X-BFF-Target")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func setupRouter() *mux.Router {
+	r := mux.NewRouter()
+	r.HandleFunc("/api/v1/users/{id}", handleUserDetails).Methods("GET")
+	r.HandleFunc("/api/v1/users/{id}/", handleUserDetails).Methods("GET")
+	r.HandleFunc("/api/v1/users/{id}", handleUpdateUser).Methods("PATCH", "PUT")
+	r.HandleFunc("/api/v1/users", handleGetUsers).Methods("GET")
+	r.HandleFunc("/api/v1/users", handleCreateUser).Methods("POST")
+	r.HandleFunc("/api/v1/accounts", handleCreateAccount).Methods("POST")
+	r.HandleFunc("/api/v1/accounts", handleListAccounts).Methods("GET")
+	r.HandleFunc("/api/v1/accounts/{id}", handleGetAccount).Methods("GET")
+	r.HandleFunc("/api/v1/ekycs/verify", handleEKYCVerify).Methods("POST")
+	r.HandleFunc("/api/v1/ekycs", handleListEKYC).Methods("GET")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleGetEKYC).Methods("GET")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleUpdateEKYC).Methods("PATCH")
+	r.HandleFunc("/api/v1/ekycs/{id}", handleDeleteEKYC).Methods("DELETE")
+	r.HandleFunc("/api/v1/transfers", handleCreateTransfer).Methods("POST")
+	r.HandleFunc("/api/v1/transfers", handleGetAllTransfers).Methods("GET")
+	r.HandleFunc("/api/v1/transfers/{id}", handleGetTransfer).Methods("GET")
+	r.HandleFunc("/api/v1/workshop/reset", handleWorkshopReset).Methods("POST")
+	r.HandleFunc("/auth/paotang/callback", proxyPaotangCallback).Methods("POST")
+	r.HandleFunc("/auth/otp/verify", handleOTPVerify).Methods("POST")
+	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
+	return r
+}
+
+func handleUserDetails(w http.ResponseWriter, r *http.Request) {
+	userID := mux.Vars(r)["id"]
+	if userID == "" {
+		slog.Warn("Missing User ID in request")
+		writeJSONError(w, "Missing User ID", http.StatusBadRequest)
+		return
+	}
+
+	slog.Info("Fetching user details", "user_id", userID)
+
+	user, err := fetchUser(r, userID)
+	if err != nil {
+		slog.Error("Failed to fetch user", "user_id", userID, "error", err)
+		writeJSONError(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	accounts, err := fetchAccounts(r, userID)
+	if err != nil {
+		slog.Error("Failed to fetch accounts", "user_id", userID, "error", err)
+		writeJSONError(w, "Error fetching accounts", http.StatusInternalServerError)
+		return
+	}
+
+	userDetail := UserDetail{
+		User:     *user,
+		Accounts: accounts,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(userDetail); err != nil {
+		slog.Error("Failed to encode response", "user_id", userID, "error", err)
+	} else {
+		slog.Info("Successfully served user details", "user_id", userID)
+	}
+}
+
+func handleCreateUser(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying create user request to user-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/users", userServiceURL), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call user-service", "error", err)
+		writeJSONError(w, "User service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleGetUsers(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying user list request to user-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/users", userServiceURL), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call user-service", "error", err)
+		writeJSONError(w, "User service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleUpdateUser(w http.ResponseWriter, r *http.Request) {
+	userID := mux.Vars(r)["id"]
+	slog.Info("Proxying update user request to user-service", "user_id", userID)
+
+	req, err := http.NewRequestWithContext(r.Context(), r.Method, fmt.Sprintf("%s/users/%s", userServiceURL, userID), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call user-service", "error", err)
+		writeJSONError(w, "User service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying create account request to bank-account-service")
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		writeJSONError(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/accounts", bankAccountServiceURL), bytes.NewReader(body))
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call bank-account-service", "error", err)
+		writeJSONError(w, "Bank account service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	accountBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		writeJSONError(w, "Failed to read bank account response", http.StatusBadGateway)
+		return
+	}
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		w.WriteHeader(resp.StatusCode)
+		_, _ = w.Write(accountBody)
+		return
+	}
+
+	var account BankAccount
+	if err := json.Unmarshal(accountBody, &account); err != nil {
+		writeJSONError(w, "Invalid bank account response", http.StatusBadGateway)
+		return
+	}
+	if account.Phone != "" {
+		if err := sendAccountSMS(r, account); err != nil {
+			slog.Error("Failed to deliver account creation SMS", "error", err)
+			writeJSONError(w, err.Error(), http.StatusBadGateway)
+			return
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = w.Write(accountBody)
+}
+
+func handleListAccounts(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying list accounts request to bank-account-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/accounts", bankAccountServiceURL), nil)
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		writeJSONError(w, "Bank account service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = io.Copy(w, resp.Body)
+}
+
+func handleGetAccount(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying account lookup request to bank-account-service", "account_id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/accounts/%s", bankAccountServiceURL, id), nil)
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		writeJSONError(w, "Bank account service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = io.Copy(w, resp.Body)
+}
+
+func handleWorkshopReset(w http.ResponseWriter, r *http.Request) {
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost, fmt.Sprintf("%s/reset", utilityServiceURL), nil)
+	if err != nil {
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		writeJSONError(w, "Workshop reset service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	_, _ = io.Copy(w, resp.Body)
+}
+
+func proxyPaotangCallback(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying Paotang callback request to user-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/auth/paotang/callback", userServiceURL), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call user-service", "error", err)
+		writeJSONError(w, "User service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleOTPVerify(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying OTP verify request to otp-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/otp/verify", otpServiceURL), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call otp-service", "error", err)
+		writeJSONError(w, "OTP service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleEKYCVerify(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying eKYC verify request to ekyc-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/ekycs/verify", ekycServiceURL), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	if loc := resp.Header.Get("Location"); loc != "" {
+		w.Header().Set("Location", loc)
+	}
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleGetEKYC(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying get eKYC request to ekyc-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), "GET", fmt.Sprintf("%s/ekycs/%s", ekycServiceURL, id), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleListEKYC(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying list eKYC request to ekyc-service")
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodGet, fmt.Sprintf("%s/ekycs", ekycServiceURL), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleUpdateEKYC(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying update eKYC request to ekyc-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodPatch, fmt.Sprintf("%s/ekycs/%s", ekycServiceURL, id), r.Body)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleDeleteEKYC(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying delete eKYC request to ekyc-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodDelete, fmt.Sprintf("%s/ekycs/%s", ekycServiceURL, id), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call ekyc-service", "error", err)
+		writeJSONError(w, "eKYC service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleCreateTransfer(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying create transfer request to transfer-service")
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		writeJSONError(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
+
+	var transfer CreateTransferRequest
+	if json.Unmarshal(body, &transfer) == nil {
+		for _, accountID := range []string{transfer.SourceAccountID, transfer.TargetAccountID} {
+			if accountID == "" {
+				continue
+			}
+			status, err := accountUserStatus(r, accountID)
+			if err != nil {
+				slog.Error("Failed to verify transfer user status", "account_id", accountID, "error", err)
+				writeJSONError(w, "User status service unavailable", http.StatusServiceUnavailable)
+				return
+			}
+			if strings.EqualFold(status, "blocked") {
+				writeJSONError(w, "blocked users cannot transfer", http.StatusForbidden)
+				return
+			}
+		}
+	}
+
+	req, err := http.NewRequestWithContext(r.Context(), "POST", fmt.Sprintf("%s/transfers", transferServiceURL), bytes.NewReader(body))
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call transfer-service", "error", err)
+		writeJSONError(w, "Transfer service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	if loc := resp.Header.Get("Location"); loc != "" {
+		w.Header().Set("Location", loc)
+	}
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}
+
+func handleGetAllTransfers(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Proxying get all transfers request to transfer-service")
+
+	target := fmt.Sprintf("%s/transfers", transferServiceURL)
+	req, err := http.NewRequestWithContext(r.Context(), "GET", target, nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call transfer-service", "error", err)
+		writeJSONError(w, "Transfer service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		writeJSONError(w, "Failed to read transfer response", http.StatusBadGateway)
+		return
+	}
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		w.WriteHeader(resp.StatusCode)
+		_, _ = w.Write(body)
+		return
+	}
+
+	var transfers []Transfer
+	if err := json.Unmarshal(body, &transfers); err != nil {
+		writeJSONError(w, "Invalid transfer response", http.StatusBadGateway)
+		return
+	}
+
+	customerID := r.URL.Query().Get("customer_id")
+	accountNo := r.URL.Query().Get("account_no")
+	if !strings.Contains(r.Header.Get("Mock-Scenario"), "TRANSFER:") && (customerID != "" || accountNo != "") {
+		accounts, err := fetchAllAccounts(r)
+		if err != nil {
+			slog.Error("Failed to fetch accounts for transfer history", "error", err)
+			writeJSONError(w, "Bank account service unavailable", http.StatusBadGateway)
+			return
+		}
+
+		allowedAccounts := make(map[string]struct{})
+		for _, account := range accounts {
+			if customerID != "" && account.UserID != customerID {
+				continue
+			}
+			if accountNo != "" && accountNumber(account.ID) != accountNo {
+				continue
+			}
+			allowedAccounts[account.ID] = struct{}{}
+		}
+
+		filtered := make([]Transfer, 0, len(transfers))
+		for _, transfer := range transfers {
+			_, sourceAllowed := allowedAccounts[transfer.SourceAccountID]
+			_, targetAllowed := allowedAccounts[transfer.TargetAccountID]
+			if sourceAllowed || targetAllowed {
+				filtered = append(filtered, transfer)
+			}
+		}
+		transfers = filtered
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(transfers)
+}
+
+func handleGetTransfer(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	slog.Info("Proxying get transfer request to transfer-service", "id", id)
+
+	req, err := http.NewRequestWithContext(r.Context(), "GET", fmt.Sprintf("%s/transfers/%s", transferServiceURL, id), nil)
+	if err != nil {
+		slog.Error("Failed to create request", "error", err)
+		writeJSONError(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	forwardHeaders(r, req)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		slog.Error("Failed to call transfer-service", "error", err)
+		writeJSONError(w, "Transfer service unavailable", http.StatusServiceUnavailable)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.WriteHeader(resp.StatusCode)
+	if _, err := io.Copy(w, resp.Body); err != nil {
+		slog.Error("Failed to copy response body", "error", err)
+	}
+}

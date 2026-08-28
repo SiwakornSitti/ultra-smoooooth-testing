@@ -2,28 +2,14 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"encoding/json"
-	"fmt"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
-
-	"github.com/exaring/otelpgx"
-	"github.com/gorilla/mux"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/stdlib" //nolint:staticcheck
 )
-
-type BankAccount struct {
-	ID      string  `json:"id"`
-	UserID  string  `json:"user_id"`
-	Balance float64 `json:"balance"`
-	Phone   string  `json:"phone,omitempty"`
-}
-
-var db *sql.DB
 
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -32,171 +18,48 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-// writeJSONError writes a JSON-shaped error body so responses stay
-// consistent with success responses (avoids plain-text bodies that break
-// callers doing res.json()).
-func writeJSONError(w http.ResponseWriter, message string, status int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]string{"error": message})
-}
-
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	slog.SetDefault(logger)
 
-	dbHost := os.Getenv("DB_HOST")
-	if dbHost == "" {
-		dbHost = "localhost"
-	}
-	dbPort := os.Getenv("DB_PORT")
-	if dbPort == "" {
-		dbPort = "5432"
-	}
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
-
-	config, err := pgx.ParseConfig(connStr)
+	var err error
+	db, err = initDB()
 	if err != nil {
-		slog.Error("Failed to parse connection string", "error", err)
+		slog.Error("Database initialization failed", "error", err)
 		os.Exit(1)
 	}
-
-	config.Tracer = otelpgx.NewTracer()
-
-	db = stdlib.OpenDB(*config)
 	defer db.Close()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err = db.PingContext(ctx); err != nil {
-		slog.Error("Failed to ping database", "error", err)
-		os.Exit(1)
-	}
 	slog.Info("Successfully connected to database")
 
-	r := mux.NewRouter()
-	r.HandleFunc("/accounts", handleGetAccounts).Methods("GET")
-	r.HandleFunc("/accounts", handleCreateAccount).Methods("POST")
-	r.HandleFunc("/accounts/{id}", handleGetAccount).Methods("GET")
-	r.HandleFunc("/accounts/{id}", handleUpdateAccount).Methods("PATCH")
-	r.HandleFunc("/accounts/{id}", handleDeleteAccount).Methods("DELETE")
+	r := setupRouter()
 
-	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-	})
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	port := getEnv("PORT", "8080")
+	server := &http.Server{
+		Addr:         ":" + port,
+		Handler:      r,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
 
-	slog.Info("Bank account service starting", "port", port)
-	if err := http.ListenAndServe(":"+port, r); err != nil {
-		slog.Error("Server failed to start", "error", err)
-		os.Exit(1)
-	}
-}
-
-func handleGetAccounts(w http.ResponseWriter, r *http.Request) {
-	slog.Info("Fetching all accounts")
-	rows, err := db.QueryContext(r.Context(), "SELECT id, user_id, balance FROM accounts")
-	if err != nil {
-		slog.Error("Query failed", "error", err)
-		writeJSONError(w, "Database error", http.StatusInternalServerError)
-		return
-	}
-	defer rows.Close()
-
-	var accountList []BankAccount
-	for rows.Next() {
-		var a BankAccount
-		if err := rows.Scan(&a.ID, &a.UserID, &a.Balance); err != nil {
-			slog.Error("Scan failed", "error", err)
-			writeJSONError(w, "Database error", http.StatusInternalServerError)
-			return
+	go func() {
+		slog.Info("Bank account service starting", "port", port)
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("Server failed to start", "error", err)
+			os.Exit(1)
 		}
-		accountList = append(accountList, a)
-	}
-	if err := rows.Err(); err != nil {
-		slog.Error("Rows iteration failed", "error", err)
-		writeJSONError(w, "Database error", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(accountList)
-}
+	}()
 
-func handleCreateAccount(w http.ResponseWriter, r *http.Request) {
-	var a BankAccount
-	if err := json.NewDecoder(r.Body).Decode(&a); err != nil {
-		slog.Error("Invalid request body", "error", err)
-		writeJSONError(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	slog.Info("Creating account", "user_id", a.UserID)
-	err := db.QueryRowContext(r.Context(), "INSERT INTO accounts (user_id, balance) VALUES ($1, $2) RETURNING id", a.UserID, a.Balance).Scan(&a.ID)
-	if err != nil {
-		slog.Error("Insert failed", "error", err)
-		writeJSONError(w, "Database error", http.StatusInternalServerError)
-		return
-	}
-	if a.Phone != "" {
-		slog.Info("SMS delivery is handled by bff-service", "phone", a.Phone)
-	}
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+	<-stop
 
-	w.WriteHeader(http.StatusCreated)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(a)
-}
+	slog.Info("Shutting down bank account service gracefully...")
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-func handleGetAccount(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	slog.Info("Fetching account", "account_id", id)
-	var a BankAccount
-	err := db.QueryRowContext(r.Context(), "SELECT id, user_id, balance FROM accounts WHERE id = $1", id).Scan(&a.ID, &a.UserID, &a.Balance)
-	if err == sql.ErrNoRows {
-		slog.Warn("Account not found", "account_id", id)
-		writeJSONError(w, "Account not found", http.StatusNotFound)
-		return
-	} else if err != nil {
-		slog.Error("Query failed", "error", err)
-		writeJSONError(w, "Database error", http.StatusInternalServerError)
-		return
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		slog.Error("Server shutdown failed", "error", err)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(a)
-}
-
-func handleUpdateAccount(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	var a BankAccount
-	if err := json.NewDecoder(r.Body).Decode(&a); err != nil {
-		slog.Error("Invalid request body", "error", err)
-		writeJSONError(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	slog.Info("Updating account", "account_id", id)
-	_, err := db.ExecContext(r.Context(), "UPDATE accounts SET balance = $1 WHERE id = $2", a.Balance, id)
-	if err != nil {
-		slog.Error("Update failed", "error", err)
-		writeJSONError(w, "Database error", http.StatusInternalServerError)
-		return
-	}
-	a.ID = id
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(a)
-}
-
-func handleDeleteAccount(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
-	slog.Info("Deleting account", "account_id", id)
-	_, err := db.ExecContext(r.Context(), "DELETE FROM accounts WHERE id = $1", id)
-	if err != nil {
-		slog.Error("Delete failed", "error", err)
-		writeJSONError(w, "Database error", http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
+	slog.Info("Bank account service stopped")
 }

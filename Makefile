@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-integration test-e2e test-all build-slides lint check slides
+.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides
 
 all: build
 
@@ -60,13 +60,16 @@ seed:
 	done
 	@echo "Database seed data applied successfully."
 
-test:
-	@for d in services/*; do \
-		if [ -d "$$d" ] && [ -f "$$d/go.mod" ]; then \
-			echo "Testing $$d..."; \
-			(cd "$$d" && go test -v ./...); \
-		fi; \
-	done
+test: test-unit
+
+test-unit:
+	@go test ./services/bank-account-service/... \
+	        ./services/bff-service/... \
+	        ./services/ekyc-service/... \
+	        ./services/otp-service/... \
+	        ./services/transfer-service/... \
+	        ./services/user-service/... \
+	        ./services/utility-service/...
 
 test-integration:
 	cd tests && npm install && npm run test:integration
@@ -81,10 +84,24 @@ build-slides:
 	@echo "Building static Slidev presentation..."
 	cd slides && npx @slidev/cli build --base /
 
-lint:
+fmt:
+	@echo "Formatting Go files..."
+	@gofmt -s -w services/
+
+vet:
+	@echo "Running go vet..."
+	@go vet ./services/bank-account-service/... \
+	        ./services/bff-service/... \
+	        ./services/ekyc-service/... \
+	        ./services/otp-service/... \
+	        ./services/transfer-service/... \
+	        ./services/user-service/... \
+	        ./services/utility-service/...
+
+lint: vet
 	@echo "Checking Go formatting..."
-	@gofmt -l services/
-	@echo "Checking TypeScript types..."
+	@test -z "$$(gofmt -l services/)" || (echo "Unformatted files found:" && gofmt -l services/ && exit 1)
+	@echo "Checking TypeScript types in tests..."
 	@cd tests && npx tsc --noEmit
 
 check: test lint
@@ -92,4 +109,3 @@ check: test lint
 
 slides:
 	cd slides && bunx @slidev/cli slides.md
-

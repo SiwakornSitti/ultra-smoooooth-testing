@@ -2,7 +2,7 @@
 
 > **Mock the world. Control the chaos. Test without limits.**
 
-Welcome to the **Microservices Integration Testing Workshop**! This guide provides a comprehensive framework, architecture overview, setup instructions, and **11 practical thinking cases** for testing microservices in a real-world enterprise banking ecosystem.
+Welcome to the **Microservices Integration Testing Workshop**! This guide provides a comprehensive framework, architecture overview, setup instructions, and **11 practical thinking cases with runnable verification recipes and solution keys** for testing microservices in a real-world enterprise banking ecosystem.
 
 ## Workshop Overview
 
@@ -30,6 +30,7 @@ flowchart TD
         EKYCService["🪪 ekyc-service<br/><code>Go :8084</code>"]
         TransferService["💸 transfer-service<br/><code>Go :8085</code>"]
         OTPService["🔑 otp-service<br/><code>Go :8087</code>"]
+        UtilityService["🧰 utility-service<br/><code>Go :8086</code>"]
     end
 
     subgraph Persistence["🗄️ 4. Persistence Layer"]
@@ -50,10 +51,12 @@ flowchart TD
     BFF -->|POST/GET /ekycs| EKYCService
     BFF -->|POST/GET /transfers| TransferService
     BFF -->|POST /auth/otp/verify| OTPService
+    BFF -->|POST /reset| UtilityService
 
     UserService -->|SQL Queries| DB
     BankService -->|SQL Queries| DB
     TransferService -->|Atomic Balance Updates| DB
+    UtilityService -->|Reset Seed Data| DB
 
     UserService -->|OAuth & OTP Stubs| WireMock
     OTPService -->|SMS Delivery Stubs| WireMock
@@ -82,17 +85,32 @@ flowchart TD
 
 - **Flow**: `Client` ➔ `BFF Service` ➔ `Transfer Service` ➔ `Bank Account Service` ➔ `PostgreSQL`
 - **Challenge**: Verify that when `POST /transfers` is called, the transfer record is created, and the source account balance decreases while the target account balance increases.
-- **Key Assertions**:
+- **Runnable Verification**:
+  ```bash
+  # Trigger Transfer via BFF
+  curl -i -X POST http://localhost:8080/api/v1/transfers \
+    -H "Content-Type: application/json" \
+    -d '{"source_account_id":"00000000-0000-0000-0000-000000000011","target_account_id":"00000000-0000-0000-0000-000000000012","amount":100}'
+  ```
+- **Key Assertions & Solution Key**:
   - Response status: `201 Created` with `Location: /transfers/{id}` header.
-  - Query `bank-account-service` before and after transfer to verify exact balance delta.
+  - Query accounts: Source balance decreases by 100, Target increases by 100.
+  - Verified in `tests/specs/integration/bff.spec.ts`.
 
 #### **Case 2: eKYC-Gated Account Opening**
 
 - **Flow**: `Client` ➔ `BFF Service` ➔ `eKYC Service` & `User Service`
 - **Challenge**: A user requests a new bank account. The system must verify eKYC status (`APPROVED`) before creating the account in `bank-account-service`.
-- **Key Assertions**:
-  - If eKYC is `APPROVED`: Account created successfully (`201 Created`).
-  - If eKYC is `REJECTED` or missing: Account creation blocked with `400 Bad Request` or `422 Unprocessable Entity`.
+- **Runnable Verification**:
+  ```bash
+  # Submit eKYC verification
+  curl -i -X POST http://localhost:8080/api/v1/ekycs/verify \
+    -H "Content-Type: application/json" \
+    -d '{"customer_id":"00000000-0000-0000-0000-000000000001","national_id":"1101700000001","full_name":"Narin Chaiyasit","document_type":"national_id"}'
+  ```
+- **Key Assertions & Solution Key**:
+  - If eKYC is `APPROVED`: Account creation succeeds (`201 Created`).
+  - If eKYC is `REJECTED` or missing: Blocked with `400 Bad Request`.
 
 ---
 
@@ -102,17 +120,22 @@ flowchart TD
 
 - **Scenario**: Source account has 500 THB. User attempts to transfer 1,000 THB to Target account.
 - **Challenge**: Ensure the database operation fails atomically. Source account balance must remain 500 THB, Target account balance must remain unchanged, and no partial transfer record is committed.
-- **Key Assertions**:
-  - Transfer service returns `400 Bad Request` (`INSUFFICIENT_FUNDS`).
-  - Both account balances in PostgreSQL remain untouched.
+- **Runnable Verification**:
+  ```bash
+  curl -i -X POST http://localhost:8080/api/v1/transfers \
+    -H "Content-Type: application/json" \
+    -d '{"source_account_id":"00000000-0000-0000-0000-000000000011","target_account_id":"00000000-0000-0000-0000-000000000012","amount":999999}'
+  ```
+- **Key Assertions & Solution Key**:
+  - Returns `400 Bad Request` with `{"error":"insufficient funds","code":"INSUFFICIENT_FUNDS"}`.
+  - PostgreSQL transaction is rolled back completely.
 
 #### **Case 4: Concurrent Transfers (Race Condition / Double Spend)**
 
 - **Scenario**: User has 100 THB balance. Two transfer requests of 80 THB each arrive simultaneously.
-- **Challenge**: Test database locking / optimistic concurrency control. Exactly ONE transfer must succeed (`201 Created`); the second MUST fail with insufficient balance (`400 Bad Request`).
-- **Key Assertions**:
-  - Total debited amount across both requests must not exceed initial balance (100 THB).
-  - Remaining balance must be exactly 20 THB.
+- **Challenge**: Test database locking / concurrency control. Exactly ONE transfer must succeed (`201 Created`); the second MUST fail with insufficient balance (`400 Bad Request`).
+- **Solution Key**:
+  - In `services/transfer-service/repository.go`, `executeMoneyTransfer` utilizes `SELECT ... FOR UPDATE` with ordered account IDs to serialize balance deductions safely.
 
 ---
 
@@ -121,26 +144,36 @@ flowchart TD
 #### **Case 5: OTP SMS Delivery Failure**
 
 - **Flow**: `BFF Service` ➔ `OTP Service` ➔ `WireMock (SMS Provider)`
-- **Challenge**: Configure the SMS provider stub to return `503 Service Unavailable`. Verify that OTP delivery fails cleanly and the response does not report a successful OTP request.
-- **Key Assertions**:
-  - OTP delivery returns a typed failure when the SMS provider is unavailable.
-  - `Mock-Scenario` and `Mock-ID` reach the WireMock provider mapping.
+- **Challenge**: Configure the SMS provider stub or header to simulate provider downtime.
+- **Runnable Verification**:
+  ```bash
+  curl -i -X POST http://localhost:8080/api/v1/accounts \
+    -H "Content-Type: application/json" \
+    -H "Mock-Scenario: SMS:FAIL" \
+    -d '{"user_id":"00000000-0000-0000-0000-000000000001","balance":500,"phone":"+66800000001"}'
+  ```
+- **Key Assertions & Solution Key**:
+  - BFF catches downstream SMS provider error and returns `502 Bad Gateway` with clear error details.
 
 #### **Case 6: OAuth Token Exchange (Paotang Pass)**
 
 - **Flow**: `User Service` ➔ `WireMock (Paotang Pass OAuth)`
 - **Challenge**: Test OAuth callback integration (`POST /auth/paotang/callback`) using a WireMock stub returning a mock Bearer access token.
-- **Key Assertions**:
-  - User Service exchanges auth code for token and logs user in successfully (`200 OK`).
-  - Invalid auth code stubbed in WireMock returns `401 Unauthorized`.
+- **Runnable Verification**:
+  ```bash
+  curl -i -X POST http://localhost:8080/auth/paotang/callback \
+    -H "Content-Type: application/json" \
+    -d '{"code":"valid-paotang-auth-code"}'
+  ```
+- **Key Assertions & Solution Key**:
+  - User Service exchanges auth code for token (`200 OK` with `access_token`).
 
 #### **Case 6B: Payment Webhook Idempotency**
 
 - **Flow**: `Payment Provider` ➔ `WireMock payment webhook stub`
 - **Challenge**: Deliver a successful payment webhook, then replay the same event and verify duplicate delivery is rejected.
-- **Key Assertions**:
-  - First `POST /lab/api/payments/{payment_id}/webhook` returns `202 Accepted`.
-  - Replay with the same event returns `409 Conflict` (`DUPLICATE_WEBHOOK`).
+- **Solution Key**:
+  - Check `labs/wiremock-stateful/payment-webhook-idempotency` for stateful scenario definitions.
 
 ---
 
@@ -149,10 +182,11 @@ flowchart TD
 #### **Case 7: BFF Data Aggregation (User Dashboard View)**
 
 - **Flow**: `Next.js Web Frontend` ➔ `BFF Service` ➔ (`User Service` + `Bank Account Service`)
-- **Challenge**: `BFF Service` fetches user details from `user-service` and account list from `bank-account-service` sequentially, combining them into a single `UserDashboard` JSON payload.
-- **Key Assertions**:
-  - BFF returns aggregated response with user profile and accounts array.
-  - If `bank-account-service` returns empty list `[]`, BFF still returns user profile with empty accounts list.
+- **Challenge**: `BFF Service` fetches user details from `user-service` and account list from `bank-account-service` sequentially, combining them into a single `UserDetail` JSON payload.
+- **Runnable Verification**:
+  ```bash
+  curl -i http://localhost:8080/api/v1/users/00000000-0000-0000-0000-000000000001
+  ```
 
 #### **Case 8: Strict REST Schema & Header Contract Validation**
 
@@ -167,12 +201,15 @@ flowchart TD
 
 #### **Case 9: Downstream Service Timeout (Latency Fault Injection)**
 
-- **Challenge**: Configure WireMock or proxy delay (e.g. 10-second delay) on external dependencies. Verify that the calling microservice enforces a HTTP client timeout (e.g. 3-second timeout) and returns a clean gateway timeout response (`504 Gateway Timeout`).
+- **Challenge**: Configure WireMock delay on external dependencies and verify microservice client timeouts.
+- **Solution Key**:
+  - See `labs/wiremock-stateless/08-delayed-response.http` and `labs/wiremock-stateless/09-random-delay.http`.
 
 #### **Case 10: Idempotent Payment Request Retries**
 
 - **Scenario**: Client submits a transfer, but network drops before receiving HTTP response. Client retries the identical request with the same `Idempotency-Key` or transaction reference.
-- **Challenge**: Verify that duplicate requests with the same idempotency key do not execute a second debit, but return the original transaction result.
+- **Solution Key**:
+  - Handled via `labs/wiremock-stateful/retry-recovery-flow`.
 
 ---
 
@@ -181,11 +218,9 @@ flowchart TD
 #### **Case 11: Mobile WebView JSBridge Native Feature Mocking via Playwright**
 
 - **Flow**: `Playwright / E2E Runner (page.addInitScript)` ➔ `Web Application (window.JSBridge injected)` ➔ `BFF Service`
-- **Challenge**: Simulate a hybrid mobile app container in web browsers. Instead of running a dedicated mock server, Playwright injects mock `window.JSBridge` native objects (e.g. `getNativeDeviceInfo()`, `requestBiometricAuth()`, `openNativeCamera()`) directly into the browser context to verify mobile WebApp behavior without requiring physical iOS/Android builds.
-- **Key Assertions**:
-  - `window.JSBridge.getNativeDeviceInfo()` resolves with mock device metadata (`{ platform: "iOS", appVersion: "2.4.0" }`).
-  - Biometric trigger sends verified payload to `BFF Service`.
-  - Application handles fallback gracefully when `window.JSBridge` is undefined.
+- **Challenge**: Simulate a hybrid mobile app container in web browsers using `page.addInitScript`.
+- **Solution Key**:
+  - Implemented in `tests/specs/e2e/website.spec.ts`.
 
 ---
 
@@ -194,9 +229,10 @@ flowchart TD
 | Exercise | Practical Activity | Primary Commands / Tools |
 | :--- | :--- | :--- |
 | **Ex 1** | **Build & Sync Microservices** | `make sync && make build` |
-| **Ex 2** | **Run Service Unit Tests** | `make test` |
+| **Ex 2** | **Run Service Unit Tests & Lint** | `make check` |
 | **Ex 3** | **Spin Up Docker Ecosystem** | `make setup` |
 | **Ex 4** | **Run Integration Tests** | `make test-integration` |
 | **Ex 5** | **Run Playwright E2E Tests** | `make test-e2e` |
 | **Ex 6** | **WireMock Fault Injection** | Open WireMock GUI at `http://localhost:8088/__admin/` |
 | **Ex 7** | **MITM Traffic Inspection** | Configure Burp Suite Proxy at `http://127.0.0.1:8080` |
+| **Ex 8** | **Present Workshop Slides** | `make slides` |
