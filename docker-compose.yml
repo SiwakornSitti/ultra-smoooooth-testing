@@ -176,9 +176,14 @@ services:
       DB_USER: app
       DB_PASSWORD: temporary-password-123
       DB_NAME: app
+      WIREMOCK_URL: ${WIREMOCK_URL:-http://wiremock:8080}
+      WIREMOCK_ADMIN_USER: ${WIREMOCK_ADMIN_USER:-admin}
+      WIREMOCK_ADMIN_PASSWORD: ${WIREMOCK_ADMIN_PASSWORD:-password}
     depends_on:
       db:
         condition: service_healthy
+      wiremock:
+        condition: service_started
     develop:
       watch:
         - action: rebuild
