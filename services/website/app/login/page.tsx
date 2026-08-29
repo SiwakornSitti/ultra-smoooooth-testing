@@ -27,6 +27,7 @@ export default function LoginPage() {
   const [paotangResult, setPaotangResult] = useState("");
   const [tokenExchanged, setTokenExchanged] = useState(false);
   const [showMockControls, setShowMockControls] = useState(true);
+  const [isResetting, setIsResetting] = useState(false);
 
   // Step 2: OTP SMS verify
   const [phone, setPhone] = useState("+66800000001");
@@ -37,8 +38,26 @@ export default function LoginPage() {
 
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
-    setPaotangScenario(enabled ? MOCK_SCENARIO.PAOTANG.SUCCESS : "");
+    setPaotangScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
     setOtpScenario(enabled ? MOCK_SCENARIO.OTP.SUCCESS : "");
+  }
+
+  async function resetMockScenarios() {
+    setIsResetting(true);
+    try {
+      const res = await fetch(`${bffUrl}/api/v1/workshop/reset`, { method: "POST" });
+      if (res.ok) {
+        setPaotangResult("Mock scenarios reset to initial state.");
+        setOtpResult("");
+        setTokenExchanged(false);
+      } else {
+        setPaotangResult("Unable to reset mock scenarios.");
+      }
+    } catch {
+      setPaotangResult("Unable to reset mock scenarios.");
+    } finally {
+      setIsResetting(false);
+    }
   }
 
   async function paotangLogin() {
@@ -85,6 +104,22 @@ export default function LoginPage() {
         <p className="eyebrow">Secure access</p>
         <h1>Sign in</h1>
         <p className="subtitle">Exchange your Paotang auth code, then verify your identity with a one-time password.</p>
+        <div className="header-actions">
+          <button
+            className="reset-default-button"
+            data-testid="btn-reset-default-data"
+            type="button"
+            disabled={!bffUrl || isResetting}
+            onClick={resetMockScenarios}
+          >
+            <svg className="reset-danger-icon" aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M12 3 2.5 20h19L12 3Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+              <path d="M12 9v4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="12" cy="17.25" r="1" fill="currentColor" />
+            </svg>
+            {isResetting ? "Resetting…" : "Reset mock scenarios"}
+          </button>
+        </div>
         <div data-testid="example-user">
           <strong>Example user</strong>
           <p>Name: Narin Chaiyasit</p>
@@ -103,75 +138,84 @@ export default function LoginPage() {
       </header>
 
       <div className="page-grid">
-      <section data-testid="section-paotang">
-        <h2>Exchange Authcode</h2>
-        <label>
-          Auth Code{" "}
-          <input data-testid="input-authcode" value={authCode} onChange={(e) => setAuthCode(e.target.value)} />
-        </label>
-        <br />
-        {showMockControls && (
+        <section data-testid="section-paotang">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h2>Step 1: Exchange Authcode</h2>
+            {tokenExchanged && <span className="profile-status" style={{ background: "#e1f5ea", color: "#14804a" }}>Exchanged</span>}
+          </div>
           <label>
-            Paotang Mock Scenario
-            <select
-              data-testid="select-paotang-scenario"
-              value={paotangScenario}
-              onChange={(e) => setPaotangScenario(e.target.value)}
-            >
-              <option value="">Real service</option>
-              <option value={MOCK_SCENARIO.PAOTANG.SUCCESS}>{MOCK_SCENARIO.PAOTANG.SUCCESS}</option>
-              <option value={MOCK_SCENARIO.PAOTANG.INVALID_GRANT}>{MOCK_SCENARIO.PAOTANG.INVALID_GRANT}</option>
-              <option value={MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE}>{MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE}</option>
-            </select>
+            Auth Code{" "}
+            <input data-testid="input-authcode" value={authCode} onChange={(e) => setAuthCode(e.target.value)} />
           </label>
-        )}
-        <button data-testid="btn-paotang-login" onClick={paotangLogin}>
-          Exchange Authcode
-        </button>
-        {paotangResult && <p className="profile-result" data-testid="result-paotang">{paotangResult}</p>}
-      </section>
+          <br />
+          {showMockControls && (
+            <label>
+              Paotang Mock Scenario
+              <select
+                data-testid="select-paotang-scenario"
+                value={paotangScenario}
+                onChange={(e) => setPaotangScenario(e.target.value)}
+              >
+                <option value={MOCK_SCENARIO.PAOTANG.SUCCESS}>{MOCK_SCENARIO.PAOTANG.SUCCESS} — Valid OAuth Exchange</option>
+                <option value={MOCK_SCENARIO.PAOTANG.INVALID_GRANT}>{MOCK_SCENARIO.PAOTANG.INVALID_GRANT} — Expired / Invalid Code</option>
+                <option value={MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE}>{MOCK_SCENARIO.PAOTANG.SUCCESS_ONCE} — Single-Use Code (Replay Fails)</option>
+              </select>
+            </label>
+          )}
+          <button data-testid="btn-paotang-login" onClick={paotangLogin}>
+            Exchange Authcode
+          </button>
+          {paotangResult && <p className="profile-result" data-testid="result-paotang">{paotangResult}</p>}
+        </section>
 
-      <section data-testid="section-otp">
-        <h2>Verify OTP</h2>
-        <label>
-          Phone{" "}
-          <input
-            data-testid="input-phone"
-            type="tel"
-            inputMode="tel"
-            pattern="\\+66[689][0-9]{8}"
-            title="Enter a Thai mobile number such as +66800000000"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            aria-invalid={!phoneValid}
-          />
-        </label>
-        {!phoneValid && (
-          <p data-testid="phone-validation-error">
-            Enter a valid Thai mobile number starting with +66 and followed by exactly 9 digits.
-          </p>
-        )}
-        <br />
-        <label>
-          OTP Code{" "}
-          <input data-testid="input-otp" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} />
-        </label>
-        <br />
-        {showMockControls && (
+        <section data-testid="section-otp">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h2>Step 2: Verify OTP</h2>
+            {!tokenExchanged ? (
+              <span className="profile-status" style={{ background: "#fff3cd", color: "#856404" }}>Awaiting Step 1</span>
+            ) : (
+              <span className="profile-status" style={{ background: "#e7edff", color: "#315bea" }}>Ready</span>
+            )}
+          </div>
           <label>
-            OTP Mock Scenario
-            <select data-testid="select-otp-scenario" value={otpScenario} onChange={(e) => setOtpScenario(e.target.value)}>
-              <option value="">Real service</option>
-              <option value={MOCK_SCENARIO.OTP.SUCCESS}>{MOCK_SCENARIO.OTP.SUCCESS}</option>
-              <option value={MOCK_SCENARIO.OTP.INVALID}>{MOCK_SCENARIO.OTP.INVALID}</option>
-            </select>
+            Phone{" "}
+            <input
+              data-testid="input-phone"
+              type="tel"
+              inputMode="tel"
+              pattern="\\+66[689][0-9]{8}"
+              title="Enter a Thai mobile number such as +66800000000"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              aria-invalid={!phoneValid}
+            />
           </label>
-        )}
-        <button data-testid="btn-verify-otp" onClick={verifyOtp} disabled={!tokenExchanged || !phoneValid}>
-          Verify OTP
-        </button>
-        {otpResult && <p className="profile-result" data-testid="result-otp">{otpResult}</p>}
-      </section>
+          {!phoneValid && (
+            <p data-testid="phone-validation-error">
+              Enter a valid Thai mobile number starting with +66 and followed by exactly 9 digits.
+            </p>
+          )}
+          <br />
+          <label>
+            OTP Code{" "}
+            <input data-testid="input-otp" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} />
+          </label>
+          <br />
+          {showMockControls && (
+            <label>
+              OTP Mock Scenario
+              <select data-testid="select-otp-scenario" value={otpScenario} onChange={(e) => setOtpScenario(e.target.value)}>
+                <option value="">Real service (Proxy unmatched)</option>
+                <option value={MOCK_SCENARIO.OTP.SUCCESS}>{MOCK_SCENARIO.OTP.SUCCESS} — Valid One-Time Password</option>
+                <option value={MOCK_SCENARIO.OTP.INVALID}>{MOCK_SCENARIO.OTP.INVALID} — Incorrect / Rejected Code</option>
+              </select>
+            </label>
+          )}
+          <button data-testid="btn-verify-otp" onClick={verifyOtp} disabled={!tokenExchanged || !phoneValid}>
+            Verify OTP
+          </button>
+          {otpResult && <p className="profile-result" data-testid="result-otp">{otpResult}</p>}
+        </section>
       </div>
       <Link className="signup-button" data-testid="signup-button" href="/signup">
         Need an account? Sign up
