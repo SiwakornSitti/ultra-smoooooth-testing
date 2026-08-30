@@ -94,3 +94,11 @@ Quick navigation reference for all slides in [`slides/slides.md`](slides/slides.
 | **88** | [Live Demo](slides/slides.md#L2984) | — | `L2984` |
 | **89** | [💬 Open Q&A & Key Takeaways](slides/slides.md#L2999) | Bringing All 4 Pillars Together for Ultra Smoooooth Testing | `L2999` |
 | **90** | [🎉 Thank You!](slides/slides.md#L3045) | — | `L3045` |
+| **91** | [📚 Appendix](slides/slides.md#L3068) | Additional Tools — Trace Atlas & k6 Performance Testing | `L3068` |
+| **92** | [🗺️ Internal Tools — Trace Workspaces Catalog](slides/slides.md#L3079) | Multi-Repo Service Discovery, Workspaces & Ecosystem Scale | `L3079` |
+| **93** | [🕸️ Internal Tools — Multi-Tier Dependency Graph](slides/slides.md#L3093) | Visualizing Microservice Call Chains, External Dependencies & Datastores | `L3093` |
+| **94** | [⚡ k6 — Modern Load & Performance Testing](slides/slides.md#L3105) | Developer-Centric High-Concurrency Performance Testing & SLA Verification | `L3105` |
+| **95** | [⚡ k6 Load Scripting — Microservices Example](slides/slides.md#L3134) | Simulating High-Throughput BFF & Core Service Traffic with WireMock Backing | `L3134` |
+| **96** | [⚡ k6 CLI — Performance Runner & Metrics Cheat Sheet](slides/slides.md#L3184) | Everyday Execution Commands, Dynamic Overrides & Live Dashboards | `L3184` |
+
+

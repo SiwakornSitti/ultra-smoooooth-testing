@@ -3060,3 +3060,157 @@ class: text-center
 </div>
 
 </div>
+
+---
+layout: section
+---
+
+# 📚 Appendix
+## Additional Tools — Trace Atlas & k6 Performance Testing
+
+<p class="section-narrative">
+  Beyond core integration testing, ecosystem visibility and high-throughput reliability are vital. Here is a look at Trace (our multi-repo dependency atlas) and Grafana k6 (developer-centric load testing).
+</p>
+
+---
+class: pt-4 pb-2 px-8
+---
+
+# 🗺️ Internal Tools — Trace Workspaces Catalog
+
+### Multi-Repo Service Discovery, Workspaces & Ecosystem Scale
+
+<div class="flex justify-center items-center w-full mt-1">
+  <div class="adorable-arch-container">
+    <img src="/trace_workspaces_atlas.png" class="adorable-arch-img" alt="Trace Workspaces and Repositories Catalog" />
+  </div>
+</div>
+
+---
+class: pt-4 pb-2 px-8
+---
+
+# 🕸️ Internal Tools — Multi-Tier Dependency Graph
+
+### Visualizing Microservice Call Chains, External Dependencies & Datastores
+
+<div class="flex justify-center items-center w-full mt-1">
+  <div class="adorable-arch-container">
+    <img src="/trace_dependency_graph.png" class="adorable-arch-img" alt="Trace Multi-Tier Service Dependency Graph" />
+  </div>
+</div>
+
+---
+
+# ⚡ k6 — Modern Load & Performance Testing
+
+### Developer-Centric High-Concurrency Performance Testing & SLA Verification
+
+<div class="multi-col-grid-3">
+
+<div class="col-card">
+  <h3 class="text-emerald-400">🚀 High Throughput & Go Engine</h3>
+  <p>Engineered in Go to compile JavaScript test scripts into blazing fast native threads, generating thousands of Virtual Users (VUs) with minimal CPU and memory footprint.</p>
+</div>
+
+<div class="col-card">
+  <h3 class="text-emerald-400">🎯 Thresholds as Code (SLAs/SLOs)</h3>
+  <p>Define objective performance criteria directly in test scripts (e.g. <code>p(95) &lt; 200ms</code>, <code>http_req_failed &lt; 1%</code>) to enforce automated pass/fail CI/CD quality gates.</p>
+</div>
+
+<div class="col-card">
+  <h3 class="text-emerald-400">🔀 Microservice Scenario Orchestration</h3>
+  <p>Simulate realistic multi-phase load curves with ramp-up/ramp-down stages, custom <code>Mock-Scenario</code> header injection, and concurrent user journeys.</p>
+</div>
+
+</div>
+
+<div class="slide-card text-sm mt-2 bg-slate-900/60 border-emerald-500/30">
+  💡 <strong>Testing Synergy</strong>: Pair k6 with WireMock and Testcontainers to performance-test Go microservices at scale without incurring 3rd-party API rate limits.
+</div>
+
+---
+
+# ⚡ k6 Load Scripting — Microservices Example
+
+### Simulating High-Throughput BFF & Core Service Traffic with WireMock Backing
+
+```javascript
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export const options = {
+  stages: [
+    { duration: '10s', target: 20 }, // Ramp up to 20 VUs
+    { duration: '30s', target: 50 }, // Sustained load at 50 VUs
+    { duration: '10s', target: 0 },  // Graceful ramp down
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<250'], // 95% of requests must complete < 250ms
+    http_req_failed: ['rate<0.01'],    // Error rate must be < 1%
+  },
+};
+
+export default function () {
+  const payload = JSON.stringify({
+    from_account: 'ACC-10000001',
+    to_account: 'ACC-10000002',
+    amount: 500,
+  });
+
+  const params = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Mock-Scenario': 'TRANSFER:SUCCESS', // Steer WireMock doubles
+    },
+  };
+
+  const res = http.post('http://localhost:8080/api/v1/transfers', payload, params);
+  check(res, {
+    'status is 201': (r) => r.status === 201,
+    'has transaction id': (r) => r.json('id') !== undefined,
+  });
+
+  sleep(0.1);
+}
+```
+
+<div class="slide-card text-sm mt-2">
+  ⚡ Executes concurrent user scenarios against containerized endpoints with millisecond-level precision metrics and automated assertion checks.
+</div>
+
+---
+
+# ⚡ k6 CLI — Performance Runner & Metrics Cheat Sheet
+
+### Everyday Execution Commands, Dynamic Overrides & Live Dashboards
+
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>🚀</span> Execution &amp; Runtime Overrides
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">k6 run load-test.js</code><br/><span class="text-slate-400 font-sans">Executes test script using configuration defined in <code>options</code>.</span></div>
+    <div><code class="text-emerald-300">k6 run --vus 50 --duration 1m test.js</code><br/><span class="text-slate-400 font-sans">Overrides script with 50 concurrent virtual users for 1 minute.</span></div>
+    <div><code class="text-emerald-300">k6 run -e TARGET_URL=http://localhost:8080</code><br/><span class="text-slate-400 font-sans">Passes dynamic environment variables to the JS test script.</span></div>
+    <div><code class="text-emerald-300">k6 run --http-debug="full" test.js</code><br/><span class="text-slate-400 font-sans">Prints full raw HTTP request/response headers and bodies.</span></div>
+  </div>
+</div>
+
+<div class="slide-card p-3">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
+    <span>📊</span> Metrics, Dashboards &amp; CI Export
+  </h3>
+  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
+    <div><code class="text-emerald-300">K6_WEB_DASHBOARD=true k6 run test.js</code><br/><span class="text-slate-400 font-sans">Opens real-time interactive browser performance dashboard.</span></div>
+    <div><code class="text-emerald-300">k6 run --out json=results.json test.js</code><br/><span class="text-slate-400 font-sans">Streams raw point-in-time metrics to JSON file for post-analysis.</span></div>
+    <div><code class="text-emerald-300">k6 run --out influxdb=http://localhost:8086/k6</code><br/><span class="text-slate-400 font-sans">Streams live metrics directly to InfluxDB / Prometheus / Grafana.</span></div>
+    <div><code class="text-emerald-300">k6 run --summary-export=summary.json test.js</code><br/><span class="text-slate-400 font-sans">Exports aggregated percentile metrics for CI/CD status reporting.</span></div>
+  </div>
+</div>
+
+</div>
+
+
