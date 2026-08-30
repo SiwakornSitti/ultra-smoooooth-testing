@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Ultra Smoooooth Testing Architecture",
+    "output": "system-architecture.html",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "core-flow",
+        "label": "Core Flow",
+        "focus": ["website", "bff", "transfer-svc", "account-svc", "db"],
+        "note": "Synchronous user flows through BFF to core domain services and Postgres."
+      },
+      {
+        "id": "external-mocks",
+        "label": "WireMock Interception",
+        "focus": ["user-svc", "otp-svc", "wiremock", "paotang", "sms"],
+        "note": "External provider calls mediated deterministically through WireMock."
+      },
+      {
+        "id": "full-system",
+        "label": "Full Ecosystem",
+        "focus": ["website", "bff", "user-svc", "account-svc", "ekyc-svc", "transfer-svc", "otp-svc", "wiremock", "db", "paotang", "sms"],
+        "note": "Complete local Docker Compose ecosystem."
+      }
+    ]
+  },
+  "components": [
+    { "id": "website", "type": "frontend", "label": "Website", "sublabel": "Next.js :3000", "brand": "next-js", "pos": [40, 230], "size": [130, 60] },
+    { "id": "bff", "type": "backend", "label": "BFF Service", "sublabel": "Go :8080", "brand": "go", "pos": [230, 230], "size": [130, 60] },
+    { "id": "otp-svc", "type": "backend", "label": "OTP Service", "sublabel": "Go :8087", "brand": "go", "pos": [430, 50], "size": [150, 54] },
+    { "id": "user-svc", "type": "backend", "label": "User Service", "sublabel": "Go :8081", "brand": "go", "pos": [430, 130], "size": [150, 54] },
+    { "id": "account-svc", "type": "backend", "label": "Bank Account", "sublabel": "Go :8082", "brand": "go", "pos": [430, 220], "size": [150, 54] },
+    { "id": "ekyc-svc", "type": "backend", "label": "eKYC Service", "sublabel": "Go :8084", "brand": "go", "pos": [430, 300], "size": [150, 54] },
+    { "id": "transfer-svc", "type": "backend", "label": "Transfer Service", "sublabel": "Go :8085", "brand": "go", "pos": [430, 380], "size": [150, 54] },
+    { "id": "wiremock", "type": "backend", "label": "WireMock", "sublabel": "Proxy / Mock :8088", "pos": [680, 80], "size": [140, 64] },
+    { "id": "db", "type": "database", "label": "PostgreSQL", "sublabel": "primary :5432", "brand": "postgresql", "pos": [680, 280], "size": [140, 64] },
+    { "id": "paotang", "type": "external", "label": "Paotang Provider", "sublabel": "OAuth upstream", "pos": [910, 50], "size": [150, 54] },
+    { "id": "sms", "type": "external", "label": "SMS Provider", "sublabel": "SMS gateway", "pos": [910, 130], "size": [150, 54] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Docker Compose Local Runtime", "wraps": ["bff", "user-svc", "account-svc", "ekyc-svc", "transfer-svc", "otp-svc", "wiremock", "db"] },
+    { "kind": "security-group", "label": "Internal Core Domain Services", "wraps": ["user-svc", "account-svc", "ekyc-svc", "transfer-svc", "otp-svc"] }
+  ],
+  "connections": [
+    { "id": "web-to-bff", "from": "website", "to": "bff", "label": "REST :8080", "variant": "emphasis" },
+    { "id": "bff-to-user", "from": "bff", "to": "user-svc" },
+    { "id": "bff-to-account", "from": "bff", "to": "account-svc" },
+    { "id": "bff-to-ekyc", "from": "bff", "to": "ekyc-svc" },
+    { "id": "bff-to-transfer", "from": "bff", "to": "transfer-svc" },
+    { "id": "bff-to-otp", "from": "bff", "to": "otp-svc" },
+    { "id": "user-to-db", "from": "user-svc", "to": "db" },
+    { "id": "account-to-db", "from": "account-svc", "to": "db" },
+    { "id": "ekyc-to-db", "from": "ekyc-svc", "to": "db" },
+    { "id": "transfer-to-db", "from": "transfer-svc", "to": "db", "label": "SQL Tx" },
+    { "id": "user-to-mock", "from": "user-svc", "to": "wiremock", "label": "OAuth" },
+    { "id": "otp-to-mock", "from": "otp-svc", "to": "wiremock", "label": "SMS" },
+    { "id": "mock-to-paotang", "from": "wiremock", "to": "paotang", "variant": "dashed" },
+    { "id": "mock-to-sms", "from": "wiremock", "to": "sms", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Frontend & Orchestration", "items": ["Next.js frontend connects exclusively to BFF :8080", "BFF orchestrates synchronous domain operations"] },
+    { "dot": "emerald", "title": "Core Domain Services", "items": ["Go microservices each own their domain logic", "Shared PostgreSQL for local persistence", "Atomic transfer transactions lock accounts"] },
+    { "dot": "amber", "title": "WireMock & External Providers", "items": ["Intercepts Paotang OAuth and SMS delivery", "Returns deterministic responses or proxies upstream"] }
+  ]
+}
