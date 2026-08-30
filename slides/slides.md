@@ -1557,12 +1557,17 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
 # 🪄 Handlebars Array Iteration — Example
 
 ### Generating Dynamic Arrays with `{{#each}}` and Indexing
 
-<div v-pre>
+<div v-pre class="grid grid-cols-2 gap-3 text-sm">
+
+<div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-cyan-500/30 flex flex-col">
+  <h3 class="text-cyan-400 text-xs font-bold mb-0.5">📝 1. WireMock Handlebars Template</h3>
 
 ```handlebars
 {
@@ -1578,11 +1583,42 @@ class: pt-2 pb-2 px-8
   ]
 }
 ```
-
+  <p class="text-slate-400 text-[11px] mt-auto pt-1 border-t border-slate-700/50">
+    🔁 Loops array, transforms <code>upper this.sku</code>, and omits trailing comma via <code>@last</code>.
+  </p>
 </div>
 
-<div v-pre class="slide-card text-sm mt-3">
-  🔁 Loops through request arrays, applies string transformations (`upper this.sku`), and uses `{{#unless @last}},{{/unless}}` to suppress trailing commas.
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/30 flex flex-col">
+  <h3 class="text-emerald-400 text-xs font-bold mb-0.5">✨ 2. Input ➔ Rendered Output</h3>
+
+  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 text-[11px]">
+    <div class="text-[10px] text-slate-400 font-bold mb-0.5 font-sans">📥 Incoming Request Body:</div>
+
+```json
+{
+  "items": [
+    { "sku": "mbp-16-m3" },
+    { "sku": "ipad-pro-13" }
+  ]
+}
+```
+  </div>
+
+  <div class="bg-emerald-950/40 rounded p-1.5 border border-emerald-500/40 text-[11px] mt-auto">
+    <div class="text-[10px] text-emerald-400 font-bold mb-0.5 font-sans">📤 Rendered Response JSON:</div>
+
+```json
+{
+  "totalItems": 2,
+  "processedItems": [
+    { "index": 0, "sku": "MBP-16-M3", "status": "VERIFIED" },
+    { "index": 1, "sku": "IPAD-PRO-13", "status": "VERIFIED" }
+  ]
+}
+```
+  </div>
+</div>
+
 </div>
 
 ---
