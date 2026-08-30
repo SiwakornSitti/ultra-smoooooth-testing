@@ -2173,6 +2173,87 @@ class: pt-1 pb-1 px-8
 </div>
 
 ---
+class: pt-1 pb-1 px-8
+---
+
+<div v-pre>
+
+# 🪝 WireMock — Asynchronous Webhooks & Callbacks
+
+<h3 class="text-slate-300 text-sm mb-1">Triggering Outbound HTTP Events with <code>serveEventListeners</code></h3>
+
+<div class="grid grid-cols-2 gap-3 text-xs mt-1">
+
+<div class="slide-card space-y-2 p-2.5 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
+  <div>
+    <h3 class="text-cyan-400 font-bold mb-1 text-xs">⚡ Event-Driven Webhook Execution</h3>
+    <p class="text-slate-300 leading-relaxed text-[11px] mb-2">
+      WireMock is not only a passive mock server. With <code>serveEventListeners</code> and the built-in <code>webhook</code> action, WireMock triggers asynchronous outbound HTTP requests to your webhook receivers after serving a response.
+    </p>
+
+    <div class="space-y-1.5 pt-1 border-t border-slate-700/50 text-[11px]">
+      <div>
+        <strong class="text-emerald-400">🎯 Dynamic Callback URL:</strong>
+        <p class="text-slate-400">Extracts <code>callbackUrl</code> dynamically from the incoming request body using Handlebars.</p>
+      </div>
+      <div>
+        <strong class="text-amber-400">⏱️ Background Processing Delay:</strong>
+        <p class="text-slate-400">Defines <code>delay.milliseconds</code> to simulate real asynchronous worker queue latency.</p>
+      </div>
+      <div>
+        <strong class="text-purple-400">📨 Payload &amp; Header Templating:</strong>
+        <p class="text-slate-400">Generates dynamic webhook payloads, UUIDs, and signatures for webhook validation.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-slate-400 text-[10px] pt-1 border-t border-slate-700/50">
+    💡 Enables full end-to-end testing of async payment gateways, webhook receivers, and push notifications.
+  </p>
+</div>
+
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-indigo-500/30 flex flex-col">
+  <h3 class="text-indigo-400 font-bold mb-0.5 text-xs">📝 Stub with <code>serveEventListeners</code></h3>
+
+```json
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/payments/async-charge"
+  },
+  "response": {
+    "status": 202,
+    "jsonBody": {
+      "status": "PROCESSING",
+      "chargeId": "ch_9901"
+    }
+  },
+  "serveEventListeners": [
+    {
+      "name": "webhook",
+      "parameters": {
+        "method": "POST",
+        "url": "{{jsonPath request.body '$.callbackUrl'}}",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"chargeId\": \"ch_9901\", \"status\": \"SETTLED\"}",
+        "delay": {
+          "type": "fixed",
+          "milliseconds": 1000
+        }
+      }
+    }
+  ]
+}
+```
+</div>
+
+</div>
+
+</div>
+
+---
 
 # 🧹 WireMock — State Management & Test Isolation
 
