@@ -780,6 +780,34 @@ table tr:hover td {
   margin-bottom: 0;
 }
 
+.compact-stateful-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem;
+  align-items: stretch;
+  margin-top: 0.5rem;
+}
+
+.compact-stateful-grid .slide-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem !important;
+  margin-bottom: 0;
+}
+
+.compact-stateful-grid div.slidev-code,
+.compact-stateful-grid pre.shiki,
+.compact-stateful-grid code {
+  font-size: 0.82rem !important;
+  line-height: 1.38 !important;
+}
+
+.compact-stateful-grid pre.shiki {
+  padding: 0.45rem 0.75rem !important;
+}
+
 /* Section divider narrative text */
 .slidev-layout.section p.section-narrative {
   color: #cbd5e1 !important;

@@ -1918,7 +1918,7 @@ class: pt-1 pb-1 px-8
 
 <h3 class="text-slate-300 text-sm mb-1">OAuth Authorization Code &amp; OTP Replay Attack Prevention</h3>
 
-<div class="jitter-grid text-xs mt-1">
+<div class="compact-stateful-grid">
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <div>
@@ -2043,7 +2043,7 @@ flowchart LR
 
 </div>
 
-<div class="jitter-grid text-xs mt-0.5">
+<div class="compact-stateful-grid">
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-rose-500/30">
   <h3 class="text-rose-400 font-bold mb-0.5 text-xs">💥 Flapping Failures (Attempts 1 &amp; 2)</h3>
@@ -2098,7 +2098,7 @@ class: pt-1 pb-1 px-8
 
 <h3 class="text-slate-300 text-sm mb-1">At-Least-Once Delivery &amp; Duplicate Message Detection</h3>
 
-<div class="jitter-grid text-xs mt-1">
+<div class="compact-stateful-grid">
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <div>
