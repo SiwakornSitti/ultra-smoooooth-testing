@@ -1911,58 +1911,48 @@ flowchart LR
 </div>
 
 ---
+class: pt-1 pb-1 px-8
+---
 
 # 🔄 Stateful Pattern 1: Single-Use Tokens & Replays
 
-### OAuth Authorization Code & OTP Replay Attack Prevention
+<h3 class="text-slate-300 text-sm mb-1">OAuth Authorization Code &amp; OTP Replay Attack Prevention</h3>
 
-<div class="jitter-grid text-sm">
+<div class="jitter-grid text-xs mt-1">
 
-<div class="slide-card space-y-2">
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <div>
-    <h3 class="text-emerald-400 font-bold mb-1">✅ 1st Call: Exchange Token</h3>
-    <p class="text-slate-300 mb-2"><code>Started</code> ➔ <code>TOKEN_ISSUED</code>: Consumes auth code and issues token.</p>
+    <h3 class="text-emerald-400 font-bold mb-0.5 text-xs">✅ 1st Call: Exchange Token</h3>
+    <p class="text-slate-300 mb-1 text-[11px]"><code>Started</code> ➔ <code>TOKEN_ISSUED</code>: Consumes auth code and issues token.</p>
 
 ```json
 {
   "scenarioName": "auth-token-flow",
   "requiredScenarioState": "Started",
   "newScenarioState": "TOKEN_ISSUED",
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/oauth/token"
-  },
-  "response": {
-    "status": 200,
-    "jsonBody": { "access_token": "jwt_abc123" }
-  }
+  "request": { "method": "POST", "urlPath": "/lab/api/oauth/token" },
+  "response": { "status": 200, "jsonBody": { "access_token": "jwt_abc123" } }
 }
 ```
   </div>
-  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> &amp; transitions state to <code>TOKEN_ISSUED</code></p>
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> &amp; transitions state to <code>TOKEN_ISSUED</code></p>
 </div>
 
-<div class="slide-card space-y-2">
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-rose-500/30">
   <div>
-    <h3 class="text-rose-400 font-bold mb-1">🚨 2nd Call: Replay Rejected</h3>
-    <p class="text-slate-300 mb-2"><code>TOKEN_ISSUED</code>: Replay attempt fails with invalid grant.</p>
+    <h3 class="text-rose-400 font-bold mb-0.5 text-xs">🚨 2nd Call: Replay Rejected</h3>
+    <p class="text-slate-300 mb-1 text-[11px]"><code>TOKEN_ISSUED</code>: Replay attempt fails with invalid grant.</p>
 
 ```json
 {
   "scenarioName": "auth-token-flow",
   "requiredScenarioState": "TOKEN_ISSUED",
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/oauth/token"
-  },
-  "response": {
-    "status": 400,
-    "jsonBody": { "error": "invalid_grant" }
-  }
+  "request": { "method": "POST", "urlPath": "/lab/api/oauth/token" },
+  "response": { "status": 400, "jsonBody": { "error": "invalid_grant" } }
 }
 ```
   </div>
-  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🔴 <strong>Returns 400 Bad Request</strong> (Code already consumed)</p>
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🔴 <strong>Returns 400 Bad Request</strong> (Code already consumed)</p>
 </div>
 
 </div>
@@ -2004,14 +1994,16 @@ flowchart LR
 </div>
 
 ---
+class: pt-1 pb-1 px-8
+---
 
 # 🔄 Stateful Pattern 3: Transient Failure & Retries
 
 ### Testing Client Exponential Backoff & Circuit Breakers
 
-<div class="w-full flex justify-center py-1">
+<div class="w-full flex justify-center py-0.5">
 
-```mermaid {scale: 0.9}
+```mermaid {scale: 0.85}
 flowchart LR
     S([Start]) --> Att1["Attempt 1: Started<br/>💥 503 Unavailable"]
     Att1 --> Att2["Attempt 2: FAIL_1<br/>💥 503 Unavailable"]
@@ -2025,7 +2017,7 @@ flowchart LR
 
 </div>
 
-<div class="jitter-grid text-sm">
+<div class="jitter-grid text-xs mt-0.5">
 
 <div class="slide-card space-y-1">
   <h3 class="text-rose-400 font-bold">💥 Flapping Failures (Attempts 1 &amp; 2)</h3>
