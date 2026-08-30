@@ -11,14 +11,15 @@
   line-height: 1.5;
 }
 
-/* Cover slide: centered framed presentation on dark theme */
+/* Cover slide: centered framed presentation on matching vibrant orange background */
 .slidev-layout:has(.cover-poster-container) {
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
   padding: 0 !important;
-  background: #0f172a !important;
+  background: #ea580c !important;
+  background: linear-gradient(135deg, #c2410c 0%, #ea580c 45%, #f97316 100%) !important;
   height: 100% !important;
 }
 
@@ -457,13 +458,14 @@ code {
   display: block;
   margin: auto;
   border-radius: 0.85rem;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(249, 115, 22, 0.25);
-  border: 1.5px solid rgba(249, 115, 22, 0.35);
-  transition: transform 0.3s ease;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .cover-poster-container:hover .cover-poster-img {
   transform: scale(1.015);
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5), 0 0 35px rgba(255, 255, 255, 0.25);
 }
 
 .cover-slide {
