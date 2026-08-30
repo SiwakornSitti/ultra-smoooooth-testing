@@ -5,7 +5,7 @@
 <div align="center">
 
 <a href="https://github.com/SiwakornSitti/ultra-smoooooth-testing">
-  <img src="docs/qr-code.svg" width="160" height="160" alt="Repository QR Code" />
+  <img src="docs/qr-code.svg" width="260" height="260" alt="Repository QR Code" />
 </a>
 
 <p>📱 <em>Scan to access this repository: <a href="https://github.com/SiwakornSitti/ultra-smoooooth-testing">github.com/SiwakornSitti/ultra-smoooooth-testing</a></em></p>
