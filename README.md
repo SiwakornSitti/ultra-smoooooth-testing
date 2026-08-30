@@ -2,9 +2,20 @@
 
 > **Mock the world. Control the chaos. Test without limits.**
 
+<div align="center">
+
+<a href="https://github.com/SiwakornSitti/ultra-smoooooth-testing">
+  <img src="docs/qr-code.svg" width="160" height="160" alt="Repository QR Code" />
+</a>
+
+<p>📱 <em>Scan to access this repository: <a href="https://github.com/SiwakornSitti/ultra-smoooooth-testing">github.com/SiwakornSitti/ultra-smoooooth-testing</a></em></p>
+
+</div>
+
 A microservices ecosystem POC demonstrating **Go Workspaces (`go.work`)**, full-stack integration testing with **Docker Compose**, **WireMock**, and **Playwright**.
 
 👉 **Check out the full [Integration Testing Workshop Guide](WORKSHOP.md) for 11 practical thinking cases and hands-on scenarios!**
+
 
 ---
 
