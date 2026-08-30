@@ -2176,7 +2176,7 @@ class: pt-1 pb-1 px-8
 
 ### Triggering Outbound HTTP Events with `serveEventListeners`
 
-<div class="compact-stateful-grid">
+<div v-pre class="compact-stateful-grid">
 
 <div class="slide-card space-y-1.5 p-2 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
   <div>
@@ -2207,7 +2207,8 @@ class: pt-1 pb-1 px-8
 </div>
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-indigo-500/30 flex flex-col">
-  <h3 class="text-indigo-400 font-bold mb-0.5 text-xs">📝 Stub with <code>serveEventListeners</code></h3>
+  <div>
+    <h3 class="text-indigo-400 font-bold mb-0.5 text-xs">📝 Stub with <code>serveEventListeners</code></h3>
 
 ```json
 {
@@ -2233,6 +2234,7 @@ class: pt-1 pb-1 px-8
   ]
 }
 ```
+  </div>
 </div>
 
 </div>
