@@ -1560,13 +1560,11 @@ class: pt-2 pb-2 px-8
 class: pt-1 pb-1 px-8
 ---
 
-<div v-pre>
-
 # 🪄 Handlebars Array Iteration — Example
 
-<h3 class="text-slate-300 text-sm mb-1">Generating Dynamic Arrays with <code>{{#each}}</code> and Indexing</h3>
+<h3 v-pre class="text-slate-300 text-sm mb-1">Generating Dynamic Arrays with <code>{{#each}}</code> and Indexing</h3>
 
-<div class="grid grid-cols-2 gap-3 text-xs">
+<div v-pre class="grid grid-cols-2 gap-3 text-xs">
 
 <div class="col-card p-2 space-y-1 bg-slate-900/60 border-cyan-500/30 flex flex-col">
   <h3 class="text-cyan-400 text-xs font-bold mb-0.5">📝 1. WireMock Handlebars Template</h3>
@@ -1616,8 +1614,6 @@ class: pt-1 pb-1 px-8
 }
 ```
   </div>
-</div>
-
 </div>
 
 </div>
@@ -2176,11 +2172,9 @@ class: pt-1 pb-1 px-8
 class: pt-1 pb-1 px-8
 ---
 
-<div v-pre>
-
 # 🪝 WireMock — Asynchronous Webhooks & Callbacks
 
-<h3 class="text-slate-300 text-sm mb-1">Triggering Outbound HTTP Events with <code>serveEventListeners</code></h3>
+### Triggering Outbound HTTP Events with `serveEventListeners`
 
 <div class="compact-stateful-grid">
 
@@ -2239,8 +2233,6 @@ class: pt-1 pb-1 px-8
   ]
 }
 ```
-</div>
-
 </div>
 
 </div>
