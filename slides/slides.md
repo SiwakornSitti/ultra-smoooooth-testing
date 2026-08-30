@@ -2174,41 +2174,39 @@ class: pt-1 pb-1 px-8
 
 # 🪝 WireMock — Asynchronous Webhooks & Callbacks
 
-### Triggering Outbound HTTP Events with `serveEventListeners`
+<h3 class="text-slate-300 text-[11px] mb-0.5">Triggering Outbound HTTP Events with <code>serveEventListeners</code></h3>
 
 <div v-pre class="compact-stateful-grid">
 
-<div class="slide-card space-y-1.5 p-2 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
   <div>
-    <h3 class="text-cyan-400 font-bold mb-1 text-xs">⚡ Event-Driven Webhook Execution</h3>
-    <p class="text-slate-300 leading-relaxed text-[11px] mb-2">
+    <h3 class="text-cyan-400 font-semibold">⚡ Event-Driven Webhook Execution</h3>
+    <p class="text-slate-300 mb-1">
       WireMock can act as an active HTTP client. With <code>serveEventListeners</code> and the built-in <code>webhook</code> action, it fires asynchronous HTTP requests back to your webhook receiver after serving a stub.
     </p>
-
-    <div class="space-y-1 pt-1 border-t border-slate-700/50 text-[11px]">
+    <div class="space-y-0.5 pt-1 border-t border-slate-700/50">
       <div>
         <strong class="text-emerald-400">🎯 Dynamic Callback URL:</strong>
-        <p class="text-slate-400">Extracts <code>callbackUrl</code> dynamically from the request body.</p>
+        <p class="text-slate-300">Extracts <code class="text-emerald-300 font-bold">callbackUrl</code> dynamically from the request body.</p>
       </div>
       <div>
         <strong class="text-amber-400">⏱️ Background Latency:</strong>
-        <p class="text-slate-400">Defines <code>delay</code> to simulate real worker queue latency.</p>
+        <p class="text-slate-300">Defines <code>delay</code> to simulate real worker queue latency.</p>
       </div>
       <div>
         <strong class="text-purple-400">📨 Dynamic Payload:</strong>
-        <p class="text-slate-400">Templates webhook payloads and signatures with Handlebars.</p>
+        <p class="text-slate-300">Templates webhook payloads and signatures with Handlebars.</p>
       </div>
     </div>
   </div>
-
-  <p class="text-slate-400 text-[10px] pt-1 border-t border-slate-700/50">
+  <p class="text-slate-400 pt-1 border-t border-slate-700/50">
     💡 Enables full testing of async payment gateways and webhook consumers.
   </p>
 </div>
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-indigo-500/30 flex flex-col">
   <div>
-    <h3 class="text-indigo-400 font-bold mb-0.5 text-xs">📝 Stub with <code>serveEventListeners</code></h3>
+    <h3 class="text-indigo-400 font-semibold mb-0.5 text-[9.5px]">📝 Stub with <code>serveEventListeners</code></h3>
 
 ```json
 {
@@ -2220,18 +2218,16 @@ class: pt-1 pb-1 px-8
     "status": 202,
     "jsonBody": { "status": "PROCESSING", "id": "ch_9901" }
   },
-  "serveEventListeners": [
-    {
-      "name": "webhook",
-      "parameters": {
-        "method": "POST",
-        "url": "{{jsonPath request.body '$.callbackUrl'}}",
-        "headers": { "Content-Type": "application/json" },
-        "body": "{\"id\": \"ch_9901\", \"status\": \"SETTLED\"}",
-        "delay": { "type": "fixed", "milliseconds": 1000 }
-      }
+  "serveEventListeners": [{
+    "name": "webhook",
+    "parameters": {
+      "method": "POST",
+      "url": "{{jsonPath request.body '$.callbackUrl'}}",
+      "headers": { "Content-Type": "application/json" },
+      "body": "{\"id\": \"ch_9901\", \"status\": \"SETTLED\"}",
+      "delay": { "type": "fixed", "milliseconds": 1000 }
     }
-  ]
+  }]
 }
 ```
   </div>
@@ -2287,30 +2283,16 @@ layout: section
 
 
 ---
-class: pt-4 pb-2 px-8
+class: pt-2 pb-1 px-8
 ---
 
 # 🛡️ Burp Suite — MITM Proxy Architecture
 
-### Client, MITM Proxy Engine & Backend Microservices Interaction
+<h3 class="text-slate-300 text-sm mb-1">Client, MITM Proxy Engine & Backend Microservices Interaction</h3>
 
-<div class="flex justify-center items-center w-full mt-1">
+<div class="flex justify-center items-center w-full mt-0.5">
   <div class="adorable-arch-container">
     <img src="/burp_suite_architecture.jpg" class="adorable-arch-img" alt="Burp Suite MITM Proxy Architecture" />
-  </div>
-</div>
-
----
-class: pt-4 pb-2 px-8
----
-
-# 🔀 Burp Suite — Request & Response Intercept
-
-### Bi-Directional In-Flight Traffic Interception & Tampering
-
-<div class="flex justify-center items-center w-full mt-1">
-  <div class="adorable-arch-container">
-    <img src="/burp_duplex_intercept.jpg" class="adorable-arch-img" alt="Burp Suite Request and Response Interception Flow" />
   </div>
 </div>
 
@@ -2318,7 +2300,7 @@ class: pt-4 pb-2 px-8
 
 # 🔀 Burp Suite — Proxy Intercept Capabilities
 
-### Dual-Direction Traffic Control: Requests and Responses
+<h3 class="text-slate-300 text-sm mb-1">Dual-Direction Traffic Control: Requests and Responses</h3>
 
 <div class="multi-col-grid-2">
 
@@ -2676,10 +2658,14 @@ process.env.WIREMOCK_URL = `http://localhost:${wiremock.getMappedPort(8080)}`;
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # 🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle
 
-### Complete Test Hook Pipeline (`beforeAll` Setup & `afterAll` Teardown)
+<h3 class="text-slate-300 text-xs mb-1">Complete Test Hook Pipeline (<code>beforeAll</code> Setup &amp; <code>afterAll</code> Teardown)</h3>
+
+<div class="hermetic-code-wrapper">
 
 ```typescript
 // tests/specs/integration/bff.spec.ts
@@ -2695,23 +2681,24 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
-  // Guaranteed cleanup: stop network & dispose session
-  await stopHermeticSuite();
+  await stopHermeticSuite(); // Guaranteed Auto-Ryuk cleanup
 });
 ```
 
-<div class="grid grid-cols-3 gap-2 mt-2 text-xs">
-  <div class="slide-card p-2.5">
-    <strong class="text-emerald-400 font-bold block mb-1">1. Ephemeral Containers</strong>
-    <p class="text-slate-300 leading-snug">Spins up fresh isolated PostgreSQL &amp; WireMock instances on dynamic ports.</p>
+</div>
+
+<div class="grid grid-cols-3 gap-2 mt-1.5 text-xs">
+  <div class="slide-card p-2 mb-0">
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">1. Ephemeral Containers</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Spins up fresh isolated PostgreSQL &amp; WireMock instances on dynamic ports.</p>
   </div>
-  <div class="slide-card p-2.5">
-    <strong class="text-emerald-400 font-bold block mb-1">2. Run Schema Migrations</strong>
-    <p class="text-slate-300 leading-snug">Executes DDL migration scripts (<code>*.sql</code>) to build exact production schema.</p>
+  <div class="slide-card p-2 mb-0">
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">2. Schema Migrations</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Executes DDL migration scripts (<code>*.sql</code>) to build exact production schema.</p>
   </div>
-  <div class="slide-card p-2.5">
-    <strong class="text-emerald-400 font-bold block mb-1">3. Guaranteed Teardown</strong>
-    <p class="text-slate-300 leading-snug">Auto-Ryuk teardown cleans up all containers and network bridges upon exit.</p>
+  <div class="slide-card p-2 mb-0">
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">3. Guaranteed Teardown</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Auto-Ryuk teardown cleans up all containers and network bridges upon exit.</p>
   </div>
 </div>
 
@@ -2794,34 +2781,69 @@ await submitBtn.click();
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # 🎭 Playwright — Network Route Interception
 
-### Dynamic Mock Header Injection with `page.route()`
+<h3 class="text-slate-300 text-xs mb-1">Dynamic Mock Header Injection &amp; Multi-Scenario Steering as Code</h3>
+
+<div v-pre class="mock-scenario-grid">
+
+<div class="slide-card bg-slate-900/60 border-cyan-500/30">
+  <h3 class="text-cyan-400 font-semibold">🛠️ <code>mockScenario(page)</code> Helper</h3>
 
 ```typescript
 // tests/specs/support/mock-scenario.ts
 export function mockScenario(page: Page) {
   const box = { value: "" };
 
-  // Intercept every outgoing browser fetch/XHR request
+  // Intercept every outgoing browser fetch/XHR
   page.route("**/*", (route) => {
     const headers = { ...route.request().headers() };
     if (box.value && !headers["mock-scenario"]) {
-      headers["mock-scenario"] = box.value; // Inject WireMock steer header
+      headers["mock-scenario"] = box.value;
     }
     route.continue({ headers });
   });
 
-  // Supports multiple simultaneous scenario tags: setScenario(tag1, tag2, ...)
+  // Variadic: supports multiple scenarios as code
   return (...scenarios: (string | undefined)[]) => {
     box.value = scenarios.filter(Boolean).join(",");
   };
 }
 ```
+</div>
 
-<div class="slide-card text-sm mt-2">
-  🔀 Injects custom <code>Mock-Scenario</code> headers dynamically. Supports multi-scenario arguments (e.g. <code>setScenario(PAOTANG.SUCCESS, OTP.SUCCESS)</code>) to steer multiple downstream WireMock stubs simultaneously.
+<div class="slide-card bg-slate-900/60 border-indigo-500/30">
+  <h3 class="text-indigo-400 font-semibold">💻 Multi-Scenario Spec Usage</h3>
+
+```typescript
+// tests/specs/e2e/website.spec.ts
+test("Multi-service auth flow", async ({ page }) => {
+  const setScenario = mockScenario(page);
+
+  // 1. Steer multiple services simultaneously
+  setScenario(
+    MOCK_SCENARIO.PAOTANG.SUCCESS,
+    MOCK_SCENARIO.OTP.SUCCESS
+  );
+
+  await page.goto(`${websiteUrl}/login`);
+  await page.getByTestId("btn-paotang-login").click();
+
+  // 2. Mutate downstream service mid-test
+  setScenario(MOCK_SCENARIO.OTP.INVALID);
+  await page.getByTestId("btn-verify-otp").click();
+});
+```
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-1.5 flex items-center gap-2 mt-1">
+  <span class="text-sm">🔀</span>
+  <span class="text-slate-200 text-[10px] leading-snug"><strong>Multi-Scenario as Code</strong>: <code>setScenario(...)</code> serializes variadic tags into a single comma-separated <code>Mock-Scenario</code> header (e.g. <code>"PT_PASS:SUCCESS,OTP:SUCCESS"</code>), steering independent WireMock stubs without UI dropdown dependencies.</span>
 </div>
 
 ---
@@ -2909,46 +2931,48 @@ test.afterEach(async ({ request }) => {
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # 🎭 Playwright — Tracing & Diagnostics in CI
 
-### Record Every Action, DOM Snapshot & Network Request for Post-Mortem Debugging
+<h3 class="text-slate-300 text-xs mb-1">Record Every Action, DOM Snapshot &amp; Network Request for Post-Mortem Debugging</h3>
 
 <div class="grid grid-cols-2 gap-3 mt-1 text-sm">
 
-<div class="slide-card p-3">
-  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
-    <span>🎬</span> 1. Enable Recording in Config
-  </h3>
-  <div class="text-slate-300 space-y-1.5">
-    <p class="leading-relaxed">Configure <code>playwright.config.ts</code> to automatically capture traces upon test failure:</p>
+<div class="slide-card p-2.5 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 font-semibold mb-1 text-xs flex items-center gap-1.5">
+      <span>🎬</span> 1. Enable Recording in Config
+    </h3>
+    <p class="text-slate-300 text-xs mb-1">Configure <code>playwright.config.ts</code> to automatically capture traces on test failure:</p>
 
 ```typescript
 // playwright.config.ts
 export default defineConfig({
   use: {
-    // 'off' | 'on' | 'retain-on-failure'
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
 });
 ```
-
-    <div class="text-[11px] text-slate-400 font-mono">
-      💡 Only saves traces on failed tests to save CI storage.
-    </div>
+  </div>
+  <div class="text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-700/50">
+    💡 Only saves traces on failed tests to conserve CI artifact storage.
   </div>
 </div>
 
-<div class="slide-card p-3">
-  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
-    <span>🔍</span> 2. Open &amp; Inspect Trace Viewer
-  </h3>
-  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
-    <div><code class="text-emerald-300">npx playwright show-trace &lt;path/trace.zip&gt;</code><br/><span class="text-slate-400 font-sans">Opens local interactive trace GUI.</span></div>
-    <div><code class="text-emerald-300">https://trace.playwright.dev</code><br/><span class="text-slate-400 font-sans">Drop zip file in browser (100% client-side privacy).</span></div>
+<div class="slide-card p-2.5 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 font-semibold mb-1 text-xs flex items-center gap-1.5">
+      <span>🔍</span> 2. Open &amp; Inspect Trace Viewer
+    </h3>
+    <div class="space-y-1 text-slate-300 font-mono text-[10.5px]">
+      <div><code class="text-emerald-300">npx playwright show-trace &lt;path/trace.zip&gt;</code><br/><span class="text-slate-400 font-sans text-[10px]">Opens local interactive trace GUI.</span></div>
+      <div><code class="text-emerald-300">https://trace.playwright.dev</code><br/><span class="text-slate-400 font-sans text-[10px]">Drop zip file in browser (100% client-side privacy).</span></div>
+    </div>
   </div>
-  <div class="mt-2 pt-2 border-t border-slate-700/50 text-[11px] text-slate-300 space-y-0.5">
+  <div class="mt-1.5 pt-1.5 border-t border-slate-700/50 text-[10px] text-slate-300 space-y-0.5">
     <div>• <strong>Filmstrip Timeline</strong>: Time-travel through page renders.</div>
     <div>• <strong>DOM Snapshots</strong>: Interactive before/after HTML inspection.</div>
     <div>• <strong>Network Activity</strong>: Request/response bodies and mock headers.</div>
@@ -3193,28 +3217,28 @@ layout: section
 </p>
 
 ---
-class: pt-4 pb-2 px-8
+class: pt-2 pb-1 px-8
 ---
 
 # 🗺️ Internal Tools — Trace Workspaces Catalog
 
-### Multi-Repo Service Discovery, Workspaces & Ecosystem Scale
+<h3 class="text-slate-300 text-sm mb-1">Multi-Repo Service Discovery, Workspaces & Ecosystem Scale</h3>
 
-<div class="flex justify-center items-center w-full mt-1">
+<div class="flex justify-center items-center w-full mt-0.5">
   <div class="adorable-arch-container">
     <img src="/trace_workspaces_atlas.png" class="adorable-arch-img" alt="Trace Workspaces and Repositories Catalog" />
   </div>
 </div>
 
 ---
-class: pt-4 pb-2 px-8
+class: pt-2 pb-1 px-8
 ---
 
 # 🕸️ Internal Tools — Multi-Tier Dependency Graph
 
-### Visualizing Microservice Call Chains, External Dependencies & Datastores
+<h3 class="text-slate-300 text-sm mb-1">Visualizing Microservice Call Chains, External Dependencies & Datastores</h3>
 
-<div class="flex justify-center items-center w-full mt-1">
+<div class="flex justify-center items-center w-full mt-0.5">
   <div class="adorable-arch-container">
     <img src="/trace_dependency_graph.png" class="adorable-arch-img" alt="Trace Multi-Tier Service Dependency Graph" />
   </div>
