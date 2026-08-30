@@ -1,4 +1,4 @@
-.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides
+.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides diagram
 
 all: build
 
@@ -109,3 +109,9 @@ check: test lint
 
 slides:
 	cd slides && bunx @slidev/cli slides.md
+
+diagram:
+	@echo "Serving interactive architecture diagram at http://localhost:3031 ..."
+	@echo "Press Ctrl+C to stop."
+	@python3 -m http.server 3031 --directory docs
+

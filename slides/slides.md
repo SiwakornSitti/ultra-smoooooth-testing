@@ -13,24 +13,8 @@ transition: slide-left
 mdc: true
 ---
 
-<div class="cover-slide">
-
-<div class="cover-decor-container">
-  <img src="/cover_decor_hero.jpg" class="cover-decor-img" alt="Microservices Integration Grid" />
-</div>
-
-# Ultra Smoooooth Testing
-
-<div class="cover-subtitle">Mock the world. Control the chaos. Test without limits.</div>
-
-<div class="cover-tags">
-  <span class="cover-tag">⚙️ Go Workspaces</span>
-  <span class="cover-tag">🪝 WireMock</span>
-  <span class="cover-tag">🛡️ Burp Suite</span>
-  <span class="cover-tag">🎭 Playwright</span>
-  <span class="cover-tag">🐳 Testcontainers</span>
-</div>
-
+<div class="cover-poster-container">
+  <img src="/content.png" class="cover-poster-img" alt="Ultra Smoooooth Testing Workshop Cover" />
 </div>
 
 ---

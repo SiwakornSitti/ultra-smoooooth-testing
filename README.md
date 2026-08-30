@@ -232,3 +232,15 @@ make slides
 # OR
 cd slides && bunx @slidev/cli slides.md
 ```
+
+---
+
+## 🗺️ Interactive Architecture Diagram
+
+An interactive, responsive vector architecture diagram with theme switching and guided views is available in `docs/`:
+
+```bash
+# Serve interactive architecture diagram on http://localhost:3031
+make diagram
+```
+
