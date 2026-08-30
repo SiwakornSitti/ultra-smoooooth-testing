@@ -2020,16 +2020,16 @@ flowchart LR
 </div>
 
 ---
-class: pt-1 pb-1 px-8
+class: pt-2 pb-2 px-8
 ---
 
 # 🔄 Stateful Pattern 3: Transient Failure & Retries
 
-<h3 class="text-slate-300 text-sm mb-1">Testing Client Exponential Backoff &amp; Circuit Breakers</h3>
+### Testing Client Exponential Backoff & Circuit Breakers
 
-<div class="w-full flex justify-center py-0.5">
+<div class="w-full flex justify-center py-2 my-auto">
 
-```mermaid {scale: 0.85}
+```mermaid {scale: 0.95}
 flowchart LR
     S([Start]) --> Att1["Attempt 1: Started<br/>💥 503 Unavailable"]
     Att1 --> Att2["Attempt 2: FAIL_1<br/>💥 503 Unavailable"]
@@ -2043,10 +2043,26 @@ flowchart LR
 
 </div>
 
+<div class="slide-card text-xs space-y-1.5 mt-2 p-3 bg-slate-900/60 border-amber-500/40">
+  <h3 class="text-amber-400 font-bold text-xs">🔁 Deterministic Transient Failure &amp; Self-Healing Simulation</h3>
+  <p class="text-slate-300 leading-relaxed text-[11px]">
+    WireMock simulates flaky upstreams by serving <code>503 Service Unavailable</code> on the initial two attempts, transitioning from <code>Started</code> ➔ <code>FAIL_1</code> ➔ <code>FAIL_2</code>, and finally serving <code>200 OK</code> to verify client retry backoff and circuit breaker recovery.
+  </p>
+</div>
+
+---
+class: pt-1 pb-1 px-8
+---
+
+# 🔄 Stateful Pattern 3: Retry & Recovery Stubs
+
+<h3 class="text-slate-300 text-sm mb-1">WireMock Mapping Definitions for Flapping Failures &amp; Self-Healing</h3>
+
 <div class="compact-stateful-grid">
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-rose-500/30">
   <h3 class="text-rose-400 font-bold mb-0.5 text-xs">💥 Flapping Failures (Attempts 1 &amp; 2)</h3>
+  <p class="text-slate-300 mb-1 text-[11px]"><code>Started</code> ➔ <code>FAIL_1</code> (or <code>FAIL_1</code> ➔ <code>FAIL_2</code>)</p>
 
 ```json
 {
@@ -2065,10 +2081,12 @@ flowchart LR
   }
 }
 ```
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🔴 <strong>Returns 503 Service Unavailable</strong></p>
 </div>
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <h3 class="text-emerald-400 font-bold mb-0.5 text-xs">✅ Self-Healing Recovery (Attempt 3)</h3>
+  <p class="text-slate-300 mb-1 text-[11px]"><code>FAIL_2</code> ➔ Final Success State</p>
 
 ```json
 {
@@ -2086,6 +2104,7 @@ flowchart LR
   }
 }
 ```
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> (Client retry verified)</p>
 </div>
 
 </div>
