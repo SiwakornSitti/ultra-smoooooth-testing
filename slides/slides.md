@@ -2182,33 +2182,33 @@ class: pt-1 pb-1 px-8
 
 <h3 class="text-slate-300 text-sm mb-1">Triggering Outbound HTTP Events with <code>serveEventListeners</code></h3>
 
-<div class="grid grid-cols-2 gap-3 text-xs mt-1">
+<div class="compact-stateful-grid">
 
-<div class="slide-card space-y-2 p-2.5 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
+<div class="slide-card space-y-1.5 p-2 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
   <div>
     <h3 class="text-cyan-400 font-bold mb-1 text-xs">⚡ Event-Driven Webhook Execution</h3>
     <p class="text-slate-300 leading-relaxed text-[11px] mb-2">
-      WireMock is not only a passive mock server. With <code>serveEventListeners</code> and the built-in <code>webhook</code> action, WireMock triggers asynchronous outbound HTTP requests to your webhook receivers after serving a response.
+      WireMock can act as an active HTTP client. With <code>serveEventListeners</code> and the built-in <code>webhook</code> action, it fires asynchronous HTTP requests back to your webhook receiver after serving a stub.
     </p>
 
-    <div class="space-y-1.5 pt-1 border-t border-slate-700/50 text-[11px]">
+    <div class="space-y-1 pt-1 border-t border-slate-700/50 text-[11px]">
       <div>
         <strong class="text-emerald-400">🎯 Dynamic Callback URL:</strong>
-        <p class="text-slate-400">Extracts <code>callbackUrl</code> dynamically from the incoming request body using Handlebars.</p>
+        <p class="text-slate-400">Extracts <code>callbackUrl</code> dynamically from the request body.</p>
       </div>
       <div>
-        <strong class="text-amber-400">⏱️ Background Processing Delay:</strong>
-        <p class="text-slate-400">Defines <code>delay.milliseconds</code> to simulate real asynchronous worker queue latency.</p>
+        <strong class="text-amber-400">⏱️ Background Latency:</strong>
+        <p class="text-slate-400">Defines <code>delay</code> to simulate real worker queue latency.</p>
       </div>
       <div>
-        <strong class="text-purple-400">📨 Payload &amp; Header Templating:</strong>
-        <p class="text-slate-400">Generates dynamic webhook payloads, UUIDs, and signatures for webhook validation.</p>
+        <strong class="text-purple-400">📨 Dynamic Payload:</strong>
+        <p class="text-slate-400">Templates webhook payloads and signatures with Handlebars.</p>
       </div>
     </div>
   </div>
 
   <p class="text-slate-400 text-[10px] pt-1 border-t border-slate-700/50">
-    💡 Enables full end-to-end testing of async payment gateways, webhook receivers, and push notifications.
+    💡 Enables full testing of async payment gateways and webhook consumers.
   </p>
 </div>
 
@@ -2223,10 +2223,7 @@ class: pt-1 pb-1 px-8
   },
   "response": {
     "status": 202,
-    "jsonBody": {
-      "status": "PROCESSING",
-      "chargeId": "ch_9901"
-    }
+    "jsonBody": { "status": "PROCESSING", "id": "ch_9901" }
   },
   "serveEventListeners": [
     {
@@ -2234,14 +2231,9 @@ class: pt-1 pb-1 px-8
       "parameters": {
         "method": "POST",
         "url": "{{jsonPath request.body '$.callbackUrl'}}",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": "{\"chargeId\": \"ch_9901\", \"status\": \"SETTLED\"}",
-        "delay": {
-          "type": "fixed",
-          "milliseconds": 1000
-        }
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"id\": \"ch_9901\", \"status\": \"SETTLED\"}",
+        "delay": { "type": "fixed", "milliseconds": 1000 }
       }
     }
   ]
