@@ -11,15 +11,14 @@
   line-height: 1.5;
 }
 
-/* Cover slide: centered framed presentation on matching vibrant orange background */
+/* Cover slide: centered presentation with clean white tone background */
 .slidev-layout:has(.cover-poster-container) {
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
   padding: 0 !important;
-  background: #ea580c !important;
-  background: linear-gradient(135deg, #c2410c 0%, #ea580c 45%, #f97316 100%) !important;
+  background: #ffffff !important;
   height: 100% !important;
 }
 
@@ -445,7 +444,7 @@ code {
   justify-content: center;
   align-items: center;
   margin: auto;
-  background: transparent;
+  background: #ffffff;
 }
 
 .cover-poster-img {
@@ -457,14 +456,15 @@ code {
   object-position: center;
   display: block;
   margin: auto;
-  border: none;
-  box-shadow: none;
-  border-radius: 0;
-  transition: transform 0.3s ease;
+  border-radius: 0.85rem;
+  border: 2px solid #ffffff;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12), 0 0 20px rgba(249, 115, 22, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .cover-poster-container:hover .cover-poster-img {
-  transform: scale(1.01);
+  transform: scale(1.015);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.16), 0 0 28px rgba(249, 115, 22, 0.18);
 }
 
 .cover-slide {
