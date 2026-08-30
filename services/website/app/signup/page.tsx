@@ -121,10 +121,9 @@ export default function SignupPage() {
           <label>
             OTP Mock Scenario{" "}
           <select data-testid="select-signup-otp-scenario" value={otpScenario} onChange={(e) => setOtpScenario(e.target.value)}>
-            <option value="">Real service</option>
-            <option value={MOCK_SCENARIO.OTP.SUCCESS}>{MOCK_SCENARIO.OTP.SUCCESS}</option>
-              <option value={MOCK_SCENARIO.OTP.INVALID}>{MOCK_SCENARIO.OTP.INVALID}</option>
-            </select>
+            <option value={MOCK_SCENARIO.OTP.SUCCESS}>{MOCK_SCENARIO.OTP.SUCCESS} — Valid One-Time Password</option>
+            <option value={MOCK_SCENARIO.OTP.INVALID}>{MOCK_SCENARIO.OTP.INVALID} — Incorrect / Rejected Code</option>
+          </select>
           </label>
           <br />
           <button data-testid="btn-signup-verify-otp" onClick={verifyOtp} disabled={!phoneValid}>
@@ -133,6 +132,9 @@ export default function SignupPage() {
           {otpResult && <p className="profile-result" data-testid="result-signup-otp">{otpResult}</p>}
         </section>
       )}
+      <Link className="signup-button" data-testid="login-button" href="/login">
+        Already have an account? Sign in
+      </Link>
     </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { parseResponse, useBffUrl } from "../lib/api";
@@ -8,6 +8,18 @@ import { AUTH_SESSION_KEY } from "../lib/auth";
 import { MOCK_SCENARIO } from "../lib/mock-scenario";
 
 const THAI_MOBILE_PHONE_PATTERN = /^\+66[689]\d{8}$/;
+
+type UserOption = {
+  id: string;
+  name: string;
+  phone?: string;
+};
+
+const DEFAULT_PHONE_PRESETS = [
+  { phone: "+66800000001", label: "+66800000001 (Narin Chaiyasit - Sender)" },
+  { phone: "+66800000002", label: "+66800000002 (Pimchanok Rattanakul - Receiver)" },
+  { phone: "0800000000", label: "0800000000 (Invalid Thai format - Demo)" },
+];
 
 function responseError(data: unknown, fallback: string) {
   if (typeof data !== "object" || data === null) return fallback;
@@ -20,6 +32,17 @@ function responseError(data: unknown, fallback: string) {
 export default function LoginPage() {
   const router = useRouter();
   const bffUrl = useBffUrl();
+  const [users, setUsers] = useState<UserOption[]>([]);
+
+  useEffect(() => {
+    if (!bffUrl) return;
+    fetch(`${bffUrl}/api/v1/users`)
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setUsers(data);
+      })
+      .catch(() => undefined);
+  }, [bffUrl]);
 
   // Step 1: Paotang authcode exchange
   const [authCode, setAuthCode] = useState("test-authcode");
@@ -39,7 +62,7 @@ export default function LoginPage() {
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
     setPaotangScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
-    setOtpScenario(enabled ? MOCK_SCENARIO.OTP.SUCCESS : "");
+    setOtpScenario(MOCK_SCENARIO.OTP.SUCCESS);
   }
 
   async function resetMockScenarios() {
@@ -178,6 +201,34 @@ export default function LoginPage() {
             )}
           </div>
           <label>
+            Select Phone Number{" "}
+            <select
+              data-testid="select-phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            >
+              {users.filter((u) => u.phone).length > 0 ? (
+                <>
+                  {users
+                    .filter((u) => u.phone)
+                    .map((u) => (
+                      <option key={u.id} value={u.phone}>
+                        {u.phone} ({u.name})
+                      </option>
+                    ))}
+                  <option value="0800000000">0800000000 (Invalid Thai format - Demo)</option>
+                </>
+              ) : (
+                DEFAULT_PHONE_PRESETS.map((preset) => (
+                  <option key={preset.phone} value={preset.phone}>
+                    {preset.label}
+                  </option>
+                ))
+              )}
+            </select>
+          </label>
+          <br />
+          <label>
             Phone{" "}
             <input
               data-testid="input-phone"
@@ -205,7 +256,6 @@ export default function LoginPage() {
             <label>
               OTP Mock Scenario
               <select data-testid="select-otp-scenario" value={otpScenario} onChange={(e) => setOtpScenario(e.target.value)}>
-                <option value="">Real service (Proxy unmatched)</option>
                 <option value={MOCK_SCENARIO.OTP.SUCCESS}>{MOCK_SCENARIO.OTP.SUCCESS} — Valid One-Time Password</option>
                 <option value={MOCK_SCENARIO.OTP.INVALID}>{MOCK_SCENARIO.OTP.INVALID} — Incorrect / Rejected Code</option>
               </select>
