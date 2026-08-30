@@ -1322,6 +1322,8 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
 # 🪄 WireMock — Dynamic Response Templating
 
@@ -1337,8 +1339,15 @@ class: pt-2 pb-2 px-8
   },
   "response": {
     "status": 201,
-    "headers": { "Content-Type": "application/json" },
-    "body": "{\"orderId\": \"{{randomValue type='UUID'}}\", \"userId\": \"{{jsonPath request.body '$.userId'}}\", \"traceId\": \"{{request.headers.X-Trace-ID}}\", \"createdAt\": \"{{now}}\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "orderId": "{{randomValue type='UUID'}}",
+      "userId": "{{jsonPath request.body '$.userId'}}",
+      "traceId": "{{request.headers.[X-Trace-ID]}}",
+      "createdAt": "{{now}}"
+    },
     "transformers": ["response-template"]
   }
 }
@@ -1346,8 +1355,8 @@ class: pt-2 pb-2 px-8
 
 </div>
 
-<div v-pre class="slide-card text-sm mt-3">
-  🪄 Echoes incoming request headers/body and dynamically generates UUIDs and timestamps on the fly with <code>response-template</code>.
+<div v-pre class="slide-card text-xs mt-2 p-2">
+  🪄 <strong>Clean Formatting with <code>jsonBody</code></strong>: Formats the response payload as a native JSON structure and dynamically interpolates request headers, body JSONPath, UUIDs, and timestamps via <code>response-template</code>.
 </div>
 
 ---
