@@ -1930,8 +1930,16 @@ class: pt-1 pb-1 px-8
   "scenarioName": "auth-token-flow",
   "requiredScenarioState": "Started",
   "newScenarioState": "TOKEN_ISSUED",
-  "request": { "method": "POST", "urlPath": "/lab/api/oauth/token" },
-  "response": { "status": 200, "jsonBody": { "access_token": "jwt_abc123" } }
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/oauth/token"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "access_token": "jwt_abc123"
+    }
+  }
 }
 ```
   </div>
@@ -1947,8 +1955,16 @@ class: pt-1 pb-1 px-8
 {
   "scenarioName": "auth-token-flow",
   "requiredScenarioState": "TOKEN_ISSUED",
-  "request": { "method": "POST", "urlPath": "/lab/api/oauth/token" },
-  "response": { "status": 400, "jsonBody": { "error": "invalid_grant" } }
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/oauth/token"
+  },
+  "response": {
+    "status": 400,
+    "jsonBody": {
+      "error": "invalid_grant"
+    }
+  }
 }
 ```
   </div>
@@ -1958,12 +1974,14 @@ class: pt-1 pb-1 px-8
 </div>
 
 ---
+class: pt-1 pb-1 px-8
+---
 
 # 🔄 Stateful Pattern 2: Multi-Step Order Lifecycle
 
-### Modeling Sequential Domain State Transitions
+<h3 class="text-slate-300 text-sm mb-1">Modeling Sequential Domain State Transitions</h3>
 
-<div class="w-full flex justify-center py-1">
+<div class="w-full flex justify-center py-0.5">
 
 ```mermaid {scale: 0.85}
 flowchart LR
@@ -1984,12 +2002,20 @@ flowchart LR
   "scenarioName": "order-fulfillment-lifecycle",
   "requiredScenarioState": "PAID",
   "newScenarioState": "SHIPPED",
-  "request": { "method": "POST", "urlPath": "/lab/api/orders/101/ship" },
-  "response": { "status": 200, "jsonBody": { "status": "ORDER_SHIPPED" } }
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/orders/101/ship"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "status": "ORDER_SHIPPED"
+    }
+  }
 }
 ```
 
-<div class="slide-card text-sm mt-2">
+<div class="slide-card text-xs mt-1 p-1.5">
   📦 Shipping is allowed only after <code>PAID</code>. A duplicate ship attempt triggers a <code>400 Bad Request</code> stub.
 </div>
 
@@ -1999,7 +2025,7 @@ class: pt-1 pb-1 px-8
 
 # 🔄 Stateful Pattern 3: Transient Failure & Retries
 
-### Testing Client Exponential Backoff & Circuit Breakers
+<h3 class="text-slate-300 text-sm mb-1">Testing Client Exponential Backoff &amp; Circuit Breakers</h3>
 
 <div class="w-full flex justify-center py-0.5">
 
@@ -2019,29 +2045,45 @@ flowchart LR
 
 <div class="jitter-grid text-xs mt-0.5">
 
-<div class="slide-card space-y-1">
-  <h3 class="text-rose-400 font-bold">💥 Flapping Failures (Attempts 1 &amp; 2)</h3>
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-rose-500/30">
+  <h3 class="text-rose-400 font-bold mb-0.5 text-xs">💥 Flapping Failures (Attempts 1 &amp; 2)</h3>
 
 ```json
 {
   "scenarioName": "retry-flow",
   "requiredScenarioState": "Started",
   "newScenarioState": "FAIL_1",
-  "request": { "method": "GET", "urlPath": "/lab/api/flaky" },
-  "response": { "status": 503, "jsonBody": { "error": "Flapping" } }
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/flaky"
+  },
+  "response": {
+    "status": 503,
+    "jsonBody": {
+      "error": "Flapping"
+    }
+  }
 }
 ```
 </div>
 
-<div class="slide-card space-y-1">
-  <h3 class="text-emerald-400 font-bold">✅ Self-Healing Recovery (Attempt 3)</h3>
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 font-bold mb-0.5 text-xs">✅ Self-Healing Recovery (Attempt 3)</h3>
 
 ```json
 {
   "scenarioName": "retry-flow",
   "requiredScenarioState": "FAIL_2",
-  "request": { "method": "GET", "urlPath": "/lab/api/flaky" },
-  "response": { "status": 200, "jsonBody": { "status": "RECOVERED" } }
+  "request": {
+    "method": "GET",
+    "urlPath": "/lab/api/flaky"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "status": "RECOVERED"
+    }
+  }
 }
 ```
 </div>
@@ -2049,17 +2091,19 @@ flowchart LR
 </div>
 
 ---
+class: pt-1 pb-1 px-8
+---
 
 # 🔄 Stateful Pattern 4: Webhook Idempotency
 
-### At-Least-Once Delivery & Duplicate Message Detection
+<h3 class="text-slate-300 text-sm mb-1">At-Least-Once Delivery &amp; Duplicate Message Detection</h3>
 
-<div class="jitter-grid text-sm">
+<div class="jitter-grid text-xs mt-1">
 
-<div class="slide-card space-y-2">
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <div>
-    <h3 class="text-emerald-400 font-bold mb-1">📨 1st Delivery: Processed</h3>
-    <p class="text-slate-300 mb-2"><code>Started</code> ➔ <code>WEBHOOK_PROCESSED</code>: Accepts payment event.</p>
+    <h3 class="text-emerald-400 font-bold mb-0.5 text-xs">📨 1st Delivery: Processed</h3>
+    <p class="text-slate-300 mb-1 text-[11px]"><code>Started</code> ➔ <code>WEBHOOK_PROCESSED</code>: Accepts payment event.</p>
 
 ```json
 {
@@ -2072,18 +2116,20 @@ flowchart LR
   },
   "response": {
     "status": 202,
-    "jsonBody": { "status": "ACCEPTED" }
+    "jsonBody": {
+      "status": "ACCEPTED"
+    }
   }
 }
 ```
   </div>
-  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🟢 <strong>Returns 202 Accepted</strong> (First-time processing)</p>
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 202 Accepted</strong> (First-time processing)</p>
 </div>
 
-<div class="slide-card space-y-2">
+<div class="slide-card space-y-1 p-2 bg-slate-900/60 border-amber-500/30">
   <div>
-    <h3 class="text-amber-400 font-bold mb-1">🛡️ 2nd Delivery: Duplicate</h3>
-    <p class="text-slate-300 mb-2"><code>WEBHOOK_PROCESSED</code>: Detects duplicate and rejects.</p>
+    <h3 class="text-amber-400 font-bold mb-0.5 text-xs">🛡️ 2nd Delivery: Duplicate</h3>
+    <p class="text-slate-300 mb-1 text-[11px]"><code>WEBHOOK_PROCESSED</code>: Detects duplicate and rejects.</p>
 
 ```json
 {
@@ -2095,12 +2141,14 @@ flowchart LR
   },
   "response": {
     "status": 409,
-    "jsonBody": { "error": "DUPLICATE_EVENT" }
+    "jsonBody": {
+      "error": "DUPLICATE_EVENT"
+    }
   }
 }
 ```
   </div>
-  <p class="text-slate-300 text-sm pt-1 border-t border-slate-700/50">🟡 <strong>Returns 409 Conflict</strong> (Idempotent guard)</p>
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟡 <strong>Returns 409 Conflict</strong> (Idempotent guard)</p>
 </div>
 
 </div>
