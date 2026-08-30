@@ -1244,10 +1244,12 @@ layout: section
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
-# 🎯 WireMock RegEx — JSONPath Phone Validation
+# 🎯 WireMock RegEx — Multiple JSONPath Matchers
 
-### Thai Mobile Number Pattern Matching in Payload
+### Conjunctive (AND) Multi-Field Payload Validation with JSONPath
 
 ```json
 {
@@ -1257,18 +1259,27 @@ layout: section
     "bodyPatterns": [
       {
         "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]"
+      },
+      {
+        "matchesJsonPath": "$[?(@.channel =~ /^(SMS|WHATSAPP)$/)]"
+      },
+      {
+        "matchesJsonPath": "$.auth[?(@.purpose == 'TRANSFER_VERIFICATION')]"
       }
     ]
   },
   "response": {
     "status": 200,
-    "jsonBody": { "status": "sent" }
+    "jsonBody": {
+      "status": "sent",
+      "channel": "SMS"
+    }
   }
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  📱 Extracts and regex-evaluates only the <code>phone</code> field without breaking on whitespace or extra payload keys.
+<div class="slide-card text-xs mt-2 p-2">
+  🔗 <strong>Conjunctive (AND) Evaluation</strong>: All <code>bodyPatterns</code> JSONPath expressions must evaluate to true (Thai mobile regex + channel enum + auth purpose) while remaining immune to key ordering and extraneous fields.
 </div>
 
 ---
