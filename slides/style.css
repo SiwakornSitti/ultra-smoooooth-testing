@@ -449,23 +449,22 @@ code {
 }
 
 .cover-poster-img {
-  max-height: 74vh;
-  max-width: 82%;
+  max-height: 76vh;
+  max-width: 84%;
   width: auto;
   height: auto;
   object-fit: contain;
   object-position: center;
   display: block;
   margin: auto;
-  border-radius: 0.85rem;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 0, 0, 0.2);
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  transition: transform 0.3s ease;
 }
 
 .cover-poster-container:hover .cover-poster-img {
-  transform: scale(1.015);
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5), 0 0 35px rgba(255, 255, 255, 0.25);
+  transform: scale(1.01);
 }
 
 .cover-slide {
