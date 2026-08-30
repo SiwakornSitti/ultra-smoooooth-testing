@@ -378,6 +378,19 @@ layout: section
   Before we can eliminate test flakiness, we need to understand our system topology: a Go Workspace monorepo, 6 microservices, PostgreSQL, and external provider integrations.
 </p>
 
+---
+class: pt-4 pb-2 px-8
+---
+
+# 🗺️ System Architecture — Ecosystem Overview
+
+### Full-Stack Microservices, Gateways, Proxies & Mocks Topology
+
+<div class="flex justify-center items-center w-full mt-1">
+  <div class="adorable-arch-container">
+    <img src="/adorable_arch_art.jpg" class="adorable-arch-img" alt="Ultra Smoooooth Microservices System Architecture" />
+  </div>
+</div>
 
 ---
 
@@ -2165,6 +2178,20 @@ layout: section
   WireMock virtualizes downstream services, but what about manipulating live in-flight traffic between web/mobile clients and backend gateways without modifying code? Enter Burp Suite.
 </p>
 
+
+---
+class: pt-4 pb-2 px-8
+---
+
+# 🛡️ Burp Suite — MITM Proxy Architecture
+
+### Client, MITM Proxy Engine & Backend Microservices Interaction
+
+<div class="flex justify-center items-center w-full mt-1">
+  <div class="adorable-arch-container">
+    <img src="/burp_suite_architecture.jpg" class="adorable-arch-img" alt="Burp Suite MITM Proxy Architecture" />
+  </div>
+</div>
 
 ---
 class: pt-4 pb-2 px-8
