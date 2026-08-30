@@ -8,6 +8,7 @@ import { getOrCreateNationalId } from "../lib/national-id";
 type AccountPanelProps = {
   bffUrl: string;
   showMockControls: boolean;
+  showCreateUser?: boolean;
 };
 
 type UserOption = {
@@ -98,7 +99,7 @@ function UserSummary({ user, testId }: { user: Required<UserOption>; testId: str
   );
 }
 
-export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
+export function AccountPanel({ bffUrl, showMockControls, showCreateUser = true }: AccountPanelProps) {
   // Step 1: create user
   const [name, setName] = useState("Demo User");
   const [email, setEmail] = useState("demo.user@example.com");
@@ -247,36 +248,38 @@ export function AccountPanel({ bffUrl, showMockControls }: AccountPanelProps) {
 
   return (
     <>
-      <section className="account-section" data-testid="section-create-user" id="section-create-user">
-        <p className="eyebrow">Customer workspace</p>
-        <h2>Create User</h2>
-        <label>
-          Name{" "}
-          <input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} />
-        </label>
-        <label>
-          Email{" "}
-          <input data-testid="input-email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
-        <label>
-          Phone{" "}
-          <input data-testid="input-phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        </label>
-        {showMockControls && (
+      {showCreateUser && (
+        <section className="account-section" data-testid="section-create-user" id="section-create-user">
+          <p className="eyebrow">Customer workspace</p>
+          <h2>Create User</h2>
           <label>
-            User Mock Scenario{" "}
-            <select data-testid="select-create-user-scenario" value={userScenario} onChange={(e) => setUserScenario(e.target.value)}>
-              <option value="">Real service</option>
-              <option value={MOCK_SCENARIO.USER.EMAIL_DUPLICATE}>{MOCK_SCENARIO.USER.EMAIL_DUPLICATE}</option>
-            </select>
+            Name{" "}
+            <input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} />
           </label>
-        )}
-        <button data-testid="btn-create-user" onClick={createUser}>
-          Create User
-        </button>
-        {createdUser && <UserSummary user={createdUser} testId="created-user-summary" />}
-        {userResult && <p className="profile-result" data-testid="result-create-user">{userResult}</p>}
-      </section>
+          <label>
+            Email{" "}
+            <input data-testid="input-email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </label>
+          <label>
+            Phone{" "}
+            <input data-testid="input-phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </label>
+          {showMockControls && (
+            <label>
+              User Mock Scenario{" "}
+              <select data-testid="select-create-user-scenario" value={userScenario} onChange={(e) => setUserScenario(e.target.value)}>
+                <option value="">Real service</option>
+                <option value={MOCK_SCENARIO.USER.EMAIL_DUPLICATE}>{MOCK_SCENARIO.USER.EMAIL_DUPLICATE}</option>
+              </select>
+            </label>
+          )}
+          <button data-testid="btn-create-user" onClick={createUser}>
+            Create User
+          </button>
+          {createdUser && <UserSummary user={createdUser} testId="created-user-summary" />}
+          {userResult && <p className="profile-result" data-testid="result-create-user">{userResult}</p>}
+        </section>
+      )}
 
       <section className="account-section" data-testid="section-create-account" id="section-create-account">
         <p className="eyebrow">Customer workspace</p>

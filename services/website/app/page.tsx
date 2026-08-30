@@ -131,7 +131,7 @@ export default function Home() {
       </header>
       <div className="page-grid">
         <div className="workspace-column">
-          <AccountPanel bffUrl={bffUrl} showMockControls={showMockControls} />
+          <AccountPanel bffUrl={bffUrl} showMockControls={showMockControls} showCreateUser={false} />
         </div>
         <div className="workspace-column">
           <section data-testid="section-ekyc">

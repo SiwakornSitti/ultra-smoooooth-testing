@@ -13,12 +13,12 @@ type UserOption = {
   id: string;
   name: string;
   phone?: string;
+  email?: string;
 };
 
-const DEFAULT_PHONE_PRESETS = [
-  { phone: "+66800000001", label: "+66800000001 (Narin Chaiyasit - Sender)" },
-  { phone: "+66800000002", label: "+66800000002 (Pimchanok Rattanakul - Receiver)" },
-  { phone: "0800000000", label: "0800000000 (Invalid Thai format - Demo)" },
+const DEFAULT_USERS: UserOption[] = [
+  { id: "00000000-0000-0000-0000-000000000001", name: "Narin Chaiyasit", email: "sender@example.com", phone: "+66800000001" },
+  { id: "00000000-0000-0000-0000-000000000002", name: "Pimchanok Rattanakul", email: "receiver@example.com", phone: "+66800000002" },
 ];
 
 function responseError(data: unknown, fallback: string) {
@@ -33,16 +33,26 @@ export default function LoginPage() {
   const router = useRouter();
   const bffUrl = useBffUrl();
   const [users, setUsers] = useState<UserOption[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<string>(DEFAULT_USERS[0].id);
+
+  const availableUsers = users.length > 0 ? users : DEFAULT_USERS;
+  const selectedUser = availableUsers.find((u) => u.id === selectedUserId) || availableUsers[0];
 
   useEffect(() => {
     if (!bffUrl) return;
     fetch(`${bffUrl}/api/v1/users`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setUsers(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setUsers(data);
+          const currentUser = data.find((u) => u.id === selectedUserId) || data[0];
+          if (currentUser?.phone) {
+            setPhone(currentUser.phone);
+          }
+        }
       })
       .catch(() => undefined);
-  }, [bffUrl]);
+  }, [bffUrl, selectedUserId]);
 
   // Step 1: Paotang authcode exchange
   const [authCode, setAuthCode] = useState("test-authcode");
@@ -59,25 +69,57 @@ export default function LoginPage() {
   const [otpResult, setOtpResult] = useState("");
   const phoneValid = THAI_MOBILE_PHONE_PATTERN.test(phone);
 
+  function handleSelectUser(userId: string) {
+    setSelectedUserId(userId);
+    const user = availableUsers.find((u) => u.id === userId);
+    if (user?.phone) {
+      setPhone(user.phone);
+    }
+  }
+
   function toggleMockControls(enabled: boolean) {
     setShowMockControls(enabled);
     setPaotangScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
     setOtpScenario(MOCK_SCENARIO.OTP.SUCCESS);
   }
 
-  async function resetMockScenarios() {
+  async function resetDefaultData() {
+    if (!window.confirm("Reset all workshop data to the default seeded values? This cannot be undone.")) return;
+
     setIsResetting(true);
     try {
       const res = await fetch(`${bffUrl}/api/v1/workshop/reset`, { method: "POST" });
       if (res.ok) {
-        setPaotangResult("Mock scenarios reset to initial state.");
+        setPaotangResult("");
         setOtpResult("");
         setTokenExchanged(false);
+        setAuthCode("test-authcode");
+        setOtpCode("123456");
+        setPaotangScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
+        setOtpScenario(MOCK_SCENARIO.OTP.SUCCESS);
+
+        try {
+          const usersRes = await fetch(`${bffUrl}/api/v1/users`);
+          if (usersRes.ok) {
+            const data = await usersRes.json();
+            if (Array.isArray(data) && data.length > 0) {
+              setUsers(data);
+              setSelectedUserId(data[0].id);
+              if (data[0].phone) setPhone(data[0].phone);
+              return;
+            }
+          }
+        } catch {
+          // fallback to default users
+        }
+        setUsers(DEFAULT_USERS);
+        setSelectedUserId(DEFAULT_USERS[0].id);
+        if (DEFAULT_USERS[0].phone) setPhone(DEFAULT_USERS[0].phone);
       } else {
-        setPaotangResult("Unable to reset mock scenarios.");
+        window.alert("Unable to reset workshop data.");
       }
     } catch {
-      setPaotangResult("Unable to reset mock scenarios.");
+      window.alert("Unable to reset workshop data.");
     } finally {
       setIsResetting(false);
     }
@@ -133,21 +175,21 @@ export default function LoginPage() {
             data-testid="btn-reset-default-data"
             type="button"
             disabled={!bffUrl || isResetting}
-            onClick={resetMockScenarios}
+            onClick={resetDefaultData}
           >
             <svg className="reset-danger-icon" aria-hidden="true" viewBox="0 0 24 24">
               <path d="M12 3 2.5 20h19L12 3Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
               <path d="M12 9v4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               <circle cx="12" cy="17.25" r="1" fill="currentColor" />
             </svg>
-            {isResetting ? "Resetting…" : "Reset mock scenarios"}
+            {isResetting ? "Resetting…" : "Reset workshop data"}
           </button>
         </div>
         <div data-testid="example-user">
           <strong>Example user</strong>
-          <p>Name: Narin Chaiyasit</p>
-          <p>Email: sender@example.com</p>
-          <p>Phone: +66800000001</p>
+          <p>Name: {selectedUser?.name || "Narin Chaiyasit"}</p>
+          <p>Email: {selectedUser?.email || "sender@example.com"}</p>
+          <p>Phone: {selectedUser?.phone || "+66800000001"}</p>
         </div>
         <label className="toggle-field">
           <input
@@ -166,6 +208,21 @@ export default function LoginPage() {
             <h2>Step 1: Exchange Authcode</h2>
             {tokenExchanged && <span className="profile-status" style={{ background: "#e1f5ea", color: "#14804a" }}>Exchanged</span>}
           </div>
+          <label>
+            Select User{" "}
+            <select
+              data-testid="select-user"
+              value={selectedUser?.id || selectedUserId}
+              onChange={(e) => handleSelectUser(e.target.value)}
+            >
+              {availableUsers.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.name} {u.phone ? `(${u.phone})` : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+          <br />
           <label>
             Auth Code{" "}
             <input data-testid="input-authcode" value={authCode} onChange={(e) => setAuthCode(e.target.value)} />
@@ -200,53 +257,13 @@ export default function LoginPage() {
               <span className="profile-status" style={{ background: "#e7edff", color: "#315bea" }}>Ready</span>
             )}
           </div>
-          <label>
-            Select Phone Number{" "}
-            <select
-              data-testid="select-phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            >
-              {users.filter((u) => u.phone).length > 0 ? (
-                <>
-                  {users
-                    .filter((u) => u.phone)
-                    .map((u) => (
-                      <option key={u.id} value={u.phone}>
-                        {u.phone} ({u.name})
-                      </option>
-                    ))}
-                  <option value="0800000000">0800000000 (Invalid Thai format - Demo)</option>
-                </>
-              ) : (
-                DEFAULT_PHONE_PRESETS.map((preset) => (
-                  <option key={preset.phone} value={preset.phone}>
-                    {preset.label}
-                  </option>
-                ))
-              )}
-            </select>
-          </label>
-          <br />
-          <label>
-            Phone{" "}
-            <input
-              data-testid="input-phone"
-              type="tel"
-              inputMode="tel"
-              pattern="\\+66[689][0-9]{8}"
-              title="Enter a Thai mobile number such as +66800000000"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              aria-invalid={!phoneValid}
-            />
-          </label>
-          {!phoneValid && (
-            <p data-testid="phone-validation-error">
-              Enter a valid Thai mobile number starting with +66 and followed by exactly 9 digits.
-            </p>
-          )}
-          <br />
+          <div className="profile-summary" data-testid="otp-user-info" style={{ marginTop: "0.5rem", marginBottom: "0.75rem" }}>
+            <div className="profile-customer">
+              <strong>{selectedUser?.name || "Narin Chaiyasit"}</strong>
+              <span className="profile-summary-id">Phone: {phone || "+66800000001"}</span>
+            </div>
+          </div>
+          <input data-testid="input-phone" type="hidden" value={phone} />
           <label>
             OTP Code{" "}
             <input data-testid="input-otp" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} />
