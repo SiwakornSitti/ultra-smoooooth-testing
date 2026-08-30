@@ -23,7 +23,7 @@ mdc: true
 class: pt-3 pb-2 px-8
 ---
 
-# ⚠️ The Integration Testing Crisis
+# ⚠️ The Testing Crisis
 
 ### Why Traditional Microservice Testing Fails in Practice
 
