@@ -13,8 +13,10 @@ transition: slide-left
 mdc: true
 ---
 
-<div class="cover-poster-container">
-  <img src="/content.png" class="cover-poster-img" alt="Ultra Smoooooth Testing Workshop Cover" />
+<div class="flex justify-center items-center w-full h-full my-auto">
+  <div class="cover-poster-container">
+    <img src="/content.png" class="cover-poster-img" alt="Ultra Smoooooth Testing Workshop Cover" />
+  </div>
 </div>
 
 ---

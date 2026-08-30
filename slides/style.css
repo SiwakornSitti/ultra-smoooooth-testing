@@ -13,10 +13,13 @@
 
 /* Cover slide: centered framed presentation on dark theme */
 .slidev-layout:has(.cover-poster-container) {
-  justify-content: center;
-  align-items: center;
-  padding: 1.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;
   background: #0f172a !important;
+  height: 100% !important;
 }
 
 .slidev-layout:has(.cover-slide) {
@@ -440,17 +443,19 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: auto;
   background: transparent;
 }
 
 .cover-poster-img {
-  max-height: 76vh;
-  max-width: 84%;
+  max-height: 74vh;
+  max-width: 82%;
   width: auto;
   height: auto;
   object-fit: contain;
   object-position: center;
   display: block;
+  margin: auto;
   border-radius: 0.85rem;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(249, 115, 22, 0.25);
   border: 1.5px solid rgba(249, 115, 22, 0.35);
