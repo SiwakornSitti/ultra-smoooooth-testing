@@ -587,13 +587,13 @@ code {
 
 .adorable-arch-container {
   width: 100%;
-  max-width: 980px;
-  height: 72vh;
-  max-height: 74vh;
+  max-width: 920px;
+  height: 60vh;
+  max-height: 62vh;
   margin: 0 auto;
   border-radius: 0.75rem;
   overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(52, 211, 153, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 16px rgba(52, 211, 153, 0.2);
   border: 1.5px solid rgba(52, 211, 153, 0.45);
   background: #0f172a;
   display: flex;

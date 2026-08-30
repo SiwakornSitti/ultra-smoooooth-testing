@@ -379,7 +379,7 @@ layout: section
 </p>
 
 ---
-class: pt-4 pb-2 px-8
+class: pt-2 pb-2 px-8
 ---
 
 # 🗺️ System Architecture — Ecosystem Overview
