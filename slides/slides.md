@@ -379,20 +379,6 @@ layout: section
 </p>
 
 ---
-class: pt-2 pb-2 px-8
----
-
-# 🗺️ System Architecture — Ecosystem Overview
-
-### Full-Stack Microservices, Gateways, Proxies & Mocks Topology
-
-<div class="flex justify-center items-center w-full mt-1">
-  <div class="adorable-arch-container">
-    <img src="/adorable_arch_art.jpg" class="adorable-arch-img" alt="Ultra Smoooooth Microservices System Architecture" />
-  </div>
-</div>
-
----
 
 # 🗺️ Detailed Service Topology & Flow
 
