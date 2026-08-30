@@ -379,81 +379,19 @@ layout: section
 </p>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
 # 🗺️ Detailed Service Topology & Flow
 
+### Interactive Microservices Ecosystem & Call Flow Diagram
 
-<div class="topology-diagram w-full flex justify-center items-center my-auto py-1">
-
-```mermaid {scale: 0.62}
-flowchart LR
-    subgraph Clients["🌐 1. Client & Automation Layer (Playwright & Burp)"]
-        Website["💻 Web Application<br/>Next.js :3000"]
-        Playwright["🎭 Playwright E2E<br/>Runner"]
-        Burp["🛡️ Burp MITM Proxy<br/>:8080"]
-    end
-
-    subgraph API_Gateway["⚡ 2. Gateway & Orchestration Layer"]
-        BFF["⚙️ bff-service<br/>Go :8080"]
-    end
-
-    subgraph Core_Services["🏡 3. Microservices Domain Layer (Go Workspace)"]
-        UserService["👤 user-service<br/>:8081"]
-        BankService["🏦 bank-account-service<br/>:8082"]
-        EKYCService["🪪 ekyc-service<br/>:8084"]
-        TransferService["💸 transfer-service<br/>:8085"]
-        OTPService["🔑 otp-service<br/>:8087"]
-    end
-
-    subgraph Persistence["🗄️ 4. Persistence Layer"]
-        DB[("🐘 PostgreSQL DB<br/>:5432")]
-    end
-
-    subgraph External_Mocks["🤖 5. External Mocks (WireMock Virtualization)"]
-        WireMock["🪝 WireMock Stubs<br/>:8088"]
-        PaotangProvider["💳 Paotang Provider"]
-        SMSProvider["📡 SMS Provider"]
-    end
-
-    Website -->|REST| BFF
-    Playwright -->|E2E + page.addInitScript| Website
-    Website -.->|MITM Intercept| Burp
-    Burp -.->|Proxied REST| BFF
-
-    BFF -->|/users| UserService
-    BFF -->|/accounts| BankService
-    BFF -->|/ekycs| EKYCService
-    BFF -->|/transfers| TransferService
-    BFF -->|/auth/otp/verify| OTPService
-
-    UserService -->|SQL| DB
-    BankService -->|SQL| DB
-    TransferService -->|SQL| DB
-
-    UserService -->|OAuth via WireMock| WireMock
-    OTPService -->|Send SMS via WireMock| WireMock
-    WireMock -.->|Proxy Unmatched| PaotangProvider
-    WireMock -.->|Proxy Unmatched| SMSProvider
-
-    classDef client fill:#0e7490,stroke:#67e8f9,color:#f8fafc,stroke-width:3px
-    classDef gateway fill:#1d4ed8,stroke:#93c5fd,color:#ffffff,stroke-width:3px
-    classDef core fill:#047857,stroke:#6ee7b7,color:#ffffff,stroke-width:3px
-    classDef persistence fill:#4338ca,stroke:#c4b5fd,color:#ffffff,stroke-width:3px
-    classDef external fill:#b45309,stroke:#fcd34d,color:#fff7ed,stroke-width:3px
-
-    class Website,Playwright,Burp client
-    class BFF gateway
-    class UserService,BankService,EKYCService,TransferService,OTPService core
-    class DB persistence
-    class WireMock,PaotangProvider,SMSProvider external
-
-    style Clients fill:#082f49,stroke:#0891b2,stroke-width:2px,color:#cffafe
-    style API_Gateway fill:#172554,stroke:#2563eb,stroke-width:2px,color:#dbeafe
-    style Core_Services fill:#052e2b,stroke:#059669,stroke-width:2px,color:#d1fae5
-    style Persistence fill:#1e1b4b,stroke:#7c3aed,stroke-width:2px,color:#ede9fe
-    style External_Mocks fill:#451a03,stroke:#d97706,stroke-width:2px,color:#ffedd5
-```
-
+<div class="w-full flex justify-center items-center my-auto">
+  <iframe 
+    src="/system-architecture.html?embed=1&theme=dark" 
+    class="w-full h-[66vh] rounded-lg border border-slate-700/60 shadow-2xl bg-[#020617]"
+    allow="fullscreen"
+  ></iframe>
 </div>
 
 ---
