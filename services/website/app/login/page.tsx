@@ -191,15 +191,17 @@ export default function LoginPage() {
           <p>Email: {selectedUser?.email || "sender@example.com"}</p>
           <p>Phone: {selectedUser?.phone || "+66800000001"}</p>
         </div>
-        <label className="toggle-field">
-          <input
-            data-testid="toggle-mock-controls"
-            type="checkbox"
-            checked={showMockControls}
-            onChange={(e) => toggleMockControls(e.target.checked)}
-          />
-          <span>Show mock controls</span>
-        </label>
+        <section className="workshop-controls" aria-label="Workshop controls">
+          <label className="toggle-field">
+            <input
+              data-testid="toggle-mock-controls"
+              type="checkbox"
+              checked={showMockControls}
+              onChange={(e) => toggleMockControls(e.target.checked)}
+            />
+            <span>Show mock controls</span>
+          </label>
+        </section>
       </header>
 
       <div className="page-grid">
