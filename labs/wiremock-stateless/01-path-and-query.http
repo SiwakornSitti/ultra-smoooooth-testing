@@ -2,4 +2,3 @@
 
 ### Scenario 1: path, query, and header matching
 GET {{baseUrl}}/lab/api/stateless/users?role=ADMIN&status=active
-Mock-Scenario: OTP:INVALID
