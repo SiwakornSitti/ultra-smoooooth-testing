@@ -73,7 +73,17 @@ flowchart TD
 | **Playwright** | Running End-to-End (E2E) browser tests and API integration test suites. |
 | **Burp Suite** | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic. |
 | **Go (v1.25+)** | Workspace development (`go.work`) and executing unit/integration test suites. |
-| **WireMock GUI** | Stubbing 3rd-party external APIs (Paotang Pass OAuth, SMS Gateway, OTP). |
+| **WireMock GUI** | Stubbing 3rd-party external APIs (Paotang Pass OAuth, SMS Gateway, OTP) at `http://localhost:8088/__admin/`. |
+
+### 🌐 Quick Access URLs
+
+| Service / Interface | Local URL | Notes / Credentials |
+| :--- | :--- | :--- |
+| 💻 **Website** | [http://localhost:3000](http://localhost:3000) | QA Application (Default user: Narin `+66800000001`) |
+| 🪝 **WireMock Web UI** | [http://localhost:8088/__admin/](http://localhost:8088/__admin/) | Interactive Stub & Scenario Dashboard (`admin` / `password`) |
+| ⚙️ **BFF Service** | [http://localhost:8080](http://localhost:8080) | Backend-for-Frontend API Gateway |
+| 🗺️ **Architecture Diagram** | [http://localhost:3031](http://localhost:3031) | Interactive diagram (`make diagram`) |
+| 📊 **Slidev Presentation** | [http://localhost:3030](http://localhost:3030) | Workshop slide deck (`make slides`) |
 
 ---
 

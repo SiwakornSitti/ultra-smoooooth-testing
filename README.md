@@ -89,7 +89,7 @@ flowchart TD
 - **`utility-service`** (`:8086`): Workshop utility service that restores the seeded database state.
 - **`otp-service`** (`:8087`): OTP generation and verification microservice that delegates SMS message delivery to SMS Provider via WireMock.
 - **`website`** (`:3000`): Next.js 16 web client interface.
-- **`wiremock`** (`:8088`): WireMock GUI mocking third-party integrations (Paotang Pass, OTP, SMS).
+- **`wiremock`** (`:8088`): WireMock Web UI & mock server dashboard (`http://localhost:8088/__admin/`, default login: `admin` / `password`).
 
 ---
 
@@ -185,7 +185,15 @@ docker compose up --build
 docker compose down
 ```
 
-Open `http://localhost:3000`.
+### Quick Access URLs
+
+| Service / Interface | Local URL | Notes / Credentials |
+| :--- | :--- | :--- |
+| 💻 **Website** | [http://localhost:3000](http://localhost:3000) | QA Application (Default user: Narin `+66800000001`) |
+| 🪝 **WireMock Web UI** | [http://localhost:8088/__admin/](http://localhost:8088/__admin/) | Interactive Stub & Scenario Dashboard (`admin` / `password`) |
+| ⚙️ **BFF Service** | [http://localhost:8080](http://localhost:8080) | Backend-for-Frontend API Gateway |
+| 🗺️ **Architecture Diagram** | [http://localhost:3031](http://localhost:3031) | Interactive diagram (`make diagram`) |
+| 📊 **Slidev Presentation** | [http://localhost:3030](http://localhost:3030) | Workshop slide deck (`make slides`) |
 
 Or start Docker, apply migrations, and load seed data with one command:
 

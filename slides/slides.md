@@ -3137,6 +3137,11 @@ export default defineConfig({
 
 </div>
 
+<div class="slide-card text-xs mt-2 p-2 mb-0 flex items-center justify-between">
+  <span>🖥️ <strong>WireMock Web UI Dashboard</strong>: <code>http://localhost:8088/__admin/</code></span>
+  <span class="text-slate-400 font-mono text-[10px]">Default Auth: <code>admin</code> / <code>password</code></span>
+</div>
+
 ---
 
 # 🐳 Testcontainers & Local Dev — Command Cheat Sheet
