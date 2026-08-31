@@ -89,7 +89,7 @@ flowchart TD
 - **`utility-service`** (`:8086`): Workshop utility service that restores the seeded database state.
 - **`otp-service`** (`:8087`): OTP generation and verification microservice that delegates SMS message delivery to SMS Provider via WireMock.
 - **`website`** (`:3000`): Next.js 16 web client interface.
-- **`wiremock`** (`:8088`): WireMock Web UI & mock server dashboard (`http://localhost:8088/__admin/`, default login: `admin` / `password`).
+- **`wiremock`** (`:8088`): WireMock Web UI & mock server dashboard (`http://localhost:8088/__admin/webapp`, default login: `admin` / `password`).
 
 ---
 
@@ -190,7 +190,7 @@ docker compose down
 | Service / Interface | Local URL | Notes / Credentials |
 | :--- | :--- | :--- |
 | 💻 **Website** | [http://localhost:3000](http://localhost:3000) | QA Application (Default user: Narin `+66800000001`) |
-| 🪝 **WireMock Web UI** | [http://localhost:8088/__admin/](http://localhost:8088/__admin/) | Interactive Stub & Scenario Dashboard (`admin` / `password`) |
+| 🪝 **WireMock Web UI** | [http://localhost:8088/__admin/webapp](http://localhost:8088/__admin/webapp) | Interactive Stub & Scenario Dashboard (`admin` / `password`) |
 | ⚙️ **BFF Service** | [http://localhost:8080](http://localhost:8080) | Backend-for-Frontend API Gateway |
 | 🗺️ **Architecture Diagram** | [http://localhost:3031](http://localhost:3031) | Interactive diagram (`make diagram`) |
 | 📊 **Slidev Presentation** | [http://localhost:3030](http://localhost:3030) | Workshop slide deck (`make slides`) |
@@ -226,7 +226,7 @@ make test-e2e
 
 ## 🔬 Practical Labs
 
-- 🖥️ **[WireMock Web UI & GUI Management Guide](labs/wiremock-ui/README.md)**: Interactive guide for viewing, creating, searching, and inspecting WireMock stubs and request logs via the Web GUI (`http://localhost:8088/__admin/`).
+- 🖥️ **[WireMock Web UI & GUI Management Guide](labs/wiremock-ui/README.md)**: Interactive guide for viewing, creating, searching, and inspecting WireMock stubs and request logs via the Web GUI (`http://localhost:8088/__admin/webapp`).
 - 🎓 **[WireMock Stateful Stubbing & Scenario State Machines](labs/wiremock-stateful/README.md)**: Hands-on guide and test suite for studying stateful stubs, state transitions, auth token replay prevention, order fulfillment state machines, and transient retry self-healing.
 - 🎓 **[WireMock Stateless Stubbing & Pattern Matching](labs/wiremock-stateless/README.md)**: Hands-on guide and test suite for studying stateless request matching (query params, headers, JSONPath body patterns), priority overrides, Handlebars response templating, and delay latency injection.
 - 🎓 **[Burp Suite MITM Proxy & API Security Inspection](labs/burp-suite/README.md)**: Hands-on guide for intercepting, inspecting, modifying, and security-testing HTTP/HTTPS microservice traffic, header injection, and Burp Repeater testing.

@@ -6,7 +6,7 @@ Welcome to the **WireMock Web UI Guide**! This document explains how to view, se
 
 ## 🎯 Purpose & Capabilities
 
-The **WireMock Web UI** (`holomekc/wiremock-gui`) provides a web-based dashboard at `http://localhost:8088/__admin/`.
+The **WireMock Web UI** (`holomekc/wiremock-gui`) provides a web-based dashboard at `http://localhost:8088/__admin/webapp`.
 
 Key Features:
 
@@ -18,7 +18,7 @@ Key Features:
 ## 🧭 How to Learn with This Lab
 
 1. Start the UI with `docker compose up -d wiremock`.
-2. Sign in at `http://localhost:8088/__admin/`.
+2. Sign in at `http://localhost:8088/__admin/webapp`.
 3. Browse mappings, test a stub, inspect matched and unmatched requests, and reset scenarios.
 4. Open `labs/wiremock-ui/requests.http` with the VS Code REST Client extension and send the Admin API examples.
 
@@ -37,7 +37,7 @@ The lab’s REST Client examples are kept in one file: [`requests.http`](./reque
 2. Open your web browser and navigate to:
 
    ```
-   http://localhost:8088/__admin/
+   http://localhost:8088/__admin/webapp
    ```
 
 Default Basic Auth:
@@ -59,7 +59,7 @@ docker compose up -d wiremock
 
 ### 1. Sign in
 
-Open `http://localhost:8088/__admin/` and sign in with the configured Basic Auth credentials.
+Open `http://localhost:8088/__admin/webapp` and sign in with the configured Basic Auth credentials.
 
 The UI is an admin surface. Mock endpoints such as `/lab/api/...` do not use these admin credentials.
 
