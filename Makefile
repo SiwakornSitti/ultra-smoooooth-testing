@@ -1,6 +1,24 @@
-.PHONY: all build clean sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides diagram
+.PHONY: all build clean deps deps-go deps-node deps-playwright sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides diagram
 
 all: build
+
+deps: deps-go deps-node deps-playwright
+	@echo "All local dependencies installed successfully."
+
+deps-go: sync
+	@echo "Go dependencies synced successfully."
+
+deps-node:
+	@echo "Installing website frontend dependencies..."
+	@cd services/website && npm install
+	@echo "Installing slides presentation dependencies..."
+	@cd slides && npm install
+	@echo "Installing test suite dependencies..."
+	@cd tests && npm install
+
+deps-playwright:
+	@echo "Installing Playwright browser binaries..."
+	@cd tests && npx playwright install
 
 build:
 	@mkdir -p bin

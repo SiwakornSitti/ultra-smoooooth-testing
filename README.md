@@ -130,6 +130,9 @@ use (
 All compiled binaries output exclusively to the root `./bin/` folder:
 
 ```bash
+# Install all Go, Node, and Playwright dependencies locally
+make deps
+
 # Build all Go services into ./bin/
 make build
 
