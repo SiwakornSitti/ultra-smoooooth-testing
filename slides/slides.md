@@ -2628,10 +2628,14 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # 🧪 Testcontainers — Network Isolation & Dynamic Ports
 
-### Code-Driven Container Helper Architecture (`tests/specs/support/containers.ts`)
+<h3 class="text-slate-300 text-xs mb-1">Code-Driven Container Helper Architecture (<code>tests/specs/support/containers.ts</code>)</h3>
+
+<div class="hermetic-code-wrapper">
 
 ```typescript
 // 1. Create isolated Docker bridge network for the test runner session
@@ -2641,7 +2645,7 @@ export async function startHermeticNetwork() {
 
 // 2. Start PostgreSQL & retrieve dynamically mapped random host port
 export async function startPostgres(network: StartedNetwork) {
-  return await new PostgreSqlContainer("postgres:16-alpine")
+  return await new PostgreSqlContainer("postgres:18-alpine")
     .withNetwork(network)
     .withNetworkAliases("postgres")
     .withDatabase("ultrasmooth")
@@ -2653,8 +2657,59 @@ process.env.DB_URL = postgres.getConnectionString();
 process.env.WIREMOCK_URL = `http://localhost:${wiremock.getMappedPort(8080)}`;
 ```
 
-<div class="slide-card text-sm mt-3">
+</div>
+
+<div class="slide-card text-xs mt-1.5 p-2 mb-0">
   🔌 <strong>Dynamic Resolution</strong>: Containers communicate internally via network aliases (<code>postgres:5432</code>), while test runners talk via randomized external mapped ports—guaranteeing zero port collisions in CI.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🗄️ Testcontainers — Database Migration Schema & Seeds
+
+<h3 class="text-slate-300 text-xs mb-1">Running Production DDL Scripts in Ephemeral Containers (<code>tests/specs/support/containers.ts</code>)</h3>
+
+<div class="hermetic-code-wrapper">
+
+```typescript
+// 1. Copy service DDL migrations into container mount paths
+const DATABASE_SERVICES = [
+  { name: "user-service", hasSeed: true },
+  { name: "bank-account-service", hasSeed: true },
+  { name: "ekyc-service", hasSeed: false },
+  { name: "transfer-service", hasSeed: false },
+] as const;
+
+// 2. Execute SQL migrations via container exec (psql -v ON_ERROR_STOP=1)
+export async function runMigrations(database: StartedPostgreSqlContainer) {
+  for (const { name } of DATABASE_SERVICES) {
+    await database.exec([
+      "sh", "-c",
+      `for file in /test-data/migration/${name}/*.sql; do ` +
+      `PGPASSWORD=${database.getPassword()} psql -v ON_ERROR_STOP=1 ` +
+      `-U ${database.getUsername()} -d ${database.getDatabase()} -f "$file"; done`
+    ]);
+  }
+}
+```
+
+</div>
+
+<div class="grid grid-cols-3 gap-2 mt-1.5 text-xs">
+  <div class="slide-card p-2 mb-0 border-indigo-500/30">
+    <strong class="text-indigo-400 font-bold block mb-0.5 text-[11px]">📁 Real Migration Files</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Executes identical SQL files (<code>001-*.sql</code>) used in staging &amp; production environments.</p>
+  </div>
+  <div class="slide-card p-2 mb-0 border-emerald-500/30">
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">🛡️ Strict Error Handling</strong>
+    <p class="text-slate-300 leading-tight text-[10px]"><code>ON_ERROR_STOP=1</code> aborts immediately on syntax or constraint errors during test bootstrap.</p>
+  </div>
+  <div class="slide-card p-2 mb-0 border-cyan-500/30">
+    <strong class="text-cyan-400 font-bold block mb-0.5 text-[11px]">🌱 Isolated Pristine Seeds</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Loads deterministic baseline data (demo users, accounts) per suite with zero shared state bleed.</p>
+  </div>
 </div>
 
 ---
