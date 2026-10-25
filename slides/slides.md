@@ -2346,6 +2346,75 @@ test.afterEach(async ({ request }) => {
 class: pt-3 pb-2 px-8
 ---
 
+# ⚠️ Production Crisis: The Biometric eKYC Dilemma
+
+### Why External Vendor Sandboxes Threaten Mobile Banking Launches
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-4 md:p-5 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-rose-500/30">
+      <span class="text-rose-400 font-bold text-base md:text-lg flex items-center gap-1.5">
+        <span>🔴</span> The Vendor Sandbox Bottleneck
+      </span>
+      <span class="text-xs font-mono text-rose-300/80 bg-rose-900/40 px-2 py-0.5 rounded">Vendor Risk</span>
+    </div>
+    <p class="text-sm md:text-base text-slate-200 leading-snug mb-2 font-medium">
+      Third-party face biometric vendors are unreliable, rate-limited, and fragile
+    </p>
+    <ul class="space-y-1.5 text-sm md:text-base text-slate-300 leading-snug">
+      <li>• <strong>Sandbox Downtime:</strong> Vendor staging environments flap during off-hours, blocking automated CI PR gates.</li>
+      <li>• <strong>Test Data Collisions:</strong> Remote sandboxes only permit 2 static test IDs, making parallel test suites collide.</li>
+      <li>• <strong>Quota Throttling:</strong> Strict vendor rate limits (10 req/min) trigger unexpected HTTP 429 errors in regression suites.</li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-rose-500/30 text-xs md:text-sm font-mono text-rose-300">
+    ❌ Fragile external dependencies stall release velocity
+  </div>
+</div>
+
+<div class="slide-card p-4 md:p-5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-400 font-bold text-base md:text-lg flex items-center gap-1.5">
+        <span>🛡️</span> The Engineering Solution
+      </span>
+      <span class="text-xs font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Local Virtualization</span>
+    </div>
+    <p class="text-sm md:text-base text-slate-200 leading-snug mb-2 font-medium">
+      Virtualize the biometric vendor locally with full contract and chaos fidelity
+    </p>
+    <ul class="space-y-1.5 text-sm md:text-base text-slate-300 leading-snug">
+      <li>• <strong>Liveness Compliance:</strong> Bank mandate requires 85.0% confidence; stubs must return 422 for fraudulent faces.</li>
+      <li>• <strong>Dynamic Telemetry:</strong> Stubs must echo incoming national IDs and generate random UUID scan tokens.</li>
+      <li>• <strong>Resilience Testing:</strong> Must inject 2.5s network lag to verify client timeout cancellation handlers.</li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-cyan-500/30 text-xs md:text-sm font-mono text-cyan-300">
+    ✨ 100% deterministic local stubs restore developer confidence
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card py-2 px-4 flex items-center text-base md:text-lg mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>🎯</span> <strong>Your Mission:</strong> Author a production-ready WireMock stub on the next slide to solve this exact banking crisis!
+  </span>
+</div>
+
+<!--
+Presenter Notes:
+- Paint the production picture: The team is 1 week away from launching mobile onboarding.
+- The external face scan provider goes down every Tuesday at midnight.
+- Explain why we need local virtualization: We cannot block QA testing on an external third-party vendor.
+-->
+
+---
+class: pt-3 pb-2 px-8
+---
+
 # 🏆 Capstone Challenge: WireMock Biometric Face Scan Stub
 
 ### Author a self-service biometric verification stub with liveness confidence thresholding
