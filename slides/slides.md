@@ -2655,8 +2655,8 @@ class: pt-2 pb-2 px-8
         <span class="text-base">⚡</span>
         <span class="text-amber-300 font-bold text-sm">Target State Fast-Forward</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed mb-2">
-        Force a scenario directly into any state using <code class="text-amber-300">PUT /__admin/scenarios/:name/state</code>.
+      <p class="text-xs text-slate-300 leading-relaxed mb-1.5">
+        Force a scenario directly into any state using:<br/><code class="text-amber-300">PUT /__admin/scenarios/:name/state</code>
       </p>
       <div class="space-y-1.5 text-xs text-slate-300">
         <div>
@@ -2686,8 +2686,8 @@ class: pt-2 pb-2 px-8
         <span class="text-base">🔍</span>
         <span class="font-mono text-cyan-400 font-bold text-sm">Active State Introspection</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed mb-2">
-        Query live FSM snapshot for all scenarios using <code class="text-cyan-300">GET /__admin/scenarios</code>.
+      <p class="text-xs text-slate-300 leading-relaxed mb-1.5">
+        Query live FSM snapshot for all scenarios using:<br/><code class="text-cyan-300">GET /__admin/scenarios</code>
       </p>
       <div class="space-y-1.5 text-xs text-slate-300">
         <div>
