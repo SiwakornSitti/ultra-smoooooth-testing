@@ -841,74 +841,77 @@ layout: section
 </div>
 
 ---
-
-# 🥇 Priority Tier 1: Specific Error Overrides
-
-### Fault Injection & Error Contracts
-
-```json
-{
-  "priority": 1,
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/transfers",
-    "headers": { "Mock-Scenario": { "contains": "INSUFFICIENT_FUNDS" } }
-  },
-  "response": {
-    "status": 400,
-    "jsonBody": { "code": "ERR_INSUFFICIENT_FUNDS" }
-  }
-}
-```
-
-<div class="slide-card text-sm mt-3">
-  🎯 <strong>Purpose &amp; Scope</strong>: Highest precedence override (<code>priority: 1</code>) for explicit error contracts and fault simulation triggered via <code>Mock-Scenario</code> headers.
-</div>
-
+class: pt-2 pb-1 px-8
 ---
 
-# 🥈 Priority Tier 5–10: Default Happy Paths
+# ⚖️ Priority in Practice: 3-Tier Hierarchy
 
-### Standard Business Logic & Route Matchers
+### Specific Error Overrides vs. Default Happy Paths vs. Catch-All Proxies
 
-```json
-{
-  "priority": 10,
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/transfers"
-  },
-  "response": {
-    "status": 201,
-    "jsonBody": { "status": "COMPLETED" }
-  }
-}
-```
+<div class="grid grid-cols-3 gap-3 mt-2 text-xs">
 
-<div class="slide-card text-sm mt-3">
-  🎯 <strong>Purpose &amp; Scope</strong>: Default domain responses (<code>200 OK</code> / <code>201 Created</code>) matching standard routes when no scenario steering headers are present.
+<div class="slide-card p-2.5 bg-slate-900/60 border-rose-500/30 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-rose-500/30">
+      <span class="text-rose-400 font-bold text-xs">🥇 Tier 1: Fault Override</span>
+      <span class="text-[10px] font-mono text-rose-300 bg-rose-950 px-1.5 py-0.2 rounded">priority: 1</span>
+    </div>
+    <p class="text-[11px] text-slate-300 mb-1.5">Explicit scenario fault contracts.</p>
+    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-[10px] text-rose-200 border border-slate-700/50 space-y-0.5">
+      <div><code>"priority": 1</code></div>
+      <div><code>"urlPath": "/api/transfers"</code></div>
+      <div><code>"headers": {"Mock-Scenario":"FUNDS"}</code></div>
+      <div><code>"status": 400 (ERR_FUNDS)</code></div>
+    </div>
+  </div>
+  <div class="pt-1 border-t border-rose-500/20 text-[10px] font-mono text-rose-300 mt-1.5">
+    🎯 Highest precedence
+  </div>
 </div>
 
----
+<div class="slide-card p-2.5 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-400 font-bold text-xs">🥈 Tier 2: Happy Path</span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950 px-1.5 py-0.2 rounded">priority: 10</span>
+    </div>
+    <p class="text-[11px] text-slate-300 mb-1.5">Standard routes without scenario header.</p>
+    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-[10px] text-emerald-200 border border-slate-700/50 space-y-0.5">
+      <div><code>"priority": 10</code></div>
+      <div><code>"urlPath": "/api/transfers"</code></div>
+      <div><code>"status": 201 Created</code></div>
+      <div><code>"jsonBody": {"status":"COMPLETED"}</code></div>
+    </div>
+  </div>
+  <div class="pt-1 border-t border-emerald-500/20 text-[10px] font-mono text-emerald-300 mt-1.5">
+    🎯 Default domain route
+  </div>
+</div>
 
-# 🛡️ Priority Tier 100: Catch-All Proxy
+<div class="slide-card p-2.5 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-400 font-bold text-xs">🛡️ Tier 3: Catch-All Proxy</span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950 px-1.5 py-0.2 rounded">priority: 100</span>
+    </div>
+    <p class="text-[11px] text-slate-300 mb-1.5">Fallback for unmatched upstream traffic.</p>
+    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-[10px] text-cyan-200 border border-slate-700/50 space-y-0.5">
+      <div><code>"priority": 100</code></div>
+      <div><code>"urlPattern": "/.*"</code></div>
+      <div><code>"proxyBaseUrl":</code></div>
+      <div class="truncate"><code>"https://api.external.com"</code></div>
+    </div>
+  </div>
+  <div class="pt-1 border-t border-cyan-500/20 text-[10px] font-mono text-cyan-300 mt-1.5">
+    🎯 Live fallback proxy
+  </div>
+</div>
 
-### Transparent Fallback to Real Downstream Endpoints
+</div>
 
-```json
-{
-  "priority": 100,
-  "request": {
-    "urlPattern": "/.*"
-  },
-  "response": {
-    "proxyBaseUrl": "https://api.external-provider.com"
-  }
-}
-```
-
-<div class="slide-card text-sm mt-3">
-  🎯 <strong>Purpose &amp; Scope</strong>: Lowest priority catch-all proxy stubs that forward any unmatched traffic to live downstream environments or external legacy services.
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-2 mt-2 flex items-center gap-2">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 text-xs"><strong>Precedence Rule:</strong> Lower integer = higher priority (<code>1 &gt; 10 &gt; 100</code>). WireMock stops evaluation on the first matching stub.</span>
 </div>
 
 ---
@@ -1204,46 +1207,38 @@ layout: section
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
-# 🎯 WireMock — Multi-Segment Path RegEx Matching
+# 🎯 WireMock RegEx — Path & Dynamic Resource Routing
 
-### Regular Expressions for Nested Sub-Resources & Dynamic Route Patterns
+### Multi-Segment Hierarchy Matching with `urlPathPattern`
 
-<div class="multi-col-grid-2">
+<div class="multi-col-grid-2 gap-3 mb-1.5">
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🌐 Path RegEx Pattern Types</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong>Standard UUID</strong>: <code>[0-9a-fA-F-]{36}</code> (RFC 4122 identifiers)</li>
-    <li>• <strong>Entity Prefixes</strong>: <code>(ACC|USR|TXN)-[0-9]{6}</code> (Banking domain IDs)</li>
-    <li>• <strong>Date Partitions</strong>: <code>[0-9]{4}-(0[1-9]|1[0-2])</code> (Monthly statements)</li>
-    <li>• <strong>Sub-Resource Hierarchy</strong>: Combines static segments &amp; regex slots.</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">💡 Deep REST Routing Pattern</h3>
-  <p class="mb-2">
-    Route complex nested sub-resources in a single resilient stub without hardcoding database IDs:
-  </p>
-  <div class="slide-card text-xs mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30 font-mono text-emerald-200">
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
+  <div>
+    <h3 class="text-cyan-400 text-sm font-bold mb-1">🌐 Path RegEx Pattern Architecture</h3>
+    <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed">
+      <li>• <strong>Standard UUID</strong>: <code>[0-9a-fA-F-]{36}</code> (RFC 4122 IDs)</li>
+      <li>• <strong>Entity Prefixes</strong>: <code>ACC-[0-9]{6}</code> (Banking account IDs)</li>
+      <li>• <strong>Hierarchy Routing</strong>: Combines static paths &amp; regex slots without hardcoded IDs.</li>
+    </ul>
+  </div>
+  <div class="bg-slate-950/90 rounded p-2 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
     <code>/api/users/[0-9a-fA-F-]{36}/accounts/ACC-[0-9]{6}</code>
   </div>
 </div>
 
-</div>
-
----
-
-# 🎯 WireMock RegEx — Nested Resource Path Example
-
-### Multi-Segment Nested Sub-Resource Routing in API Stubs
+<div class="col-card p-3 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 text-sm font-bold mb-1">📄 Stub Mapping Example</h3>
 
 ```json
 {
   "request": {
-    "method": "GET", 
-    "urlPathPattern": "/lab/api/users/[0-9a-fA-F-]{36}/accounts/ACC-[0-9]{6}/statements"
+    "method": "GET",
+    "urlPathPattern": "/api/users/[0-9a-fA-F-]{36}/accounts/ACC-[0-9]{6}"
   },
   "response": {
     "status": 200,
@@ -1256,52 +1251,55 @@ layout: section
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  ✨ <code>urlPathPattern</code> matches complex nested resource hierarchies (UUID User ID + <code>ACC-######</code> Account ID) while safely ignoring query parameters like <code>?limit=10&page=1</code>.
+  </div>
+  <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-700/50">
+    ✨ Ignores query strings like <code>?limit=10&page=1</code> safely.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-2 mt-2 flex items-center gap-2">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 text-xs">Use <code>urlPathPattern</code> when matching regex segments in paths while allowing arbitrary query parameters without breaking route matching.</span>
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
-# 🎯 WireMock — Header & Query RegEx Matching
+# 🎯 WireMock RegEx — Header & Scenario Steering
 
-### Bearer Tokens & Scenario Enums
+### Strict Bearer Token & Scenario Enum Validation
 
-<div class="multi-col-grid-2">
+<div class="multi-col-grid-2 gap-3 mb-1.5">
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🏷️ Header RegEx Operators</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>matches</code></strong>: Value must satisfy the regular expression pattern.</li>
-    <li>• <strong><code>doesNotMatch</code></strong>: Passes only when regex evaluation fails.</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">💡 Token &amp; Scenario Verification</h3>
-  <p class="mb-2">
-    Validate Bearer JWTs and restrict scenarios strictly to registered enum values:
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
+  <div>
+    <h3 class="text-cyan-400 text-sm font-bold mb-1">🏷️ Header RegEx Operators</h3>
+    <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed">
+      <li>• <strong><code>matches</code></strong>: Value must satisfy regular expression.</li>
+      <li>• <strong><code>doesNotMatch</code></strong>: Passes only when pattern fails.</li>
+      <li>• <strong>Strict Enums</strong>: Restricts scenarios strictly to registered values.</li>
+    </ul>
+  </div>
+  <div class="bg-slate-950/90 rounded p-2 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
     <code>"matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</code>
   </div>
 </div>
 
-</div>
-
----
-
-# 🎯 WireMock RegEx — JWT Bearer & Scenario Enum
-
-### Strict Token & Scenario Routing
+<div class="col-card p-3 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 text-sm font-bold mb-1">📄 Stub Mapping Example</h3>
 
 ```json
 {
   "request": {
     "method": "POST",
-    "urlPath": "/lab/api/transfers",
+    "urlPath": "/api/transfers",
     "headers": {
-      "Authorization": { "matches": "Bearer [A-Za-z0-9-_\\.]+" },
-      "Mock-Scenario": { "matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)" }
+      "Authorization": { "matches": "Bearer .*" },
+      "Mock-Scenario": { "matches": "TRANSFER:(SUCCESS|FAIL)" }
     }
   },
   "response": {
@@ -1311,61 +1309,53 @@ layout: section
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  🔐 Enforces valid JWT Bearer header structures and restricts <code>Mock-Scenario</code> strictly to registered enum choices.
+  </div>
+  <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-700/50">
+    🔐 Enforces valid JWT token syntax and registered scenario flags.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-emerald-500/40 p-2 mt-2 flex items-center gap-2">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 text-xs">Restricting <code>Mock-Scenario</code> via regex enums (<code>SUCCESS|FAIL</code>) prevents typo bugs in test scripts from silently falling through to unexpected defaults.</span>
 </div>
 
 ---
-
-# 🎯 WireMock — Body & JSONPath RegEx Matching
-
-### Raw Text Matching vs. Semantic JSON Evaluation
-
-<div class="multi-col-grid-2 gap-3 mb-2">
-
-<div class="col-card p-3 space-y-1.5">
-  <h3 class="text-amber-400 text-base mb-1">📝 1. Raw Body RegEx (<code>matches</code>)</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Evaluation</strong>: Treats entire body as unparsed plain text string.</li>
-    <li>• ⚠️ <strong>Fragile</strong>: Breaks on spaces, line breaks, or key reordering.</li>
-    <li>• <strong>Best For</strong>: Non-JSON payloads (XML, CSV, plain text, form-data).</li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-amber-500/40 font-mono text-xs text-amber-200 mt-auto">
-    <code>{ "matches": ".*\"national_id\"\\s*:\\s*\"[0-9]{13}\".*" }</code>
-  </div>
-</div>
-
-<div class="col-card p-3 space-y-1.5">
-  <h3 class="text-emerald-400 text-base mb-1">🔍 2. Inline JSONPath RegEx (<code>matchesJsonPath</code>)</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Evaluation</strong>: Parses JSON tree first, then evaluates regex on target field.</li>
-    <li>• 🟢 <strong>Immune</strong>: Ignores formatting, whitespace, minification, or key order.</li>
-    <li>• <strong>Best For</strong>: Modern REST APIs &amp; structured JSON microservices.</li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-2 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <code>{ "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" }</code>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-emerald-950/50 border-emerald-500/60 p-2.5 flex items-center gap-2 shadow-lg">
-  <span class="text-lg">💡</span>
-  <span class="text-emerald-100 leading-relaxed"><strong>Key Takeaway</strong>: Always prefer <code>matchesJsonPath</code> with the <code>=~</code> regex operator for JSON payloads to guarantee test stability against formatting and whitespace changes.</span>
-</div>
-
+class: pt-2 pb-1 px-8
 ---
 
 # 🎯 WireMock RegEx — Body & Parameter Matching
 
 ### 13-Digit National ID & Query Version Validation
 
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
+  <div>
+    <h3 class="text-amber-400 text-sm font-bold mb-1">📝 Matching Evaluation Strategy</h3>
+    <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed">
+      <li>• <strong>Query Versioning</strong>: <code>v[1-3].*</code> routes requests across multiple API versions.</li>
+      <li>• <strong>Raw Body RegEx</strong>: Matches patterns like 13-digit Thai national IDs.</li>
+      <li>• ⚠️ <strong>Caution</strong>: Raw body string matching breaks on key reordering or extra spaces. Prefer <code>matchesJsonPath</code> for structured JSON.</li>
+    </ul>
+  </div>
+  <div class="bg-slate-950/90 rounded p-2 border border-amber-500/30 font-mono text-[11px] text-amber-200 mt-2">
+    <code>.*\"national_id\":\"[0-9]{13}\".*</code>
+  </div>
+</div>
+
+<div class="col-card p-3 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 text-sm font-bold mb-1">📄 Stub Mapping Example</h3>
+
 ```json
 {
   "request": {
     "method": "POST",
-    "urlPath": "/lab/api/ekyc/verify",
-    "queryParameters": { "version": { "matches": "v[1-3].*" } },
+    "urlPath": "/api/ekyc/verify",
+    "queryParameters": { "v": { "matches": "v[1-3].*" } },
     "bodyPatterns": [
       { "matches": ".*\"national_id\":\"[0-9]{13}\".*" }
     ]
@@ -1377,8 +1367,17 @@ layout: section
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  🪪 Asserts a strict 13-digit Thai National ID within request body and routes across API versions (<code>v1</code>, <code>v2</code>, <code>v3</code>).
+  </div>
+  <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-700/50">
+    🪪 Asserts strict 13-digit ID across versions <code>v1</code>, <code>v2</code>, <code>v3</code>.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-amber-500/40 p-2 mt-2 flex items-center gap-2">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 text-xs">For JSON payloads, use <code>matchesJsonPath</code> whenever possible; reserve raw body regex for plain text, XML, form-data, or rigid string contracts.</span>
 </div>
 
 ---
@@ -1750,51 +1749,58 @@ class: pt-1 pb-1 px-8
 </div>
 
 ---
-
-# 🔍 WireMock — Handlebars jsonPath Traversal & Indexing
-
-### Deep Object Traversal & Array Indexing
-
-<div v-pre class="slide-card text-sm space-y-3 pt-2">
-
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎯 Deep Field Traversal</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Extract nested request fields directly into response bodies: <code>{{jsonPath request.body '$.customer.id'}}</code> or <code>{{jsonPath request.body '$.account.no'}}</code>.
-  </p>
-</div>
-
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">📊 Array Index Extraction</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Target specific array elements: <code>{{jsonPath request.body '$.items[0].sku'}}</code> to echo the first purchased item in order confirmations.
-  </p>
-</div>
-
-</div>
-
+class: pt-2 pb-1 px-8
 ---
 
-# 🛡️ WireMock — Safe Default Fallbacks & Dynamic Sizing
+# 🔍 WireMock — Handlebars jsonPath & Safe Fallbacks
 
-### Graceful Fallbacks & Array Counting
+### Deep Traversal, Array Indexing, Safe Defaults & Dynamic Sizing
 
-<div v-pre class="slide-card text-sm space-y-3 pt-2">
+<div v-pre class="grid grid-cols-2 gap-3.5 mt-3">
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Safe Default Fallbacks</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Use <code>default='...'</code> parameter: <code>{{jsonPath request.body '$.tier' default='SILVER'}}</code> to prevent blank responses when optional client fields are missing.
-  </p>
+<div class="slide-card p-3 space-y-2.5 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
+  <div>
+    <h3 class="text-cyan-400 font-bold mb-1.5 text-sm">🎯 1. Deep Field &amp; Array Extraction</h3>
+    <ul class="space-y-2 text-slate-300 text-xs leading-relaxed">
+      <li>
+        • <strong>Nested Traversal</strong>: Extract nested fields directly into response:<br/>
+        <code class="text-cyan-300 font-mono text-[11px]">{{jsonPath request.body '$.customer.id'}}</code>
+      </li>
+      <li>
+        • <strong>Array Index Extraction</strong>: Target specific element indices:<br/>
+        <code class="text-cyan-300 font-mono text-[11px]">{{jsonPath request.body '$.items[0].sku'}}</code>
+      </li>
+    </ul>
+  </div>
+  <div class="pt-1.5 border-t border-slate-700/50 text-[11px] text-slate-400">
+    ✨ Navigates complex client request payloads deterministically.
+  </div>
 </div>
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">📊 Dynamic Array Sizing</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Wrap <code>jsonPath</code> with <code>size</code> to compute array element counts on the fly: <code>{{size (jsonPath request.body '$.items')}}</code>.
-  </p>
+<div class="slide-card p-3 space-y-2.5 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 font-bold mb-1.5 text-sm">🛡️ 2. Safe Fallbacks &amp; Dynamic Sizing</h3>
+    <ul class="space-y-2 text-slate-300 text-xs leading-relaxed">
+      <li>
+        • <strong>Safe Default Fallbacks</strong>: Prevents blank values on missing keys:<br/>
+        <code class="text-emerald-300 font-mono text-[11px]">{{jsonPath request.body '$.tier' default='SILVER'}}</code>
+      </li>
+      <li>
+        • <strong>Dynamic Array Sizing</strong>: Wraps <code>size</code> around jsonPath arrays:<br/>
+        <code class="text-emerald-300 font-mono text-[11px]">{{size (jsonPath request.body '$.items')}}</code>
+      </li>
+    </ul>
+  </div>
+  <div class="pt-1.5 border-t border-slate-700/50 text-[11px] text-slate-400">
+    ✨ Robust resilience against optional or missing client attributes.
+  </div>
 </div>
 
+</div>
+
+<div v-pre class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-2 mt-3 flex items-center gap-2">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 text-xs">Combining <code>jsonPath</code> with <code>default='...'</code> guarantees responses remain structurally valid even when clients omit optional payload fields.</span>
 </div>
 
 ---
@@ -2147,43 +2153,20 @@ flowchart LR
 </div>
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-1 pb-1 px-8
 ---
 
 # 🔄 Stateful Pattern 3: Transient Failure & Retries
 
-### Testing Client Exponential Backoff & Circuit Breakers
+<h3 class="text-slate-300 text-sm mb-1">Testing Client Exponential Backoff &amp; Circuit Breaker Recovery</h3>
 
-<div class="w-full flex justify-center py-2 my-auto">
-
-```mermaid {scale: 0.95}
-flowchart LR
-    S([Start]) --> Att1["Attempt 1: Started<br/>💥 503 Unavailable"]
-    Att1 --> Att2["Attempt 2: FAIL_1<br/>💥 503 Unavailable"]
-    Att2 --> Att3["Attempt 3: FAIL_2<br/>✅ 200 OK Recovered"]
-
-    classDef fail fill:#450a0a,stroke:#f87171,color:#fca5a5,stroke-width:2px;
-    classDef pass fill:#064e3b,stroke:#34d399,color:#f8fafc,stroke-width:2px;
-    class Att1,Att2 fail;
-    class Att3 pass;
-```
-
+<div class="flex items-center justify-center gap-3 py-1 mb-1.5 bg-slate-950/70 border border-slate-700/50 rounded-lg text-xs font-mono">
+  <span class="text-rose-400">Attempt 1: Started (💥 503)</span>
+  <span class="text-slate-500">➔</span>
+  <span class="text-rose-400">Attempt 2: FAIL_1 (💥 503)</span>
+  <span class="text-slate-500">➔</span>
+  <span class="text-emerald-400 font-bold">Attempt 3: FAIL_2 (✅ 200 OK)</span>
 </div>
-
-<div class="slide-card text-xs space-y-1.5 mt-2 p-3 bg-slate-900/60 border-amber-500/40">
-  <h3 class="text-amber-400 font-bold text-xs">🔁 Deterministic Transient Failure &amp; Self-Healing Simulation</h3>
-  <p class="text-slate-300 leading-relaxed text-[11px]">
-    WireMock simulates flaky upstreams by serving <code>503 Service Unavailable</code> on the initial two attempts, transitioning from <code>Started</code> ➔ <code>FAIL_1</code> ➔ <code>FAIL_2</code>, and finally serving <code>200 OK</code> to verify client retry backoff and circuit breaker recovery.
-  </p>
-</div>
-
----
-class: pt-1 pb-1 px-8
----
-
-# 🔄 Stateful Pattern 3: Retry & Recovery Stubs
-
-<h3 class="text-slate-300 text-sm mb-1">WireMock Mapping Definitions for Flapping Failures &amp; Self-Healing</h3>
 
 <div class="compact-stateful-grid">
 
@@ -2202,13 +2185,11 @@ class: pt-1 pb-1 px-8
   },
   "response": {
     "status": 503,
-    "jsonBody": {
-      "error": "Flapping"
-    }
+    "jsonBody": { "error": "Flapping" }
   }
 }
 ```
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🔴 <strong>Returns 503 Service Unavailable</strong></p>
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🔴 <strong>Returns 503 Service Unavailable</strong> (Triggering client backoff)</p>
 </div>
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
@@ -2225,13 +2206,11 @@ class: pt-1 pb-1 px-8
   },
   "response": {
     "status": 200,
-    "jsonBody": {
-      "status": "RECOVERED"
-    }
+    "jsonBody": { "status": "RECOVERED" }
   }
 }
 ```
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> (Client retry verified)</p>
+  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> (Client retry successfully verified)</p>
 </div>
 
 </div>
