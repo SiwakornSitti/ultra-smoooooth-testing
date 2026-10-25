@@ -1979,36 +1979,63 @@ class: pt-2 pb-1 px-8
 
 ### Transforming Stateless HTTP Mocks into Finite State Machines (FSM)
 
-<div class="multi-col-grid-3">
+<div class="space-y-2.5 mb-2.5">
 
-<v-clicks>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🏷️ scenarioName</h3>
-  <p class="mb-2"><strong>Scenario Identifier</strong>: Groups related stub mappings into a single isolated state machine instance.</p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
-    <code>"scenarioName": "order-lifecycle"</code>
+  <div class="slide-card bg-slate-900/70 border-emerald-500/30 p-2.5 flex items-center justify-between gap-4">
+    <div class="w-56 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🏷️</span>
+        <span class="font-mono text-emerald-400 font-bold text-sm">scenarioName</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">State Machine Scope</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Groups related stub mappings into an <strong>isolated state machine instance</strong>. Different scenario names never interfere with each other.
+    </div>
+    <div class="w-80 flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-amber-300">"scenarioName"</span>: <span class="text-emerald-400">"order-lifecycle"</span>
+    </div>
   </div>
+
+  <div class="slide-card bg-slate-900/70 border-amber-500/30 p-2.5 flex items-center justify-between gap-4">
+    <div class="w-56 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🚦</span>
+        <span class="font-mono text-amber-300 font-bold text-sm">requiredScenarioState</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Precondition Guard</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Stub matches <strong>only</strong> when the scenario is in this state. All state machines start in default initial state <code class="text-amber-300">"Started"</code>.
+    </div>
+    <div class="w-80 flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-amber-300">"requiredScenarioState"</span>: <span class="text-emerald-400">"Started"</span>
+    </div>
+  </div>
+
+  <div class="slide-card bg-slate-900/70 border-cyan-500/30 p-2.5 flex items-center justify-between gap-4">
+    <div class="w-56 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🔄</span>
+        <span class="font-mono text-cyan-400 font-bold text-sm">newScenarioState</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">State Mutation</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Target state to transition into <strong>after</strong> serving this response. If omitted, the scenario remains in its current state.
+    </div>
+    <div class="w-80 flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-amber-300">"newScenarioState"</span>: <span class="text-emerald-400">"PAID"</span>
+    </div>
+  </div>
+
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🚦 requiredScenarioState</h3>
-  <p class="mb-2"><strong>Precondition Guard</strong>: Required state for this stub to match. Always begins in default state <code>"Started"</code>.</p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
-    <code>"requiredScenarioState": "Started"</code>
-  </div>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🔄 newScenarioState</h3>
-  <p class="mb-2"><strong>State Transition</strong>: Target state to transition into <em>after</em> serving response. If omitted, state persists.</p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2 border-emerald-500/30">
-    <code>"newScenarioState": "PAID"</code>
-  </div>
-</div>
-
-</v-clicks>
-
+<div class="slide-card text-xs bg-slate-900/60 p-2.5 border-emerald-500/30 flex items-center gap-3">
+  <span class="text-lg">💡</span>
+  <span class="text-slate-300">
+    <strong>Lifecycle Rule</strong>: WireMock evaluates scenario state <em>after</em> URL and method match. When a transition occurs, subsequent requests immediately see the updated state.
+  </span>
 </div>
 
 ---
