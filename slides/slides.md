@@ -1172,10 +1172,42 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
-# 🔍 JSONPath Expression — High-Value Payment Example
+# 🔍 JSONPath Expression — High-Value Payment Filter
 
-### Value Threshold Filtering & Dynamic Approval Routing
+### Declarative threshold routing in WireMock request body patterns
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-fuchsia-500/40 bg-fuchsia-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-fuchsia-500/30">
+      <span class="text-fuchsia-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Filter Mechanics
+      </span>
+      <span class="text-[11px] font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded">matchesJsonPath</span>
+    </div>
+    <ul class="space-y-2 text-xs text-slate-200 leading-snug">
+      <li>• <strong>Filter Predicate</strong>: <code>$.payment[?(@.amount > 1000)]</code> evaluates numeric comparisons directly in JSON.</li>
+      <li>• <strong>Priority Control</strong>: Set <code>priority: 1</code> so high-value stubs evaluate before generic fallback stubs.</li>
+      <li>• <strong>Boolean Match</strong>: If the JSONPath filter returns a non-empty set, WireMock evaluates it as <strong>MATCH (201 Created)</strong>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-fuchsia-500/30 text-xs font-mono text-fuchsia-300">
+    📂 <code>wiremock/mappings/04-payment-high-value.json</code>
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> WireMock Mapping Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
@@ -1197,9 +1229,90 @@ class: pt-2 pb-1 px-8
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  ✅ <strong>Matching request</strong>: <code>POST /lab/api/stateless/payments</code> with <code>{"payment":[{"amount":1500,"currency":"THB"}]}</code> → <code>201 APPROVED</code> / <code>HIGH_VALUE_TRANSACTION</code>.
+  </div>
 </div>
+
+</div>
+
+<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-fuchsia-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-fuchsia-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Decoupled Architecture:</strong> Route requests to different mock personas without touching backend service source code.
+  </span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain that matchesJsonPath uses standard JsonPath filter expressions.
+- Emphasize the importance of stub priority when multiple stubs match the same path.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🧪 Practice Lab 1: Web UI & Precision Matching
+
+### Verify threshold routing and inspect unmatched diffs in WireMock Web UI
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>✅</span> Step 1: High-Value Match (> 1000)
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">201 Created</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>2500</code>. Body matches threshold filter:</p>
+
+```bash
+curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+  -H "Content-Type: application/json" \
+  -d '{"payment":{"amount":2500}}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs text-emerald-300 font-mono">
+    🟢 Returns <code>201 Created</code> + <code>HIGH_VALUE_TRANSACTION</code>
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔍</span> Step 2: Low-Value Diff (< 1000)
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">404 Diff</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>500</code> below threshold. Trigger stub miss:</p>
+
+```bash
+curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+  -H "Content-Type: application/json" \
+  -d '{"payment":{"amount":500}}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
+    🟡 Returns <code>404 Not Found</code>. Check diff in Web UI!
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>🌐</span> <strong>Interactive Inspection:</strong> Open <code>http://localhost:8088/__admin/webapp</code> to see visual diffs on unmatched requests.
+  </span>
+</div>
+
+<!--
+Presenter Notes:
+- Guide participants to open the WireMock Web UI at localhost:8088/__admin/webapp.
+- Point out the Requests tab where unmatched calls show line-by-line diffs.
+-->
 
 ---
 class: pt-2 pb-1 px-8
@@ -2902,6 +3015,80 @@ class: pt-2 pb-1 px-8
   <span>⏯️ <strong>Action Controls</strong>: <code>Forward</code> sends modified packet; <code>Drop</code> terminates TCP connection; <code>Action</code> hands off to Repeater/Intruder.</span>
   <span class="text-cyan-400 font-mono text-[11px]">Real-Time Inspection</span>
 </div>
+
+<!--
+Presenter Notes:
+- Demonstrate pausing traffic in Burp Suite Proxy Intercept tab.
+- Show how the browser or curl hangs waiting for operator decision (Forward or Drop).
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🧪 Practice Lab 5: Live MITM Packet Interception
+
+### Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Step 1: Proxy Request
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">:8080 MITM</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">Toggle <strong>Intercept is ON</strong> in Burp Proxy, then send request:</p>
+
+```bash
+curl -x http://127.0.0.1:8080 -s -X POST \
+  http://localhost:8081/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{"username":"student","password":"secret"}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs text-cyan-300 font-mono">
+    ⏸️ Request pauses in Burp Suite Proxy tab
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔀</span> Step 2: Inject Steering Header
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Forward</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">In Burp Proxy window, append header before clicking <strong>Forward</strong>:</p>
+
+```http
+Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED
+```
+
+  <p class="text-[11px] text-slate-300 mt-1 leading-snug">WireMock intercepts header and returns downstream expired OTP error.</p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
+    ✨ Client receives expired OTP without app code change!
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Zero-Touch Steering:</strong> Inject mock scenarios and simulate third-party failure responses without touching backend source code.
+  </span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk participants through setting up Burp proxy and executing the curl command with -x.
+- Show how the downstream response changes dynamically based on the injected Mock-Scenario header.
+-->
 
 ---
 
