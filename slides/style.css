@@ -1,3 +1,5 @@
+@import './shopvibe.css';
+
 /* Responsive Slidev Presentation Layout & Enhanced Typography */
 
 .slidev-layout {
@@ -6,9 +8,10 @@
   flex-direction: column;
   justify-content: flex-start;
   box-sizing: border-box;
-  padding: 1.35rem 2rem;
-  font-size: 1.06rem;
-  line-height: 1.5;
+  padding: 1.25rem 2.25rem 1.25rem 2.25rem !important;
+  font-size: 0.95rem !important;
+  line-height: 1.35 !important;
+  overflow: hidden !important;
 }
 
 /* Cover slide layouts */
@@ -24,26 +27,124 @@
   height: 100% !important;
 }
 
+.slidev-layout:has(.cover-slide-left) {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  padding: 0 4.5rem !important;
+  background: #0f172a !important;
+  height: 100% !important;
+  text-align: left !important;
+}
+
+.cover-slide-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+  width: 100%;
+}
+
+.cover-slide-left h1 {
+  font-size: 3.6rem !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  margin-bottom: 0.75rem !important;
+  letter-spacing: -0.02em !important;
+  color: #ffffff !important;
+  text-align: left !important;
+}
+
+.cover-slide-left h1 .text-fuchsia {
+  color: #e879f9 !important;
+}
+
+.cover-slide-left p {
+  font-size: 1.25rem !important;
+  line-height: 1.5 !important;
+  color: #cbd5e1 !important;
+  text-align: left !important;
+  margin-bottom: 1.5rem !important;
+}
+
 /* Slide Titles & Headers */
-h1 {
-  font-size: 2.1rem !important;
-  font-weight: 700 !important;
-  margin-bottom: 0.35rem !important;
+h1,
+html.dark h1,
+html.light h1 {
+  font-size: 2.35rem !important;
+  font-weight: 800 !important;
+  margin-bottom: 0.2rem !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.025em !important;
   color: #34d399 !important;
 }
 
-h2 {
-  font-size: 1.38rem !important;
-  font-weight: 600 !important;
-  margin-bottom: 0.35rem !important;
+.cover-slide h1,
+.cover-slide-left h1 {
+  font-size: 3rem !important;
+  font-weight: 900 !important;
+  line-height: 1.15 !important;
+}
+
+h2,
+html.dark h2,
+html.light h2 {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.25rem !important;
+  line-height: 1.25 !important;
   color: #a7f3d0 !important;
 }
 
-h3 {
-  font-size: 1.18rem !important;
-  font-weight: 600 !important;
+h3,
+html.dark h3,
+html.light h3 {
+  font-size: 1.15rem !important;
+  font-weight: 500 !important;
   margin-bottom: 0.35rem !important;
-  color: #f3f4f6 !important;
+  line-height: 1.35 !important;
+  color: #94a3b8 !important;
+}
+
+/* Slide Title & Subtitle Gap Below */
+.slidev-layout > h1 + div,
+.slidev-layout > h1 + .sv-card,
+.slidev-layout > h1 + .slide-card,
+.slidev-layout > h1 + .multi-col-grid-2,
+.slidev-layout > h1 + .multi-col-grid-3 {
+  margin-top: 0.5rem !important;
+}
+
+.slidev-layout > h1 + h3,
+.slidev-layout > h3 {
+  margin-bottom: 0.45rem !important;
+}
+
+/* Gap above bottom summary / callout panel */
+.multi-col-grid-2 + .slide-card,
+.multi-col-grid-3 + .slide-card,
+.slidev-layout > .slide-card:last-child {
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+/* Auto-stretch single slide card to fill full viewport height */
+.slidev-layout:has(> .slide-card:only-of-type) {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  padding: 1.25rem 2.25rem 1.25rem 2.25rem !important;
+}
+
+.slidev-layout > .slide-card:only-of-type {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 /* Styled Card Containers for High Legibility & Full 16:9 Canvas Fit */
@@ -51,9 +152,54 @@ h3 {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 0.75rem;
-  padding: 1.1rem 1.35rem;
-  margin-bottom: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.25rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.grid .slide-card {
+  margin-bottom: 0 !important;
+  padding: 0.45rem 0.75rem !important;
+}
+
+.grid .slide-card h3 {
+  font-size: 0.92rem !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.grid .slide-card p {
+  font-size: 0.82rem !important;
+  line-height: 1.30 !important;
+}
+
+.grid .slide-card ul {
+  padding-left: 0.25rem !important;
+}
+
+.grid .slide-card li {
+  margin-bottom: 0.15rem !important;
+  font-size: 0.82rem !important;
+  line-height: 1.30 !important;
+}
+
+.grid .slide-card div[class*="language-"],
+.grid .slide-card div.slidev-code {
+  padding: 0.2rem 0.45rem !important;
+  margin: 0.05rem 0 !important;
+}
+
+.grid .slide-card div.slidev-code,
+.grid .slide-card pre.shiki {
+  padding: 0.15rem 0.4rem !important;
+  margin: 0.05rem 0 !important;
+  font-size: 0.67rem !important;
+  line-height: 1.18 !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+}
+
+.grid .slide-card code {
+  font-size: 0.67rem !important;
 }
 
 .slide-card ul {
@@ -62,15 +208,15 @@ h3 {
 }
 
 .slide-card li {
-  margin-bottom: 0.45rem;
-  font-size: 1.02rem;
-  line-height: 1.5;
+  margin-bottom: 0.35rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
   list-style: none;
 }
 
 .slide-card p {
-  font-size: 1.0rem;
-  line-height: 1.55;
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
 /* Explicit size utilities on cards and parent grid containers */
@@ -292,18 +438,18 @@ h3 {
 .multi-col-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 0.75rem;
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 0.35rem;
   flex: 1 1 auto;
 }
 
 .multi-col-grid-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+  gap: 0.85rem;
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 0.35rem;
   flex: 1 1 auto;
 }
 
@@ -311,7 +457,7 @@ h3 {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 0.75rem;
-  padding: 0.9rem 1.15rem;
+  padding: 0.65rem 0.85rem !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
@@ -321,19 +467,19 @@ h3 {
 }
 
 .col-card.p-2, .col-card.p-2\.5, .col-card.p-3 {
-  padding: 0.75rem 0.95rem !important;
+  padding: 0.55rem 0.75rem !important;
 }
 
 .col-card h3 {
-  font-size: 1.15rem !important;
+  font-size: 0.95rem !important;
   font-weight: 700 !important;
-  margin-bottom: 0.35rem !important;
-  line-height: 1.3 !important;
+  margin-bottom: 0.2rem !important;
+  line-height: 1.25 !important;
 }
 
 .col-card p {
-  font-size: 0.96rem !important;
-  line-height: 1.45 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.35 !important;
   color: #cbd5e1 !important;
   margin: 0 !important;
 }
@@ -391,34 +537,86 @@ table td code {
   padding: 0.5rem 0.75rem;
 }
 
-/* Legible Code Blocks & Pre Blocks */
+/* Legible High-Readability Code Blocks & Pre Blocks */
 div.slidev-code,
+div[class*="language-"],
 pre.shiki,
-code {
+pre.shiki code {
   max-width: 100%;
-  font-size: 0.96rem;
-  line-height: 1.55;
+  font-size: 0.88rem !important;
+  line-height: 1.42 !important;
+}
+
+div[class*="language-"],
+div.slidev-code {
+  padding: 0.45rem 0.75rem !important;
+  margin: 0.2rem 0 !important;
+  border-radius: 8px !important;
+  overflow-y: visible !important;
+}
+
+div[class*="language-"] pre,
+pre.shiki {
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.88rem !important;
+  line-height: 1.42 !important;
 }
 
 /* Scoped code block sizing inside multi-column and compact text containers */
 .text-xs div.slidev-code,
 .text-xs pre.shiki,
-.text-xs code,
+.text-xs code {
+  font-size: 0.85rem !important;
+  line-height: 1.38 !important;
+}
+
+.grid-cols-2 .text-xs div.slidev-code,
 .grid-cols-2 .text-xs code,
 .grid-cols-2 .text-xs pre.shiki {
-  font-size: 0.88rem !important;
-  line-height: 1.45 !important;
+  font-size: 0.72rem !important;
+  line-height: 1.25 !important;
+  padding: 0.25rem 0.5rem !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+}
+
+.slide-card pre.shiki,
+.slidev-code pre.shiki {
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent !important;
+}
+
+.slide-card pre.shiki::-webkit-scrollbar,
+.slidev-code pre.shiki::-webkit-scrollbar,
+div[class*="language-"]::-webkit-scrollbar {
+  height: 3px !important;
+  width: 3px !important;
+}
+
+.slide-card pre.shiki::-webkit-scrollbar-thumb,
+.slidev-code pre.shiki::-webkit-scrollbar-thumb,
+div[class*="language-"]::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35) !important;
+  border-radius: 2px !important;
+}
+
+.slide-card pre.shiki::-webkit-scrollbar-track,
+.slidev-code pre.shiki::-webkit-scrollbar-track,
+div[class*="language-"]::-webkit-scrollbar-track {
+  background: transparent !important;
 }
 
 .text-xs pre.shiki {
-  padding: 0.75rem 0.95rem !important;
+  padding: 0 !important;
 }
 
 .text-sm div.slidev-code,
 .text-sm pre.shiki,
 .text-sm code {
-  font-size: 0.94rem !important;
-  line-height: 1.5 !important;
+  font-size: 0.90rem !important;
+  line-height: 1.42 !important;
 }
 
 /* Responsive adjustments */
@@ -667,6 +865,12 @@ code {
   transform: none !important;
 }
 
+/* Slidev bottom navigation button panel floating gap */
+div.absolute.bottom-0.left-0 {
+  margin-bottom: 0.5rem !important;
+  margin-left: 0.75rem !important;
+}
+
 /* ===== SECTION DIVIDER SLIDES ===== */
 .slidev-layout.section {
   background: linear-gradient(135deg, #0f172a 0%, #0c2236 50%, #0f172a 100%) !important;
@@ -888,33 +1092,38 @@ table tr:hover td {
 
 /* Hermetic & Shared Problem slides: compact 2x2 grid to prevent any viewport overflow */
 .hermetic-grid-slide h1 {
-  font-size: 1.95rem !important;
-  margin-bottom: 0.25rem !important;
+  font-size: 1.65rem !important;
+  margin-bottom: 0.15rem !important;
 }
 
 .hermetic-grid-slide > h3 {
-  font-size: 1.15rem !important;
-  margin-bottom: 0.35rem !important;
+  font-size: 0.92rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .hermetic-grid-slide .grid {
-  gap: 0.65rem !important;
-  margin-top: 0.2rem !important;
+  gap: 0.5rem !important;
+  margin-top: 0.15rem !important;
 }
 
 .hermetic-grid-slide .slide-card {
-  padding: 0.65rem 0.95rem !important;
+  padding: 0.45rem 0.75rem !important;
   margin-bottom: 0 !important;
 }
 
 .hermetic-grid-slide .slide-card h3 {
-  font-size: 1.05rem !important;
-  margin-bottom: 0.2rem !important;
+  font-size: 0.92rem !important;
+  margin-bottom: 0.15rem !important;
 }
 
 .hermetic-grid-slide .slide-card p {
-  font-size: 0.90rem !important;
-  line-height: 1.35 !important;
+  font-size: 0.80rem !important;
+  line-height: 1.25 !important;
+}
+
+.hermetic-grid-slide .slide-card:last-child {
+  margin-top: 0.25rem !important;
+  padding: 0.25rem 0.75rem !important;
 }
 
 

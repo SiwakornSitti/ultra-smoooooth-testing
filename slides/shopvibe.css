@@ -1,0 +1,692 @@
+/* ==========================================================================
+   ShopVibe Design System for Slidev Presentations
+   Based on DESIGN.md: https://designmd.ai/chef/shopvibe
+   Trendy, energetic, conversion-focused light theme
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Poppins:wght@500;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* Slidev Light Theme Root & Canvas */
+html.light,
+html.light body,
+html.light .slidev-layout {
+  --sv-primary: #D946EF;
+  --sv-primary-hover: #C026D3;
+  --sv-secondary: #06B6D4;
+  --sv-secondary-light: #22D3EE;
+  --sv-tertiary: #EAB308;
+  --sv-bg: #FAFAFA;
+  --sv-surface: #FFFFFF;
+  --sv-text-primary: #171717;
+  --sv-text-secondary: #525252;
+  --sv-text-muted: #737373;
+  --sv-border: #E5E5E5;
+  --sv-border-subtle: #F3F4F6;
+
+  background-color: var(--sv-bg) !important;
+  color: var(--sv-text-primary) !important;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif !important;
+  line-height: 1.5;
+}
+
+/* Slidev Dark Theme Root & Canvas */
+html.dark,
+html.dark body,
+html.dark .slidev-layout {
+  --sv-primary: #E879F9;
+  --sv-primary-hover: #D946EF;
+  --sv-secondary: #38BDF8;
+  --sv-secondary-light: #7DD3FC;
+  --sv-tertiary: #FACC15;
+  --sv-bg: #0F172A;
+  --sv-surface: rgba(255, 255, 255, 0.05);
+  --sv-text-primary: #F8FAFC;
+  --sv-text-secondary: #CBD5E1;
+  --sv-text-muted: #94A3B8;
+  --sv-border: rgba(255, 255, 255, 0.12);
+  --sv-border-subtle: rgba(255, 255, 255, 0.08);
+
+  background-color: var(--sv-bg) !important;
+  color: var(--sv-text-primary) !important;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif !important;
+  line-height: 1.5;
+}
+
+/* Typography */
+html.light h1,
+html.dark h1,
+html.light h2,
+html.dark h2,
+html.light h3,
+html.dark h3,
+html.light h4,
+html.dark h4 {
+  font-family: 'Poppins', system-ui, sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+html.light h1 {
+  color: #171717 !important;
+  font-size: 2.35rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  margin-bottom: 0.2rem !important;
+}
+
+html.dark h1 {
+  color: #F8FAFC !important;
+  font-size: 2.35rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  margin-bottom: 0.2rem !important;
+}
+
+html.light h1 span.accent,
+html.light h1 .text-fuchsia {
+  color: var(--sv-primary) !important;
+}
+
+html.dark h1 span.accent,
+html.dark h1 .text-fuchsia {
+  color: #E879F9 !important;
+}
+
+html.light h2 {
+  color: #262626 !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  margin-bottom: 0.2rem !important;
+}
+
+html.dark h2 {
+  color: #E2E8F0 !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  margin-bottom: 0.2rem !important;
+}
+
+html.light h3 {
+  color: #404040 !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 0.35rem !important;
+}
+
+html.dark h3 {
+  color: #94A3B8 !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 0.35rem !important;
+}
+
+/* Slide Title & Subtitle Gap Below */
+.slidev-layout > h1 + div,
+.slidev-layout > h1 + .sv-card,
+.slidev-layout > h1 + .slide-card,
+.slidev-layout > h1 + .multi-col-grid-2,
+.slidev-layout > h1 + .multi-col-grid-3 {
+  margin-top: 0.35rem !important;
+}
+
+.slidev-layout > h1 + h3,
+.slidev-layout > h3 {
+  margin-bottom: 0.35rem !important;
+}
+
+/* Elevated Card (16px radius, layered shadow) */
+html.light .sv-card,
+html.light .slide-card {
+  background: var(--sv-surface) !important;
+  border: 1px solid var(--sv-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04) !important;
+  color: var(--sv-text-primary) !important;
+  padding: 0.65rem 0.95rem !important;
+  margin-bottom: 0.35rem !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+html.light .sv-card:hover,
+html.light .slide-card:hover {
+  border-color: #D4D4D4 !important;
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.dark .sv-card,
+html.dark .slide-card {
+  background: var(--sv-surface) !important;
+  border: 1px solid var(--sv-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25) !important;
+  color: var(--sv-text-primary) !important;
+  padding: 0.65rem 0.95rem !important;
+  margin-bottom: 0.35rem !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+html.dark .sv-card:hover,
+html.dark .slide-card:hover {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Cover layout */
+html.light .slidev-layout:has(.cover-poster-container),
+html.light .slidev-layout:has(.cover-native-slide),
+html.light .slidev-layout:has(.cover-slide) {
+  background: #FAFAFA !important;
+}
+
+html.dark .slidev-layout:has(.cover-poster-container),
+html.dark .slidev-layout:has(.cover-native-slide),
+html.dark .slidev-layout:has(.cover-slide) {
+  background: #0F172A !important;
+}
+
+html.light .cover-slide h1 {
+  color: #171717 !important;
+}
+
+html.dark .cover-slide h1 {
+  color: #F8FAFC !important;
+}
+
+html.light .cover-subtitle {
+  color: #525252 !important;
+}
+
+html.dark .cover-subtitle {
+  color: #94A3B8 !important;
+}
+
+/* Clean Developer Code Container */
+.sv-terminal {
+  background: #090D16 !important;
+  border: 1px solid #1E293B !important;
+  border-radius: 12px !important;
+  color: #F4F4F5 !important;
+  font-family: 'Space Mono', 'JetBrains Mono', monospace !important;
+  padding: 0.85rem 1.15rem !important;
+  margin: 0.5rem 0 !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.25) !important;
+  overflow-x: auto;
+}
+
+.sv-terminal-title {
+  font-size: 0.72rem;
+  font-family: 'Space Mono', monospace;
+  font-weight: 600;
+  color: #94A3B8;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #1E293B;
+  display: block;
+}
+
+.sv-terminal code,
+.sv-terminal pre {
+  background: transparent !important;
+  border: none !important;
+  color: #E2E8F0 !important;
+  font-family: 'Space Mono', monospace !important;
+  font-size: 0.93rem !important;
+  line-height: 1.55 !important;
+}
+
+/* Shiki Code Block Container */
+div[class*="language-"] {
+  background: #090D16 !important;
+  border: 1px solid #1E293B !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.25) !important;
+  margin: 0.2rem 0 !important;
+  padding: 0.45rem 0.75rem !important;
+}
+
+div[class*="language-"] pre {
+  background: transparent !important;
+  font-family: 'Space Mono', 'JetBrains Mono', monospace !important;
+  font-size: 0.76rem !important;
+  line-height: 1.32 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Inline Code Pill */
+html.light code:not(pre code) {
+  background: #F4F4F5 !important;
+  border: 1px solid #E4E4E7 !important;
+  border-radius: 6px !important;
+  color: #C026D3 !important;
+  font-family: 'Space Mono', monospace !important;
+  font-size: 0.88em !important;
+  padding: 0.15em 0.45em !important;
+  font-weight: 600 !important;
+}
+
+html.dark code:not(pre code) {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 6px !important;
+  color: #F472B6 !important;
+  font-family: 'Space Mono', monospace !important;
+  font-size: 0.88em !important;
+  padding: 0.15em 0.45em !important;
+  font-weight: 600 !important;
+}
+
+/* Pill Badges & Chips */
+html.light .sv-tag-fuchsia,
+html.light .cover-tag {
+  background: #FDF4FF !important;
+  border: 1px solid #F0ABFC !important;
+  color: #C026D3 !important;
+  border-radius: 9999px !important;
+  padding: 0.22rem 0.75rem !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+html.dark .sv-tag-fuchsia,
+html.dark .cover-tag {
+  background: rgba(217, 70, 239, 0.15) !important;
+  border: 1px solid rgba(217, 70, 239, 0.35) !important;
+  color: #F0ABFC !important;
+  border-radius: 9999px !important;
+  padding: 0.22rem 0.75rem !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+html.light .sv-tag-cyan {
+  background: #ECFEFF !important;
+  border: 1px solid #A5F3FC !important;
+  color: #0891B2 !important;
+  border-radius: 9999px !important;
+  padding: 0.22rem 0.75rem !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+html.dark .sv-tag-cyan {
+  background: rgba(6, 182, 212, 0.15) !important;
+  border: 1px solid rgba(6, 182, 212, 0.35) !important;
+  color: #67E8F9 !important;
+  border-radius: 9999px !important;
+  padding: 0.22rem 0.75rem !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+html.light .sv-tag-yellow {
+  background: #FEFCE8 !important;
+  border: 1px solid #FDE047 !important;
+  color: #A16207 !important;
+  border-radius: 9999px !important;
+  padding: 0.22rem 0.75rem !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+html.dark .sv-tag-yellow {
+  background: rgba(234, 179, 8, 0.15) !important;
+  border: 1px solid rgba(234, 179, 8, 0.35) !important;
+  color: #FDE047 !important;
+  border-radius: 9999px !important;
+  padding: 0.22rem 0.75rem !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.shopvibe .sv-tag-dark {
+  background: #18181B !important;
+  border: 1px solid #27272A !important;
+  color: #F4F4F5 !important;
+  border-radius: 9999px !important;
+  padding: 0.22rem 0.75rem !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* ShopVibe Pill Button */
+.shopvibe .sv-btn-primary {
+  background: #D946EF !important;
+  color: #FFFFFF !important;
+  border-radius: 9999px !important;
+  padding: 0.45rem 1.25rem !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  border: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 4px 12px rgba(217, 70, 239, 0.25) !important;
+  transition: all 0.2s ease;
+}
+
+.shopvibe .sv-btn-primary:hover {
+  background: #C026D3 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(217, 70, 239, 0.35) !important;
+}
+
+/* Lists and Items */
+.shopvibe ul {
+  color: var(--sv-text-secondary);
+}
+
+.shopvibe li {
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+}
+
+/* Accent text utility */
+.shopvibe .text-primary-accent { color: #D946EF !important; }
+.shopvibe .text-secondary-accent { color: #0891B2 !important; }
+.shopvibe .text-tertiary-accent { color: #B45309 !important; }
+.shopvibe .text-success-accent { color: #15803D !important; }
+.shopvibe .text-danger-accent { color: #DC2626 !important; }
+
+/* Subtle subtext */
+.shopvibe .sv-subtitle,
+html.light .sv-subtitle {
+  color: var(--sv-text-secondary) !important;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   ShopVibe Color Normalization for Light Theme Canvas
+   Automatically remaps dark-theme tailwind utilities to high-contrast ShopVibe
+   ========================================================================== */
+
+/* Text contrast mapping */
+html.light .text-slate-400,
+html.light .text-slate-500,
+html.light .text-gray-400 {
+  color: #525252 !important;
+}
+
+html.light .text-slate-300,
+html.light .text-gray-300 {
+  color: #3F3F46 !important;
+}
+
+html.light .text-slate-200,
+html.light .text-slate-100,
+html.light .text-gray-200,
+html.light .text-gray-100 {
+  color: #171717 !important;
+}
+
+/* High-contrast brand colors on white */
+html.light .text-emerald-400,
+html.light .text-emerald-300 {
+  color: #059669 !important;
+  font-weight: 600;
+}
+
+html.light .text-cyan-400,
+html.light .text-cyan-300 {
+  color: #0891B2 !important;
+  font-weight: 600;
+}
+
+html.light .text-amber-400,
+html.light .text-amber-300 {
+  color: #D97706 !important;
+  font-weight: 600;
+}
+
+html.light .text-rose-400,
+html.light .text-rose-300 {
+  color: #E11D48 !important;
+  font-weight: 600;
+}
+
+html.light .text-indigo-400,
+html.light .text-indigo-300 {
+  color: #7C3AED !important;
+  font-weight: 600;
+}
+
+/* Surface & Card Normalization */
+html.light .bg-slate-900,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-800,
+html.light .bg-slate-800\/60 {
+  background-color: #FFFFFF !important;
+  border-color: #E5E5E5 !important;
+  color: #171717 !important;
+}
+
+/* Terminal / Code Window Normalization */
+html.light .bg-slate-950,
+html.light .bg-slate-950\/90,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/70,
+html.light .bg-slate-950\/60 {
+  background-color: #18181B !important;
+  border-color: #27272A !important;
+  color: #F4F4F5 !important;
+  border-radius: 10px !important;
+}
+
+html.light .bg-slate-950 code,
+html.light .bg-slate-950\/90 code,
+html.light .bg-slate-950\/70 code {
+  color: #38BDF8 !important;
+}
+
+/* Border normalization */
+html.light .border-slate-800,
+html.light .border-slate-700,
+html.light .border-slate-700\/50,
+html.light .border-slate-700\/60 {
+  border-color: #E5E5E5 !important;
+}
+
+/* Pill tags in light theme */
+html.light .cover-tag {
+  background: #FDF4FF !important;
+  border: 1px solid #F0ABFC !important;
+  color: #C026D3 !important;
+  font-weight: 700 !important;
+}
+
+/* Table styling for light theme */
+html.light table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #E5E5E5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #FFFFFF;
+}
+
+html.light th {
+  background: #F4F4F5 !important;
+  color: #171717 !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  padding: 0.6rem 0.85rem !important;
+  border-bottom: 1px solid #E5E5E5 !important;
+}
+
+html.light td {
+  padding: 0.55rem 0.85rem !important;
+  border-bottom: 1px solid #F4F4F5 !important;
+  color: #3F3F46 !important;
+}
+
+html.light tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Table styling for dark theme */
+html.dark table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+html.dark th {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #F8FAFC !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  padding: 0.6rem 0.85rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark td {
+  padding: 0.55rem 0.85rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #CBD5E1 !important;
+}
+
+html.dark tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* ==========================================================================
+   Dark Theme Normalization for Utility Classes
+   Ensures seamless contrast across all cards, text, and borders
+   ========================================================================== */
+
+html.dark .text-slate-600,
+html.dark .text-slate-500,
+html.dark .text-gray-500,
+html.dark .text-gray-600 {
+  color: #94A3B8 !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-800,
+html.dark .text-slate-900,
+html.dark .text-gray-700,
+html.dark .text-gray-800,
+html.dark .text-gray-900 {
+  color: #F8FAFC !important;
+}
+
+html.dark .border-slate-200,
+html.dark .border-slate-100,
+html.dark .border-gray-200,
+html.dark .border-gray-100 {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-gray-50,
+html.dark .bg-white {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #F8FAFC !important;
+}
+
+html.dark .text-cyan-600 {
+  color: #38BDF8 !important;
+}
+
+html.dark .text-emerald-600 {
+  color: #34D399 !important;
+}
+
+html.dark .text-rose-600 {
+  color: #FB7185 !important;
+}
+
+html.dark .text-amber-600 {
+  color: #FBBF24 !important;
+}
+
+html.dark .text-indigo-600 {
+  color: #818CF8 !important;
+}
+
+/* ==========================================================================
+   Presentation Readability Scaling (Fill full 16:9 canvas with clear text)
+   ========================================================================== */
+
+.slidev-layout {
+  padding-bottom: 3.0rem !important;
+  font-size: 1.05rem !important;
+  line-height: 1.45 !important;
+}
+
+.slidev-layout .text-xs,
+.slidev-page .text-xs {
+  font-size: 0.90rem !important;
+  line-height: 1.42 !important;
+}
+
+.slidev-layout .text-\[11px\],
+.slidev-page .text-\[11px\] {
+  font-size: 0.88rem !important;
+  line-height: 1.4 !important;
+}
+
+.slidev-layout .text-\[10px\],
+.slidev-page .text-\[10px\] {
+  font-size: 0.85rem !important;
+  line-height: 1.38 !important;
+}
+
+.slidev-layout .col-card {
+  padding: 0.85rem 1.15rem !important;
+}
+
+.slidev-layout .col-card h3 {
+  font-size: 1.15rem !important;
+  margin-bottom: 0.35rem !important;
+  line-height: 1.3 !important;
+}
+
+.slidev-layout .col-card p {
+  font-size: 0.98rem !important;
+  line-height: 1.48 !important;
+}
+
+.slidev-layout .col-card li {
+  font-size: 0.98rem !important;
+  line-height: 1.48 !important;
+  margin-bottom: 0.35rem !important;
+}
+
+.slidev-layout .col-card > div:last-child {
+  font-size: 0.90rem !important;
+  line-height: 1.4 !important;
+}

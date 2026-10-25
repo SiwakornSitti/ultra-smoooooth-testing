@@ -2411,6 +2411,132 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
+
+# 🔀 Deep Dive: Bi-Directional Duplex Interception
+
+<h3 class="text-slate-300 text-sm mb-1">Visualizing Request and Response Flow Through the MITM Engine</h3>
+
+<div class="flex justify-center items-center w-full mt-0.5">
+  <div class="adorable-arch-container">
+    <img src="/burp_duplex_intercept.jpg" class="adorable-arch-img" alt="Bi-Directional Duplex Interception" />
+  </div>
+</div>
+
+<div class="slide-card text-xs mt-1.5 p-1.5 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
+  <span>🔀 <strong>Duplex Control</strong>: Intercept outbound requests to steer backend stubs; intercept inbound responses to test frontend fallbacks.</span>
+  <span class="text-amber-400 font-mono text-[11px]">Bi-Directional Mutation</span>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# ⚡ Live Intercept in Action
+
+<h3 class="text-slate-300 text-sm mb-1">Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight</h3>
+
+<div class="flex justify-center items-center w-full mt-0.5">
+  <div class="adorable-arch-container">
+    <img src="/burp_intercept_action.jpg" class="adorable-arch-img" alt="Live Intercept Action in Burp Suite" />
+  </div>
+</div>
+
+<div class="slide-card text-xs mt-1.5 p-1.5 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
+  <span>⏯️ <strong>Action Controls</strong>: <code>Forward</code> sends modified packet; <code>Drop</code> terminates TCP connection; <code>Action</code> hands off to Repeater/Intruder.</span>
+  <span class="text-cyan-400 font-mono text-[11px]">Real-Time Inspection</span>
+</div>
+
+---
+
+# ⚙️ Match & Replace Rules: Automated Transformation
+
+### Zero-Click Automated Header & Payload Manipulation
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-cyan-500/40">
+  <h3 class="text-cyan-400 text-sm mb-0.5">🛠️ What is Match &amp; Replace?</h3>
+  <p class="text-slate-300 text-xs leading-relaxed">
+    Built into Burp Proxy Settings. Automatically applies regex find-and-replace rules across all passing traffic <strong>without pausing the interceptor</strong>.
+  </p>
+  <ul class="space-y-1 text-slate-200 text-xs">
+    <li>• <strong>Header Injection</strong>: Auto-inject <code>Mock-Scenario</code> or <code>Authorization</code> into every outbound request.</li>
+    <li>• <strong>Host Redirection</strong>: Transparently redirect staging URLs to localhost.</li>
+    <li>• <strong>Feature Flag Flipping</strong>: Mutate boolean flags in inbound response JSON.</li>
+  </ul>
+</div>
+
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/40">
+  <h3 class="text-emerald-400 text-sm mb-0.5">📋 Example Match &amp; Replace Rule</h3>
+  <div class="bg-slate-950/90 rounded p-2 border border-emerald-500/30 font-mono text-[11px] text-emerald-200">
+    <div><strong>Item Type</strong>: Request header</div>
+    <div><strong>Match</strong>: <code>^User-Agent:.*$</code></div>
+    <div><strong>Replace</strong>: <code>Mock-Scenario: TRANSFER:FAIL</code></div>
+    <div><strong>Comment</strong>: Auto-steer transfer failure</div>
+  </div>
+  <p class="text-emerald-300/80 text-[11px] leading-tight mt-auto">
+    Any test suite running through the proxy will automatically execute failure paths without script edits.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Automated CI Integration</strong>: Configure Match &amp; Replace rules once, and your existing Playwright/Selenium suites seamlessly run against targeted failure scenarios!</span>
+</div>
+
+---
+
+# ⚡ Architectural Split: WireMock vs. Burp Suite
+
+### Downstream Service Virtualization vs. In-Flight MITM Traffic Interception
+
+<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
+
+<div class="slide-card p-3 border-emerald-500/40 bg-emerald-950/20 flex flex-col">
+  <h3 class="text-emerald-400 font-bold mb-1.5 text-base flex items-center gap-1.5">
+    <span>🪝</span> WireMock: Downstream Virtualization
+  </h3>
+  <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed flex-1">
+    <li>• <strong>Placement</strong>: Downstream 3rd-party provider endpoint (replaces SMS, OAuth, Bank Core).</li>
+    <li>• <strong>Mechanism</strong>: Standalone HTTP mock server receiving routed external calls.</li>
+    <li>• <strong>Matching &amp; State</strong>: Declarative JSON stubs, JSONPath regex, Finite State Machines (FSM).</li>
+    <li>• <strong>Best Used For</strong>: Automated CI/CD suites, deterministic contracts, chaos timeouts, webhooks.</li>
+  </ul>
+  <div class="mt-2 p-1.5 bg-emerald-950/60 rounded border border-emerald-500/30 text-[11px] text-emerald-200">
+    🎯 <em>Core Question Answered</em>: "How does my system react when external APIs fail or return unusual payloads?"
+  </div>
+</div>
+
+<div class="slide-card p-3 border-amber-500/40 bg-amber-950/20 flex flex-col">
+  <h3 class="text-amber-400 font-bold mb-1.5 text-base flex items-center gap-1.5">
+    <span>🛡️</span> Burp Suite: In-Flight MITM Proxy
+  </h3>
+  <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed flex-1">
+    <li>• <strong>Placement</strong>: In-flight between Client (Browser/Mobile) and Backend Gateway (BFF).</li>
+    <li>• <strong>Mechanism</strong>: Transparent Man-In-The-Middle socket proxy intercepting live HTTP traffic.</li>
+    <li>• <strong>Interception &amp; Mutation</strong>: Live pause, payload tampering, response mutation, Match &amp; Replace.</li>
+    <li>• <strong>Best Used For</strong>: Exploratory QA, security fuzzing, ad-hoc header injection, UI error simulation.</li>
+  </ul>
+  <div class="mt-2 p-1.5 bg-amber-950/60 rounded border border-amber-500/30 text-[11px] text-amber-200">
+    🎯 <em>Core Question Answered</em>: "How can I alter traffic between client and gateway without touching source code?"
+  </div>
+
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/80 border-cyan-500/40 p-2.5 mt-2 flex items-center gap-3">
+  <span class="text-xl">🤝</span>
+  <span class="text-slate-200 leading-snug">
+    <strong class="text-cyan-400">The Power of Synergy</strong>: Use <strong>Burp Suite</strong> to intercept client requests and inject <code>Mock-Scenario: PAOTANG:SUCCESS,OTP:TIMEOUT</code>, then let <strong>WireMock</strong> consume that header downstream to simulate multi-service failures end-to-end!
+  </span>
+</div>
+
+---
 layout: section
 ---
 
@@ -3119,6 +3245,7 @@ export default defineConfig({
   </h3>
   <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
     <div><code class="text-emerald-300">POST /__admin/scenarios/reset</code><br/><span class="text-slate-400 font-sans">Resets all state machines back to Started state.</span></div>
+    <div><code class="text-emerald-300">PUT /__admin/scenarios/{name}/state</code><br/><span class="text-slate-400 font-sans">Resets or sets a specific scenario state.</span></div>
     <div><code class="text-emerald-300">POST /__admin/mappings/reset</code><br/><span class="text-slate-400 font-sans">Restores stubs to initial JSON files on disk.</span></div>
     <div><code class="text-emerald-300">POST /__admin/mappings</code><br/><span class="text-slate-400 font-sans">Dynamically creates a new stub at runtime.</span></div>
   </div>
