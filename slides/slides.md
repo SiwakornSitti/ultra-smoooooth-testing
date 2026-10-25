@@ -426,41 +426,113 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
-class: compact-stack-slide
+class: pt-3 pb-3 px-8
 ---
 
-# 🧪 Technology Stack — Testing & Security Infrastructure
+# 🧪 Technology Stack — Virtualization & Traffic Control
 
-### Mocking, MITM Proxy, Ephemeral Containers & E2E Engine
+### External API Simulation (WireMock) & In-Flight Traffic Interception (Burp Suite)
 
-<div class="slide-card text-sm space-y-2.5 pt-2">
+<div class="grid grid-cols-2 gap-3.5 mt-2">
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🪝 WireMock (API Virtualization)</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Stubs external Paotang Pass OAuth and SMS gateways with dynamic Handlebars response templating, latency injection, and stateful machines.
-  </p>
+<div class="slide-card p-4 md:p-5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-base md:text-lg flex items-center gap-1.5">
+        <span>🪝</span> WireMock
+      </span>
+      <span class="text-xs font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">Pillar 1 • Virtualization</span>
+    </div>
+    <p class="text-sm md:text-base text-slate-200 leading-snug mb-2 font-medium">
+      Out-of-process HTTP stand-in server with deterministic stubbing &amp; fault injection
+    </p>
+    <ul class="space-y-1.5 text-sm md:text-base text-slate-300 leading-snug">
+      <li>• <strong>Precision Matching:</strong> Routes requests by dynamic UUIDs, JSONPath expressions, and regex patterns.</li>
+      <li>• <strong>Dynamic Handlebars:</strong> Computes VAT totals, generates UUIDs, and echoes client tracing headers.</li>
+      <li>• <strong>Chaos &amp; Statefulness:</strong> Injects socket faults, 503 flapping, and multi-step state machines.</li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-emerald-500/30 text-xs md:text-sm font-mono text-emerald-300">
+    ✨ Sub-5ms loopback • 100% hermetic CI execution
+  </div>
 </div>
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🛡️ Burp Suite (MITM Proxy)</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Enables live HTTP inspection, parameter tampering, and automated Intruder fuzzing to uncover IDOR security vulnerabilities.
-  </p>
+<div class="slide-card p-4 md:p-5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-base md:text-lg flex items-center gap-1.5">
+        <span>🛡️</span> Burp Suite
+      </span>
+      <span class="text-xs font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Pillar 2 • Traffic Control</span>
+    </div>
+    <p class="text-sm md:text-base text-slate-200 leading-snug mb-2 font-medium">
+      Transparent duplex HTTP proxy for live inspection, tampering &amp; automated fuzzing
+    </p>
+    <ul class="space-y-1.5 text-sm md:text-base text-slate-300 leading-snug">
+      <li>• <strong>Bi-Directional Interception:</strong> Inspects and mutates client requests and backend responses mid-flight.</li>
+      <li>• <strong>Match &amp; Replace:</strong> Automatically injects Mock-Scenario headers without application code changes.</li>
+      <li>• <strong>Security Inspection:</strong> Identifies IDOR vulnerabilities, broken auth, and contract flaws before prod.</li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-cyan-500/30 text-xs md:text-sm font-mono text-cyan-300">
+    ✨ In-flight tampering • Zero-code failure injection
+  </div>
 </div>
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 Testcontainers (Ephemeral Infrastructure)</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Spins up disposable PostgreSQL and WireMock Docker containers with dynamic ports and automatic Moby Ryuk garbage collection.
-  </p>
 </div>
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 Playwright (Full-Stack Test Runner)</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Drives headless browser E2E workflows and direct backend REST API integration tests with auto-waiting assertions and tracing.
-  </p>
+---
+class: pt-3 pb-3 px-8
+---
+
+# 🧪 Technology Stack — Infrastructure & E2E Automation
+
+### Ephemeral Containers (Testcontainers) & Unified Full-Stack Testing (Playwright)
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-4 md:p-5 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-sky-500/30">
+      <span class="text-sky-300 font-bold text-base md:text-lg flex items-center gap-1.5">
+        <span>🐳</span> Testcontainers
+      </span>
+      <span class="text-xs font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Pillar 3 • Infrastructure</span>
+    </div>
+    <p class="text-sm md:text-base text-slate-200 leading-snug mb-2 font-medium">
+      Code-driven Docker container lifecycle with dynamic ports and automatic teardown
+    </p>
+    <ul class="space-y-1.5 text-sm md:text-base text-slate-300 leading-snug">
+      <li>• <strong>Zero Port Collisions:</strong> Allocates random OS loopback ports to enable 100% parallel CI test suites.</li>
+      <li>• <strong>Production DDL Execution:</strong> Runs real PostgreSQL schemas, seeds, and migrations on every test run.</li>
+      <li>• <strong>Moby Ryuk Teardown:</strong> Automatically removes containers on test completion to prevent orphan resource leaks.</li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-sky-500/30 text-xs md:text-sm font-mono text-sky-300">
+    ✨ Disposable containers • Clean test isolation
+  </div>
+</div>
+
+<div class="slide-card p-4 md:p-5 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-purple-500/30">
+      <span class="text-purple-300 font-bold text-base md:text-lg flex items-center gap-1.5">
+        <span>🎭</span> Playwright
+      </span>
+      <span class="text-xs font-mono text-purple-300/80 bg-purple-900/40 px-2 py-0.5 rounded">Pillar 4 • E2E Automation</span>
+    </div>
+    <p class="text-sm md:text-base text-slate-200 leading-snug mb-2 font-medium">
+      Unified browser automation and REST API integration runner with web-first assertions
+    </p>
+    <ul class="space-y-1.5 text-sm md:text-base text-slate-300 leading-snug">
+      <li>• <strong>Auto-Waiting Assertions:</strong> Eliminates arbitrary sleep() flakiness with built-in DOM actionability checks.</li>
+      <li>• <strong>Network Routing:</strong> Intercepts browser HTTP traffic and injects Mock-Scenario headers via page.route().</li>
+      <li>• <strong>Deep Diagnostics:</strong> Captures full execution traces, network HAR logs, and DOM snapshots on failure.</li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-purple-500/30 text-xs font-mono text-purple-300">
+    ✨ Headless speed • Complete trace diagnostics
+  </div>
 </div>
 
 </div>
