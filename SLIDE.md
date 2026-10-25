@@ -75,7 +75,7 @@ Quick navigation reference for presentations in `slides/`.
 | **59** | [⚠️ WireMock — The State Bleed Problem](slides/slides.md#L2374) | Why In-Memory Finite State Machines Cause Flaky CI Failures |
 | **60** | [🧹 WireMock — Automated Scenario Reset Hook](slides/slides.md#L2453) | Hermetic Test Isolation with POST /__admin/scenarios/reset |
 | **61** | [⚡ WireMock — Scenario Seeding & Inspection](slides/slides.md#L2533) | Fast-Forwarding Preconditions and Introspecting Live FSM States |
-| **62** | [⚠️ Production Crisis: The Biometric eKYC Dilemma](slides/slides.md#L2605) | Why External Vendor Sandboxes Threaten Mobile Banking Launches |
+| **62** | [⚠️ Production Crisis: Biometric eKYC Dilemma](slides/slides.md#L2605) | Why External Vendor Sandboxes Threaten Mobile Banking Launches |
 | **63** | [🏆 Capstone Challenge: WireMock Biometric Face Scan Stub](slides/slides.md#L2674) | Author a self-service biometric verification stub with liveness confidence thresholding |
 | **64** | [🛡️ Part 3](slides/slides.md#L2744) | Burp Suite — MITM Traffic Control & Interception |
 | **65** | [🛡️ Burp Suite — MITM Proxy Architecture](slides/slides.md#L2756) |  |
