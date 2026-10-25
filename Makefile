@@ -1,4 +1,4 @@
-.PHONY: all build clean deps deps-go deps-node deps-playwright sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides slides-wiremock slides-burp diagram
+.PHONY: all build clean deps deps-go deps-node deps-playwright sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides diagram
 
 all: build
 
@@ -127,12 +127,6 @@ check: test lint
 
 slides:
 	cd slides && bunx @slidev/cli slides.md --port 3030
-
-slides-wiremock:
-	cd slides && bunx @slidev/cli slides-wiremock.md --port 3032
-
-slides-burp:
-	cd slides && bunx @slidev/cli slides-burpsuite.md --port 3033
 
 diagram:
 	@echo "Serving interactive architecture diagram at http://localhost:3031 ..."

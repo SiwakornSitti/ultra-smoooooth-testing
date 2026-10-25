@@ -5,14 +5,8 @@
   "description": "Slidev presentation slides for Ultra Smoooooth Testing workshop",
   "scripts": {
     "dev": "slidev slides.md --port 3030",
-    "dev:wiremock": "slidev slides-wiremock.md --port 3032",
-    "dev:burp": "slidev slides-burpsuite.md --port 3033",
     "build": "slidev build slides.md",
-    "build:wiremock": "slidev build slides-wiremock.md",
-    "build:burp": "slidev build slides-burpsuite.md",
     "export": "slidev export slides.md",
-    "export:wiremock": "slidev export slides-wiremock.md",
-    "export:burp": "slidev export slides-burpsuite.md",
     "export:pptx": "slidev export slides.md --format pptx"
   },
   "dependencies": {
