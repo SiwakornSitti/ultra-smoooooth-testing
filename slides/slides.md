@@ -29,8 +29,6 @@ class: pt-3 pb-2 px-8
 
 <div class="grid grid-cols-2 gap-3 mt-1.5">
 
-<v-clicks>
-
 <div class="slide-card p-3 border-rose-500/40 bg-rose-950/20">
   <h3 class="text-rose-400 font-bold mb-1 text-base flex items-center gap-1.5">
     <span>🌪️</span> 1. The Flakiness Spiral
@@ -79,8 +77,6 @@ class: pt-3 pb-2 px-8
   </div>
 </div>
 
-</v-clicks>
-
 </div>
 
 ---
@@ -92,8 +88,6 @@ class: agenda-slide pt-4 pb-2 px-8
 ### What We'll Cover Today
 
 <div class="agenda-grid">
-
-<v-clicks>
 
 <div class="agenda-card">
   <h3>🏗️ Part 1 — Ecosystem Architecture</h3>
@@ -120,8 +114,6 @@ class: agenda-slide pt-4 pb-2 px-8
   <p>Web locators, dynamic route mock steering, native device bridge injection, and CI trace diagnostics.</p>
 </div>
 
-</v-clicks>
-
 </div>
 
 ---
@@ -134,41 +126,33 @@ class: strategy-slide
 
 <div class="strategy-grid text-sm">
 
-<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🌐 1. External API Virtualization (WireMock)</h3>
   <p class="text-slate-300 leading-relaxed">
     Virtualize all third-party external integrations with deterministic stateful stubs, dynamic Handlebars responses, and zero sandbox dependencies.
   </p>
 </div>
-</v-click>
 
-<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">⚡ 2. In-Flight Traffic Interception (Burp Suite)</h3>
   <p class="text-slate-300 leading-relaxed">
     Intercept live HTTP traffic in-flight, tamper with payloads, inject fault scenarios, and probe security/IDOR boundaries.
   </p>
 </div>
-</v-click>
 
-<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🐳 3. Hermetic Infrastructure (Testcontainers)</h3>
   <p class="text-slate-300 leading-relaxed">
     Execute integration suites against isolated, ephemeral Docker containers with dynamic ports and guaranteed Ryuk teardown.
   </p>
 </div>
-</v-click>
 
-<v-click>
 <div class="slide-card">
   <h3 class="text-emerald-400 font-bold mb-1 text-base">🎭 4. Full-Stack E2E Automation (Playwright)</h3>
   <p class="text-slate-300 leading-relaxed">
     Drive unified browser DOM interactions and headless REST API validation with zero-flake auto-waiting assertions and rich tracing.
   </p>
 </div>
-</v-click>
 
 </div>
 
@@ -354,19 +338,24 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS
   </div>
 
 ```typescript
-// 1. Spin up clean PostgreSQL 16 container with fresh database schema
-const postgres = await new PostgreSqlContainer("postgres:16-alpine")
+// 1. Spin up clean PostgreSQL 16 container with fresh schema
+const postgres = await new PostgreSqlContainer(
+  "postgres:16-alpine"
+)
   .withDatabase("ultrasmooth")
   .start();
 
 // 2. Spin up WireMock container with exposed mock HTTP port
-const wiremock = await new GenericContainer("wiremock/wiremock:3.3.1")
+const wiremock = await new GenericContainer(
+  "wiremock/wiremock:3.3.1"
+)
   .withExposedPorts(8080)
   .start();
 
-// 3. Inject randomized host ports into application runtime environment
+// 3. Inject randomized host ports into runtime environment
 process.env.DB_PORT = postgres.getMappedPort(5432).toString();
-process.env.WIREMOCK_PORT = wiremock.getMappedPort(8080).toString();
+process.env.WIREMOCK_PORT =
+  wiremock.getMappedPort(8080).toString();
 ```
 
 </div>
@@ -854,17 +843,17 @@ class: pt-2 pb-1 px-8
   <div>
     <div class="flex items-center justify-between mb-1 pb-1 border-b border-rose-500/30">
       <span class="text-rose-400 font-bold text-xs">🥇 Tier 1: Fault Override</span>
-      <span class="text-[10px] font-mono text-rose-300 bg-rose-950 px-1.5 py-0.2 rounded">priority: 1</span>
+      <span class="text-xs font-mono text-rose-300 bg-rose-950 px-1.5 py-0.5 rounded">priority: 1</span>
     </div>
-    <p class="text-[11px] text-slate-300 mb-1.5">Explicit scenario fault contracts.</p>
-    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-[10px] text-rose-200 border border-slate-700/50 space-y-0.5">
+    <p class="text-xs text-slate-300 mb-1.5">Explicit scenario fault contracts.</p>
+    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-xs text-rose-200 border border-slate-700/50 space-y-0.5">
       <div><code>"priority": 1</code></div>
       <div><code>"urlPath": "/api/transfers"</code></div>
       <div><code>"headers": {"Mock-Scenario":"FUNDS"}</code></div>
       <div><code>"status": 400 (ERR_FUNDS)</code></div>
     </div>
   </div>
-  <div class="pt-1 border-t border-rose-500/20 text-[10px] font-mono text-rose-300 mt-1.5">
+  <div class="pt-1 border-t border-rose-500/20 text-xs font-mono text-rose-300 mt-1.5">
     🎯 Highest precedence
   </div>
 </div>
@@ -873,17 +862,17 @@ class: pt-2 pb-1 px-8
   <div>
     <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
       <span class="text-emerald-400 font-bold text-xs">🥈 Tier 2: Happy Path</span>
-      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950 px-1.5 py-0.2 rounded">priority: 10</span>
+      <span class="text-xs font-mono text-emerald-300 bg-emerald-950 px-1.5 py-0.5 rounded">priority: 10</span>
     </div>
-    <p class="text-[11px] text-slate-300 mb-1.5">Standard routes without scenario header.</p>
-    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-[10px] text-emerald-200 border border-slate-700/50 space-y-0.5">
+    <p class="text-xs text-slate-300 mb-1.5">Standard routes without scenario header.</p>
+    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-xs text-emerald-200 border border-slate-700/50 space-y-0.5">
       <div><code>"priority": 10</code></div>
       <div><code>"urlPath": "/api/transfers"</code></div>
       <div><code>"status": 201 Created</code></div>
       <div><code>"jsonBody": {"status":"COMPLETED"}</code></div>
     </div>
   </div>
-  <div class="pt-1 border-t border-emerald-500/20 text-[10px] font-mono text-emerald-300 mt-1.5">
+  <div class="pt-1 border-t border-emerald-500/20 text-xs font-mono text-emerald-300 mt-1.5">
     🎯 Default domain route
   </div>
 </div>
@@ -892,17 +881,17 @@ class: pt-2 pb-1 px-8
   <div>
     <div class="flex items-center justify-between mb-1 pb-1 border-b border-cyan-500/30">
       <span class="text-cyan-400 font-bold text-xs">🛡️ Tier 3: Catch-All Proxy</span>
-      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950 px-1.5 py-0.2 rounded">priority: 100</span>
+      <span class="text-xs font-mono text-cyan-300 bg-cyan-950 px-1.5 py-0.5 rounded">priority: 100</span>
     </div>
-    <p class="text-[11px] text-slate-300 mb-1.5">Fallback for unmatched upstream traffic.</p>
-    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-[10px] text-cyan-200 border border-slate-700/50 space-y-0.5">
+    <p class="text-xs text-slate-300 mb-1.5">Fallback for unmatched upstream traffic.</p>
+    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-xs text-cyan-200 border border-slate-700/50 space-y-0.5">
       <div><code>"priority": 100</code></div>
       <div><code>"urlPattern": "/.*"</code></div>
       <div><code>"proxyBaseUrl":</code></div>
       <div class="truncate"><code>"https://api.external.com"</code></div>
     </div>
   </div>
-  <div class="pt-1 border-t border-cyan-500/20 text-[10px] font-mono text-cyan-300 mt-1.5">
+  <div class="pt-1 border-t border-cyan-500/20 text-xs font-mono text-cyan-300 mt-1.5">
     🎯 Live fallback proxy
   </div>
 </div>
@@ -924,30 +913,30 @@ class: pt-2 pb-1 px-8
 
 <div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-rose-500/30">
   <h3 class="text-rose-400 text-sm mb-0.5">🥇 Case A: Header Present (Priority 1 Wins)</h3>
-  <div class="text-[11px] text-slate-300">
+  <div class="text-xs text-slate-300">
     <code>POST /lab/api/transfers</code> + <span class="text-amber-300">Mock-Scenario: INSUFFICIENT_FUNDS</span>
   </div>
-  <div class="bg-slate-950/90 rounded p-1.5 border border-rose-500/40 font-mono text-[11px] text-rose-200 mt-auto">
-    <div class="text-[10px] text-slate-400 font-sans mb-0.5">💥 Evaluated Response:</div>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-rose-500/40 font-mono text-xs text-rose-200 mt-auto">
+    <div class="text-xs text-slate-400 font-sans mb-0.5">💥 Evaluated Response:</div>
     <code>HTTP/1.1 400 Bad Request<br/>
     {"code": "ERR_INSUFFICIENT_FUNDS"}</code>
   </div>
-  <p class="text-rose-300/80 text-[11px] leading-tight">
+  <p class="text-rose-300/80 text-xs leading-tight">
     Matches Priority 1 error stub explicitly; evaluation terminates immediately.
   </p>
 </div>
 
 <div class="col-card p-2.5 space-y-1 bg-slate-900/60 border-emerald-500/30">
   <h3 class="text-emerald-400 text-sm mb-0.5">🥈 Case B: Header Absent (Falls to Priority 10)</h3>
-  <div class="text-[11px] text-slate-300">
+  <div class="text-xs text-slate-300">
     <code>POST /lab/api/transfers</code> (Standard request, no steer header)
   </div>
-  <div class="bg-slate-950/90 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
-    <div class="text-[10px] text-slate-400 font-sans mb-0.5">✅ Evaluated Response:</div>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <div class="text-xs text-slate-400 font-sans mb-0.5">✅ Evaluated Response:</div>
     <code>HTTP/1.1 201 Created<br/>
     {"status": "COMPLETED"}</code>
   </div>
-  <p class="text-emerald-300/80 text-[11px] leading-tight">
+  <p class="text-emerald-300/80 text-xs leading-tight">
     Priority 1 check fails (missing header); cascades down to Priority 10 happy path.
   </p>
 </div>
@@ -1099,7 +1088,10 @@ class: pt-2 pb-1 px-8
     "urlPath": "/lab/api/accounts/open",
     "bodyPatterns": [
       {
-        "equalToJson": "{\"citizenId\": \"1100500123456\", \"type\": \"SAVINGS\"}",
+        "equalToJson": {
+          "citizenId": "1100500123456",
+          "type": "SAVINGS"
+        },
         "ignoreExtraElements": true,
         "ignoreArrayOrder": true
       }
@@ -1197,7 +1189,10 @@ class: pt-2 pb-1 px-8
   },
   "response": {
     "status": 201,
-    "jsonBody": { "status": "APPROVED", "flag": "HIGH_VALUE_TRANSACTION" }
+    "jsonBody": {
+      "status": "APPROVED",
+      "flag": "HIGH_VALUE_TRANSACTION"
+    }
   }
 }
 ```
@@ -1220,13 +1215,13 @@ class: pt-2 pb-1 px-8
   <div>
     <h3 class="text-cyan-400 text-sm font-bold mb-1">🌐 Path RegEx Pattern Architecture</h3>
     <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed">
-      <li>• <strong>Standard UUID</strong>: <code>[0-9a-fA-F-]{36}</code> (RFC 4122 IDs)</li>
+      <li>• <strong>Standard UUID</strong>: <code>[a-z0-9-]+</code> (RFC 4122 IDs)</li>
       <li>• <strong>Entity Prefixes</strong>: <code>ACC-[0-9]{6}</code> (Banking account IDs)</li>
       <li>• <strong>Hierarchy Routing</strong>: Combines static paths &amp; regex slots without hardcoded IDs.</li>
     </ul>
   </div>
   <div class="bg-slate-950/90 rounded p-2 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
-    <code>/api/users/[0-9a-fA-F-]{36}/accounts/ACC-[0-9]{6}</code>
+    <code>/api/users/[a-z0-9-]+/accounts/ACC-[0-9]{6}</code>
   </div>
 </div>
 
@@ -1238,7 +1233,7 @@ class: pt-2 pb-1 px-8
 {
   "request": {
     "method": "GET",
-    "urlPathPattern": "/api/users/[0-9a-fA-F-]{36}/accounts/ACC-[0-9]{6}"
+    "urlPathPattern": "/api/users/[a-z0-9-]+/accounts/ACC-\\d{6}"
   },
   "response": {
     "status": 200,
@@ -1395,8 +1390,8 @@ class: pt-2 pb-2 px-8
     "urlPath": "/lab/api/otp/send",
     "bodyPatterns": [
       { "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" },
-      { "matchesJsonPath": "$[?(@.channel =~ /^(SMS|WHATSAPP)$/)]" },
-      { "matchesJsonPath": "$.auth[?(@.purpose == 'TRANSFER_VERIFICATION')]" }
+      { "matchesJsonPath": "$[?(@.channel =~ /^(SMS|WA)$/)]" },
+      { "matchesJsonPath": "$.auth[?(@.purpose == 'VERIFY')]" }
     ]
   },
   "response": {
@@ -1499,20 +1494,20 @@ class: pt-2 pb-1 px-8
 
 <div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-cyan-500/30">
   <h3 class="text-cyan-400 text-sm mb-0.5">🌐 1. URL Path &amp; Query Params</h3>
-  <div class="text-[11px] text-slate-300">
+  <div class="text-xs text-slate-300">
     <strong>Incoming</strong>: <code>GET /api/users/USR-99?id=ORD-123</code>
   </div>
   
-  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-[11px] text-cyan-200">
-    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-xs text-cyan-200">
+    <div class="text-xs text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
     <code>{<br/>
     &nbsp;&nbsp;"userId": "{{request.pathSegments.[2]}}",<br/>
     &nbsp;&nbsp;"orderId": "{{request.query.id}}"<br/>
     }</code>
   </div>
 
-  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
-    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
+  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <div class="text-xs text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
     <code>{<br/>
     &nbsp;&nbsp;"userId": "USR-99",<br/>
     &nbsp;&nbsp;"orderId": "ORD-123"<br/>
@@ -1522,20 +1517,20 @@ class: pt-2 pb-1 px-8
 
 <div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/30">
   <h3 class="text-emerald-400 text-sm mb-0.5">📦 2. Headers &amp; JSON Body Fields</h3>
-  <div class="text-[11px] text-slate-300">
+  <div class="text-xs text-slate-300">
     <strong>Incoming</strong>: <code>X-User-Id: U-88</code> | Body <code>{"id":"ACC-55"}</code>
   </div>
   
-  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-[11px] text-cyan-200">
-    <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-xs text-cyan-200">
+    <div class="text-xs text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
     <code>{<br/>
     &nbsp;&nbsp;"userId": "{{request.headers.[X-User-Id]}}",<br/>
     &nbsp;&nbsp;"accId": "{{jsonPath request.body '$.id'}}"<br/>
     }</code>
   </div>
 
-  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-[11px] text-emerald-200 mt-auto">
-    <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
+  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
+    <div class="text-xs text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
     <code>{<br/>
     &nbsp;&nbsp;"userId": "U-88",<br/>
     &nbsp;&nbsp;"accId": "ACC-55"<br/>
@@ -1713,7 +1708,7 @@ class: pt-1 pb-1 px-8
   ]
 }
 ```
-  <p class="text-slate-400 text-[10px] mt-auto pt-1 border-t border-slate-700/50">
+  <p class="text-slate-400 text-xs mt-auto pt-1 border-t border-slate-700/50">
     🔁 Loops array, transforms <code>upper this.sku</code>, and omits trailing comma via <code>@last</code>.
   </p>
 </div>
@@ -1721,8 +1716,8 @@ class: pt-1 pb-1 px-8
 <div class="col-card p-2 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col">
   <h3 class="text-emerald-400 text-xs font-bold mb-0.5">✨ 2. Input ➔ Rendered Output</h3>
 
-  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 text-[10px]">
-    <div class="text-[10px] text-slate-400 font-bold mb-0.5 font-sans">📥 Incoming Request Body:</div>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 text-xs">
+    <div class="text-xs text-slate-400 font-bold mb-0.5 font-sans">📥 Incoming Request Body:</div>
 
 ```json
 {
@@ -1731,8 +1726,8 @@ class: pt-1 pb-1 px-8
 ```
   </div>
 
-  <div class="bg-emerald-950/40 rounded p-1.5 border border-emerald-500/40 text-[10px] mt-auto">
-    <div class="text-[10px] text-emerald-400 font-bold mb-0.5 font-sans">📤 Rendered Response JSON:</div>
+  <div class="bg-emerald-950/40 rounded p-1.5 border border-emerald-500/40 text-xs mt-auto">
+    <div class="text-xs text-emerald-400 font-bold mb-0.5 font-sans">📤 Rendered Response JSON:</div>
 
 ```json
 {
@@ -1815,7 +1810,7 @@ class: pt-2 pb-1 px-8
 {
   "orderId": "{{randomValue type='UUID'}}",
   "customerId": "{{jsonPath request.body '$.customer.id'}}",
-  "tier": "{{jsonPath request.body '$.customer.tier' default='SILVER'}}",
+  "tier": "{{jsonPath request.body '$.tier' default='SILVER'}}",
   "firstSku": "{{jsonPath request.body '$.items[0].sku'}}",
   "itemCount": {{size (jsonPath request.body '$.items')}}
 }
@@ -2083,7 +2078,7 @@ class: pt-1 pb-1 px-8
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <div>
     <h3 class="text-emerald-400 font-bold mb-0.5 text-xs">✅ 1st Call: Exchange Token</h3>
-    <p class="text-slate-300 mb-1 text-[11px]"><code>Started</code> ➔ <code>TOKEN_ISSUED</code>: Consumes auth code and issues token.</p>
+    <p class="text-slate-300 mb-1 text-xs"><code>Started</code> ➔ <code>TOKEN_ISSUED</code>: Consumes auth code and issues token.</p>
 
 ```json
 {
@@ -2103,13 +2098,13 @@ class: pt-1 pb-1 px-8
 }
 ```
   </div>
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> &amp; transitions state to <code>TOKEN_ISSUED</code></p>
+  <p class="text-slate-300 text-xs pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> &amp; transitions state to <code>TOKEN_ISSUED</code></p>
 </div>
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-rose-500/30">
   <div>
     <h3 class="text-rose-400 font-bold mb-0.5 text-xs">🚨 2nd Call: Replay Rejected</h3>
-    <p class="text-slate-300 mb-1 text-[11px]"><code>TOKEN_ISSUED</code>: Replay attempt fails with invalid grant.</p>
+    <p class="text-slate-300 mb-1 text-xs"><code>TOKEN_ISSUED</code>: Replay attempt fails with invalid grant.</p>
 
 ```json
 {
@@ -2128,7 +2123,7 @@ class: pt-1 pb-1 px-8
 }
 ```
   </div>
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🔴 <strong>Returns 400 Bad Request</strong> (Code already consumed)</p>
+  <p class="text-slate-300 text-xs pt-1 border-t border-slate-700/50">🔴 <strong>Returns 400 Bad Request</strong> (Code already consumed)</p>
 </div>
 
 </div>
@@ -2216,12 +2211,12 @@ class: pt-1 pb-1 px-8
   }
 }
 ```
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🔴 <strong>Returns 503 Service Unavailable</strong> (Triggering client backoff)</p>
+  <p class="text-slate-300 text-xs pt-1 border-t border-slate-700/50">🔴 <strong>Returns 503 Service Unavailable</strong> (Triggering client backoff)</p>
 </div>
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <h3 class="text-emerald-400 font-bold mb-0.5 text-xs">✅ Self-Healing Recovery (Attempt 3)</h3>
-  <p class="text-slate-300 mb-1 text-[11px]"><code>FAIL_2</code> ➔ Final Success State</p>
+  <p class="text-slate-300 mb-1 text-xs"><code>FAIL_2</code> ➔ Final Success State</p>
 
 ```json
 {
@@ -2237,7 +2232,7 @@ class: pt-1 pb-1 px-8
   }
 }
 ```
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> (Client retry successfully verified)</p>
+  <p class="text-slate-300 text-xs pt-1 border-t border-slate-700/50">🟢 <strong>Returns 200 OK</strong> (Client retry successfully verified)</p>
 </div>
 
 </div>
@@ -2255,7 +2250,7 @@ class: pt-1 pb-1 px-8
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-emerald-500/30">
   <div>
     <h3 class="text-emerald-400 font-bold mb-0.5 text-xs">📨 1st Delivery: Processed</h3>
-    <p class="text-slate-300 mb-1 text-[11px]"><code>Started</code> ➔ <code>WEBHOOK_PROCESSED</code>: Accepts payment event.</p>
+    <p class="text-slate-300 mb-1 text-xs"><code>Started</code> ➔ <code>WEBHOOK_PROCESSED</code>: Accepts payment event.</p>
 
 ```json
 {
@@ -2275,13 +2270,13 @@ class: pt-1 pb-1 px-8
 }
 ```
   </div>
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟢 <strong>Returns 202 Accepted</strong> (First-time processing)</p>
+  <p class="text-slate-300 text-xs pt-1 border-t border-slate-700/50">🟢 <strong>Returns 202 Accepted</strong> (First-time processing)</p>
 </div>
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-amber-500/30">
   <div>
     <h3 class="text-amber-400 font-bold mb-0.5 text-xs">🛡️ 2nd Delivery: Duplicate</h3>
-    <p class="text-slate-300 mb-1 text-[11px]"><code>WEBHOOK_PROCESSED</code>: Detects duplicate and rejects.</p>
+    <p class="text-slate-300 mb-1 text-xs"><code>WEBHOOK_PROCESSED</code>: Detects duplicate and rejects.</p>
 
 ```json
 {
@@ -2300,7 +2295,7 @@ class: pt-1 pb-1 px-8
 }
 ```
   </div>
-  <p class="text-slate-300 text-[10px] pt-1 border-t border-slate-700/50">🟡 <strong>Returns 409 Conflict</strong> (Idempotent guard)</p>
+  <p class="text-slate-300 text-xs pt-1 border-t border-slate-700/50">🟡 <strong>Returns 409 Conflict</strong> (Idempotent guard)</p>
 </div>
 
 </div>
@@ -2343,7 +2338,7 @@ class: pt-1 pb-1 px-8
 
 <div class="slide-card space-y-1 p-2 bg-slate-900/60 border-indigo-500/30 flex flex-col">
   <div>
-    <h3 class="text-indigo-400 font-semibold mb-0.5 text-[9.5px]">📝 Stub with <code>serveEventListeners</code></h3>
+    <h3 class="text-indigo-400 font-semibold mb-0.5 text-xs">📝 Stub with <code>serveEventListeners</code></h3>
 
 ```json
 {
@@ -2388,7 +2383,7 @@ class: pt-1 pb-1 px-8
 
 ```typescript
 test.afterEach(async ({ request }) => {
-  // Reset all WireMock state machines to 'Started' after every spec
+  // Reset all WireMock state machines back to 'Started'
   await request.post(`${wiremockUrl}/__admin/scenarios/reset`);
 });
 ```
@@ -2580,8 +2575,6 @@ class: pt-2 pb-1 px-8
 
 <div class="multi-col-grid-2">
 
-<v-clicks>
-
 <div class="col-card">
   <h3 class="text-amber-400">📤 Request Interception (Client ➔ Server)</h3>
   <p class="mb-2">
@@ -2601,8 +2594,6 @@ class: pt-2 pb-1 px-8
     🛡️ <em>Resilience</em>: Verify UI gracefully handles partial outages and error banners.
   </div>
 </div>
-
-</v-clicks>
 
 </div>
 
@@ -2830,27 +2821,63 @@ layout: section
 
 ### Programmable Docker Infrastructure Directly in Your Test Suite
 
-<div class="multi-col-grid-3">
+<div class="space-y-2.5 mb-2.5">
 
-<v-clicks>
+  <div class="slide-card bg-slate-900/70 border-emerald-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-52 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">📦</span>
+        <span class="font-mono text-emerald-400 font-bold text-sm">Code-Driven Containers</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Real Docker Fixtures</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Provisions <strong>real Docker containers</strong> (PostgreSQL, WireMock, Redis) directly as code fixtures in TypeScript.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-cyan-400">new</span> <span class="text-amber-300">PostgreSqlContainer</span>(<span class="text-emerald-400">"postgres:16"</span>)
+    </div>
+  </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">📦 Code-Driven Containers</h3>
-  <p>An open-source library that provisions real Docker containers (PostgreSQL, WireMock, Redis) directly as test fixtures in TypeScript.</p>
+  <div class="slide-card bg-slate-900/70 border-amber-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-52 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🔌</span>
+        <span class="font-mono text-amber-300 font-bold text-sm">Dynamic Port Mapping</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Zero Port Conflicts</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Binds containers to <strong>randomized host ports</strong> at runtime, eliminating socket collisions in parallel CI runners.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-amber-300">postgres</span>.<span class="text-cyan-400">getMappedPort</span>(<span class="text-emerald-400">5432</span>)
+    </div>
+  </div>
+
+  <div class="slide-card bg-slate-900/70 border-cyan-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-52 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🔄</span>
+        <span class="font-mono text-cyan-400 font-bold text-sm">Lifecycle & Ryuk Cleanup</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Automated Teardown</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Orchestrates bootstrap in <code>beforeAll()</code> hooks, seeds migrations, and guarantees <strong>zero zombie leaks</strong> via Ryuk.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-cyan-400">await</span> <span class="text-amber-300">container</span>.<span class="text-cyan-400">stop</span>()
+    </div>
+  </div>
+
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🔌 Dynamic Port Mapping</h3>
-  <p>Exposes containers on randomized host ports mapped dynamically at runtime, completely eliminating port collision errors in parallel CI runs.</p>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🔄 Test Lifecycle Hooks</h3>
-  <p>Boots containers in <code>beforeAll()</code> hooks, seeds migrations, injects URLs into services, and guarantees teardown on completion.</p>
-</div>
-
-</v-clicks>
-
+<div class="slide-card text-xs bg-slate-900/60 p-2.5 border-emerald-500/30 flex items-center gap-3">
+  <span class="text-lg">💡</span>
+  <span class="text-slate-300">
+    <strong>Production Parity</strong>: No in-memory approximations (H2/SQLite) — tests run against the exact PostgreSQL image, extensions, and schema scripts deployed to production.
+  </span>
 </div>
 
 ---
@@ -2893,8 +2920,6 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
 
 <div class="grid grid-cols-2 gap-2.5 mt-1 text-sm">
 
-<v-clicks>
-
 <div class="slide-card p-2.5">
   <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>💥</span> 1. State Pollution &amp; Deadlocks
@@ -2902,7 +2927,7 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     Test A mutates shared rows; Test B fails due to dirty state, foreign key conflicts, or missing row resets.
   </p>
-  <div class="mt-1 text-rose-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-rose-300/90 font-mono text-xs">
     🚨 Flaky when test suites run concurrently.
   </div>
 </div>
@@ -2914,7 +2939,7 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     Static bindings to <code>:5432</code> or <code>:8080</code> crash when local tools or parallel CI jobs compete for sockets.
   </p>
-  <div class="mt-1 text-rose-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-rose-300/90 font-mono text-xs">
     🚨 <code>bind: address already in use</code> error.
   </div>
 </div>
@@ -2926,7 +2951,7 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     Discrepancies between local macOS, Linux CI runners, and staging create false-positives and hidden regressions.
   </p>
-  <div class="mt-1 text-amber-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-amber-300/90 font-mono text-xs">
     🚨 Passes locally, but fails in GitHub Actions.
   </div>
 </div>
@@ -2938,12 +2963,10 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     When tests crash unexpectedly, orphan DB connections and background processes linger indefinitely.
   </p>
-  <div class="mt-1 text-rose-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-rose-300/90 font-mono text-xs">
     🚨 Leaks system memory and locks resources.
   </div>
 </div>
-
-</v-clicks>
 
 </div>
 
@@ -2957,8 +2980,6 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
 
 <div class="grid grid-cols-2 gap-2.5 mt-1 text-sm">
 
-<v-clicks>
-
 <div class="slide-card p-2.5">
   <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
     <span>🛡️</span> 1. Hermetic Test Isolation
@@ -2966,7 +2987,7 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     Dedicated, pristine PostgreSQL and WireMock container per test suite with zero data bleed.
   </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
     ✨ 100% deterministic &amp; safe parallel execution.
   </div>
 </div>
@@ -2978,7 +2999,7 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     Runs the exact PostgreSQL 16 Alpine image and migrations used in production.
   </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
     ✨ Catches real SQL syntax &amp; schema bugs early.
   </div>
 </div>
@@ -2990,7 +3011,7 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     Developers only need Docker installed — no local DBs or Java runtimes required.
   </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
     ✨ Instant onboarding with <code>bun test</code>.
   </div>
 </div>
@@ -3002,12 +3023,10 @@ class: hermetic-grid-slide pt-3 pb-2 px-8
   <p class="text-slate-300 leading-relaxed text-xs">
     Identical TypeScript orchestration executes on local workstations and headless GitHub Actions.
   </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-[10px]">
+  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
     ✨ Green locally = Guaranteed green in CI.
   </div>
 </div>
-
-</v-clicks>
 
 </div>
 
@@ -3040,12 +3059,12 @@ class: pt-2 pb-1 px-8
 <div class="hermetic-code-wrapper">
 
 ```typescript
-// 1. Create isolated Docker bridge network for the test runner session
+// 1. Create isolated Docker bridge network for the test session
 export async function startHermeticNetwork() {
   return await new Network().start();
 }
 
-// 2. Start PostgreSQL & retrieve dynamically mapped random host port
+// 2. Start PostgreSQL & retrieve dynamic random host port
 export async function startPostgres(network: StartedNetwork) {
   return await new PostgreSqlContainer("postgres:18-alpine")
     .withNetwork(network)
@@ -3054,9 +3073,10 @@ export async function startPostgres(network: StartedNetwork) {
     .start();
 }
 
-// 3. Inject dynamic connection URLs into application runtime environment
+// 3. Inject dynamic connection URLs into application runtime
 process.env.DB_URL = postgres.getConnectionString();
-process.env.WIREMOCK_URL = `http://localhost:${wiremock.getMappedPort(8080)}`;
+process.env.WIREMOCK_URL =
+  `http://localhost:${wiremock.getMappedPort(8080)}`;
 ```
 
 </div>
@@ -3084,14 +3104,17 @@ const DATABASE_SERVICES = [
   { name: "transfer-service", hasSeed: false },
 ] as const;
 
-// 2. Execute SQL migrations via container exec (psql -v ON_ERROR_STOP=1)
-export async function runMigrations(database: StartedPostgreSqlContainer) {
+// 2. Execute SQL migrations via container exec
+export async function runMigrations(
+  database: StartedPostgreSqlContainer
+) {
   for (const { name } of DATABASE_SERVICES) {
     await database.exec([
       "sh", "-c",
-      `for file in /test-data/migration/${name}/*.sql; do ` +
-      `PGPASSWORD=${database.getPassword()} psql -v ON_ERROR_STOP=1 ` +
-      `-U ${database.getUsername()} -d ${database.getDatabase()} -f "$file"; done`
+      `for f in /test-data/migration/${name}/*.sql; do ` +
+      `PGPASSWORD=${database.getPassword()} ` +
+      `psql -v ON_ERROR_STOP=1 -U ${database.getUsername()} ` +
+      `-d ${database.getDatabase()} -f "$f"; done`
     ]);
   }
 }
@@ -3101,16 +3124,16 @@ export async function runMigrations(database: StartedPostgreSqlContainer) {
 
 <div class="grid grid-cols-3 gap-2 mt-1.5 text-xs">
   <div class="slide-card p-2 mb-0 border-indigo-500/30">
-    <strong class="text-indigo-400 font-bold block mb-0.5 text-[11px]">📁 Real Migration Files</strong>
-    <p class="text-slate-300 leading-tight text-[10px]">Executes identical SQL files (<code>001-*.sql</code>) used in staging &amp; production environments.</p>
+    <strong class="text-indigo-400 font-bold block mb-0.5 text-xs">📁 Real Migration Files</strong>
+    <p class="text-slate-300 leading-tight text-xs">Executes identical SQL files (<code>001-*.sql</code>) used in staging &amp; production environments.</p>
   </div>
   <div class="slide-card p-2 mb-0 border-emerald-500/30">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">🛡️ Strict Error Handling</strong>
-    <p class="text-slate-300 leading-tight text-[10px]"><code>ON_ERROR_STOP=1</code> aborts immediately on syntax or constraint errors during test bootstrap.</p>
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">🛡️ Strict Error Handling</strong>
+    <p class="text-slate-300 leading-tight text-xs"><code>ON_ERROR_STOP=1</code> aborts immediately on syntax or constraint errors during test bootstrap.</p>
   </div>
   <div class="slide-card p-2 mb-0 border-cyan-500/30">
-    <strong class="text-cyan-400 font-bold block mb-0.5 text-[11px]">🌱 Isolated Pristine Seeds</strong>
-    <p class="text-slate-300 leading-tight text-[10px]">Loads deterministic baseline data (demo users, accounts) per suite with zero shared state bleed.</p>
+    <strong class="text-cyan-400 font-bold block mb-0.5 text-xs">🌱 Isolated Pristine Seeds</strong>
+    <p class="text-slate-300 leading-tight text-xs">Loads deterministic baseline data (demo users, accounts) per suite with zero shared state bleed.</p>
   </div>
 </div>
 
@@ -3130,9 +3153,11 @@ test.beforeAll(async () => {
   // Step 1: Boot isolated containers on dynamic ports
   const network = await startHermeticNetwork();
   const db = await startPostgres(network);
-  const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
+  const wm = await startWiremock(
+    network, "wiremock", [wiremockMapping("paotang")]
+  );
 
-  // Step 2 & 3: Run exact production DDL migrations & pristine fixture seeds
+  // Step 2 & 3: Run exact production DDL migrations & seeds
   await runMigrations(db);
   await runSeedData(db);
 });
@@ -3146,16 +3171,16 @@ test.afterAll(async () => {
 
 <div class="grid grid-cols-3 gap-2 mt-1.5 text-xs">
   <div class="slide-card p-2 mb-0">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">1. Ephemeral Containers</strong>
-    <p class="text-slate-300 leading-tight text-[10px]">Spins up fresh isolated PostgreSQL &amp; WireMock instances on dynamic ports.</p>
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">1. Ephemeral Containers</strong>
+    <p class="text-slate-300 leading-tight text-xs">Spins up fresh isolated PostgreSQL &amp; WireMock instances on dynamic ports.</p>
   </div>
   <div class="slide-card p-2 mb-0">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">2. Schema Migrations</strong>
-    <p class="text-slate-300 leading-tight text-[10px]">Executes DDL migration scripts (<code>*.sql</code>) to build exact production schema.</p>
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">2. Schema Migrations</strong>
+    <p class="text-slate-300 leading-tight text-xs">Executes DDL migration scripts (<code>*.sql</code>) to build exact production schema.</p>
   </div>
   <div class="slide-card p-2 mb-0">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-[11px]">3. Guaranteed Teardown</strong>
-    <p class="text-slate-300 leading-tight text-[10px]">Auto-Ryuk teardown cleans up all containers and network bridges upon exit.</p>
+    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">3. Guaranteed Teardown</strong>
+    <p class="text-slate-300 leading-tight text-xs">Auto-Ryuk teardown cleans up all containers and network bridges upon exit.</p>
   </div>
 </div>
 
@@ -3177,27 +3202,63 @@ layout: section
 
 ### Modern Full-Stack Integration Testing Architecture
 
-<div class="multi-col-grid-3">
+<div class="space-y-2.5 mb-2.5">
 
-<v-clicks>
+  <div class="slide-card bg-slate-900/70 border-emerald-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-52 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">⚡</span>
+        <span class="font-mono text-emerald-400 font-bold text-sm">DevTools Protocol</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Direct Engine Wire</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Communicates directly via Chrome DevTools Protocol & BiDi for <strong>sub-millisecond execution</strong> without flaky WebDriver.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-cyan-400">await</span> <span class="text-amber-300">page</span>.<span class="text-cyan-400">goto</span>(<span class="text-emerald-400">"http://localhost:3000"</span>)
+    </div>
+  </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">⚡ DevTools Protocol</h3>
-  <p>Direct communication with browser engines via Chromium DevTools / BiDi for sub-millisecond execution speed without flaky external drivers.</p>
+  <div class="slide-card bg-slate-900/70 border-amber-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-52 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🛡️</span>
+        <span class="font-mono text-amber-300 font-bold text-sm">Context Isolation</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Zero State Bleed</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Every test executes in an isolated incognito browser context with <strong>zero session bleed</strong> across parallel workers.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-cyan-400">const</span> ctx = <span class="text-cyan-400">await</span> <span class="text-amber-300">browser</span>.<span class="text-cyan-400">newContext</span>()
+    </div>
+  </div>
+
+  <div class="slide-card bg-slate-900/70 border-cyan-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-52 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🌐</span>
+        <span class="font-mono text-cyan-400 font-bold text-sm">Unified Full-Stack</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Single Test Runner</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Drive real browser UI workflows and execute backend <strong>headless REST API requests</strong> in the exact same test file.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
+      <span class="text-cyan-400">await</span> <span class="text-amber-300">request</span>.<span class="text-cyan-400">post</span>(<span class="text-emerald-400">"/api/v1/transfers"</span>)
+    </div>
+  </div>
+
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🛡️ Context Isolation</h3>
-  <p>Every test executes in an isolated incognito browser context with zero cookie, localStorage, or session bleed across concurrent workers.</p>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🌐 Unified Full-Stack</h3>
-  <p>Drive real browser UI workflows and execute backend headless REST API requests simultaneously in the exact same test file.</p>
-</div>
-
-</v-clicks>
-
+<div class="slide-card text-xs bg-slate-900/60 p-2.5 border-emerald-500/30 flex items-center gap-3">
+  <span class="text-lg">💡</span>
+  <span class="text-slate-300">
+    <strong>Web-First Auto-Waiting</strong>: Playwright automatically waits for elements to be actionable (visible, stable, enabled) before clicking, eliminating flaky <code>sleep()</code> delays.
+  </span>
 </div>
 
 ---
@@ -3300,7 +3361,7 @@ test("Multi-service auth flow", async ({ page }) => {
 
 <div class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-1.5 flex items-center gap-2 mt-1">
   <span class="text-sm">🔀</span>
-  <span class="text-slate-200 text-[10px] leading-snug"><strong>Multi-Scenario as Code</strong>: <code>setScenario(...)</code> serializes variadic tags into a single comma-separated <code>Mock-Scenario</code> header (e.g. <code>"PT_PASS:SUCCESS,OTP:SUCCESS"</code>), steering independent WireMock stubs without UI dropdown dependencies.</span>
+  <span class="text-slate-200 text-xs leading-snug"><strong>Multi-Scenario as Code</strong>: <code>setScenario(...)</code> serializes variadic tags into a single comma-separated <code>Mock-Scenario</code> header (e.g. <code>"PT_PASS:SUCCESS,OTP:SUCCESS"</code>), steering independent WireMock stubs without UI dropdown dependencies.</span>
 </div>
 
 ---
@@ -3310,18 +3371,25 @@ test("Multi-service auth flow", async ({ page }) => {
 ### Mocking Native Device APIs with `page.addInitScript()`
 
 ```typescript
-test("Biometric verification via native JSBridge", async ({ page }) => {
-  // Inject mock JSBridge object into browser window before page scripts run
+test("Biometric check via native JSBridge", async ({ page }) => {
+  // Inject mock JSBridge into window before page scripts run
   await page.addInitScript(() => {
     (window as any).JSBridge = {
-      verifyBiometrics: async () => ({ success: true, token: "bio_token_9988" }),
-      getDeviceInfo: () => ({ platform: "iOS", model: "iPhone15,2" })
+      verifyBiometrics: async () => ({
+        success: true,
+        token: "bio_token_9988"
+      }),
+      getDeviceInfo: () => ({
+        platform: "iOS",
+        model: "iPhone15,2"
+      })
     };
   });
 
   await page.goto(`${websiteUrl}/webview/biometrics`);
   await page.getByTestId("btn-scan-face").click();
-  await expect(page.getByTestId("auth-status")).toHaveText("Verified via FaceID");
+  await expect(page.getByTestId("auth-status"))
+    .toHaveText("Verified via FaceID");
 });
 ```
 
@@ -3336,17 +3404,22 @@ test("Biometric verification via native JSBridge", async ({ page }) => {
 ### Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`)
 
 ```typescript
-test("Paotang login verifies OTP & redirects", async ({ page }) => {
+test("Paotang login verifies OTP & redirects",
+  async ({ page }) => {
   const setScenario = mockScenario(page);
 
   // Set multiple mock scenarios at once (OAuth + OTP):
-  setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS, MOCK_SCENARIO.OTP.SUCCESS);
+  setScenario(
+    MOCK_SCENARIO.PAOTANG.SUCCESS,
+    MOCK_SCENARIO.OTP.SUCCESS
+  );
 
   await page.goto(`${websiteUrl}/login`);
 
   // Step 1: Paotang OAuth with Mock Scenario
   await page.getByTestId("btn-paotang-login").click();
-  await expect(page.getByTestId("result-paotang")).toContainText("successfully");
+  await expect(page.getByTestId("result-paotang"))
+    .toContainText("successfully");
 
   // Step 2: Verify OTP with WireMock Stub
   await page.getByTestId("btn-verify-otp").click();
@@ -3367,10 +3440,15 @@ test("Paotang login verifies OTP & redirects", async ({ page }) => {
 ### Headless REST Verification & Scenario Resets (`bff.spec.ts`)
 
 ```typescript
-test("fund transfer returns 201 Created and persists transaction", async ({ request }) => {
+test("fund transfer returns 201 and persists",
+  async ({ request }) => {
   const res = await request.post(`${bffUrl}/api/v1/transfers`, {
     headers: { "Mock-Scenario": "TRANSFER:SUCCESS" },
-    data: { amount: 500, from_account: "ACC-001", to_account: "ACC-002" }
+    data: {
+      amount: 500,
+      from_account: "ACC-001",
+      to_account: "ACC-002"
+    }
   });
 
   expect(res.status()).toBe(201);
@@ -3379,7 +3457,8 @@ test("fund transfer returns 201 Created and persists transaction", async ({ requ
 });
 
 test.afterEach(async ({ request }) => {
-  await request.post(`${wiremockUrl}/__admin/scenarios/reset`); // Clean state machine
+  // Clean all WireMock state machines after each test
+  await request.post(`${wiremockUrl}/__admin/scenarios/reset`);
 });
 ```
 
@@ -3414,7 +3493,7 @@ export default defineConfig({
 });
 ```
   </div>
-  <div class="text-[10px] text-slate-400 font-mono pt-1 border-t border-slate-700/50">
+  <div class="text-xs text-slate-400 font-mono pt-1 border-t border-slate-700/50">
     💡 Only saves traces on failed tests to conserve CI artifact storage.
   </div>
 </div>
@@ -3424,12 +3503,12 @@ export default defineConfig({
     <h3 class="text-emerald-400 font-semibold mb-1 text-xs flex items-center gap-1.5">
       <span>🔍</span> 2. Open &amp; Inspect Trace Viewer
     </h3>
-    <div class="space-y-1 text-slate-300 font-mono text-[10.5px]">
-      <div><code class="text-emerald-300">npx playwright show-trace &lt;path/trace.zip&gt;</code><br/><span class="text-slate-400 font-sans text-[10px]">Opens local interactive trace GUI.</span></div>
-      <div><code class="text-emerald-300">https://trace.playwright.dev</code><br/><span class="text-slate-400 font-sans text-[10px]">Drop zip file in browser (100% client-side privacy).</span></div>
+    <div class="space-y-1 text-slate-300 font-mono text-xs">
+      <div><code class="text-emerald-300">npx playwright show-trace &lt;path/trace.zip&gt;</code><br/><span class="text-slate-400 font-sans text-xs">Opens local interactive trace GUI.</span></div>
+      <div><code class="text-emerald-300">https://trace.playwright.dev</code><br/><span class="text-slate-400 font-sans text-xs">Drop zip file in browser (100% client-side privacy).</span></div>
     </div>
   </div>
-  <div class="mt-1.5 pt-1.5 border-t border-slate-700/50 text-[10px] text-slate-300 space-y-0.5">
+  <div class="mt-1.5 pt-1.5 border-t border-slate-700/50 text-xs text-slate-300 space-y-0.5">
     <div>• <strong>Filmstrip Timeline</strong>: Time-travel through page renders.</div>
     <div>• <strong>DOM Snapshots</strong>: Interactive before/after HTML inspection.</div>
     <div>• <strong>Network Activity</strong>: Request/response bodies and mock headers.</div>
@@ -3542,7 +3621,7 @@ export default defineConfig({
 
 <div class="slide-card text-xs mt-2 p-2 mb-0 flex items-center justify-between">
   <span>🖥️ <strong>WireMock Web UI Dashboard</strong>: <code>http://localhost:8088/__admin/webapp</code></span>
-  <span class="text-slate-400 font-mono text-[10px]">Default Auth: <code>admin</code> / <code>password</code></span>
+  <span class="text-slate-400 font-mono text-xs">Default Auth: <code>admin</code> / <code>password</code></span>
 </div>
 
 ---
@@ -3753,8 +3832,8 @@ export const options = {
     { duration: '10s', target: 0 },  // Graceful ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<250'], // 95% of requests must complete < 250ms
-    http_req_failed: ['rate<0.01'],    // Error rate must be < 1%
+    http_req_duration: ['p(95)<250'], // 95% of requests < 250ms
+    http_req_failed: ['rate<0.01'],    // Error rate < 1%
   },
 };
 
@@ -3768,11 +3847,15 @@ export default function () {
   const params = {
     headers: {
       'Content-Type': 'application/json',
-      'Mock-Scenario': 'TRANSFER:SUCCESS', // Steer WireMock doubles
+      'Mock-Scenario': 'TRANSFER:SUCCESS', // Steer mocks
     },
   };
 
-  const res = http.post('http://localhost:8080/api/v1/transfers', payload, params);
+  const res = http.post(
+    'http://localhost:8080/api/v1/transfers',
+    payload,
+    params
+  );
   check(res, {
     'status is 201': (r) => r.status === 201,
     'has transaction id': (r) => r.json('id') !== undefined,
