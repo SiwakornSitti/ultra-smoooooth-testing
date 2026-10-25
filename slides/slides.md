@@ -2371,71 +2371,159 @@ class: pt-1 pb-1 px-8
 class: pt-2 pb-2 px-8
 ---
 
-# 🧹 WireMock — Test Isolation & Reset Lifecycle
+# ⚠️ WireMock — The State Bleed Problem
 
-### Eliminating State Bleed with Automated Scenario Teardown
+### Why In-Memory Finite State Machines Cause Flaky CI Failures
 
-<div class="grid grid-cols-2 gap-3 mb-2.5">
+<div class="grid grid-cols-2 gap-3.5 mb-2.5">
 
-  <div class="slide-card bg-slate-900/70 border-rose-500/30 p-3 flex flex-col justify-between">
+  <div class="slide-card bg-slate-900/70 border-rose-500/40 p-3.5 flex flex-col justify-between">
     <div>
-      <div class="flex items-center gap-2 mb-1.5 pb-1 border-b border-rose-500/30">
-        <span class="text-base">🔴</span>
-        <span class="text-rose-400 font-bold text-sm">The State Bleed Dilemma</span>
+      <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-rose-500/30">
+        <span class="text-base">💥</span>
+        <span class="text-rose-400 font-bold text-sm">Sequential Execution Hazard</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed mb-2">
-        WireMock scenario state machines are <strong>in-memory</strong>. Transitions persist across separate HTTP requests.
+      <p class="text-xs text-slate-300 leading-relaxed mb-2.5">
+        WireMock scenario state machines are stored in <strong>JVM container memory</strong>. State transitions persist across completely separate test files:
       </p>
-      <ul class="text-xs text-slate-300 space-y-1">
-        <li>• Test A mutates scenario: <code class="text-amber-300">Started</code> ➔ <code class="text-rose-400">ORDER_PAID</code></li>
-        <li>• Test B executes next, expecting <code class="text-amber-300">Started</code></li>
-        <li>• 💥 <strong>Flaky test failure</strong> caused solely by execution order</li>
-      </ul>
+      <div class="space-y-1.5 text-xs text-slate-300 font-mono">
+        <div class="bg-slate-950/80 p-2 rounded border border-slate-800">
+          <span class="text-emerald-400">Test 1 (Checkout)</span>: mutates state<br/>
+          &nbsp;&nbsp;<code class="text-amber-300">Started</code> ➔ <code class="text-rose-400">ORDER_COMPLETED</code>
+        </div>
+        <div class="bg-slate-950/80 p-2 rounded border border-slate-800">
+          <span class="text-rose-400">Test 2 (New Order)</span>: expects <code class="text-amber-300">Started</code><br/>
+          &nbsp;&nbsp;Hits <code class="text-rose-400">ORDER_COMPLETED</code> ➔ 💥 <strong>404 Not Found</strong>
+        </div>
+      </div>
     </div>
-    <div class="mt-2 pt-1 border-t border-slate-700/50 text-[11px] text-rose-300/80 font-mono">
-      ❌ Shared dirty mock state breaks test hermeticity
+    <div class="mt-2 pt-1.5 border-t border-slate-700/50 text-xs text-rose-300/80">
+      ❌ Test 2 passes in isolation, but fails when run in CI test batches!
     </div>
   </div>
 
-  <div class="slide-card bg-slate-900/70 border-emerald-500/30 p-3 flex flex-col justify-between">
+  <div class="slide-card bg-slate-900/70 border-amber-500/40 p-3.5 flex flex-col justify-between">
     <div>
-      <div class="flex items-center gap-2 mb-1.5 pb-1 border-b border-emerald-500/30">
-        <span class="text-base">🟢</span>
-        <span class="text-emerald-400 font-bold text-sm">Automated Teardown Reset</span>
+      <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-amber-500/30">
+        <span class="text-base">🔍</span>
+        <span class="text-amber-300 font-bold text-sm">Root Cause Analysis</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed mb-2">
-        Call <code class="text-emerald-300">POST /__admin/scenarios/reset</code> in test teardown hooks to guarantee a clean slate.
+      <p class="text-xs text-slate-300 leading-relaxed mb-2.5">
+        Stateless stubs match solely on request URL and payload. Stateful stubs introduce <strong>shared mutable state</strong>:
       </p>
-      <ul class="text-xs text-slate-300 space-y-1">
-        <li>• Resets <strong>all active scenarios</strong> back to <code class="text-amber-300">Started</code></li>
-        <li>• Runs in milliseconds without restarting containers</li>
-        <li>• ✨ <strong>Guaranteed 100% test isolation</strong> in CI</li>
-      </ul>
+      <div class="space-y-2 text-xs text-slate-300">
+        <div class="flex items-start gap-2">
+          <span class="text-amber-300 text-sm">🧠</span>
+          <div>
+            <strong class="text-slate-200">In-Memory Persistence:</strong> WireMock retains state indefinitely until explicitly instructed to reset.
+          </div>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-amber-300 text-sm">🎲</span>
+          <div>
+            <strong class="text-slate-200">Execution Order Coupling:</strong> Test execution order determines pass or fail, leading to non-deterministic flakiness.
+          </div>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-amber-300 text-sm">🧪</span>
+          <div>
+            <strong class="text-slate-200">Cascading Failures:</strong> One failing test leaves dirty state, poisoning every subsequent test in the suite.
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="mt-2 pt-1 border-t border-slate-700/50 text-[11px] text-emerald-300/80 font-mono">
-      ✅ Zero leakage across sequential or parallel tests
+    <div class="mt-2 pt-1.5 border-t border-slate-700/50 text-xs text-amber-300/80">
+      ⚠️ Hermetic testing requires an explicit reset mechanism between tests.
     </div>
   </div>
 
 </div>
 
-<div class="slide-card bg-slate-900/80 border-cyan-500/30 p-2.5">
-  <div class="flex items-center justify-between mb-1">
-    <div class="text-xs font-bold text-cyan-400 font-mono flex items-center gap-1.5">
-      <span>🎭</span> Playwright Teardown Hook (<code>test.afterEach</code>)
+<div class="slide-card text-xs bg-slate-900/60 p-2.5 border-emerald-500/30 flex items-center gap-3">
+  <span class="text-lg">💡</span>
+  <span class="text-slate-300">
+    <strong>The Golden Rule of Integration Testing</strong>: Tests must be <em>order-independent</em> and <em>self-contained</em>. Never rely on the state left behind by a previous test.
+  </span>
+</div>
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🧹 WireMock — Automated Scenario Reset Hook
+
+### Hermetic Test Isolation with POST /__admin/scenarios/reset
+
+<div class="grid grid-cols-2 gap-3.5 mb-2.5">
+
+  <div class="slide-card bg-slate-900/70 border-emerald-500/40 p-3.5 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-emerald-500/30">
+        <span class="text-base">🔄</span>
+        <span class="text-emerald-400 font-bold text-sm">How Scenario Reset Works</span>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed mb-2.5">
+        WireMock provides a dedicated administrative endpoint to reset all active state machines back to initial state:
+      </p>
+      <div class="space-y-2 text-xs text-slate-300">
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400">⚡</span>
+          <div>
+            <strong class="text-slate-200">Ultra-Fast Execution:</strong> Takes <code class="text-emerald-300">&lt; 5ms</code> over HTTP. No container restart or mapping reloading needed.
+          </div>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400">🎯</span>
+          <div>
+            <strong class="text-slate-200">Rewinds All Scenarios:</strong> Every scenario name transitions back to <code class="text-amber-300">"Started"</code> simultaneously.
+          </div>
+        </div>
+        <div class="flex items-start gap-2">
+          <span class="text-emerald-400">🛡️</span>
+          <div>
+            <strong class="text-slate-200">Preserves Mappings:</strong> Only state is reset. Stubs, templates, and delays remain loaded in memory.
+          </div>
+        </div>
+      </div>
     </div>
-    <span class="text-[11px] text-slate-400 font-mono">POST http://localhost:8088/__admin/scenarios/reset</span>
+    <div class="mt-2 pt-1.5 border-t border-slate-700/50 font-mono text-xs text-emerald-300/80">
+      POST http://localhost:8088/__admin/scenarios/reset
+    </div>
   </div>
+
+  <div class="slide-card bg-slate-900/70 border-cyan-500/40 p-3.5 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-cyan-500/30">
+        <span class="text-base">🎭</span>
+        <span class="text-cyan-400 font-bold text-sm">Playwright Teardown Hook</span>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed mb-1.5">
+        Configure <code class="text-cyan-300">test.afterEach()</code> in your test runner setup to reset state after every single test:
+      </p>
 
 ```typescript
 import { test } from '@playwright/test';
 
 test.afterEach(async ({ request }) => {
-  // Rewind all WireMock scenarios back to default initial state ('Started')
-  await request.post('http://localhost:8088/__admin/scenarios/reset');
+  // Rewind all state machines to 'Started'
+  await request.post(
+    'http://localhost:8088/__admin/scenarios/reset'
+  );
 });
 ```
+    </div>
+    <div class="mt-1.5 pt-1.5 border-t border-slate-700/50 text-[11px] text-slate-400">
+      💡 Running in <code>afterEach</code> ensures cleanup even if a test throws an assertion error.
+    </div>
+  </div>
 
+</div>
+
+<div class="slide-card text-xs bg-slate-900/60 p-2.5 border-emerald-500/30 flex items-center gap-3">
+  <span class="text-lg">✨</span>
+  <span class="text-slate-300">
+    <strong>Guaranteed Hermeticity</strong>: With <code>afterEach</code> reset, every test receives a pristine WireMock environment. Tests can be run in parallel, shuffled, or filtered without failure.
+  </span>
 </div>
 
 ---
