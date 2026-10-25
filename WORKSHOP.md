@@ -378,7 +378,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 Ready to test your skills without step-by-step hand-holding? Take on these two production-grade self-service challenges.
 
 #### 🪝 DIY Challenge A: WireMock Biometric Face Scan Stub
-- **Slide Reference**: [`slides.md#L1221`](slides/slides.md#L1221)
+- **Slide Reference**: [`slides.md#L2351`](slides/slides.md#L2351)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
