@@ -2668,67 +2668,59 @@ Presenter Notes:
 -->
 
 ---
-class: pt-3 pb-2 px-8
+class: pt-2 pb-2 px-8
 ---
 
-# 🏆 Capstone Challenge: WireMock Biometric Face Scan Stub
+# 🏆 Capstone: Biometric Face Scan Stub
 
 ### Author a self-service biometric verification stub with liveness confidence thresholding
 
-<div class="grid grid-cols-2 gap-3 mt-1.5">
+<div class="grid grid-cols-2 gap-3.5 mt-2">
 
-<div class="slide-card p-4 border border-fuchsia-500/40 bg-fuchsia-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-fuchsia-500/40 bg-fuchsia-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-fuchsia-500/30">
-      <span class="text-fuchsia-400 font-bold text-base flex items-center gap-1.5">
-        <span>🎯</span> DIY Challenge Requirements
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-fuchsia-500/30">
+      <span class="text-fuchsia-400 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> DIY Requirements
       </span>
-      <span class="text-xs font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded">DIY Lab</span>
+      <span class="text-[11px] font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded"><code>POST /lab/api/ekyc/biometrics</code></span>
     </div>
-    <p class="text-sm text-slate-200 leading-relaxed mb-2">
-      <strong>Target:</strong> <code>POST /lab/api/ekyc/biometrics</code>
-    </p>
-    <ul class="space-y-1.5 md:space-y-2 text-base md:text-lg text-slate-200 leading-snug">
-      <li>• <strong>Low Confidence (&lt; 85.0):</strong> Return <code>422 Unprocessable Entity</code> with JSON error <code>{"error": "LIVENESS_FAILED", "code": "ERR_LOW_CONFIDENCE"}</code>.</li>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Low Confidence (&lt; 85.0):</strong> Return <code>422 Unprocessable</code> with body <code>{"error": "LIVENESS_FAILED"}</code>.</li>
       <li>• <strong>High Confidence (&ge; 85.0):</strong> Return <code>200 OK</code> with dynamic UUID <code>scanId</code>, echoed <code>nationalId</code>, and timestamp.</li>
-      <li>• <strong>Chaos Latency:</strong> Inject <code>2500ms</code> latency to verify client timeout cancellation handlers.</li>
+      <li>• <strong>Chaos Latency:</strong> Inject <code>2500ms</code> delay to test client timeout cancellation.</li>
     </ul>
   </div>
-  <div class="mt-2.5 pt-1.5 border-t border-fuchsia-500/30 text-xs md:text-sm font-mono text-fuchsia-300">
-    📂 Save file to: wiremock/mappings/diy-biometrics.json
+  <div class="mt-2 pt-1 border-t border-fuchsia-500/30 text-xs font-mono text-fuchsia-300">
+    📂 Save file to: <code>wiremock/mappings/diy-biometrics.json</code>
   </div>
 </div>
 
-<div class="slide-card p-4 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-base flex items-center gap-1.5">
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
         <span>⚡</span> Verification Commands
       </span>
-      <span class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / REST</span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal</span>
     </div>
-    <div class="sv-terminal text-sm leading-relaxed mb-2">
-      <div class="font-mono text-rose-400 mb-1"># Test Case 1: Low confidence (71.2) ➔ Expect HTTP 422</div>
-      <div class="font-mono text-slate-200">curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
-      <div class="font-mono text-slate-200 pl-3">-H "Content-Type: application/json" \</div>
-      <div class="font-mono text-slate-200 pl-3">-d '{"nationalId":"1100500123456", "confidence":71.2}'</div>
-      <div class="font-mono text-emerald-400 mt-2 mb-1"># Test Case 2: High confidence (92.4) ➔ Expect HTTP 200 + UUID</div>
-      <div class="font-mono text-slate-200">curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
-      <div class="font-mono text-slate-200 pl-3">-H "Content-Type: application/json" \</div>
-      <div class="font-mono text-slate-200 pl-3">-d '{"nationalId":"1100500123456", "confidence":92.4}'</div>
-    </div>
+
+```bash
+# 1. Low Confidence (< 85.0) ➔ Expect HTTP 422
+curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
+  -d '{"nationalId":"11005","confidence":71.2}'
+
+# 2. High Confidence (>= 85.0) ➔ Expect HTTP 200 + UUID
+curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
+  -d '{"nationalId":"11005","confidence":92.4}'
+```
+
   </div>
-  <div class="mt-2.5 pt-1.5 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ✨ Reload stubs via: POST /__admin/mappings/reset
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ✨ Reload stubs: <code>POST /__admin/mappings/reset</code>
   </div>
 </div>
 
-</div>
-
-<div v-pre class="slide-card py-2 px-4 flex items-center text-base md:text-lg mt-2 border border-fuchsia-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-fuchsia-200 font-medium flex items-center gap-2 leading-snug">
-    <span>🏆</span> <strong>Challenge Goal:</strong> Combine JSONPath operators, Handlebars UUID generation, and chaos latency into a single production stub.
-  </span>
 </div>
 
 <!--

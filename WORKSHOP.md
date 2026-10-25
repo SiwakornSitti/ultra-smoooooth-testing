@@ -344,7 +344,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ### 🛡️ Burp Suite Practice Labs (`http://127.0.0.1:8080`)
 
 #### 📍 Practice Lab 5: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L2899`](slides/slides.md#L2899) (Slide 70)
+- **Slide Reference**: [`slides.md#L2891`](slides/slides.md#L2891) (Slide 70)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -359,7 +359,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab 6: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L2916`](slides/slides.md#L2916) (Slide 71)
+- **Slide Reference**: [`slides.md#L2908`](slides/slides.md#L2908) (Slide 71)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -378,7 +378,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 Ready to test your skills without step-by-step hand-holding? Take on these two production-grade self-service challenges.
 
 #### 🪝 DIY Challenge A: WireMock Biometric Face Scan Stub
-- **Slide Reference**: [`slides.md#L2605-L2740`](slides/slides.md#L2605) (Slides 62 & 63)
+- **Slide Reference**: [`slides.md#L2605-L2732`](slides/slides.md#L2605) (Slides 62 & 63)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
@@ -458,7 +458,7 @@ Ready to test your skills without step-by-step hand-holding? Take on these two p
 ---
 
 #### 🛡️ DIY Challenge B: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L2798`](slides/slides.md#L2798) (Slide 67)
+- **Slide Reference**: [`slides.md#L2790`](slides/slides.md#L2790) (Slide 67)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
   1. In Burp Suite, turn **Intercept is on** on `127.0.0.1:8080`.
