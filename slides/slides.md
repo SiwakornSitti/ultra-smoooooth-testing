@@ -1489,6 +1489,8 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # 📥 WireMock — Extracting Request Data & Echoing IDs
 
@@ -1522,14 +1524,14 @@ class: pt-2 pb-2 px-8
 <div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/30">
   <h3 class="text-emerald-400 text-sm mb-0.5">📦 2. Headers &amp; JSON Body Fields</h3>
   <div class="text-[11px] text-slate-300">
-    <strong>Incoming</strong>: <code>X-User-Id: U-88</code> + Body <code>{"account":{"id":"ACC-55"}}</code>
+    <strong>Incoming</strong>: <code>X-User-Id: U-88</code> | Body <code>{"id":"ACC-55"}</code>
   </div>
   
   <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-[11px] text-cyan-200">
     <div class="text-[10px] text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
     <code>{<br/>
     &nbsp;&nbsp;"userId": "{{request.headers.[X-User-Id]}}",<br/>
-    &nbsp;&nbsp;"accountId": "{{jsonPath request.body '$.account.id'}}"<br/>
+    &nbsp;&nbsp;"accId": "{{jsonPath request.body '$.id'}}"<br/>
     }</code>
   </div>
 
@@ -1537,7 +1539,7 @@ class: pt-2 pb-2 px-8
     <div class="text-[10px] text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
     <code>{<br/>
     &nbsp;&nbsp;"userId": "U-88",<br/>
-    &nbsp;&nbsp;"accountId": "ACC-55"<br/>
+    &nbsp;&nbsp;"accId": "ACC-55"<br/>
     }</code>
   </div>
 </div>
