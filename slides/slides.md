@@ -283,7 +283,7 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS
 
 <div class="col-card space-y-3">
   <h3 class="text-cyan-400">🐳 Hermetic Lifecycle Role</h3>
-  <div class="text-sm text-slate-200 space-y-3 leading-relaxed">
+  <div class="text-sm text-slate-200 space-y-2.5 leading-snug">
     <div>
       <strong class="text-cyan-300 block text-base font-bold mb-0.5">1. Ephemeral On-Demand Instances</strong>
       Spins up clean PostgreSQL 16 and WireMock instances directly inside test suite hooks.
@@ -304,18 +304,24 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS
 
 ```typescript
 // tests/specs/support/containers.ts
-const postgres = await new PostgreSqlContainer("postgres:16-alpine")
-  .withDatabase("ultrasmooth")
-  .start();
+const postgres = await new PostgreSqlContainer(
+  "postgres:16-alpine"
+).withDatabase("ultrasmooth").start();
 
-const wiremock = await new GenericContainer("wiremock/wiremock:3.3.1")
-  .withExposedPorts(8080)
-  .start();
+const wiremock = await new GenericContainer(
+  "wiremock/wiremock:3.3.1"
+).withExposedPorts(8080).start();
 
-process.env.DB_PORT = postgres.getMappedPort(5432).toString();
-process.env.WIREMOCK_PORT = wiremock.getMappedPort(8080).toString();
+// Map dynamic host ports to service env
+process.env.DB_PORT =
+  postgres.getMappedPort(5432).toString();
+process.env.WIREMOCK_PORT =
+  wiremock.getMappedPort(8080).toString();
 ```
 
+  <div class="text-sm text-slate-200 mt-2 font-medium">
+    💡 Zero port collisions: dynamic host ports mapped into process env.
+  </div>
 </div>
 
 </div>
