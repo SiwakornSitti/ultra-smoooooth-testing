@@ -1395,29 +1395,20 @@ class: pt-2 pb-2 px-8
     "method": "POST",
     "urlPath": "/lab/api/otp/send",
     "bodyPatterns": [
-      {
-        "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]"
-      },
-      {
-        "matchesJsonPath": "$[?(@.channel =~ /^(SMS|WHATSAPP)$/)]"
-      },
-      {
-        "matchesJsonPath": "$.auth[?(@.purpose == 'TRANSFER_VERIFICATION')]"
-      }
+      { "matchesJsonPath": "$[?(@.phone =~ /^0[689]\\d{8}$/)]" },
+      { "matchesJsonPath": "$[?(@.channel =~ /^(SMS|WHATSAPP)$/)]" },
+      { "matchesJsonPath": "$.auth[?(@.purpose == 'TRANSFER_VERIFICATION')]" }
     ]
   },
   "response": {
     "status": 200,
-    "jsonBody": {
-      "status": "sent",
-      "channel": "SMS"
-    }
+    "jsonBody": { "status": "sent", "channel": "SMS" }
   }
 }
 ```
 
 <div class="slide-card text-xs mt-2 p-2">
-  🔗 <strong>Conjunctive (AND) Evaluation</strong>: All <code>bodyPatterns</code> JSONPath expressions must evaluate to true (Thai mobile regex + channel enum + auth purpose) while remaining immune to key ordering and extraneous fields.
+  🔗 <strong>Conjunctive (AND) Evaluation:</strong> All <code>bodyPatterns</code> JSONPath expressions must evaluate to true (Thai mobile regex + channel enum + auth purpose) while remaining immune to key ordering and extraneous fields.
 </div>
 
 ---
