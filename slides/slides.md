@@ -2715,6 +2715,70 @@ class: pt-2 pb-2 px-8
 class: pt-2 pb-2 px-8
 ---
 
+# 🏆 Capstone: Stateful Order Fulfillment Machine
+
+### Author a multi-state WireMock scenario modeling sequential order domain transitions
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> DIY State Machine Rules
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded"><code>order-lifecycle</code></span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Step 1 (Started):</strong> <code>POST /lab/api/orders/101/pay</code> in state <code>Started</code> transitions to <code>PAID</code> (returns <code>200 OK {"status": "PAID"}</code>).</li>
+      <li>• <strong>Step 2 (PAID):</strong> <code>POST /lab/api/orders/101/ship</code> in state <code>PAID</code> transitions to <code>SHIPPED</code> (returns <code>200 OK {"status": "SHIPPED"}</code>).</li>
+      <li>• <strong>Step 3 (SHIPPED):</strong> Repeated <code>POST /lab/api/orders/101/ship</code> in state <code>SHIPPED</code> returns <code>400 Bad Request {"error": "ALREADY_SHIPPED"}</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
+    📂 Save stubs to: <code>wiremock/mappings/diy-order-lifecycle.json</code>
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Verification Sequence
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / FSM</span>
+    </div>
+
+```bash
+# 1. Pay order ➔ Transitions state to PAID
+curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
+
+# 2. Ship order ➔ Transitions state to SHIPPED
+curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
+
+# 3. Duplicate ship ➔ Expect HTTP 400 ALREADY_SHIPPED
+curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🔄 Reset state: <code>POST /__admin/scenarios/reset</code>
+  </div>
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Give attendees 15 minutes to implement the stateful scenario stubs in wiremock/mappings/diy-order-lifecycle.json.
+- Remind them to use scenarioName: "order-lifecycle", requiredScenarioState, and newScenarioState.
+- Show how curl -s http://localhost:8088/__admin/scenarios can introspect their live scenario state.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
 # ⚠️ Production Crisis: Biometric eKYC Dilemma
 
 ### Why External Vendor Sandboxes Threaten Mobile Banking Launches

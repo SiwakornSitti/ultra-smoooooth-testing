@@ -344,7 +344,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ### 🛡️ Burp Suite Practice Labs (`http://127.0.0.1:8080`)
 
 #### 📍 Practice Lab 5: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L3029`](slides/slides.md#L3029) (Slide 72)
+- **Slide Reference**: [`slides.md#L3093`](slides/slides.md#L3093) (Slide 73)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -359,7 +359,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab 6: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L3095`](slides/slides.md#L3095) (Slide 73)
+- **Slide Reference**: [`slides.md#L3159`](slides/slides.md#L3159) (Slide 74)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -375,10 +375,10 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ### 🎯 "Handle It Yourself" (DIY Self-Guided Challenges)
 
-Ready to test your skills without step-by-step hand-holding? Take on these two production-grade self-service challenges.
+Ready to test your skills without step-by-step hand-holding? Take on these production-grade self-service challenges.
 
-#### 🪝 DIY Challenge A: WireMock Biometric Face Scan Stub
-- **Slide Reference**: [`slides.md#L2718-L2835`](slides/slides.md#L2718) (Slides 63 & 64)
+#### 🪝 DIY Challenge A: WireMock Biometric Face Scan Stub (Stateless)
+- **Slide Reference**: [`slides.md#L2782`](slides/slides.md#L2782) (Slides 64 & 65)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
@@ -409,56 +409,37 @@ Ready to test your skills without step-by-step hand-holding? Take on these two p
     -H "Content-Type: application/json" \
     -d '{"nationalId":"1100500123456","confidence":88.0,"livenessPassed":true}'
   ```
-- **💡 Reference Solution**:
-  <details>
-  <summary>Click to view reference mapping JSON (wiremock/mappings/diy-biometrics.json)</summary>
-
-  ```json
-  {
-    "mappings": [
-      {
-        "priority": 1,
-        "request": {
-          "method": "POST",
-          "urlPath": "/lab/api/ekyc/biometrics",
-          "bodyPatterns": [
-            {
-              "matchesJsonPath": "$[?(@.confidence < 85.0)]"
-            }
-          ]
-        },
-        "response": {
-          "status": 422,
-          "headers": { "Content-Type": "application/json" },
-          "jsonBody": {
-            "error": "LIVENESS_FAILED",
-            "code": "ERR_LOW_CONFIDENCE"
-          }
-        }
-      },
-      {
-        "priority": 5,
-        "request": {
-          "method": "POST",
-          "urlPath": "/lab/api/ekyc/biometrics"
-        },
-        "response": {
-          "status": 200,
-          "headers": { "Content-Type": "application/json" },
-          "body": "{\"scanId\": \"{{randomValue type='UUID'}}\", \"nationalId\": \"{{jsonPath request.body '$.nationalId'}}\", \"verified\": true, \"processedAt\": \"{{now}}\"}",
-          "transformers": ["response-template"],
-          "fixedDelayMilliseconds": 2500
-        }
-      }
-    ]
-  }
-  ```
-  </details>
 
 ---
 
-#### 🛡️ DIY Challenge B: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L2903`](slides/slides.md#L2903) (Slide 68)
+#### 🔄 DIY Challenge B: WireMock Stateful Order Fulfillment Machine (Stateful)
+- **Slide Reference**: [`slides.md#L2718`](slides/slides.md#L2718) (Slide 63)
+- **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
+- **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
+- **Requirements**:
+  1. Define scenario `order-lifecycle`.
+  2. Step 1 (`Started`): `POST /lab/api/orders/101/pay` transitions to `PAID` (returns `200 OK {"status": "PAID"}`).
+  3. Step 2 (`PAID`): `POST /lab/api/orders/101/ship` transitions to `SHIPPED` (returns `200 OK {"status": "SHIPPED"}`).
+  4. Step 3 (`SHIPPED`): Repeated `POST /lab/api/orders/101/ship` returns `400 Bad Request {"error": "ALREADY_SHIPPED"}`.
+- **Verification Commands**:
+  ```bash
+  # Reset scenario state before test
+  curl -s -X POST http://localhost:8088/__admin/scenarios/reset
+
+  # 1. Pay order -> PAID
+  curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
+
+  # 2. Ship order -> SHIPPED
+  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
+
+  # 3. Duplicate ship -> 400 ALREADY_SHIPPED
+  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
+  ```
+
+---
+
+#### 🛡️ DIY Challenge C: Burp Suite In-Flight Fraud Tampering
+- **Slide Reference**: [`slides.md#L2967`](slides/slides.md#L2967) (Slide 69)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
   1. In Burp Suite, turn **Intercept is on** on `127.0.0.1:8080`.
