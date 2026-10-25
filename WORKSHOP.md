@@ -375,7 +375,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ### 🏆 Hands-On Workshop Challenges (Self-Guided Exercises)
 
-Ready to test your skills with production scenarios? After watching the instructor live demo, take on these hands-on workshop challenges.
+Ready to test your skills with production scenarios? After watching the live instructor walkthrough, take on these hands-on workshop challenges.
 
 #### 🪝 Workshop Challenge A: WireMock Biometric Face Scan Stub (Stateless)
 - **Slide Reference**: [`slides.md#L2820`](slides/slides.md#L2820) (Slides 55 & 56)

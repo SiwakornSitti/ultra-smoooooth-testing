@@ -2617,7 +2617,7 @@ class: pt-2 pb-2 px-8
 class: pt-2 pb-2 px-8
 ---
 
-# 🎬 Demo: Stateful Order Lifecycle Transitions
+# 🎬 Stateful Order Lifecycle Transitions
 
 ### Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs
 
@@ -2802,7 +2802,7 @@ class: pt-2 pb-2 px-8
 
 <div class="slide-card py-2 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
   <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>🎯</span> <strong>Your Mission:</strong> Watch the live instructor demo, then author a production-ready WireMock stub with confidence thresholding, dynamic templating, and chaos delay.
+    <span>🎯</span> <strong>Your Mission:</strong> Watch the live walkthrough, then author a production-ready WireMock stub with confidence thresholding, dynamic templating, and chaos delay.
   </span>
 </div>
 
@@ -2817,7 +2817,7 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
-# 🎬 Demo: Biometric Face Scan Virtualization
+# 🎬 Biometric Face Scan Virtualization
 
 ### Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating
 
@@ -3116,7 +3116,7 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
-# 🎬 Demo: In-Flight Traffic Interception & Tampering
+# 🎬 In-Flight Traffic Interception & Tampering
 
 ### Live instructor walkthrough: Intercepting payloads and steering downstream failure states
 
@@ -4044,7 +4044,7 @@ class: text-center
 
 <div class="text-7xl mb-2">🎬</div>
 
-# Live Demo
+# Live Walkthrough
 
 <div class="cover-subtitle" style="font-size: 1.6rem; margin-top: 0.5rem;">Hands-On Walkthrough 🚀</div>
 

@@ -65,10 +65,10 @@ Quick navigation reference for presentations in `slides/`.
 | **49** | [⚠️ WireMock — The State Bleed Problem](slides/slides.md#L2389) | Why In-Memory Finite State Machines Cause Flaky CI Failures |
 | **50** | [🧹 WireMock — Automated Scenario Reset Hook](slides/slides.md#L2468) | Hermetic Test Isolation with POST /__admin/scenarios/reset |
 | **51** | [⚡ WireMock — Scenario Seeding & Inspection](slides/slides.md#L2548) | Fast-Forwarding Preconditions and Introspecting Live FSM States |
-| **52** | [🎬 Demo: Stateful Order Lifecycle Transitions](slides/slides.md#L2620) | Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs |
+| **52** | [🎬 Stateful Order Lifecycle Transitions](slides/slides.md#L2620) | Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs |
 | **53** | [🏆 Workshop: Stateful Order Fulfillment Machine](slides/slides.md#L2687) | Author a multi-state WireMock scenario modeling sequential order domain transitions |
 | **54** | [⚠️ Production Crisis: Biometric eKYC Dilemma](slides/slides.md#L2751) | Why External Vendor Sandboxes Threaten Mobile Banking Launches |
-| **55** | [🎬 Demo: Biometric Face Scan Virtualization](slides/slides.md#L2820) | Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating |
+| **55** | [🎬 Biometric Face Scan Virtualization](slides/slides.md#L2820) | Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating |
 | **56** | [🏆 Workshop: Biometric Face Scan Stub](slides/slides.md#L2887) | Author a self-service biometric verification stub with liveness confidence thresholding |
 | **57** | [🛡️ Part 3](slides/slides.md#L2949) | Burp Suite — MITM Traffic Control & Interception |
 | **58** | [🛡️ Burp Suite — MITM Proxy Architecture](slides/slides.md#L2961) | Client, MITM Proxy Engine & Backend Microservices Interaction |
@@ -76,7 +76,7 @@ Quick navigation reference for presentations in `slides/`.
 | **60** | [🔀 Deep Dive: Bi-Directional Duplex Interception](slides/slides.md#L3007) | Visualizing Request and Response Flow Through the MITM Engine |
 | **61** | [⚡ Live Intercept in Action](slides/slides.md#L3026) | Pausing, Inspecting, Modifying & Forwarding Packets Mid-Flight |
 | **62** | [🧪 Practice Lab 5: Live MITM Packet Interception](slides/slides.md#L3051) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
-| **63** | [🎬 Demo: In-Flight Traffic Interception & Tampering](slides/slides.md#L3119) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
+| **63** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L3119) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
 | **64** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L3185) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
 | **65** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L3249) | Zero-Click Automated Header & Payload Manipulation |
 | **66** | [⚡ Architectural Split: WireMock vs. Burp Suite](slides/slides.md#L3289) | Downstream Service Virtualization vs. In-Flight MITM Traffic Interception |
@@ -99,7 +99,7 @@ Quick navigation reference for presentations in `slides/`.
 | **83** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L3936) | Interactive UI, Debugging, Filtering & Code Generation |
 | **84** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L3968) | Dynamic Stubs, State Resets & Verification Endpoints |
 | **85** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L4006) | Everyday Monorepo, Build & Hermetic Test Commands |
-| **86** | [Live Demo](slides/slides.md#L4047) | Hands-On Walkthrough 🚀 |
+| **86** | [Live Walkthrough](slides/slides.md#L4047) | Hands-On Walkthrough 🚀 |
 | **87** | [💬 Open Q&A & Key Takeaways](slides/slides.md#L4062) | Bringing All 4 Pillars Together for Ultra Smoooooth Testing |
 | **88** | [🎉 Thank You!](slides/slides.md#L4108) | Happy Ultra Smoooooth Testing 🚀 |
 | **89** | [📚 Appendix](slides/slides.md#L4131) | Additional Tools — Trace Atlas & k6 Performance Testing |
