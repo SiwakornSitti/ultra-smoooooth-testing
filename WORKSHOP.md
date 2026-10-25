@@ -245,4 +245,228 @@ flowchart TD
 | **Ex 5** | **Run Playwright E2E Tests** | `make test-e2e` |
 | **Ex 6** | **WireMock Fault Injection** | Open WireMock GUI at `http://localhost:8088/__admin/webapp` |
 | **Ex 7** | **MITM Traffic Inspection** | Configure Burp Suite Proxy at `http://127.0.0.1:8080` |
-| **Ex 8** | **Present Workshop Slides** | `make slides` |
+| **Ex 8** | **Present Workshop Slides** | `make slides` / `make slides-wiremock` / `make slides-burp` |
+
+---
+
+## 🧪 Interactive Participant Practice Labs
+
+The workshop presentations include dedicated **Hands-On Practice Checkpoints** that participants can run directly from their terminals or VS Code REST Client.
+
+### 🪝 WireMock Practice Labs (`http://localhost:8088`)
+
+#### 📍 Practice Lab 1: Web UI & Precision Matching Challenge
+- **Slide Reference**: [`slides-wiremock.md#L1408`](slides/slides-wiremock.md#L1408)
+- **Goal**: Explore the live Web UI dashboard and verify JSONPath request matching.
+- **1. Open Web UI**: Navigate to [http://localhost:8088/__admin/webapp](http://localhost:8088/__admin/webapp) (Login: `admin` / `password`).
+- **2. Send High-Value Payment Request**:
+  ```bash
+  curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+    -H "Content-Type: application/json" \
+    -d '{"payment":{"amount":2500},"customer":{"name":"Alice","email":"alice@bank.local"},"items":[{"sku":"SKU-001"}]}'
+  ```
+  *Response*: `201 Created` with `"flag": "HIGH_VALUE_TRANSACTION"`.
+- **3. Challenge**: Change `amount` to `500` (below the 1000 threshold).
+  ```bash
+  curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+    -H "Content-Type: application/json" \
+    -d '{"payment":{"amount":500},"customer":{"name":"Alice","email":"alice@bank.local"},"items":[{"sku":"SKU-001"}]}'
+  ```
+  *Result*: Returns `404 Not Found`. Inspect the diff in the **Requests** tab of the Web UI to see why the stub rejected it!
+
+---
+
+#### 📍 Practice Lab 2: Scenario Steering & Token Replay Challenge
+- **Slide Reference**: [`slides-wiremock.md#L1444`](slides/slides-wiremock.md#L1444)
+- **Goal**: Experience state transitions in WireMock Finite State Machines (FSM).
+- **1. First Call (Consumes Authorization Code)**:
+  ```bash
+  curl -s -X POST http://localhost:8088/lab/api/oauth/token \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "grant_type=authorization_code&code=auth_code_12345"
+  ```
+  *Response*: `200 OK {"access_token": "jwt_token_demo"}` (State transitions to `TOKEN_ISSUED`).
+- **2. Replay Attack Attempt (Second Call)**:
+  ```bash
+  curl -s -X POST http://localhost:8088/lab/api/oauth/token \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "grant_type=authorization_code&code=auth_code_12345"
+  ```
+  *Response*: `400 Bad Request {"error": "invalid_grant"}`! The auth code cannot be reused.
+- **3. Reset State Machine (All or Specific Scenario)**:
+  ```bash
+  # Option A: Reset all scenarios
+  curl -s -X POST http://localhost:8088/__admin/scenarios/reset
+
+  # Option B: Reset only this specific scenario
+  curl -s -X PUT http://localhost:8088/__admin/scenarios/oauth-code-exchange/state \
+    -H "Content-Type: application/json" \
+    -d '{"state": "Started"}'
+  ```
+  Re-running the first call will succeed with `200 OK` again.
+
+---
+
+#### 📍 Practice Lab 3: Flapping Failure & Client Self-Healing
+- **Slide Reference**: [`slides-wiremock.md#L1482`](slides/slides-wiremock.md#L1482)
+- **Goal**: Validate client exponential backoff and circuit breaker recovery against transient upstream outages.
+- **Run Consecutive Calls**:
+  ```bash
+  # Attempt 1 -> 503 Flapping
+  curl -s -w "\nHTTP %{http_code}\n" http://localhost:8088/lab/api/flaky
+  # Attempt 2 -> 503 Flapping
+  curl -s -w "\nHTTP %{http_code}\n" http://localhost:8088/lab/api/flaky
+  # Attempt 3 -> 200 OK Self-Healing Recovered!
+  curl -s -w "\nHTTP %{http_code}\n" http://localhost:8088/lab/api/flaky
+  ```
+
+---
+
+#### 📍 Practice Lab 4: Dynamic Templating & Chaos Latency
+- **Slide Reference**: [`slides-wiremock.md#L1517`](slides/slides-wiremock.md#L1517)
+- **Goal**: Test Handlebars dynamic math calculations and assert client timeout cancellation.
+- **1. Math & VAT Calculation**:
+  ```bash
+  curl -s -X POST http://localhost:8088/lab/api/stateless/orders \
+    -H "Content-Type: application/json" \
+    -d '{"userId":"U-100","price":4000}'
+  ```
+  *Result*: `total` calculates to `4280.0` (computed via `math '*' 1.07`) and `orderId` is a fresh UUID.
+- **2. Chaos Delay & Timeout Verification**:
+  ```bash
+  # Injected 8000ms delay with 2s client timeout trigger
+  time curl -s --max-time 2 http://localhost:8088/lab/api/stateless/delayed
+  ```
+  *Result*: Exits after 2 seconds with exit code `28` (Operation timeout), verifying that your client timeout cancels cleanly without hanging.
+
+---
+
+### 🛡️ Burp Suite Practice Labs (`http://127.0.0.1:8080`)
+
+#### 📍 Practice Lab 5: Live MITM Packet Interception
+- **Slide Reference**: [`slides-burpsuite.md#L605`](slides/slides-burpsuite.md#L605)
+- **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
+- **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
+- **2. Send Request via Proxy**:
+  ```bash
+  curl -x http://127.0.0.1:8080 -s -X POST http://localhost:8081/api/v1/users \
+    -H "Content-Type: application/json" \
+    -d '{"username":"student","password":"secret"}'
+  ```
+- **3. Tamper in Burp**: Inject header: `Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED`. Click **Forward**.
+- **4. Result**: The client receives an expired OTP error response produced downstream by WireMock!
+
+---
+
+#### 📍 Practice Lab 6: Automated Match & Replace Rules
+- **Slide Reference**: [`slides-burpsuite.md#L644`](slides/slides-burpsuite.md#L644)
+- **Goal**: Configure unattended rule-based traffic steering for automated test suites.
+- **1. Configure Rule**:
+  - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
+  - Add Rule: Type = `Request header`, Match = `^User-Agent:.*$`, Replace = `Mock-Scenario: TRANSFER:FAIL`.
+  - Turn **Intercept OFF**.
+- **2. Run Automated Request**:
+  ```bash
+  curl -x http://127.0.0.1:8080 -s http://localhost:8081/api/v1/transfers
+  ```
+  *Result*: Check Burp's **HTTP history** tab. Notice every outbound request automatically carries the injected failure steering header!
+
+---
+
+### 🎯 "Handle It Yourself" (DIY Self-Guided Challenges)
+
+Ready to test your skills without step-by-step hand-holding? Take on these two production-grade self-service challenges.
+
+#### 🪝 DIY Challenge A: WireMock Biometric Face Scan Stub
+- **Slide Reference**: [`slides-wiremock.md#L1556`](slides/slides-wiremock.md#L1556)
+- **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
+- **Requirements**:
+  1. Virtualize `POST /lab/api/ekyc/biometrics`.
+  2. If `confidence < 85.0`, return `HTTP 422` with body:
+     ```json
+     {"error": "LIVENESS_FAILED", "code": "ERR_LOW_CONFIDENCE"}
+     ```
+  3. If `confidence >= 85.0`, return `HTTP 200` with dynamic response templating:
+     - `scanId`: dynamic UUID (`{{randomValue type='UUID'}}`)
+     - `nationalId`: echoed from request body (`{{jsonPath request.body '$.nationalId'}}`)
+     - `verified`: `true`
+     - `processedAt`: current ISO timestamp (`{{now}}`)
+  4. Inject `2500ms` fixed delay to simulate vendor network latency.
+- **Verification Commands**:
+  ```bash
+  # 1. Low confidence -> 422
+  curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \
+    -H "Content-Type: application/json" \
+    -d '{"nationalId":"1100500123456","confidence":71.2,"livenessPassed":false}'
+
+  # 2. High confidence -> 200 OK with dynamic scanId
+  curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \
+    -H "Content-Type: application/json" \
+    -d '{"nationalId":"1100500123456","confidence":92.4,"livenessPassed":true}'
+
+  # 3. Timeout check (client aborts after 1s)
+  time curl -s --max-time 1 http://localhost:8088/lab/api/ekyc/biometrics \
+    -H "Content-Type: application/json" \
+    -d '{"nationalId":"1100500123456","confidence":88.0,"livenessPassed":true}'
+  ```
+- **💡 Reference Solution**:
+  <details>
+  <summary>Click to view reference mapping JSON (wiremock/mappings/diy-biometrics.json)</summary>
+
+  ```json
+  {
+    "mappings": [
+      {
+        "priority": 1,
+        "request": {
+          "method": "POST",
+          "urlPath": "/lab/api/ekyc/biometrics",
+          "bodyPatterns": [
+            {
+              "matchesJsonPath": "$[?(@.confidence < 85.0)]"
+            }
+          ]
+        },
+        "response": {
+          "status": 422,
+          "headers": { "Content-Type": "application/json" },
+          "jsonBody": {
+            "error": "LIVENESS_FAILED",
+            "code": "ERR_LOW_CONFIDENCE"
+          }
+        }
+      },
+      {
+        "priority": 5,
+        "request": {
+          "method": "POST",
+          "urlPath": "/lab/api/ekyc/biometrics"
+        },
+        "response": {
+          "status": 200,
+          "headers": { "Content-Type": "application/json" },
+          "body": "{\"scanId\": \"{{randomValue type='UUID'}}\", \"nationalId\": \"{{jsonPath request.body '$.nationalId'}}\", \"verified\": true, \"processedAt\": \"{{now}}\"}",
+          "transformers": ["response-template"],
+          "fixedDelayMilliseconds": 2500
+        }
+      }
+    ]
+  }
+  ```
+  </details>
+
+---
+
+#### 🛡️ DIY Challenge B: Burp Suite In-Flight Fraud Tampering
+- **Slide Reference**: [`slides-burpsuite.md#L681`](slides/slides-burpsuite.md#L681)
+- **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
+- **Steps**:
+  1. In Burp Suite, turn **Intercept is on** on `127.0.0.1:8080`.
+  2. Send transfer cURL:
+     ```bash
+     curl -x http://127.0.0.1:8080 -s -X POST http://localhost:8081/api/v1/transfers \
+       -H "Content-Type: application/json" \
+       -d '{"fromAccount":"ACC-001","toAccount":"ACC-999","amount":500.00}'
+     ```
+  3. In Burp's Proxy Intercept tab, change `"amount": 500.00` to `"amount": 5000000.00` and inject `Mock-Scenario: FRAUD_BLOCKED`.
+  4. Click **Forward** and verify how the response is logged in **Logger / HTTP history**.

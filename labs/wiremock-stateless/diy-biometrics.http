@@ -1,0 +1,44 @@
+### 🧪 DIY Practice: Biometric Face Scan Verification
+### WireMock URL: http://localhost:8088
+
+### 1. Test Passing Case: Confidence >= 85.0
+### Expected: 200 OK with dynamic scanId and processedAt timestamp
+POST http://localhost:8088/lab/api/ekyc/biometrics
+Content-Type: application/json
+
+{
+  "nationalId": "1100500123456",
+  "confidence": 92.4,
+  "livenessPassed": true
+}
+
+###
+
+### 2. Test Failing Case: Confidence < 85.0
+### Expected: 422 Unprocessable Entity {"error": "LIVENESS_FAILED", "code": "ERR_LOW_CONFIDENCE"}
+POST http://localhost:8088/lab/api/ekyc/biometrics
+Content-Type: application/json
+
+{
+  "nationalId": "1100500123456",
+  "confidence": 71.2,
+  "livenessPassed": false
+}
+
+###
+
+### 3. Test Delay & Client Timeout
+### Injected fixed delay of 2500ms
+POST http://localhost:8088/lab/api/ekyc/biometrics
+Content-Type: application/json
+
+{
+  "nationalId": "1100500123456",
+  "confidence": 88.0,
+  "livenessPassed": true
+}
+
+###
+
+### 4. Admin API: Reset Stubs after Editing
+POST http://localhost:8088/__admin/mappings/reset

@@ -22,6 +22,15 @@ Authorization: Basic {{adminUser}} {{adminPassword}}
 POST {{baseUrl}}/__admin/scenarios/reset
 Authorization: Basic {{adminUser}} {{adminPassword}}
 
+### Reset a specific scenario state back to Started
+PUT {{baseUrl}}/__admin/scenarios/oauth-code-exchange/state
+Authorization: Basic {{adminUser}} {{adminPassword}}
+Content-Type: application/json
+
+{
+  "state": "Started"
+}
+
 ### Set a global fixed delay for all stubs
 POST {{baseUrl}}/__admin/settings
 Authorization: Basic {{adminUser}} {{adminPassword}}
