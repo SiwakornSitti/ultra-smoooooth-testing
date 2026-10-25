@@ -2368,38 +2368,73 @@ class: pt-1 pb-1 px-8
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
-# 🧹 WireMock — State Management & Test Isolation
+# 🧹 WireMock — State Management & Isolation
 
-### Preventing State Bleed with the WireMock Admin API
+### Preventing Test Flakiness & State Bleed with the WireMock Admin API
 
-<div class="slide-card text-sm space-y-2.5 pt-2">
+<div class="space-y-2 mb-2">
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-sm">🔄 Automatic Scenario Reset in Test Teardown</h3>
-  <p class="text-slate-300 leading-relaxed mb-1">
-    Call <code>POST /__admin/scenarios/reset</code> in your test runner's <code>afterEach</code> hook to reset all state machines back to <code>"Started"</code>.
-  </p>
+  <div class="slide-card bg-slate-900/70 border-emerald-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-48 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🔄</span>
+        <span class="font-mono text-emerald-400 font-bold text-xs">Reset All Scenarios</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Teardown Hook (afterEach)</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Resets <strong>all state machines</strong> back to <code class="text-emerald-300">"Started"</code>. Guarantees clean test isolation so tests never fail due to execution order.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-1.5 font-mono text-xs text-left">
+      <div><span class="text-emerald-400 font-bold">POST</span> <span class="text-slate-200">/__admin/scenarios/reset</span></div>
+      <div class="text-[11px] text-slate-400 mt-0.5"><span class="text-cyan-400">await</span> request.post(<span class="text-emerald-300">resetUrl</span>);</div>
+    </div>
+  </div>
 
-```typescript
-test.afterEach(async ({ request }) => {
-  // Reset all WireMock state machines back to 'Started'
-  await request.post(`${wiremockUrl}/__admin/scenarios/reset`);
-});
-```
+  <div class="slide-card bg-slate-900/70 border-amber-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-48 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">⚡</span>
+        <span class="font-mono text-amber-300 font-bold text-xs">Fast-Forward State</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Target Setup (beforeEach)</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Forces a scenario into a <strong>target state</strong> without replaying earlier steps. Ideal for testing edge cases like refunds directly from <code class="text-amber-300">"PAID"</code>.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-1.5 font-mono text-xs text-left">
+      <div><span class="text-amber-300 font-bold">PUT</span> <span class="text-slate-200">/__admin/scenarios/:id/state</span></div>
+      <div class="text-[11px] text-slate-400 mt-0.5">{ <span class="text-cyan-300">"state"</span>: <span class="text-emerald-400">"PAID"</span> }</div>
+    </div>
+  </div>
+
+  <div class="slide-card bg-slate-900/70 border-cyan-500/30 p-2.5 flex items-center justify-between gap-3">
+    <div class="w-48 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="text-base">🔍</span>
+        <span class="font-mono text-cyan-400 font-bold text-xs">Inspect Active States</span>
+      </div>
+      <div class="text-[11px] text-slate-400 pl-6">Diagnostics & Triage</div>
+    </div>
+    <div class="flex-grow text-xs text-slate-300">
+      Returns live state snapshot for <strong>all scenarios</strong>. Use in test assertions or run via CLI to diagnose unexpected state mismatches in CI.
+    </div>
+    <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-1.5 font-mono text-xs text-left">
+      <div><span class="text-cyan-400 font-bold">GET</span> <span class="text-slate-200">/__admin/scenarios</span></div>
+      <div class="text-[11px] text-slate-400 mt-0.5"><span class="text-cyan-400">curl</span> -s localhost:8088/__admin/scenarios</div>
+    </div>
+  </div>
+
 </div>
 
-<div class="grid grid-cols-2 gap-3 pt-1 border-t border-slate-700/50">
-  <div>
-    <h4 class="text-cyan-400 font-semibold text-sm mb-0.5">🔍 Inspect Active Scenario States</h4>
-    <code class="text-sm text-slate-200">curl http://localhost:8088/__admin/scenarios</code>
-  </div>
-  <div>
-    <h4 class="text-cyan-400 font-semibold text-sm mb-0.5">⚡ Fast-Forward State for Test Setup</h4>
-    <code class="text-sm text-slate-200">PUT /__admin/scenarios/{name}/state {"state": "PAID"}</code>
-  </div>
-</div>
-
+<div class="slide-card text-xs bg-slate-900/60 p-2 border-emerald-500/30 flex items-center gap-2.5">
+  <span class="text-base">💡</span>
+  <span class="text-slate-300">
+    <strong>Hermetic Testing Rule</strong>: WireMock state machines persist in container memory across requests. Always call <code>/__admin/scenarios/reset</code> in test teardown hooks to guarantee complete test isolation.
+  </span>
 </div>
 
 ---
