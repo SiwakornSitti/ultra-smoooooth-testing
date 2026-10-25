@@ -5,6 +5,7 @@
   "description": "Slidev presentation slides for Ultra Smoooooth Testing workshop",
   "scripts": {
     "dev": "slidev slides.md --port 3030",
+    "check:overflow": "node scripts/check-overflow.mjs",
     "build": "slidev build slides.md",
     "export": "slidev export slides.md",
     "export:pptx": "slidev export slides.md --format pptx"
