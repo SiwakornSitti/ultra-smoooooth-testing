@@ -322,52 +322,45 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # 💻 Pillar 3: Container Bootstrap in Code
 
 ### Dynamic Port Mapping & Ephemeral Bootstrap in TypeScript
 
-<div class="slide-card p-4 border border-slate-700/60 bg-slate-900/60 mt-2">
-  <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-700/60">
-    <span class="text-slate-200 font-bold text-sm flex items-center gap-2">
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/60 mt-1">
+  <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+    <span class="text-slate-200 font-bold text-xs flex items-center gap-2">
       <span>💻</span> <code>tests/specs/support/containers.ts</code>
     </span>
-    <span class="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2.5 py-0.5 rounded border border-cyan-500/30">
+    <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">
       Testcontainers Node.js SDK
     </span>
   </div>
 
 ```typescript
 // 1. Spin up clean PostgreSQL 16 container with fresh schema
-const postgres = await new PostgreSqlContainer(
-  "postgres:16-alpine"
-)
-  .withDatabase("ultrasmooth")
-  .start();
+const postgres = await new PostgreSqlContainer("postgres:16-alpine").withDatabase("ultrasmooth").start();
 
 // 2. Spin up WireMock container with exposed mock HTTP port
-const wiremock = await new GenericContainer(
-  "wiremock/wiremock:3.3.1"
-)
-  .withExposedPorts(8080)
-  .start();
+const wiremock = await new GenericContainer("wiremock/wiremock:3.3.1").withExposedPorts(8080).start();
 
 // 3. Inject randomized host ports into runtime environment
 process.env.DB_PORT = postgres.getMappedPort(5432).toString();
-process.env.WIREMOCK_PORT =
-  wiremock.getMappedPort(8080).toString();
+process.env.WIREMOCK_PORT = wiremock.getMappedPort(8080).toString();
 ```
 
 </div>
 
-<div class="grid grid-cols-2 gap-3.5 mt-3">
-  <div class="slide-card p-3 text-xs border border-emerald-500/30 bg-emerald-950/20 rounded">
-    <strong class="text-emerald-300 block mb-1 text-sm font-semibold">🔌 Dynamic Host Port Mapping</strong>
-    <span class="text-slate-300 leading-relaxed"><code>postgres.getMappedPort(5432)</code> resolves the container port to a random open host port (e.g. <code>:32768</code>), preventing local port conflicts.</span>
+<div class="grid grid-cols-2 gap-2.5 mt-2">
+  <div class="slide-card p-2 text-xs border border-emerald-500/30 bg-emerald-950/20 rounded">
+    <strong class="text-emerald-300 block mb-0.5 text-xs font-semibold">🔌 Dynamic Host Port Mapping</strong>
+    <span class="text-slate-300 leading-snug"><code>postgres.getMappedPort(5432)</code> resolves container ports to random open host ports (e.g. <code>:32768</code>), preventing local collisions.</span>
   </div>
-  <div class="slide-card p-3 text-xs border border-cyan-500/30 bg-cyan-950/20 rounded">
-    <strong class="text-cyan-300 block mb-1 text-sm font-semibold">🧹 Automatic Teardown Hook</strong>
-    <span class="text-slate-300 leading-relaxed">Ryuk sidecar automatically reaps all containers on process termination, or explicitly invoke <code>await postgres.stop()</code> in <code>afterAll</code>.</span>
+  <div class="slide-card p-2 text-xs border border-cyan-500/30 bg-cyan-950/20 rounded">
+    <strong class="text-cyan-300 block mb-0.5 text-xs font-semibold">🧹 Automatic Teardown Hook</strong>
+    <span class="text-slate-300 leading-snug">Ryuk reaps all containers on process exit, or explicitly call <code>await postgres.stop()</code> in <code>afterAll</code>.</span>
   </div>
 </div>
 
@@ -655,105 +648,109 @@ layout: section
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
 # ⚡ WireMock — URL & Path Matching
 
-### Exact Path Routing, Regex Patterns & Query Strings
+### Exact Path Routing, Regex Patterns & Dynamic Resource Validation
 
-<div class="multi-col-grid-2">
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🌐 Path Matcher Operators</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>url</code></strong>: Matches full absolute path <em>including</em> query parameters.</li>
-    <li>• <strong><code>urlPath</code></strong>: Matches URI path only, safely ignoring query parameters.</li>
-    <li>• <strong><code>urlPathPattern</code></strong>: Regular expression matching on URI paths.</li>
-    <li>• <strong><code>urlPattern</code></strong>: Regular expression matching on the complete URL.</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">💡 Best Practice &amp; Dynamic Routing</h3>
-  <p class="mb-2">
-    Use <strong><code>urlPath</code></strong> for stable REST endpoints when query strings vary, and <strong><code>urlPathPattern</code></strong> for dynamic path parameters (e.g. UUIDs, IDs).
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    🎯 <em>Example</em>: <code>/lab/api/users/[0-9a-f-]+</code> safely matches any valid UUID path without hardcoding.
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🌐</span> Path Matcher Operators
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">Routing</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong><code>url</code></strong>: Matches full absolute path <em>including</em> query parameters.</li>
+      <li>• <strong><code>urlPath</code></strong>: Matches URI path only, safely ignoring query parameters.</li>
+      <li>• <strong><code>urlPathPattern</code></strong>: Regular expression matching on URI paths.</li>
+      <li>• <strong><code>urlPattern</code></strong>: Regular expression matching on the complete URL.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
+    💡 Best Practice: Use <code>urlPath</code> for stable paths and <code>urlPathPattern</code> for dynamic IDs.
   </div>
 </div>
 
-</div>
-
----
-
-# ⚡ WireMock — Header Matching Operators
-
-### Exact Matches, Substrings, Regex & Absence Checks
-
-<div class="multi-col-grid-2">
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🏷️ Operator Reference</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>equalTo</code></strong>: Exact case-sensitive match (e.g. <code>Content-Type: application/json</code>).</li>
-    <li>• <strong><code>matches</code></strong>: Regular expression on header value (e.g. <code>Bearer [A-Za-z0-9-_\\.]+</code>).</li>
-    <li>• <strong><code>contains</code></strong>: Substring check (e.g. <code>Mock-Scenario: TRANSFER:INSUFFICIENT_FUNDS</code>).</li>
-    <li>• <strong><code>absent</code></strong>: Asserts header is completely omitted from the request.</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🛡️ Auth &amp; Mock Steer Patterns</h3>
-  <p class="mb-2">
-    Steer test scenarios dynamically via custom headers while verifying authorization tokens and security boundaries.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    💉 <em>Header Steering</em>: Allows frontend tests and Burp MITM to select specific mock responses dynamically without restarting services.
-  </div>
-</div>
-
-</div>
-
----
-
-# ⚡ WireMock — Query Parameter & Cookie Filters
-
-### Parameter Flags, Cookie Assertions & Multi-Criteria Conjunction
-
-<div class="multi-col-grid-2">
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🔍 Query &amp; Cookie Filters</h3>
-  <ul class="space-y-1.5 text-slate-300 text-sm">
-    <li>• <strong><code>queryParameters</code></strong>: Match query flags (e.g. <code>?active=true</code>) or numeric limits (<code>?limit=10</code>).</li>
-    <li>• <strong><code>cookies</code></strong>: Assert session, authentication, or tracking cookies.</li>
-    <li>• <strong><code>absent: true</code></strong>: Verify optional query parameters or cookies are omitted.</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">⚡ Multi-Criteria Conjunction Rule</h3>
-  <p class="mb-2">
-    WireMock evaluates HTTP method, path, headers, and query parameters simultaneously. <strong>All defined matchers must evaluate to true</strong> for a match.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    ⚖️ If any single matcher fails, WireMock cascades evaluation to the next priority stub.
-  </div>
-</div>
-
-</div>
-
----
-
-# ⚡ Request Matching — URL & Header Example
-
-### Regex Path Routing & Bearer JWT Validation
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Path Pattern Mapping Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
   "request": {
     "method": "GET",
-    "urlPathPattern": "/lab/api/users/[0-9]+",
+    "urlPathPattern": "/lab/api/users/[0-9]+"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": { "status": "ACTIVE", "role": "USER" }
+  }
+}
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    🎯 Matches any numeric user path (e.g. <code>/users/101</code>) without hardcoding.
+  </div>
+</div>
+
+</div>
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# ⚡ WireMock — Header Matching & Scenario Steering
+
+### Exact Matches, Substrings, Regex & Mock Scenario Steering
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🏷️</span> Operator Reference
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Headers</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong><code>equalTo</code></strong>: Exact case-sensitive match (<code>application/json</code>).</li>
+      <li>• <strong><code>matches</code></strong>: Regex on header value (<code>Bearer [A-Za-z0-9-_\\.]+</code>).</li>
+      <li>• <strong><code>contains</code></strong>: Substring match (<code>TRANSFER:INSUFFICIENT_FUNDS</code>).</li>
+      <li>• <strong><code>absent</code></strong>: Asserts header is completely omitted.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
+    💉 Header Steering: Selects specific mock responses without restarting services.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Auth &amp; Steering Mapping Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
+
+```json
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/transfers",
     "headers": {
       "Authorization": { "matches": "Bearer [A-Za-z0-9-_]+" },
       "Mock-Scenario": { "contains": "ACCOUNT_ACTIVE" }
@@ -761,20 +758,57 @@ layout: section
   },
   "response": {
     "status": 200,
-    "jsonBody": { "status": "ACTIVE" }
+    "jsonBody": { "status": "APPROVED" }
   }
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  🎯 <strong>Key Features</strong>: Matches any numeric user ID (e.g. <code>/users/101</code>), validates Bearer token format, and routes based on <code>Mock-Scenario: ACCOUNT_ACTIVE</code>.
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    🛡️ Validates Bearer token format &amp; routes on <code>Mock-Scenario</code> header.
+  </div>
+</div>
+
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
-# ⚡ Request Matching — Query Parameter Example
+# ⚡ WireMock — Query Parameter & Cookie Filters
 
-### Query Flag Filtering & Multi-Criteria Evaluation
+### Parameter Flags, Cookie Assertions & Multi-Criteria Conjunction
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔍</span> Filter Operators
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Query &amp; Cookie</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong><code>queryParameters</code></strong>: Match flags (<code>?active=true</code>) or limits (<code>?limit=10</code>).</li>
+      <li>• <strong><code>cookies</code></strong>: Assert session, authentication, or tracking cookies.</li>
+      <li>• <strong><code>absent: true</code></strong>: Verify optional query parameters or cookies are omitted.</li>
+      <li>• <strong>Conjunction Rule</strong>: Method, path, headers, and queries must <strong>all</strong> evaluate to true.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    ⚖️ If any matcher fails, evaluation cascades to next priority stub.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Query Flag Mapping Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
@@ -793,37 +827,9 @@ layout: section
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  🏷️ <strong>Key Features</strong>: Enforces exact flag matching (<code>?active=true</code>) and regex numeric limits (<code>?limit=10</code>). All criteria must match simultaneously.
-</div>
-
----
-
-# ⚖️ WireMock — Priority & Matching Precedence
-
-### Resolution Hierarchy for Overlapping Stub Mappings
-
-<div class="multi-col-grid-2">
-
-<div class="col-card">
-  <h3 class="text-emerald-400">⚡ Precedence Hierarchy</h3>
-  <p class="mb-2">
-    Lower integer value = <strong>Higher Precedence</strong> (<code>1 &gt; 5 &gt; 10 &gt; 100</code>). WireMock stops evaluation on the first matching highest-priority stub.
-  </p>
-  <ul class="space-y-1 text-slate-300 text-sm mt-auto">
-    <li>• <strong>Priority 1</strong>: Specific Error & Fault Overrides</li>
-    <li>• <strong>Priority 5–10</strong>: Default Happy Path Stubs</li>
-    <li>• <strong>Priority 100</strong>: Catch-All Proxy Fallback</li>
-  </ul>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🔢 Default Priority &amp; Evaluation</h3>
-  <p class="mb-2">
-    If the <code>"priority"</code> field is omitted in a JSON mapping file, WireMock automatically assigns a default priority of <strong>5</strong>.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    💡 <em>Resolution</em>: Highest priority (lowest number) wins. If stubs share the same priority, the most recently loaded stub takes precedence.
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    🏷️ Matches exact flag (<code>?active=true</code>) and regex limit (<code>?limit=10</code>).
   </div>
 </div>
 
@@ -833,7 +839,7 @@ layout: section
 class: pt-2 pb-1 px-8
 ---
 
-# ⚖️ Priority in Practice: 3-Tier Hierarchy
+# ⚖️ WireMock — Priority & 3-Tier Precedence Hierarchy
 
 ### Specific Error Overrides vs. Default Happy Paths vs. Catch-All Proxies
 
@@ -900,7 +906,7 @@ class: pt-2 pb-1 px-8
 
 <div class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-2 mt-2 flex items-center gap-2">
   <span class="text-base">💡</span>
-  <span class="text-slate-200 text-xs"><strong>Precedence Rule:</strong> Lower integer = higher priority (<code>1 &gt; 10 &gt; 100</code>). WireMock stops evaluation on the first matching stub.</span>
+  <span class="text-slate-200 text-xs"><strong>Precedence Rule:</strong> Lower integer = higher priority (<code>1 &gt; 10 &gt; 100</code>). WireMock stops evaluation on the first matching stub. If omitted, default is <strong>5</strong>.</span>
 </div>
 
 ---
@@ -1031,55 +1037,42 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
 # ⚙️ WireMock — Body Match Operators & Lenient Flags
 
 ### Strict Matchers vs. Resilient Microservice Contracts
 
-<div class="multi-col-grid-2 gap-3 mb-1.5">
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-<div class="col-card p-2.5 space-y-1.5">
-  <h3 class="text-cyan-400 text-sm mb-0.5">🛠️ Core Body Match Operators</h3>
-  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong><code>equalToJson</code></strong>: Semantic JSON equivalence (AST-based).</li>
-    <li>• <strong><code>equalToXml</code></strong>: Semantic XML payload comparison.</li>
-    <li>• <strong><code>matches</code></strong>: Regular expression across raw body text.</li>
-    <li>• <strong><code>contains</code></strong>: Simple substring occurrence check.</li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto text-center">
-    <code>{ "equalToJson": "{ \"type\": \"SAVINGS\" }" }</code>
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚙️</span> Lenient Flags
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">Resilience</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong><code>equalToJson</code></strong>: Semantic JSON equivalence (AST-based).</li>
+      <li>• <strong><code>ignoreExtraElements: true</code></strong>: Ignores new fields (e.g. <code>traceId</code>) for safe schema evolution.</li>
+      <li>• <strong><code>ignoreArrayOrder: true</code></strong>: Treats array items as sets (<code>[A, B]</code> matches <code>[B, A]</code>).</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
+    💡 Prevents false test failures when upstream microservices add fields.
   </div>
 </div>
 
-<div class="col-card p-2.5 space-y-1.5">
-  <h3 class="text-emerald-400 text-sm mb-0.5">⚙️ Lenient Flags (Avoid Flaky Tests)</h3>
-  <ul class="space-y-1 text-slate-200 text-xs leading-relaxed">
-    <li>
-      • <strong><code>ignoreExtraElements: true</code></strong><br/>
-      <span class="text-slate-400">Ignores extra fields (e.g. <code>traceId</code>, <code>timestamp</code>) for schema evolution.</span>
-    </li>
-    <li>
-      • <strong><code>ignoreArrayOrder: true</code></strong><br/>
-      <span class="text-slate-400">Treats arrays as sets (<code>[A, B]</code> matches <code>[B, A]</code>).</span>
-    </li>
-  </ul>
-  <div class="bg-slate-900/90 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto text-center">
-    <code>{ "ignoreExtraElements": true, "ignoreArrayOrder": true }</code>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-cyan-950/50 border-cyan-500/60 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💡</span>
-  <span class="text-cyan-100 leading-snug"><strong>Why Use Lenient Flags?</strong> Prevents false test failures when upstream microservices add non-breaking fields or return database records in non-deterministic array orders.</span>
-</div>
-
----
-
-# 📦 Body Matching — Example
-
-### Match Request Bodies with `equalToJson`
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Lenient Body Mapping Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
@@ -1088,10 +1081,7 @@ class: pt-2 pb-1 px-8
     "urlPath": "/lab/api/accounts/open",
     "bodyPatterns": [
       {
-        "equalToJson": {
-          "citizenId": "1100500123456",
-          "type": "SAVINGS"
-        },
+        "equalToJson": { "type": "SAVINGS" },
         "ignoreExtraElements": true,
         "ignoreArrayOrder": true
       }
@@ -1099,13 +1089,17 @@ class: pt-2 pb-1 px-8
   },
   "response": {
     "status": 201,
-    "jsonBody": { "accountId": "ACC-998877", "status": "OPENED" }
+    "jsonBody": { "accountId": "ACC-998877" }
   }
 }
 ```
 
-<div class="slide-card text-sm mt-3">
-  ✨ <code>ignoreExtraElements: true</code> permits non-breaking extra payload fields, while <code>ignoreArrayOrder: true</code> permits array items in any sequence.
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    ✨ Matches exact type while tolerating extra metadata fields.
+  </div>
+</div>
+
 </div>
 
 ---
@@ -1322,25 +1316,38 @@ class: pt-2 pb-1 px-8
 
 ### Multi-Segment Hierarchy Matching with `urlPathPattern`
 
-<div class="multi-col-grid-2 gap-3 mb-1.5">
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
   <div>
-    <h3 class="text-cyan-400 text-sm font-bold mb-1">🌐 Path RegEx Pattern Architecture</h3>
-    <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed">
-      <li>• <strong>Standard UUID</strong>: <code>[a-z0-9-]+</code> (RFC 4122 IDs)</li>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🌐</span> Path RegEx Patterns
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Routing</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Standard UUID</strong>: <code>[a-z0-9-]+</code> (RFC 4122 identifiers)</li>
       <li>• <strong>Entity Prefixes</strong>: <code>ACC-[0-9]{6}</code> (Banking account IDs)</li>
       <li>• <strong>Hierarchy Routing</strong>: Combines static paths &amp; regex slots without hardcoded IDs.</li>
     </ul>
+    <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
+      <code>/api/users/[a-z0-9-]+/accounts/ACC-[0-9]{6}</code>
+    </div>
   </div>
-  <div class="bg-slate-950/90 rounded p-2 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
-    <code>/api/users/[a-z0-9-]+/accounts/ACC-[0-9]{6}</code>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
+    💡 <code>urlPathPattern</code> ignores arbitrary query parameters safely.
   </div>
 </div>
 
-<div class="col-card p-3 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
   <div>
-    <h3 class="text-emerald-400 text-sm font-bold mb-1">📄 Stub Mapping Example</h3>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Path Pattern Mapping Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
@@ -1360,16 +1367,11 @@ class: pt-2 pb-1 px-8
 ```
 
   </div>
-  <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-700/50">
-    ✨ Ignores query strings like <code>?limit=10&page=1</code> safely.
-  </p>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    ✨ Matches dynamic multi-segment banking URLs deterministically.
+  </div>
 </div>
 
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-2 mt-2 flex items-center gap-2">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 text-xs">Use <code>urlPathPattern</code> when matching regex segments in paths while allowing arbitrary query parameters without breaking route matching.</span>
 </div>
 
 ---
@@ -1380,25 +1382,38 @@ class: pt-2 pb-1 px-8
 
 ### Strict Bearer Token & Scenario Enum Validation
 
-<div class="multi-col-grid-2 gap-3 mb-1.5">
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
   <div>
-    <h3 class="text-cyan-400 text-sm font-bold mb-1">🏷️ Header RegEx Operators</h3>
-    <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed">
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🏷️</span> Header RegEx Operators
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Security</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
       <li>• <strong><code>matches</code></strong>: Value must satisfy regular expression.</li>
       <li>• <strong><code>doesNotMatch</code></strong>: Passes only when pattern fails.</li>
       <li>• <strong>Strict Enums</strong>: Restricts scenarios strictly to registered values.</li>
     </ul>
+    <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
+      <code>"matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</code>
+    </div>
   </div>
-  <div class="bg-slate-950/90 rounded p-2 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
-    <code>"matches": "TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</code>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
+    💡 Restricting enums prevents typos from silent fallthroughs.
   </div>
 </div>
 
-<div class="col-card p-3 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
   <div>
-    <h3 class="text-emerald-400 text-sm font-bold mb-1">📄 Stub Mapping Example</h3>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Stub Mapping Example
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
@@ -1418,16 +1433,11 @@ class: pt-2 pb-1 px-8
 ```
 
   </div>
-  <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-700/50">
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
     🔐 Enforces valid JWT token syntax and registered scenario flags.
-  </p>
+  </div>
 </div>
 
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-emerald-500/40 p-2 mt-2 flex items-center gap-2">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 text-xs">Restricting <code>Mock-Scenario</code> via regex enums (<code>SUCCESS|FAIL</code>) prevents typo bugs in test scripts from silently falling through to unexpected defaults.</span>
 </div>
 
 ---
@@ -1438,25 +1448,38 @@ class: pt-2 pb-1 px-8
 
 ### 13-Digit National ID & Query Version Validation
 
-<div class="multi-col-grid-2 gap-3 mb-1.5">
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-<div class="col-card p-3 space-y-2 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
   <div>
-    <h3 class="text-amber-400 text-sm font-bold mb-1">📝 Matching Evaluation Strategy</h3>
-    <ul class="space-y-1.5 text-slate-300 text-xs leading-relaxed">
-      <li>• <strong>Query Versioning</strong>: <code>v[1-3].*</code> routes requests across multiple API versions.</li>
-      <li>• <strong>Raw Body RegEx</strong>: Matches patterns like 13-digit Thai national IDs.</li>
-      <li>• ⚠️ <strong>Caution</strong>: Raw body string matching breaks on key reordering or extra spaces. Prefer <code>matchesJsonPath</code> for structured JSON.</li>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
+        <span>📝</span> Matching Evaluation
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Validation</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Query Versioning</strong>: <code>v[1-3].*</code> routes across versions.</li>
+      <li>• <strong>Raw Body RegEx</strong>: Matches 13-digit Thai national IDs.</li>
+      <li>• ⚠️ <strong>Caution</strong>: Raw body string matching breaks on key reordering. Prefer <code>matchesJsonPath</code> for JSON.</li>
     </ul>
+    <div class="bg-slate-950/90 rounded p-1.5 border border-amber-500/30 font-mono text-[11px] text-amber-200 mt-2">
+      <code>.*\"national_id\":\"[0-9]{13}\".*</code>
+    </div>
   </div>
-  <div class="bg-slate-950/90 rounded p-2 border border-amber-500/30 font-mono text-[11px] text-amber-200 mt-2">
-    <code>.*\"national_id\":\"[0-9]{13}\".*</code>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    💡 Use <code>matchesJsonPath</code> for structured JSON payloads.
   </div>
 </div>
 
-<div class="col-card p-3 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
   <div>
-    <h3 class="text-emerald-400 text-sm font-bold mb-1">📄 Stub Mapping Example</h3>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Stub Mapping Example
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
@@ -1476,16 +1499,11 @@ class: pt-2 pb-1 px-8
 ```
 
   </div>
-  <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-700/50">
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
     🪪 Asserts strict 13-digit ID across versions <code>v1</code>, <code>v2</code>, <code>v3</code>.
-  </p>
+  </div>
 </div>
 
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-amber-500/40 p-2 mt-2 flex items-center gap-2">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 text-xs">For JSON payloads, use <code>matchesJsonPath</code> whenever possible; reserve raw body regex for plain text, XML, form-data, or rigid string contracts.</span>
 </div>
 
 ---
@@ -1561,296 +1579,257 @@ class: pt-2 pb-2 px-8
 class: pt-2 pb-2 px-8
 ---
 
-# 🪄 WireMock — Dynamic Response Templating
+# 📥 WireMock — Request Data Extraction & Echoing
 
-### Handlebars Response Templating (`response-template`)
+### Path Segments, Query Parameters, Headers & JSONPath Payloads
 
-<div v-pre>
+<div v-pre class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🌐</span> Request Model Helpers
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Handlebars</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Path Segments</strong>: <code>{{request.pathSegments.[2]}}</code> (0-indexed segments).</li>
+      <li>• <strong>Query Params</strong>: <code>{{request.query.paramName}}</code> (URL query strings).</li>
+      <li>• <strong>HTTP Headers</strong>: <code>{{request.headers.[X-Trace-ID]}}</code> (In-flight headers).</li>
+      <li>• <strong>JSONPath Body</strong>: <code>{{jsonPath request.body '$.customer.id'}}</code> (Payloads).</li>
+      <li>• <strong>Encoders</strong>: <code>{{base64 request.body}}</code> &amp; <code>{{urlEncode request.query.q}}</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
+    💡 Always declare <code>"transformers": ["response-template"]</code> in response.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Dynamic Echo Mapping Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
 ```json
 {
   "request": {
     "method": "POST",
-    "urlPath": "/lab/api/orders"
+    "urlPathPattern": "/lab/api/users/[0-9]+"
   },
   "response": {
-    "status": 201,
-    "headers": {
-      "Content-Type": "application/json"
-    },
+    "status": 200,
     "jsonBody": {
-      "orderId": "{{randomValue type='UUID'}}",
-      "userId": "{{jsonPath request.body '$.userId'}}",
+      "userId": "{{request.pathSegments.[3]}}",
       "traceId": "{{request.headers.[X-Trace-ID]}}",
-      "createdAt": "{{now}}"
+      "account": "{{jsonPath request.body '$.accountId'}}"
     },
     "transformers": ["response-template"]
   }
 }
 ```
 
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    ✨ Echoes path parameters, trace headers, and payload attributes into response.
+  </div>
 </div>
 
-<div v-pre class="slide-card text-xs mt-2 p-2">
-  🪄 <strong>Clean Formatting with <code>jsonBody</code></strong>: Formats the response payload as a native JSON structure and dynamically interpolates request headers, body JSONPath, UUIDs, and timestamps via <code>response-template</code>.
 </div>
+
+
 
 ---
-class: pt-2 pb-1 px-8
+class: pt-2 pb-2 px-8
 ---
 
-# 📥 WireMock — Extracting Request Data & Echoing IDs
+# 🪄 Handlebars Logic, Math & Dynamic Data
 
-### Reading Path, Query, Header & Body Values into Responses
+### Conditionals, Arithmetic Calculations & Ephemeral Token Generators
 
-<div v-pre class="multi-col-grid-2 gap-3 mb-1.5">
+<div v-pre class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-cyan-500/30">
-  <h3 class="text-cyan-400 text-sm mb-0.5">🌐 1. URL Path &amp; Query Params</h3>
-  <div class="text-xs text-slate-300">
-    <strong>Incoming</strong>: <code>GET /api/users/USR-99?id=ORD-123</code>
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🎲</span> Generators &amp; Math Helpers
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">Calculations</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Random UUID</strong>: <code>{{randomValue type='UUID'}}</code> (Fresh IDs).</li>
+      <li>• <strong>Random Numeric</strong>: <code>{{randomValue type='NUMERIC' length=6}}</code> (SMS OTP).</li>
+      <li>• <strong>Timestamps</strong>: <code>{{now offset='1 days' format='yyyy-MM-dd'}}</code>.</li>
+      <li>• <strong>Timezones</strong>: <code>{{now timezone='Asia/Bangkok' format='HH:mm:ss'}}</code>.</li>
+      <li>• <strong>Dynamic Math</strong>: <code>{{math (jsonPath request.body '$.price') '*' 1.07}}</code>.</li>
+    </ul>
   </div>
-  
-  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-xs text-cyan-200">
-    <div class="text-xs text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
-    <code>{<br/>
-    &nbsp;&nbsp;"userId": "{{request.pathSegments.[2]}}",<br/>
-    &nbsp;&nbsp;"orderId": "{{request.query.id}}"<br/>
-    }</code>
-  </div>
-
-  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <div class="text-xs text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
-    <code>{<br/>
-    &nbsp;&nbsp;"userId": "USR-99",<br/>
-    &nbsp;&nbsp;"orderId": "ORD-123"<br/>
-    }</code>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
+    💡 Conditionals: <code>{{#if (eq (jsonPath request.body '$.amount') 0)}}...{{/if}}</code>
   </div>
 </div>
 
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/30">
-  <h3 class="text-emerald-400 text-sm mb-0.5">📦 2. Headers &amp; JSON Body Fields</h3>
-  <div class="text-xs text-slate-300">
-    <strong>Incoming</strong>: <code>X-User-Id: U-88</code> | Body <code>{"id":"ACC-55"}</code>
-  </div>
-  
-  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 font-mono text-xs text-cyan-200">
-    <div class="text-xs text-slate-400 font-sans mb-0.5">📝 Response Template:</div>
-    <code>{<br/>
-    &nbsp;&nbsp;"userId": "{{request.headers.[X-User-Id]}}",<br/>
-    &nbsp;&nbsp;"accId": "{{jsonPath request.body '$.id'}}"<br/>
-    }</code>
-  </div>
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Dynamic Math &amp; Token Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+    </div>
 
-  <div class="bg-emerald-950/50 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <div class="text-xs text-emerald-400 font-sans mb-0.5 font-bold">✨ Rendered Response JSON:</div>
-    <code>{<br/>
-    &nbsp;&nbsp;"userId": "U-88",<br/>
-    &nbsp;&nbsp;"accId": "ACC-55"<br/>
-    }</code>
-  </div>
-</div>
-
-</div>
-
-<div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 leading-snug">Always declare <code>"transformers": ["response-template"]</code> in the response block to enable dynamic Handlebars interpolation.</span>
-</div>
-
----
-
-# 🪄 Dynamic Response Headers & Timezones
-
-### Injecting In-Flight Tracking IDs, Cookies & Location Headers
-
-<div v-pre class="multi-col-grid-2 gap-3 mb-1.5">
-
-<div class="col-card p-2.5 space-y-1.5">
-  <h3 class="text-cyan-400 text-sm mb-0.5">🏷️ Dynamic Header Interpolation</h3>
-  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Echo Correlation ID</strong>: Preserves end-to-end tracing across services.</li>
-    <li>• <strong>Dynamic Session Cookie</strong>: Generates random hex/alphanumeric tokens.</li>
-    <li>• <strong>Dynamic 201 Location</strong>: Constructs REST resource URI on the fly.</li>
-  </ul>
-  <div class="bg-slate-950/80 rounded p-1.5 border border-cyan-500/40 font-mono text-xs text-cyan-200 mt-auto">
-    <code>"X-Trace-ID": "{{request.headers.[X-Trace-ID]}}",<br/>"Location": "/api/orders/{{randomValue type='UUID'}}"</code>
-  </div>
-</div>
-
-<div class="col-card p-2.5 space-y-1.5">
-  <h3 class="text-emerald-400 text-sm mb-0.5">🕒 Timezones &amp; Unix Epoch Timestamps</h3>
-  <ul class="space-y-0.5 text-slate-200 text-xs leading-relaxed">
-    <li>• <strong>Bangkok Timezone</strong>: <code>{{now timezone='Asia/Bangkok' format='yyyy-MM-dd HH:mm:ss'}}</code></li>
-    <li>• <strong>Past Expiry (-1 day)</strong>: <code>{{now offset='-1 days'}}</code> (Expired token test)</li>
-    <li>• <strong>Unix Epoch Milliseconds</strong>: <code>{{now format='epoch'}}</code> (Timestamp numbers)</li>
-  </ul>
-  <div class="bg-slate-950/80 rounded p-1.5 border border-emerald-500/40 font-mono text-xs text-emerald-200 mt-auto">
-    <code>"timestamp": {{now format='epoch'}},<br/>"expiresAt": "{{now offset='30 minutes'}}"</code>
-  </div>
-</div>
-
-</div>
-
-<div v-pre class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 leading-snug"><strong>Header Templating</strong>: Response templating applies to both <code>"headers"</code> and <code>"body"</code> blocks, allowing realistic simulation of security cookies and REST redirect protocols.</span>
-</div>
-
----
-
-# 🪄 WireMock — Handlebars Request & Encoding Helpers
-
-### Request Model Extraction & Data Encoders
-
-<div v-pre class="slide-card text-sm p-2.5">
-
-| Helper Type | Syntax Example | Description |
-| :--- | :--- | :--- |
-| **Request Headers** | `{{request.headers.[X-Trace-ID]}}` | Extracts incoming HTTP header value |
-| **Query Parameters** | `{{request.query.page}}` | Extracts query parameter from URL |
-| **JSON Path Body** | `{{jsonPath request.body '$.account.id'}}` | Extracts nested field from request body |
-| **Base64 Encoding** | `{{base64 request.body}}` | Base64 encodes/decodes request payload |
-| **URL Encoding** | `{{urlEncode request.query.target}}` | Encodes URL parameter strings |
-
-</div>
-
----
-
-# 🎲 WireMock — Handlebars Dynamic Data Generators
-
-### Timestamps, Random IDs & Token Generation
-
-<div v-pre class="slide-card text-sm p-2.5">
-
-| Generator | Syntax Example | Generated Output |
-| :--- | :--- | :--- |
-| **Random UUID** | `{{randomValue type='UUID'}}` | `a1b2c3d4-e5f6-4a1b-8c2d-9e0f1a2b3c4d` |
-| **Random OTP** | `{{randomValue type='NUMERIC' length=6}}` | `849201` *(6-digit SMS OTP)* |
-| **Current Date** | `{{now format='yyyy-MM-dd'}}` | `2026-08-23` *(Formatted date)* |
-| **Expiry Timestamp** | `{{now offset='1 hours'}}` | `2026-08-23T11:45:00Z` *(Relative offset)* |
-
-</div>
-
----
-
-# 🪄 Handlebars Logic & Math — Example
-
-### Conditionals, Dynamic Math & Response Configuration
-
-<div v-pre>
-
-```handlebars
+```json
 {
-  {{#if (eq (jsonPath request.body '$.amount') 0)}}
-  "status": "REJECTED",
-  {{else}}
-  "status": "APPROVED",
-  {{/if}}
-  "fee": {{math (jsonPath request.body '$.amount') '*' 0.01}},
-  "expiresAt": "{{now offset='3 days' format='yyyy-MM-dd'}}"
+  "request": {
+    "method": "POST",
+    "urlPath": "/lab/api/stateless/orders"
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "orderId": "{{randomValue type='UUID'}}",
+      "userId": "{{jsonPath request.body '$.userId'}}",
+      "total": {{math (jsonPath request.body '$.price') '*' 1.07}},
+      "createdAt": "{{now format='yyyy-MM-dd HH:mm:ss'}}"
+    },
+    "transformers": ["response-template"]
+  }
 }
 ```
 
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    ✨ Computes 7% VAT total and stamps fresh UUIDs directly in response.
+  </div>
 </div>
-
-<div v-pre class="slide-card text-sm mt-2">
-  🔀 Supports conditional response branching (`#if eq`), arithmetic fee calculations (`math '*' 0.01`), and relative date offsets.
-</div>
-
----
-
-# 🔤 WireMock — Handlebars String Transformation Helpers
-
-### String Manipulation & Substring Extractors
-
-<div v-pre class="slide-card text-sm p-2.5">
-
-| Helper | Syntax Example | Description |
-| :--- | :--- | :--- |
-| **Case Conversion** | `{{upper value}}` / `{{lower value}}` | Converts text to uppercase / lowercase |
-| **Capitalize** | `{{capitalize value}}` | Uppercases the first character |
-| **Whitespace Trim** | `{{trim value}}` | Strips leading and trailing whitespace |
-| **String Replace** | `{{replace 'old' 'new' value}}` | Replaces occurrences of substring |
-| **Regex Extraction** | `{{regexExtract value '([0-9]+)' '1'}}` | Extracts regex capture group 1 |
 
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
-# 🔁 WireMock — Handlebars Array & Iteration Helpers
+# 🧪 Practice Lab 4: Dynamic Templating & Chaos Latency
 
-### Array Looping, Sizing & Variable Lookups
+### Validate Dynamic Math Calculations & Chaos Latency Timeout Handling
 
-<div v-pre class="slide-card text-sm p-2.5">
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-| Helper | Syntax Example | Description |
-| :--- | :--- | :--- |
-| **Loop Iteration** | `{{#each (jsonPath request.body '$.items')}}` | Iterates over array elements |
-| **Index Counter** | `{{@index}}` / `{{@first}}` / `{{@last}}` | 0-based iteration index & position flags |
-| **Array Sizing** | `{{size (jsonPath request.body '$.items')}}` | Returns total number of array elements |
-| **Local Variable** | `{{val 'key' (jsonPath request.body '$.id')}}` | Assigns scoped local variable |
-| **Dynamic Lookup** | `{{lookup array index}}` | Looks up array element at specific index |
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🧮</span> Step 1: Dynamic Math &amp; VAT
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">:8088 Stub</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1 leading-snug">Dispatches price 4000; WireMock calculates 7% VAT (4280.0) + UUID:</p>
+
+```bash
+curl -s -X POST \
+  http://localhost:8088/lab/api/stateless/orders \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"U-100","price":4000}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
+    ✨ Returns <code>total: 4280.0</code> and unique <code>orderId</code> UUID.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⏱️</span> Step 2: Chaos Latency Timeout
+      </span>
+      <span class="text-[11px] font-mono text-rose-300/80 bg-rose-900/40 px-2 py-0.5 rounded">Resilience</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1 leading-snug">WireMock delays 8000ms; verify client cancels at 2s timeout:</p>
+
+```bash
+time curl -s --max-time 2 \
+  http://localhost:8088/lab/api/stateless/delayed
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs font-mono text-rose-300">
+    🚨 Exits code 28 after 2s without thread starvation!
+  </div>
+</div>
 
 </div>
 
+<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Hands-On Verification:</strong> Inspect live responses in terminal or visit <code>http://localhost:8088/__admin/webapp</code> to see matched requests.
+  </span>
+</div>
+
 ---
-class: pt-1 pb-1 px-8
+class: pt-2 pb-2 px-8
 ---
 
-# 🪄 Handlebars Array Iteration — Example
+# 🔁 WireMock — Array Iteration & String Modifiers
 
-<h3 v-pre class="text-slate-300 text-sm mb-1">Generating Dynamic Arrays with <code>{{#each}}</code> and Indexing</h3>
+### Loop Collections with each, Indexing, String Modifiers & Safe Defaults
 
-<div v-pre class="grid grid-cols-2 gap-3 text-xs">
+<div v-pre class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
-<div class="col-card p-2 space-y-1 bg-slate-900/60 border-cyan-500/30 flex flex-col">
-  <h3 class="text-cyan-400 text-xs font-bold mb-0.5">📝 1. WireMock Handlebars Template</h3>
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔤</span> Array &amp; String Helpers
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Transformers</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Array Iteration</strong>: <code>{{#each (jsonPath request.body '$.items')}}</code>.</li>
+      <li>• <strong>Position Flags</strong>: <code>{{@index}}</code>, <code>{{@first}}</code>, <code>{{@last}}</code> (comma control).</li>
+      <li>• <strong>Array Sizing</strong>: <code>{{size (jsonPath request.body '$.items')}}</code>.</li>
+      <li>• <strong>Case &amp; Trim</strong>: <code>{{upper val}}</code>, <code>{{lower val}}</code>, <code>{{trim val}}</code>.</li>
+      <li>• <strong>Safe Fallback</strong>: <code>{{jsonPath request.body '$.tier' default='SILVER'}}</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
+    💡 <code>default='...'</code> prevents null crashes on missing client fields.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> Array Looping Template Stub
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Handlebars</span>
+    </div>
 
 ```handlebars
 {
-  "totalItems": {{size (jsonPath request.body '$.items')}},
-  "processedItems": [
+  "total": {{size (jsonPath request.body '$.items')}},
+  "items": [
     {{#each (jsonPath request.body '$.items')}}
     {
       "index": {{@index}},
       "sku": "{{upper this.sku}}",
-      "status": "VERIFIED"
+      "tier": "{{jsonPath this '$.tier' default='STD'}}"
     }{{#unless @last}},{{/unless}}
     {{/each}}
   ]
 }
 ```
-  <p class="text-slate-400 text-xs mt-auto pt-1 border-t border-slate-700/50">
-    🔁 Loops array, transforms <code>upper this.sku</code>, and omits trailing comma via <code>@last</code>.
-  </p>
-</div>
 
-<div class="col-card p-2 space-y-1 bg-slate-900/60 border-emerald-500/30 flex flex-col">
-  <h3 class="text-emerald-400 text-xs font-bold mb-0.5">✨ 2. Input ➔ Rendered Output</h3>
-
-  <div class="bg-slate-950/90 rounded p-1.5 border border-slate-700/50 text-xs">
-    <div class="text-xs text-slate-400 font-bold mb-0.5 font-sans">📥 Incoming Request Body:</div>
-
-```json
-{
-  "items": [{ "sku": "mbp-16" }, { "sku": "ipad-pro" }]
-}
-```
   </div>
-
-  <div class="bg-emerald-950/40 rounded p-1.5 border border-emerald-500/40 text-xs mt-auto">
-    <div class="text-xs text-emerald-400 font-bold mb-0.5 font-sans">📤 Rendered Response JSON:</div>
-
-```json
-{
-  "totalItems": 2,
-  "processedItems": [
-    { "index": 0, "sku": "MBP-16", "status": "VERIFIED" },
-    { "index": 1, "sku": "IPAD-PRO", "status": "VERIFIED" }
-  ]
-}
-```
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    ✨ Loops array, uppercases SKU, omits trailing comma via <code>@last</code>.
   </div>
 </div>
 
@@ -1858,94 +1837,17 @@ class: pt-1 pb-1 px-8
 
 ---
 class: pt-2 pb-1 px-8
----
-
-# 🔍 WireMock — Handlebars jsonPath & Safe Fallbacks
-
-### Deep Traversal, Array Indexing, Safe Defaults & Dynamic Sizing
-
-<div v-pre class="grid grid-cols-2 gap-3.5 mt-3">
-
-<div class="slide-card p-3 space-y-2.5 bg-slate-900/60 border-slate-700/50 flex flex-col justify-between">
-  <div>
-    <h3 class="text-cyan-400 font-bold mb-1.5 text-sm">🎯 1. Deep Field &amp; Array Extraction</h3>
-    <ul class="space-y-2 text-slate-300 text-xs leading-relaxed">
-      <li>
-        • <strong>Nested Traversal</strong>: Extract nested fields directly into response:<br/>
-        <code class="text-cyan-300 font-mono text-[11px]">{{jsonPath request.body '$.customer.id'}}</code>
-      </li>
-      <li>
-        • <strong>Array Index Extraction</strong>: Target specific element indices:<br/>
-        <code class="text-cyan-300 font-mono text-[11px]">{{jsonPath request.body '$.items[0].sku'}}</code>
-      </li>
-    </ul>
-  </div>
-  <div class="pt-1.5 border-t border-slate-700/50 text-[11px] text-slate-400">
-    ✨ Navigates complex client request payloads deterministically.
-  </div>
-</div>
-
-<div class="slide-card p-3 space-y-2.5 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
-  <div>
-    <h3 class="text-emerald-400 font-bold mb-1.5 text-sm">🛡️ 2. Safe Fallbacks &amp; Dynamic Sizing</h3>
-    <ul class="space-y-2 text-slate-300 text-xs leading-relaxed">
-      <li>
-        • <strong>Safe Default Fallbacks</strong>: Prevents blank values on missing keys:<br/>
-        <code class="text-emerald-300 font-mono text-[11px]">{{jsonPath request.body '$.tier' default='SILVER'}}</code>
-      </li>
-      <li>
-        • <strong>Dynamic Array Sizing</strong>: Wraps <code>size</code> around jsonPath arrays:<br/>
-        <code class="text-emerald-300 font-mono text-[11px]">{{size (jsonPath request.body '$.items')}}</code>
-      </li>
-    </ul>
-  </div>
-  <div class="pt-1.5 border-t border-slate-700/50 text-[11px] text-slate-400">
-    ✨ Robust resilience against optional or missing client attributes.
-  </div>
-</div>
-
-</div>
-
-<div v-pre class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-2 mt-3 flex items-center gap-2">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 text-xs">Combining <code>jsonPath</code> with <code>default='...'</code> guarantees responses remain structurally valid even when clients omit optional payload fields.</span>
-</div>
-
----
-
-# 🔍 Handlebars jsonPath — Example
-
-### Echoing Nested Request Payloads & Handling Missing Fields
-
-<div v-pre>
-
-```handlebars
-{
-  "orderId": "{{randomValue type='UUID'}}",
-  "customerId": "{{jsonPath request.body '$.customer.id'}}",
-  "tier": "{{jsonPath request.body '$.tier' default='SILVER'}}",
-  "firstSku": "{{jsonPath request.body '$.items[0].sku'}}",
-  "itemCount": {{size (jsonPath request.body '$.items')}}
-}
-```
-
-</div>
-
-<div v-pre class="slide-card text-sm mt-3">
-  🎯 Extracts nested customer IDs and array elements, applies safe default tiers (<code>default='SILVER'</code>), and counts total items dynamically.
-</div>
-
 ---
 
 # 📁 File-Based Response Templates (`bodyFileName`)
 
 ### Decoupling Large Dynamic JSON/XML Payloads from Mapping Stubs
 
-<div v-pre class="multi-col-grid-2 gap-3 mb-1.5">
+<div v-pre class="multi-col-grid-2 gap-3 mb-1">
 
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-slate-700/40">
-  <h3 class="text-cyan-400 text-sm mb-0.5">📑 1. Mapping Stub (<code>mappings/order.json</code>)</h3>
-  <div class="bg-slate-950/90 rounded p-2 border border-cyan-500/30 font-mono text-xs text-cyan-200">
+<div class="col-card p-2 space-y-1 bg-slate-900/60 border-slate-700/40">
+  <h3 class="text-cyan-400 text-xs font-bold mb-0.5">📑 1. Mapping Stub (<code>mappings/order.json</code>)</h3>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[11px] text-cyan-200">
     {<br/>
     &nbsp;&nbsp;"request": { "method": "POST", "urlPath": "/api/orders" },<br/>
     &nbsp;&nbsp;"response": {<br/>
@@ -1955,14 +1857,14 @@ class: pt-2 pb-1 px-8
     &nbsp;&nbsp;}<br/>
     }
   </div>
-  <p class="text-slate-400 text-[11px] leading-tight mt-auto">
+  <p class="text-slate-400 text-[10px] leading-tight mt-auto">
     Mapping file remains clean and concise; delegates body rendering to template.
   </p>
 </div>
 
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/40">
-  <h3 class="text-emerald-400 text-sm mb-0.5">📦 2. Template File (<code>__files/orders/created.json</code>)</h3>
-  <div class="bg-slate-950/90 rounded p-2 border border-emerald-500/30 font-mono text-xs text-emerald-200">
+<div class="col-card p-2 space-y-1 bg-slate-900/60 border-emerald-500/40">
+  <h3 class="text-emerald-400 text-xs font-bold mb-0.5">📦 2. Template File (<code>__files/orders/created.json</code>)</h3>
+  <div class="bg-slate-950/90 rounded p-1.5 border border-emerald-500/30 font-mono text-[11px] text-emerald-200">
     {<br/>
     &nbsp;&nbsp;"orderId": "{{randomValue type='UUID'}}",<br/>
     &nbsp;&nbsp;"userId": "{{jsonPath request.body '$.userId'}}",<br/>
@@ -1970,16 +1872,16 @@ class: pt-2 pb-1 px-8
     &nbsp;&nbsp;"createdAt": "{{now timezone='Asia/Bangkok' format='yyyy-MM-dd HH:mm:ss'}}"<br/>
     }
   </div>
-  <p class="text-emerald-300/80 text-[11px] leading-tight mt-auto">
+  <p class="text-emerald-300/80 text-[10px] leading-tight mt-auto">
     Full Handlebars expressions evaluate dynamically when served from <code>__files/</code>.
   </p>
 </div>
 
 </div>
 
-<div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 leading-snug"><strong>Best Practice for Large Payloads</strong>: Keeps mapping JSONs lightweight and readable while allowing complex 100+ line JSON/XML template files to live under <code>__files/</code>.</span>
+<div v-pre class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-1.5 flex items-center gap-2 shadow-lg">
+  <span class="text-sm">💡</span>
+  <span class="text-slate-200 leading-snug text-xs"><strong>Best Practice for Large Payloads</strong>: Keeps mapping JSONs lightweight and readable while allowing complex 100+ line JSON/XML template files to live under <code>__files/</code>.</span>
 </div>
 
 ---
@@ -2932,85 +2834,7 @@ class: pt-2 pb-1 px-8
   </div>
 </div>
 
----
 
-# 🔀 Burp Suite — Proxy Intercept Capabilities
-
-<h3 class="text-slate-300 text-sm mb-1">Dual-Direction Traffic Control: Requests and Responses</h3>
-
-<div class="multi-col-grid-2">
-
-<div class="col-card">
-  <h3 class="text-amber-400">📤 Request Interception (Client ➔ Server)</h3>
-  <p class="mb-2">
-    Pause outbound HTTP requests mid-flight to inspect payloads, inject custom <code>Mock-Scenario</code> headers, or tamper with parameters before reaching the gateway.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-amber-500/30">
-    💉 <em>Scenario</em>: Force specific error conditions without code modifications.
-  </div>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">📥 Response Interception (Server ➔ Client)</h3>
-  <p class="mb-2">
-    Pause inbound HTTP responses to alter status codes (<code>200 ➔ 500/403</code>) and mutate JSON payloads to test frontend error handling and UI fallback resilience.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    🛡️ <em>Resilience</em>: Verify UI gracefully handles partial outages and error banners.
-  </div>
-</div>
-
-</div>
-
----
-
-# 🔀 Proxy Intercept — Example
-
-### Before & After Request Header Injection
-
-<div class="multi-col-grid-2 gap-3 mb-1.5">
-
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-slate-700/40">
-  <h3 class="text-slate-300 text-sm mb-0.5">📤 1. Before (Original Request from App)</h3>
-  <div class="bg-slate-950/90 rounded p-2 border border-slate-700/50 font-mono text-xs text-slate-300">
-    <span class="text-cyan-400">POST</span> /api/v1/users HTTP/1.1<br/>
-    Host: localhost:8080<br/>
-    Content-Type: application/json<br/>
-    <br/>
-    {<br/>
-    &nbsp;&nbsp;"username": "testuser",<br/>
-    &nbsp;&nbsp;"password": "secret"<br/>
-    }
-  </div>
-  <p class="text-slate-400 text-[11px] leading-tight mt-auto">
-    Standard request dispatched by frontend or test runner without special headers.
-  </p>
-</div>
-
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-amber-500/40">
-  <h3 class="text-amber-400 text-sm mb-0.5">💉 2. After (Burp MITM Injected)</h3>
-  <div class="bg-slate-950/90 rounded p-2 border border-amber-500/40 font-mono text-xs text-slate-300">
-    <span class="text-cyan-400">POST</span> /api/v1/users HTTP/1.1<br/>
-    Host: localhost:8080<br/>
-    Content-Type: application/json<br/>
-    <strong class="text-amber-300 bg-amber-950/60 px-1 rounded">Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS</strong><br/>
-    <br/>
-    {<br/>
-    &nbsp;&nbsp;"username": "testuser",<br/>
-    &nbsp;&nbsp;"password": "secret"<br/>
-    }
-  </div>
-  <p class="text-amber-300/80 text-[11px] leading-tight mt-auto">
-    Burp intercepts packet in-flight and injects multiple scenarios to steer all downstream mocks at once.
-  </p>
-</div>
-
-</div>
-
-<div class="slide-card text-xs bg-slate-900/70 border-amber-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 leading-snug"><strong>Multi-Scenario MITM</strong>: Dynamically steers multiple downstream WireMock stubs simultaneously (e.g. OAuth + OTP + Core Banking) without modifying application source code.</span>
-</div>
 
 ---
 
@@ -3152,6 +2976,72 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED
 Presenter Notes:
 - Walk participants through setting up Burp proxy and executing the curl command with -x.
 - Show how the downstream response changes dynamically based on the injected Mock-Scenario header.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🏆 Capstone: In-Flight Fraud Tampering
+
+### Tamper with transfer payload mid-flight and inject downstream fraud steering headers
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> DIY MITM Tampering Rules
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp Proxy :8080</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Target Transaction:</strong> Intercept outbound <code>POST /api/v1/transfers</code> packet before it reaches the backend gateway.</li>
+      <li>• <strong>Payload Mutation:</strong> Modify JSON body in transit from <code>"amount": 100</code> to <code>"amount": 999999</code>.</li>
+      <li>• <strong>Header Injection:</strong> Inject <code>Mock-Scenario: TRANSFER:FRAUD_ALERT</code> into the HTTP headers.</li>
+      <li>• <strong>Expected Verification:</strong> WireMock detects the tampered state and halts the transfer with <code>HTTP 403 Forbidden</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    🛡️ Simulates malicious mobile client tampering &amp; gateway fraud defenses.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Verification Sequence
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / MITM</span>
+    </div>
+
+```bash
+# 1. Send normal transfer through Burp Proxy
+curl -x http://127.0.0.1:8080 -s -X POST \
+  http://localhost:8081/api/v1/transfers \
+  -H "Content-Type: application/json" \
+  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
+
+# 2. In Burp Intercept: Tamper amount to 999999
+#    and inject: Mock-Scenario: TRANSFER:FRAUD_ALERT
+
+# 3. Forward request -> Assert HTTP 403 Forbidden response
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ No application code changes required!
+  </div>
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Challenge participants to intercept the transfer request in Burp Proxy.
+- Observe how tampering with the amount and injecting the fraud scenario triggers an immediate 403 response.
 -->
 
 ---
@@ -3349,125 +3239,7 @@ layout: section
 
 </div>
 
----
-class: hermetic-grid-slide pt-3 pb-2 px-8
----
 
-# ❌ The Shared Environment Problem in Testing
-
-### Flakiness, Collisions & State Bleed in Shared Test Infrastructure
-
-<div class="grid grid-cols-2 gap-2.5 mt-1 text-sm">
-
-<div class="slide-card p-2.5">
-  <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>💥</span> 1. State Pollution &amp; Deadlocks
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    Test A mutates shared rows; Test B fails due to dirty state, foreign key conflicts, or missing row resets.
-  </p>
-  <div class="mt-1 text-rose-300/90 font-mono text-xs">
-    🚨 Flaky when test suites run concurrently.
-  </div>
-</div>
-
-<div class="slide-card p-2.5">
-  <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>🔌</span> 2. Hardcoded Port Collisions
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    Static bindings to <code>:5432</code> or <code>:8080</code> crash when local tools or parallel CI jobs compete for sockets.
-  </p>
-  <div class="mt-1 text-rose-300/90 font-mono text-xs">
-    🚨 <code>bind: address already in use</code> error.
-  </div>
-</div>
-
-<div class="slide-card p-2.5">
-  <h3 class="text-amber-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>💻</span> 3. "Works on My Machine" Drift
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    Discrepancies between local macOS, Linux CI runners, and staging create false-positives and hidden regressions.
-  </p>
-  <div class="mt-1 text-amber-300/90 font-mono text-xs">
-    🚨 Passes locally, but fails in GitHub Actions.
-  </div>
-</div>
-
-<div class="slide-card p-2.5">
-  <h3 class="text-rose-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>🧟</span> 4. Flaky Teardowns &amp; Zombie Leaks
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    When tests crash unexpectedly, orphan DB connections and background processes linger indefinitely.
-  </p>
-  <div class="mt-1 text-rose-300/90 font-mono text-xs">
-    🚨 Leaks system memory and locks resources.
-  </div>
-</div>
-
-</div>
-
----
-class: hermetic-grid-slide pt-3 pb-2 px-8
----
-
-# ✅ The Hermetic Containerized Solution
-
-### Isolated, Disposable & Predictable Infrastructure On-Demand
-
-<div class="grid grid-cols-2 gap-2.5 mt-1 text-sm">
-
-<div class="slide-card p-2.5">
-  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>🛡️</span> 1. Hermetic Test Isolation
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    Dedicated, pristine PostgreSQL and WireMock container per test suite with zero data bleed.
-  </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
-    ✨ 100% deterministic &amp; safe parallel execution.
-  </div>
-</div>
-
-<div class="slide-card p-2.5">
-  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>🏭</span> 2. 100% Production Parity
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    Runs the exact PostgreSQL 16 Alpine image and migrations used in production.
-  </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
-    ✨ Catches real SQL syntax &amp; schema bugs early.
-  </div>
-</div>
-
-<div class="slide-card p-2.5">
-  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>🚀</span> 3. Zero Host Tooling Required
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    Developers only need Docker installed — no local DBs or Java runtimes required.
-  </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
-    ✨ Instant onboarding with <code>bun test</code>.
-  </div>
-</div>
-
-<div class="slide-card p-2.5">
-  <h3 class="text-emerald-400 font-bold mb-1 text-sm flex items-center gap-1.5">
-    <span>🔄</span> 4. Guaranteed CI / Local Parity
-  </h3>
-  <p class="text-slate-300 leading-relaxed text-xs">
-    Identical TypeScript orchestration executes on local workstations and headless GitHub Actions.
-  </p>
-  <div class="mt-1 text-emerald-300/90 font-mono text-xs">
-    ✨ Green locally = Guaranteed green in CI.
-  </div>
-</div>
-
-</div>
 
 ---
 
@@ -3499,28 +3271,24 @@ class: pt-2 pb-1 px-8
 
 ```typescript
 // 1. Create isolated Docker bridge network for the test session
-export async function startHermeticNetwork() {
-  return await new Network().start();
-}
+export const startHermeticNetwork = () => new Network().start();
 
 // 2. Start PostgreSQL & retrieve dynamic random host port
-export async function startPostgres(network: StartedNetwork) {
-  return await new PostgreSqlContainer("postgres:18-alpine")
+export const startPostgres = (network: StartedNetwork) =>
+  new PostgreSqlContainer("postgres:18-alpine")
     .withNetwork(network)
     .withNetworkAliases("postgres")
     .withDatabase("ultrasmooth")
     .start();
-}
 
 // 3. Inject dynamic connection URLs into application runtime
 process.env.DB_URL = postgres.getConnectionString();
-process.env.WIREMOCK_URL =
-  `http://localhost:${wiremock.getMappedPort(8080)}`;
+process.env.WIREMOCK_URL = `http://localhost:${wiremock.getMappedPort(8080)}`;
 ```
 
 </div>
 
-<div class="slide-card text-xs mt-1.5 p-2 mb-0">
+<div class="slide-card text-xs mt-1 p-1.5 mb-0">
   🔌 <strong>Dynamic Resolution</strong>: Containers communicate internally via network aliases (<code>postgres:5432</code>), while test runners talk via randomized external mapped ports—guaranteeing zero port collisions in CI.
 </div>
 
@@ -3535,25 +3303,16 @@ class: pt-2 pb-1 px-8
 <div class="hermetic-code-wrapper">
 
 ```typescript
-// 1. Copy service DDL migrations into container mount paths
-const DATABASE_SERVICES = [
-  { name: "user-service", hasSeed: true },
-  { name: "bank-account-service", hasSeed: true },
-  { name: "ekyc-service", hasSeed: false },
-  { name: "transfer-service", hasSeed: false },
-] as const;
+// 1. Service migration directories to execute in container
+const SERVICES = ["user-service", "bank-account-service", "ekyc-service", "transfer-service"];
 
 // 2. Execute SQL migrations via container exec
-export async function runMigrations(
-  database: StartedPostgreSqlContainer
-) {
-  for (const { name } of DATABASE_SERVICES) {
-    await database.exec([
-      "sh", "-c",
+export async function runMigrations(db: StartedPostgreSqlContainer) {
+  for (const name of SERVICES) {
+    await db.exec(["sh", "-c",
       `for f in /test-data/migration/${name}/*.sql; do ` +
-      `PGPASSWORD=${database.getPassword()} ` +
-      `psql -v ON_ERROR_STOP=1 -U ${database.getUsername()} ` +
-      `-d ${database.getDatabase()} -f "$f"; done`
+      `PGPASSWORD=${db.getPassword()} psql -v ON_ERROR_STOP=1 ` +
+      `-U ${db.getUsername()} -d ${db.getDatabase()} -f "$f"; done`
     ]);
   }
 }
@@ -3561,18 +3320,18 @@ export async function runMigrations(
 
 </div>
 
-<div class="grid grid-cols-3 gap-2 mt-1.5 text-xs">
-  <div class="slide-card p-2 mb-0 border-indigo-500/30">
-    <strong class="text-indigo-400 font-bold block mb-0.5 text-xs">📁 Real Migration Files</strong>
-    <p class="text-slate-300 leading-tight text-xs">Executes identical SQL files (<code>001-*.sql</code>) used in staging &amp; production environments.</p>
+<div class="grid grid-cols-3 gap-2 mt-1 text-[11px]">
+  <div class="slide-card p-1.5 mb-0 border-indigo-500/30">
+    <strong class="text-indigo-400 font-bold block text-[11px]">📁 Migration DDL</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Executes identical production <code>001-*.sql</code> scripts.</p>
   </div>
-  <div class="slide-card p-2 mb-0 border-emerald-500/30">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">🛡️ Strict Error Handling</strong>
-    <p class="text-slate-300 leading-tight text-xs"><code>ON_ERROR_STOP=1</code> aborts immediately on syntax or constraint errors during test bootstrap.</p>
+  <div class="slide-card p-1.5 mb-0 border-emerald-500/30">
+    <strong class="text-emerald-400 font-bold block text-[11px]">🛡️ Strict Abort</strong>
+    <p class="text-slate-300 leading-tight text-[10px]"><code>ON_ERROR_STOP=1</code> aborts immediately on syntax errors.</p>
   </div>
-  <div class="slide-card p-2 mb-0 border-cyan-500/30">
-    <strong class="text-cyan-400 font-bold block mb-0.5 text-xs">🌱 Isolated Pristine Seeds</strong>
-    <p class="text-slate-300 leading-tight text-xs">Loads deterministic baseline data (demo users, accounts) per suite with zero shared state bleed.</p>
+  <div class="slide-card p-1.5 mb-0 border-cyan-500/30">
+    <strong class="text-cyan-400 font-bold block text-[11px]">🌱 Fresh Seeds</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Loads deterministic baseline data with zero state bleed.</p>
   </div>
 </div>
 
@@ -3589,14 +3348,9 @@ class: pt-2 pb-1 px-8
 ```typescript
 // tests/specs/integration/bff.spec.ts
 test.beforeAll(async () => {
-  // Step 1: Boot isolated containers on dynamic ports
   const network = await startHermeticNetwork();
   const db = await startPostgres(network);
-  const wm = await startWiremock(
-    network, "wiremock", [wiremockMapping("paotang")]
-  );
-
-  // Step 2 & 3: Run exact production DDL migrations & seeds
+  const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
   await runMigrations(db);
   await runSeedData(db);
 });
@@ -3608,18 +3362,18 @@ test.afterAll(async () => {
 
 </div>
 
-<div class="grid grid-cols-3 gap-2 mt-1.5 text-xs">
-  <div class="slide-card p-2 mb-0">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">1. Ephemeral Containers</strong>
-    <p class="text-slate-300 leading-tight text-xs">Spins up fresh isolated PostgreSQL &amp; WireMock instances on dynamic ports.</p>
+<div class="grid grid-cols-3 gap-2 mt-1 text-[11px]">
+  <div class="slide-card p-1.5 mb-0">
+    <strong class="text-emerald-400 font-bold block text-[11px]">1. Ephemeral Containers</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Fresh DB &amp; WireMock on dynamic ports.</p>
   </div>
-  <div class="slide-card p-2 mb-0">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">2. Schema Migrations</strong>
-    <p class="text-slate-300 leading-tight text-xs">Executes DDL migration scripts (<code>*.sql</code>) to build exact production schema.</p>
+  <div class="slide-card p-1.5 mb-0">
+    <strong class="text-emerald-400 font-bold block text-[11px]">2. Schema Migrations</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Executes production DDL migration scripts.</p>
   </div>
-  <div class="slide-card p-2 mb-0">
-    <strong class="text-emerald-400 font-bold block mb-0.5 text-xs">3. Guaranteed Teardown</strong>
-    <p class="text-slate-300 leading-tight text-xs">Auto-Ryuk teardown cleans up all containers and network bridges upon exit.</p>
+  <div class="slide-card p-1.5 mb-0">
+    <strong class="text-emerald-400 font-bold block text-[11px]">3. Guaranteed Teardown</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">Auto-Ryuk cleans up containers upon exit.</p>
   </div>
 </div>
 
@@ -3804,6 +3558,8 @@ test("Multi-service auth flow", async ({ page }) => {
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # 🎭 Playwright — Hybrid Mobile WebView & JSBridge
 
@@ -3814,28 +3570,23 @@ test("Biometric check via native JSBridge", async ({ page }) => {
   // Inject mock JSBridge into window before page scripts run
   await page.addInitScript(() => {
     (window as any).JSBridge = {
-      verifyBiometrics: async () => ({
-        success: true,
-        token: "bio_token_9988"
-      }),
-      getDeviceInfo: () => ({
-        platform: "iOS",
-        model: "iPhone15,2"
-      })
+      verifyBiometrics: async () => ({ success: true, token: "bio_token_9988" }),
+      getDeviceInfo: () => ({ platform: "iOS", model: "iPhone15,2" })
     };
   });
 
   await page.goto(`${websiteUrl}/webview/biometrics`);
   await page.getByTestId("btn-scan-face").click();
-  await expect(page.getByTestId("auth-status"))
-    .toHaveText("Verified via FaceID");
+  await expect(page.getByTestId("auth-status")).toHaveText("Verified via FaceID");
 });
 ```
 
-<div class="slide-card text-sm mt-2">
+<div class="slide-card text-xs mt-1.5 p-1.5">
   📱 <strong>Zero Mock Servers Needed</strong>: Playwright injects the native device bridge (<code>window.JSBridge</code>) directly into browser contexts before scripts execute via <code>page.addInitScript()</code>, eliminating separate mock servers.
 </div>
 
+---
+class: pt-2 pb-1 px-8
 ---
 
 # 🎭 Playwright — Full-Stack Browser E2E Flow
@@ -3843,35 +3594,27 @@ test("Biometric check via native JSBridge", async ({ page }) => {
 ### Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`)
 
 ```typescript
-test("Paotang login verifies OTP & redirects",
-  async ({ page }) => {
+test("Paotang login verifies OTP & redirects", async ({ page }) => {
   const setScenario = mockScenario(page);
 
   // Set multiple mock scenarios at once (OAuth + OTP):
-  setScenario(
-    MOCK_SCENARIO.PAOTANG.SUCCESS,
-    MOCK_SCENARIO.OTP.SUCCESS
-  );
+  setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS, MOCK_SCENARIO.OTP.SUCCESS);
 
   await page.goto(`${websiteUrl}/login`);
-
-  // Step 1: Paotang OAuth with Mock Scenario
   await page.getByTestId("btn-paotang-login").click();
-  await expect(page.getByTestId("result-paotang"))
-    .toContainText("successfully");
+  await expect(page.getByTestId("result-paotang")).toContainText("successfully");
 
-  // Step 2: Verify OTP with WireMock Stub
   await page.getByTestId("btn-verify-otp").click();
-
-  // Step 3: Assert redirected to dashboard
   await expect(page).toHaveURL(/\/$/);
 });
 ```
 
-<div class="slide-card text-sm mt-2">
+<div class="slide-card text-xs mt-1.5 p-1.5">
   🎯 Combines DOM click actions, dynamic network header steering, and auto-waiting URL assertions in a single deterministic test.
 </div>
 
+---
+class: pt-2 pb-1 px-8
 ---
 
 # 🎭 Playwright — Direct API Integration Testing
@@ -3879,15 +3622,10 @@ test("Paotang login verifies OTP & redirects",
 ### Headless REST Verification & Scenario Resets (`bff.spec.ts`)
 
 ```typescript
-test("fund transfer returns 201 and persists",
-  async ({ request }) => {
+test("fund transfer returns 201 and persists", async ({ request }) => {
   const res = await request.post(`${bffUrl}/api/v1/transfers`, {
     headers: { "Mock-Scenario": "TRANSFER:SUCCESS" },
-    data: {
-      amount: 500,
-      from_account: "ACC-001",
-      to_account: "ACC-002"
-    }
+    data: { amount: 500, from_account: "ACC-001", to_account: "ACC-002" }
   });
 
   expect(res.status()).toBe(201);
@@ -3901,7 +3639,7 @@ test.afterEach(async ({ request }) => {
 });
 ```
 
-<div class="slide-card text-sm mt-2">
+<div class="slide-card text-xs mt-1.5 p-1.5">
   🎭 Built-in <code>request</code> fixture executes backend REST tests against live containerized services with zero browser overhead.
 </div>
 
@@ -4255,10 +3993,23 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
 
 # ⚡ k6 Load Scripting — Microservices Example
 
 ### Simulating High-Throughput BFF & Core Service Traffic with WireMock Backing
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
+        <span>⚙️</span> Stages &amp; SLA Thresholds
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Options</span>
+    </div>
 
 ```javascript
 import http from 'k6/http';
@@ -4266,46 +4017,61 @@ import { check, sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '10s', target: 20 }, // Ramp up to 20 VUs
-    { duration: '30s', target: 50 }, // Sustained load at 50 VUs
-    { duration: '10s', target: 0 },  // Graceful ramp down
+    { duration: '10s', target: 20 }, // Ramp up
+    { duration: '30s', target: 50 }, // Sustained
+    { duration: '10s', target: 0 },  // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<250'], // 95% of requests < 250ms
-    http_req_failed: ['rate<0.01'],    // Error rate < 1%
+    http_req_duration: ['p(95)<250'], // 95% < 250ms
+    http_req_failed: ['rate<0.01'],    // < 1% errors
   },
 };
+```
 
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    🎯 Defines SLA quality gates directly in test script code.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-cyan-400 font-bold text-xs flex items-center gap-1.5">
+        <span>🚀</span> VU Execution &amp; Assertions
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Runner</span>
+    </div>
+
+```javascript
 export default function () {
   const payload = JSON.stringify({
     from_account: 'ACC-10000001',
     to_account: 'ACC-10000002',
     amount: 500,
   });
-
   const params = {
     headers: {
       'Content-Type': 'application/json',
-      'Mock-Scenario': 'TRANSFER:SUCCESS', // Steer mocks
+      'Mock-Scenario': 'TRANSFER:SUCCESS',
     },
   };
-
   const res = http.post(
     'http://localhost:8080/api/v1/transfers',
     payload,
     params
   );
-  check(res, {
-    'status is 201': (r) => r.status === 201,
-    'has transaction id': (r) => r.json('id') !== undefined,
-  });
-
+  check(res, { 'status is 201': (r) => r.status === 201 });
   sleep(0.1);
 }
 ```
 
-<div class="slide-card text-sm mt-2">
-  ⚡ Executes concurrent user scenarios against containerized endpoints with millisecond-level precision metrics and automated assertion checks.
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
+    ⚡ Injects mock steering headers per virtual user.
+  </div>
+</div>
+
 </div>
 
 ---

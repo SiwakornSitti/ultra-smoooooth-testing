@@ -256,7 +256,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ### 🪝 WireMock Practice Labs (`http://localhost:8088`)
 
 #### 📍 Practice Lab 1: Web UI & Precision Matching Challenge
-- **Slide Reference**: [`slides.md#L1253`](slides/slides.md#L1253) (Slide 32)
+- **Slide Reference**: [`slides.md#L1247`](slides/slides.md#L1247) (Slide 28)
 - **Goal**: Explore the live Web UI dashboard and verify JSONPath request matching.
 - **1. Open Web UI**: Navigate to [http://localhost:8088/__admin/webapp](http://localhost:8088/__admin/webapp) (Login: `admin` / `password`).
 - **2. Send High-Value Payment Request**:
@@ -277,7 +277,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab 2: Scenario Steering & Token Replay Challenge
-- **Slide Reference**: [`slides.md#L2185`](slides/slides.md#L2185) (Slide 55)
+- **Slide Reference**: [`slides.md#L2087`](slides/slides.md#L2087) (Slide 44)
 - **Goal**: Experience state transitions in WireMock Finite State Machines (FSM).
 - **1. First Call (Consumes Authorization Code)**:
   ```bash
@@ -308,7 +308,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab 3: Flapping Failure & Client Self-Healing
-- **Slide Reference**: [`slides.md#L2294`](slides/slides.md#L2294) (Slide 57)
+- **Slide Reference**: [`slides.md#L2196`](slides/slides.md#L2196) (Slide 46)
 - **Goal**: Validate client exponential backoff and circuit breaker recovery against transient upstream outages.
 - **Run Consecutive Calls**:
   ```bash
@@ -323,7 +323,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab 4: Dynamic Templating & Chaos Latency
-- **Slide Reference**: [`slides.md#L1737`](slides/slides.md#L1737) (Slide 43)
+- **Slide Reference**: [`slides.md#L1717`](slides/slides.md#L1717) (Slide 36)
 - **Goal**: Test Handlebars dynamic math calculations and assert client timeout cancellation.
 - **1. Math & VAT Calculation**:
   ```bash
@@ -344,7 +344,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ### 🛡️ Burp Suite Practice Labs (`http://127.0.0.1:8080`)
 
 #### 📍 Practice Lab 5: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L3093`](slides/slides.md#L3093) (Slide 73)
+- **Slide Reference**: [`slides.md#L2917`](slides/slides.md#L2917) (Slide 60)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -359,7 +359,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab 6: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L3159`](slides/slides.md#L3159) (Slide 74)
+- **Slide Reference**: [`slides.md#L3049`](slides/slides.md#L3049) (Slide 62)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -378,7 +378,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 Ready to test your skills without step-by-step hand-holding? Take on these production-grade self-service challenges.
 
 #### 🪝 DIY Challenge A: WireMock Biometric Face Scan Stub (Stateless)
-- **Slide Reference**: [`slides.md#L2782`](slides/slides.md#L2782) (Slides 64 & 65)
+- **Slide Reference**: [`slides.md#L2684`](slides/slides.md#L2684) (Slides 53 & 54)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
@@ -413,7 +413,7 @@ Ready to test your skills without step-by-step hand-holding? Take on these produ
 ---
 
 #### 🔄 DIY Challenge B: WireMock Stateful Order Fulfillment Machine (Stateful)
-- **Slide Reference**: [`slides.md#L2718`](slides/slides.md#L2718) (Slide 63)
+- **Slide Reference**: [`slides.md#L2620`](slides/slides.md#L2620) (Slide 52)
 - **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
 - **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
 - **Requirements**:
@@ -439,7 +439,7 @@ Ready to test your skills without step-by-step hand-holding? Take on these produ
 ---
 
 #### 🛡️ DIY Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L2967`](slides/slides.md#L2967) (Slide 69)
+- **Slide Reference**: [`slides.md#L2985`](slides/slides.md#L2985) (Slide 61)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
   1. In Burp Suite, turn **Intercept is on** on `127.0.0.1:8080`.
