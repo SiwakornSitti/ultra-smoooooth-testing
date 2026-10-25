@@ -279,51 +279,107 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:SUCCESS
 
 ### Isolated Ephemeral Containers, Dynamic Ports & Automatic Teardown
 
-<div class="multi-col-grid-2">
+<div class="grid grid-cols-3 gap-3.5 mt-4">
 
-<div class="col-card space-y-3">
-  <h3 class="text-cyan-400">🐳 Hermetic Lifecycle Role</h3>
-  <div class="text-sm text-slate-200 space-y-2.5 leading-snug">
-    <div>
-      <strong class="text-cyan-300 block text-base font-bold mb-0.5">1. Ephemeral On-Demand Instances</strong>
-      Spins up clean PostgreSQL 16 and WireMock instances directly inside test suite hooks.
+<div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm">🐳 Ephemeral Instances</span>
+      <span class="text-xs font-mono text-cyan-400 bg-cyan-950 px-1.5 py-0.5 rounded">Hook-Driven</span>
     </div>
-    <div>
-      <strong class="text-cyan-300 block text-base font-bold mb-0.5">2. Dynamic Randomized Ports</strong>
-      Assigns randomized host ports to eliminate port collisions across developer workstations &amp; CI.
-    </div>
-    <div>
-      <strong class="text-cyan-300 block text-base font-bold mb-0.5">3. Guaranteed Ryuk Teardown</strong>
-      Automatic Moby Ryuk container removes all network bridges and volumes—zero orphan leaks.
-    </div>
+    <p class="text-sm text-slate-200 leading-relaxed">
+      Spins up sterile PostgreSQL 16 and WireMock instances directly inside test suite hooks—destroying and recreating state on demand.
+    </p>
+  </div>
+  <div class="mt-3 pt-2 border-t border-cyan-500/20 text-xs font-mono text-cyan-300">
+    ✨ Zero dirty database state
   </div>
 </div>
 
-<div class="col-card">
-  <h3 class="text-cyan-400">💻 Code-Driven Container Bootstrap</h3>
+<div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm">🔌 Dynamic Host Ports</span>
+      <span class="text-xs font-mono text-cyan-400 bg-cyan-950 px-1.5 py-0.5 rounded">Zero Collision</span>
+    </div>
+    <p class="text-sm text-slate-200 leading-relaxed">
+      Docker binds random available host ports (e.g. <code>:5432 ➔ :32768</code>), completely eliminating port collision in parallel CI and dev environments.
+    </p>
+  </div>
+  <div class="mt-3 pt-2 border-t border-cyan-500/20 text-xs font-mono text-cyan-300">
+    ✨ Parallel execution safe
+  </div>
+</div>
+
+<div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm">🧹 Guaranteed Ryuk Teardown</span>
+      <span class="text-xs font-mono text-cyan-400 bg-cyan-950 px-1.5 py-0.5 rounded">Auto Reap</span>
+    </div>
+    <p class="text-sm text-slate-200 leading-relaxed">
+      Moby Ryuk sidecar automatically monitors test process lifecycle and purges containers, networks, and volumes even on unexpected aborts.
+    </p>
+  </div>
+  <div class="mt-3 pt-2 border-t border-cyan-500/20 text-xs font-mono text-cyan-300">
+    ✨ Zero orphan containers
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card p-3 mt-4 border border-cyan-500/30 bg-cyan-950/20 rounded-lg flex items-center justify-between">
+  <span class="text-sm text-slate-200 font-medium">
+    💡 <strong>Hermetic Guarantee:</strong> Every test suite executes against isolated, disposable Docker containers with zero state leakage.
+  </span>
+  <span class="text-xs font-mono text-cyan-300 bg-cyan-900/50 px-2 py-1 rounded">
+    Next: Code Bootstrap ➔
+  </span>
+</div>
+
+---
+
+# 💻 Pillar 3: Container Bootstrap in Code
+
+### Dynamic Port Mapping & Ephemeral Bootstrap in TypeScript
+
+<div class="slide-card p-4 border border-slate-700/60 bg-slate-900/60 mt-2">
+  <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-700/60">
+    <span class="text-slate-200 font-bold text-sm flex items-center gap-2">
+      <span>💻</span> <code>tests/specs/support/containers.ts</code>
+    </span>
+    <span class="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2.5 py-0.5 rounded border border-cyan-500/30">
+      Testcontainers Node.js SDK
+    </span>
+  </div>
 
 ```typescript
-// tests/specs/support/containers.ts
-const postgres = await new PostgreSqlContainer(
-  "postgres:16-alpine"
-).withDatabase("ultrasmooth").start();
+// 1. Spin up clean PostgreSQL 16 container with fresh database schema
+const postgres = await new PostgreSqlContainer("postgres:16-alpine")
+  .withDatabase("ultrasmooth")
+  .start();
 
-const wiremock = await new GenericContainer(
-  "wiremock/wiremock:3.3.1"
-).withExposedPorts(8080).start();
+// 2. Spin up WireMock container with exposed mock HTTP port
+const wiremock = await new GenericContainer("wiremock/wiremock:3.3.1")
+  .withExposedPorts(8080)
+  .start();
 
-// Map dynamic host ports to service env
-process.env.DB_PORT =
-  postgres.getMappedPort(5432).toString();
-process.env.WIREMOCK_PORT =
-  wiremock.getMappedPort(8080).toString();
+// 3. Inject randomized host ports into application runtime environment
+process.env.DB_PORT = postgres.getMappedPort(5432).toString();
+process.env.WIREMOCK_PORT = wiremock.getMappedPort(8080).toString();
 ```
 
-  <div class="text-sm text-slate-200 mt-2 font-medium">
-    💡 Zero port collisions: dynamic host ports mapped into process env.
-  </div>
 </div>
 
+<div class="grid grid-cols-2 gap-3.5 mt-3">
+  <div class="slide-card p-3 text-xs border border-emerald-500/30 bg-emerald-950/20 rounded">
+    <strong class="text-emerald-300 block mb-1 text-sm font-semibold">🔌 Dynamic Host Port Mapping</strong>
+    <span class="text-slate-300 leading-relaxed"><code>postgres.getMappedPort(5432)</code> resolves the container port to a random open host port (e.g. <code>:32768</code>), preventing local port conflicts.</span>
+  </div>
+  <div class="slide-card p-3 text-xs border border-cyan-500/30 bg-cyan-950/20 rounded">
+    <strong class="text-cyan-300 block mb-1 text-sm font-semibold">🧹 Automatic Teardown Hook</strong>
+    <span class="text-slate-300 leading-relaxed">Ryuk sidecar automatically reaps all containers on process termination, or explicitly invoke <code>await postgres.stop()</code> in <code>afterAll</code>.</span>
+  </div>
 </div>
 
 ---
@@ -357,14 +413,18 @@ process.env.WIREMOCK_PORT =
 
 ```typescript
 // tests/specs/e2e/website.spec.ts
-test("Paotang login verifies OTP & redirects", async ({ page, request }) => {
-  mockScenario(page)("PAOTANG:SUCCESS", "OTP:SUCCESS");
+test("Paotang login flow", async ({
+  page, request
+}) => {
+  mockScenario(page)(
+    "PAOTANG:SUCCESS", "OTP:SUCCESS"
+  );
 
   await page.goto(`${websiteUrl}/login`);
-  await page.getByTestId("btn-paotang-login").click();
+  await page.getByTestId("btn-paotang").click();
   await expect(page).toHaveURL(/\/dashboard$/);
 
-  const res = await request.get(`${bffUrl}/api/v1/users/me`);
+  const res = await request.get(`${bffUrl}/me`);
   expect(res.status()).toBe(200);
 });
 ```
