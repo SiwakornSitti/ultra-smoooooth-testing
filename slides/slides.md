@@ -101,7 +101,7 @@ class: agenda-slide pt-4 pb-2 px-8
 
 <div class="agenda-card">
   <h3>🛡️ Part 3 — Burp Suite MITM</h3>
-  <p>HTTP intercept, header tampering, Intruder fuzzing, and traffic auditing.</p>
+  <p>HTTP intercept, header tampering, Match &amp; Replace rules, and traffic auditing.</p>
 </div>
 
 <div class="agenda-card">
@@ -1244,7 +1244,7 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
-# 🧪 Practice Lab 1: Web UI & Precision Matching
+# 🧪 Practice Lab: Web UI & Precision Matching
 
 ### Verify threshold routing and inspect unmatched diffs in WireMock Web UI
 
@@ -1714,7 +1714,7 @@ class: pt-2 pb-2 px-8
 class: pt-2 pb-2 px-8
 ---
 
-# 🧪 Practice Lab 4: Dynamic Templating & Chaos Latency
+# 🧪 Practice Lab: Dynamic Templating & Chaos Latency
 
 ### Validate Dynamic Math Calculations & Chaos Latency Timeout Handling
 
@@ -3048,7 +3048,7 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
-# 🧪 Practice Lab 5: Live MITM Packet Interception
+# 🧪 Practice Lab: Live MITM Packet Interception
 
 ### Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses
 

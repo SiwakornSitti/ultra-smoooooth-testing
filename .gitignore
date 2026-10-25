@@ -169,4 +169,8 @@ skills-lock.json
 # Graphify generated graph, report, and extraction cache
 graphify-out/
 
+# Workshop Attendee DIY Mappings
+wiremock/mappings/diy-*.json
+
+
 

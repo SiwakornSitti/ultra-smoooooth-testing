@@ -41,7 +41,7 @@ Quick navigation reference for presentations in `slides/`.
 | **25** | [⚙️ WireMock — Body Match Operators & Lenient Flags](slides/slides.md#L1043) | Strict Matchers vs. Resilient Microservice Contracts |
 | **26** | [🔍 WireMock — JSONPath Expression Capabilities](slides/slides.md#L1107) | Advanced Payload Filtering with Jayway JsonPath |
 | **27** | [🔍 JSONPath Expression — High-Value Payment Filter](slides/slides.md#L1172) | Declarative threshold routing in WireMock request body patterns |
-| **28** | [🧪 Practice Lab 1: Web UI & Precision Matching](slides/slides.md#L1247) | Verify threshold routing and inspect unmatched diffs in WireMock Web UI |
+| **28** | [🧪 Practice Lab: Web UI & Precision Matching](slides/slides.md#L1247) | Verify threshold routing and inspect unmatched diffs in WireMock Web UI |
 | **29** | [🎯 WireMock RegEx — Path & Dynamic Resource Routing](slides/slides.md#L1315) | Multi-Segment Hierarchy Matching with `urlPathPattern` |
 | **30** | [🎯 WireMock RegEx — Header & Scenario Steering](slides/slides.md#L1381) | Strict Bearer Token & Scenario Enum Validation |
 | **31** | [🎯 WireMock RegEx — Body & Parameter Matching](slides/slides.md#L1447) | 13-Digit National ID & Query Version Validation |
@@ -49,7 +49,7 @@ Quick navigation reference for presentations in `slides/`.
 | **33** | [🔍 JSONPath RegEx Deep Dive — Expression Breakdown](slides/slides.md#L1541) | Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"` |
 | **34** | [📥 WireMock — Request Data Extraction & Echoing](slides/slides.md#L1582) | Path Segments, Query Parameters, Headers & JSONPath Payloads |
 | **35** | [🪄 Handlebars Logic, Math & Dynamic Data](slides/slides.md#L1650) | Conditionals, Arithmetic Calculations & Ephemeral Token Generators |
-| **36** | [🧪 Practice Lab 4: Dynamic Templating & Chaos Latency](slides/slides.md#L1717) | Validate Dynamic Math Calculations & Chaos Latency Timeout Handling |
+| **36** | [🧪 Practice Lab: Dynamic Templating & Chaos Latency](slides/slides.md#L1717) | Validate Dynamic Math Calculations & Chaos Latency Timeout Handling |
 | **37** | [🔁 WireMock — Array Iteration & String Modifiers](slides/slides.md#L1779) | Loop Collections with each, Indexing, String Modifiers & Safe Defaults |
 | **38** | [📁 File-Based Response Templates (`bodyFileName`)](slides/slides.md#L1842) | Decoupling Large Dynamic JSON/XML Payloads from Mapping Stubs |
 | **39** | [⏱️ WireMock — Fixed Latency & Timeout Testing](slides/slides.md#L1889) | Deterministic Delay Injection (`fixedDelayMilliseconds`) |
@@ -75,7 +75,7 @@ Quick navigation reference for presentations in `slides/`.
 | **59** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L2975) | Real-Time Traffic Auditing & Inspection |
 | **60** | [🔀 Deep Dive: Bi-Directional Duplex Interception](slides/slides.md#L3007) | Visualizing Request and Response Flow Through the MITM Engine |
 | **61** | [⚡ Live Intercept in Action](slides/slides.md#L3026) | Pausing, Inspecting, Modifying & Forwarding Packets Mid-Flight |
-| **62** | [🧪 Practice Lab 5: Live MITM Packet Interception](slides/slides.md#L3051) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
+| **62** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L3051) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
 | **63** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L3119) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
 | **64** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L3185) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
 | **65** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L3249) | Zero-Click Automated Header & Payload Manipulation |

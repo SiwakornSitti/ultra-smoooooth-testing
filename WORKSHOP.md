@@ -255,7 +255,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ### 🪝 WireMock Practice Labs (`http://localhost:8088`)
 
-#### 📍 Practice Lab 1: Web UI & Precision Matching Challenge
+#### 📍 Practice Lab: Web UI & Precision Matching Challenge
 - **Slide Reference**: [`slides.md#L1247`](slides/slides.md#L1247) (Slide 28)
 - **Goal**: Explore the live Web UI dashboard and verify JSONPath request matching.
 - **1. Open Web UI**: Navigate to [http://localhost:8088/__admin/webapp](http://localhost:8088/__admin/webapp) (Login: `admin` / `password`).
@@ -276,7 +276,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ---
 
-#### 📍 Practice Lab 2: Scenario Steering & Token Replay Challenge
+#### 📍 Practice Lab: Scenario Steering & Token Replay Challenge
 - **Slide Reference**: [`slides.md#L2087`](slides/slides.md#L2087) (Slide 44)
 - **Goal**: Experience state transitions in WireMock Finite State Machines (FSM).
 - **1. First Call (Consumes Authorization Code)**:
@@ -307,7 +307,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ---
 
-#### 📍 Practice Lab 3: Flapping Failure & Client Self-Healing
+#### 📍 Practice Lab: Flapping Failure & Client Self-Healing
 - **Slide Reference**: [`slides.md#L2196`](slides/slides.md#L2196) (Slide 46)
 - **Goal**: Validate client exponential backoff and circuit breaker recovery against transient upstream outages.
 - **Run Consecutive Calls**:
@@ -322,7 +322,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ---
 
-#### 📍 Practice Lab 4: Dynamic Templating & Chaos Latency
+#### 📍 Practice Lab: Dynamic Templating & Chaos Latency
 - **Slide Reference**: [`slides.md#L1717`](slides/slides.md#L1717) (Slide 36)
 - **Goal**: Test Handlebars dynamic math calculations and assert client timeout cancellation.
 - **1. Math & VAT Calculation**:
@@ -343,7 +343,9 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ### 🛡️ Burp Suite Practice Labs (`http://127.0.0.1:8080`)
 
-#### 📍 Practice Lab 5: Live MITM Packet Interception
+> **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
+
+#### 📍 Practice Lab: Live MITM Packet Interception
 - **Slide Reference**: [`slides.md#L3051`](slides/slides.md#L3051) (Slide 62)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
@@ -358,7 +360,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ---
 
-#### 📍 Practice Lab 6: Automated Match & Replace Rules
+#### 📍 Practice Lab: Automated Match & Replace Rules
 - **Slide Reference**: [`slides.md#L3249`](slides/slides.md#L3249) (Slide 65)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
@@ -377,7 +379,33 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 Ready to test your skills with production scenarios? After watching the live instructor walkthrough, take on these hands-on workshop challenges.
 
-#### 🪝 Workshop Challenge A: WireMock Biometric Face Scan Stub (Stateless)
+#### 🔄 Workshop Challenge A: WireMock Stateful Order Fulfillment Machine (Stateful)
+- **Slide Reference**: [`slides.md#L2620`](slides/slides.md#L2620) (Slides 52 & 53)
+- **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
+- **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
+- **Requirements**:
+  1. Define scenario `order-lifecycle`.
+  2. Step 1 (`Started`): `POST /lab/api/orders/101/pay` transitions to `PAID` (returns `200 OK {"status": "PAID"}`).
+  3. Step 2 (`PAID`): `POST /lab/api/orders/101/ship` transitions to `SHIPPED` (returns `200 OK {"status": "SHIPPED"}`).
+  4. Step 3 (`SHIPPED`): Repeated `POST /lab/api/orders/101/ship` returns `400 Bad Request {"error": "ALREADY_SHIPPED"}`.
+- **Verification Commands**:
+  ```bash
+  # Reset scenario state before test
+  curl -s -X POST http://localhost:8088/__admin/scenarios/reset
+
+  # 1. Pay order -> PAID
+  curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
+
+  # 2. Ship order -> SHIPPED
+  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
+
+  # 3. Duplicate ship -> 400 ALREADY_SHIPPED
+  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
+  ```
+
+---
+
+#### 🪝 Workshop Challenge B: WireMock Biometric Face Scan Stub (Stateless)
 - **Slide Reference**: [`slides.md#L2820`](slides/slides.md#L2820) (Slides 55 & 56)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
@@ -408,32 +436,6 @@ Ready to test your skills with production scenarios? After watching the live ins
   time curl -s --max-time 1 http://localhost:8088/lab/api/ekyc/biometrics \
     -H "Content-Type: application/json" \
     -d '{"nationalId":"1100500123456","confidence":88.0,"livenessPassed":true}'
-  ```
-
----
-
-#### 🔄 Workshop Challenge B: WireMock Stateful Order Fulfillment Machine (Stateful)
-- **Slide Reference**: [`slides.md#L2620`](slides/slides.md#L2620) (Slides 52 & 53)
-- **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
-- **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
-- **Requirements**:
-  1. Define scenario `order-lifecycle`.
-  2. Step 1 (`Started`): `POST /lab/api/orders/101/pay` transitions to `PAID` (returns `200 OK {"status": "PAID"}`).
-  3. Step 2 (`PAID`): `POST /lab/api/orders/101/ship` transitions to `SHIPPED` (returns `200 OK {"status": "SHIPPED"}`).
-  4. Step 3 (`SHIPPED`): Repeated `POST /lab/api/orders/101/ship` returns `400 Bad Request {"error": "ALREADY_SHIPPED"}`.
-- **Verification Commands**:
-  ```bash
-  # Reset scenario state before test
-  curl -s -X POST http://localhost:8088/__admin/scenarios/reset
-
-  # 1. Pay order -> PAID
-  curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
-
-  # 2. Ship order -> SHIPPED
-  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
-
-  # 3. Duplicate ship -> 400 ALREADY_SHIPPED
-  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
   ```
 
 ---
