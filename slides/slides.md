@@ -2617,7 +2617,74 @@ class: pt-2 pb-2 px-8
 class: pt-2 pb-2 px-8
 ---
 
-# 🏆 Capstone: Stateful Order Fulfillment Machine
+# 🎬 Demo: Stateful Order Lifecycle Transitions
+
+### Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Walkthrough Steps
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">FSM Lifecycle</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. Reset State:</strong> Reset all active scenarios to <code>Started</code> via <code>POST /__admin/scenarios/reset</code>.</li>
+      <li>• <strong>2. Trigger Advance:</strong> Execute payment transition <code>POST /lab/api/orders/101/pay</code> to move state to <code>PAID</code>.</li>
+      <li>• <strong>3. Introspect FSM:</strong> Query <code>GET /__admin/scenarios</code> to observe the real-time state shift.</li>
+      <li>• <strong>4. Terminal Enforcement:</strong> Attempt illegal duplicate shipment to verify WireMock returns <code>400 Bad Request</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
+    💡 Eliminates brittle sleep timers with deterministic state assertions.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🖥️</span> Live Terminal Commands
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / FSM</span>
+    </div>
+
+```bash
+# 1. Inspect initial state (Starts in 'Started')
+curl -s http://localhost:8088/__admin/scenarios \
+  | jq '.scenarios[] | {name, state}'
+
+# 2. Advance state: Started ➔ PAID
+curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
+
+# 3. Verify scenario state advanced to PAID
+curl -s http://localhost:8088/__admin/scenarios \
+  | jq '.scenarios[] | {name, state}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🔄 Live FSM verification without database queries
+  </div>
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Reset the WireMock scenarios live using curl -s -X POST http://localhost:8088/__admin/scenarios/reset.
+- Execute step 1 and step 2 to demonstrate how WireMock holds state across independent HTTP requests.
+- Point to the active state change in the terminal output before handing over to the attendee workshop.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🏆 Workshop: Stateful Order Fulfillment Machine
 
 ### Author a multi-state WireMock scenario modeling sequential order domain transitions
 
@@ -2627,7 +2694,7 @@ class: pt-2 pb-2 px-8
   <div>
     <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
       <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🎯</span> DIY State Machine Rules
+        <span>🎯</span> Workshop Challenge Rules
       </span>
       <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded"><code>order-lifecycle</code></span>
     </div>
@@ -2735,7 +2802,7 @@ class: pt-2 pb-2 px-8
 
 <div class="slide-card py-2 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
   <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>🎯</span> <strong>Your Mission:</strong> Author a production-ready WireMock stub on the next slide with confidence thresholding, dynamic templating, and chaos delay.
+    <span>🎯</span> <strong>Your Mission:</strong> Watch the live instructor demo, then author a production-ready WireMock stub with confidence thresholding, dynamic templating, and chaos delay.
   </span>
 </div>
 
@@ -2750,7 +2817,74 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
-# 🏆 Capstone: Biometric Face Scan Stub
+# 🎬 Demo: Biometric Face Scan Virtualization
+
+### Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-3 border border-fuchsia-500/40 bg-fuchsia-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-fuchsia-500/30">
+      <span class="text-fuchsia-400 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Walkthrough Steps
+      </span>
+      <span class="text-[11px] font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded">Stateless Stubbing</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. Contract Matching:</strong> Match <code>POST /lab/api/ekyc/biometrics</code> with numeric confidence thresholding.</li>
+      <li>• <strong>2. Conditional Branching:</strong> Route confidence &lt; 85.0 to <code>422 Unprocessable</code> and &ge; 85.0 to <code>200 OK</code>.</li>
+      <li>• <strong>3. Dynamic Synthesis:</strong> Synthesize unique UUID <code>scanId</code> and echo request <code>nationalId</code> via Handlebars.</li>
+      <li>• <strong>4. Chaos Latency:</strong> Attach <code>2500ms</code> delay to stress-test client-side timeout cancellation.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-fuchsia-500/30 text-xs font-mono text-fuchsia-300">
+    💡 Zero external vendor downtime or staging rate limits.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🖥️</span> Live Terminal Commands
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Verification</span>
+    </div>
+
+```bash
+# 1. Hot-reload stub mappings into WireMock
+curl -s -X POST http://localhost:8088/__admin/mappings/reset
+
+# 2. Test Low Confidence (< 85.0) ➔ 422 Unprocessable
+curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \
+  -d '{"nationalId":"11005","confidence":72.5}' | head -n 1
+
+# 3. Test High Confidence (>= 85.0) ➔ 200 OK + Dynamic UUID
+curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
+  -d '{"nationalId":"11005","confidence":96.8}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ✨ Fast hot-reload in milliseconds via admin API
+  </div>
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Demonstrate hot-reloading mappings using curl -s -X POST http://localhost:8088/__admin/mappings/reset.
+- Execute low-confidence vs high-confidence requests live to show instant contract validation.
+- Point out how dynamic Handlebars templating produces isolated, non-colliding test fixtures.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🏆 Workshop: Biometric Face Scan Stub
 
 ### Author a self-service biometric verification stub with liveness confidence thresholding
 
@@ -2760,7 +2894,7 @@ class: pt-2 pb-2 px-8
   <div>
     <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-fuchsia-500/30">
       <span class="text-fuchsia-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🎯</span> DIY Requirements
+        <span>🎯</span> Workshop Challenge Rules
       </span>
       <span class="text-[11px] font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded"><code>POST /lab/api/ekyc/biometrics</code></span>
     </div>
@@ -2982,7 +3116,73 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
-# 🏆 Capstone: In-Flight Fraud Tampering
+# 🎬 Demo: In-Flight Traffic Interception & Tampering
+
+### Live instructor walkthrough: Intercepting payloads and steering downstream failure states
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Walkthrough Steps
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp MITM</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. Intercept Traffic:</strong> In Burp Suite Proxy tab, toggle <strong>Intercept is ON</strong> on port <code>:8080</code>.</li>
+      <li>• <strong>2. Dispatch Request:</strong> Issue client cURL with <code>-x http://127.0.0.1:8080</code> to route through proxy.</li>
+      <li>• <strong>3. Mutate In-Flight:</strong> Inspect packet in Burp, edit payload or append steering header in real time.</li>
+      <li>• <strong>4. Forward & Assert:</strong> Click <strong>Forward</strong>; verify downstream service reacts to tampered request.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    💡 Enables negative testing and security tampering without touching backend code.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🖥️</span> Live Terminal Commands
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Proxy</span>
+    </div>
+
+```bash
+# 1. Send outbound transfer through Burp Proxy
+curl -x http://127.0.0.1:8080 -s -X POST \
+  http://localhost:8081/api/v1/transfers \
+  -H "Content-Type: application/json" \
+  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
+
+# 2. In Burp: Intercept pauses the request
+# 3. Tamper amount ➔ 999999, inject header, click Forward
+# 4. Observe downstream response in terminal
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ Client receives downstream response seamlessly
+  </div>
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Ensure Burp Suite Intercept is ON before running the curl command.
+- Show the paused request in Burp Proxy, highlight the headers and JSON payload.
+- Edit the payload live and forward the request to show instant downstream reaction.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🏆 Workshop: In-Flight Fraud Tampering
 
 ### Tamper with transfer payload mid-flight and inject downstream fraud steering headers
 
@@ -2992,7 +3192,7 @@ class: pt-2 pb-2 px-8
   <div>
     <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
       <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🎯</span> DIY MITM Tampering Rules
+        <span>🎯</span> Workshop Challenge Rules
       </span>
       <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp Proxy :8080</span>
     </div>

@@ -344,7 +344,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ### 🛡️ Burp Suite Practice Labs (`http://127.0.0.1:8080`)
 
 #### 📍 Practice Lab 5: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L2917`](slides/slides.md#L2917) (Slide 60)
+- **Slide Reference**: [`slides.md#L3051`](slides/slides.md#L3051) (Slide 62)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -359,7 +359,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab 6: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L3049`](slides/slides.md#L3049) (Slide 62)
+- **Slide Reference**: [`slides.md#L3249`](slides/slides.md#L3249) (Slide 65)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -373,12 +373,12 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 ---
 
-### 🎯 "Handle It Yourself" (DIY Self-Guided Challenges)
+### 🏆 Hands-On Workshop Challenges (Self-Guided Exercises)
 
-Ready to test your skills without step-by-step hand-holding? Take on these production-grade self-service challenges.
+Ready to test your skills with production scenarios? After watching the instructor live demo, take on these hands-on workshop challenges.
 
-#### 🪝 DIY Challenge A: WireMock Biometric Face Scan Stub (Stateless)
-- **Slide Reference**: [`slides.md#L2684`](slides/slides.md#L2684) (Slides 53 & 54)
+#### 🪝 Workshop Challenge A: WireMock Biometric Face Scan Stub (Stateless)
+- **Slide Reference**: [`slides.md#L2820`](slides/slides.md#L2820) (Slides 55 & 56)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
@@ -412,8 +412,8 @@ Ready to test your skills without step-by-step hand-holding? Take on these produ
 
 ---
 
-#### 🔄 DIY Challenge B: WireMock Stateful Order Fulfillment Machine (Stateful)
-- **Slide Reference**: [`slides.md#L2620`](slides/slides.md#L2620) (Slide 52)
+#### 🔄 Workshop Challenge B: WireMock Stateful Order Fulfillment Machine (Stateful)
+- **Slide Reference**: [`slides.md#L2620`](slides/slides.md#L2620) (Slides 52 & 53)
 - **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
 - **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
 - **Requirements**:
@@ -438,8 +438,8 @@ Ready to test your skills without step-by-step hand-holding? Take on these produ
 
 ---
 
-#### 🛡️ DIY Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L2985`](slides/slides.md#L2985) (Slide 61)
+#### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
+- **Slide Reference**: [`slides.md#L3119`](slides/slides.md#L3119) (Slides 63 & 64)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
   1. In Burp Suite, turn **Intercept is on** on `127.0.0.1:8080`.
