@@ -3650,7 +3650,7 @@ Presenter Notes:
 - Bridge to the tools: Now let's explore each tool in the suite starting with the core Proxy Interception engine to capture and tamper with live traffic.
 -->
 ---
-class: pt-2 pb-1 px-8
+class: pt-1.5 pb-1 px-6
 ---
 
 # 🔀 Deep Dive: Bi-Directional Duplex Interception
@@ -3658,18 +3658,18 @@ class: pt-2 pb-1 px-8
 <h3 class="text-slate-300 text-sm mb-1">Visualizing Request and Response Flow Through the MITM Engine</h3>
 
 <div class="flex justify-center items-center w-full mt-0.5">
-  <div class="adorable-arch-container">
+  <div class="adorable-arch-container !max-w-[700px] !h-[390px] !max-h-[395px]">
     <img src="/burp_duplex_intercept.jpg" class="adorable-arch-img" alt="Bi-Directional Duplex Interception" />
   </div>
 </div>
 
-<div class="slide-card text-xs mt-1.5 p-1.5 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
-  <span>🔀 <strong>Duplex Control</strong>: Intercept outbound requests to steer backend stubs; intercept inbound responses to test frontend fallbacks.</span>
-  <span class="text-amber-400 font-mono text-[11px]">Bi-Directional Mutation</span>
+<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
+  <span class="text-[11.5px] text-slate-200">🔀 <strong>Duplex Control:</strong> Intercept outbound requests to steer backend stubs; intercept responses to test client fallbacks.</span>
+  <span class="text-amber-400 font-mono text-[10.5px] bg-amber-950/60 px-2 py-0.5 rounded ml-2 whitespace-nowrap">Bi-Directional Mutation</span>
 </div>
 
 ---
-class: pt-2 pb-1 px-8
+class: pt-1.5 pb-1 px-6
 ---
 
 # ⚡ Live Intercept in Action
@@ -3677,14 +3677,14 @@ class: pt-2 pb-1 px-8
 <h3 class="text-slate-300 text-sm mb-1">Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight</h3>
 
 <div class="flex justify-center items-center w-full mt-0.5">
-  <div class="adorable-arch-container">
+  <div class="adorable-arch-container !max-w-[700px] !h-[390px] !max-h-[395px]">
     <img src="/burp_intercept_action.jpg" class="adorable-arch-img" alt="Live Intercept Action in Burp Suite" />
   </div>
 </div>
 
-<div class="slide-card text-xs mt-1.5 p-1.5 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
-  <span>⏯️ <strong>Action Controls</strong>: <code>Forward</code> sends modified packet; <code>Drop</code> terminates TCP connection; <code>Action</code> hands off to Repeater/Intruder.</span>
-  <span class="text-cyan-400 font-mono text-[11px]">Real-Time Inspection</span>
+<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
+  <span class="text-[11.5px] text-slate-200">⏯️ <strong>Action Controls:</strong> <code>Forward</code> passes packet; <code>Drop</code> kills TCP socket; <code>Action</code> sends to Repeater/Intruder.</span>
+  <span class="text-cyan-400 font-mono text-[10.5px] bg-cyan-950/60 px-2 py-0.5 rounded ml-2 whitespace-nowrap">Real-Time Inspection</span>
 </div>
 
 <!--
@@ -4650,61 +4650,69 @@ Presenter Notes:
 -->
 
 ---
-class: pt-2 pb-1 px-8
+class: pt-1.5 pb-1 px-8
 ---
 
-# 📱 Mobile SSL Pinning — Why It Breaks Proxies
+# 📱 Mobile SSL Pinning — What It Is & Why It Breaks Proxies
 
-<h3 class="text-slate-300 text-xs mb-2">Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation</h3>
+<h3 class="text-slate-300 text-xs mb-1.5">Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation</h3>
 
-<div class="grid grid-cols-2 gap-4 flex-1">
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mb-2 border border-sky-500/40 bg-sky-950/25 rounded-lg">
+  <div class="text-sky-200 font-medium leading-snug flex items-center gap-2">
+    <span>📌</span>
+    <span><strong>What is SSL Pinning?</strong> A security mechanism where mobile apps <strong>hardcode (pin) the server's public key (SPKI)</strong> inside the binary, deliberately bypassing the OS root store to stop Man-in-the-Middle attacks.</span>
+  </div>
+  <span class="text-[11px] font-mono text-sky-300 bg-sky-900/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Client-Side Pin</span>
+</div>
 
-<div class="col-card p-3 border border-indigo-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+<div class="grid grid-cols-2 gap-3.5 flex-1">
+
+<div class="col-card p-2.5 border border-indigo-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
   <div>
-    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-indigo-500/30">
-      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🌐</span> 1. Standard HTTPS Trust Flow
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🌐</span> 1. Standard HTTPS (OS Delegation)
       </span>
-      <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">OS Delegation</span>
+      <span class="text-[10px] font-mono text-indigo-300 bg-indigo-950/60 px-1.5 py-0.2 rounded">OS Store</span>
     </div>
-    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-      <li>• <strong>OS Trust Store:</strong> Mobile apps default to trusting any certificate signed by a root CA installed in the device settings.</li>
-      <li>• <strong>Proxy Interception:</strong> When the Burp CA certificate is installed in the device store, Burp generates dynamic leaf certs that the app accepts without complaint.</li>
-      <li>• <strong>Web &amp; Standard Apps:</strong> Browsers (Safari, Chrome) and unpinned mobile apps communicate seamlessly through Burp Suite.</li>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>OS Trust Store:</strong> Apps delegate certificate validation to root CAs installed in device system settings.</li>
+      <li>• <strong>Burp Works:</strong> Installing PortSwigger CA allows Burp to forge leaf certs that the app accepts without error.</li>
+      <li>• <strong>Risk:</strong> Any rogue root CA or malicious device profile can silently intercept in-flight traffic.</li>
     </ul>
   </div>
-  <div class="mt-2 pt-1 border-t border-indigo-500/30 text-xs text-indigo-300 font-mono">
-    ✅ Burp CA in OS store is 100% sufficient for unpinned traffic.
+  <div class="mt-1 pt-0.5 border-t border-indigo-500/30 text-[11px] text-indigo-300 font-mono">
+    ✅ Burp CA in OS store succeeds for unpinned apps.
   </div>
 </div>
 
-<div class="col-card p-3 border border-rose-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+<div class="col-card p-2.5 border border-rose-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
   <div>
-    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-rose-500/30">
-      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🛑</span> 2. SSL Pinning Rejection Flow
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🛑</span> 2. SSL Pinned (App-Level Guard)
       </span>
-      <span class="text-[11px] font-mono text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded">App-Level Guard</span>
+      <span class="text-[10px] font-mono text-rose-300 bg-rose-950/60 px-1.5 py-0.2 rounded">SPKI Hash</span>
     </div>
-    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-      <li>• <strong>Hardcoded SPKI Hash:</strong> Production apps compile the server's Subject Public Key Info SHA-256 hash directly into the app binary.</li>
-      <li>• <strong>Handshake Abort:</strong> Even though the OS trusts Burp's CA, the app compares Burp's dynamic leaf key against its hardcoded hash. The hashes do not match!</li>
-      <li>• <strong>Fatal TLS Error:</strong> Handshake aborts with <code>SSLHandshakeException</code> or <code>certificate_unknown</code>. Zero packets reach Burp.</li>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Hardcoded SPKI Hash:</strong> Production apps compile the server's public key SHA-256 hash into the binary.</li>
+      <li>• <strong>Burp Blocked:</strong> Even though the OS trusts Burp, the dynamic leaf key has the wrong hash!</li>
+      <li>• <strong>Fatal Handshake Error:</strong> App aborts with <code>SSLHandshakeException</code> before sending data.</li>
     </ul>
   </div>
-  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs text-rose-300 font-mono">
+  <div class="mt-1 pt-0.5 border-t border-rose-500/30 text-[11px] text-rose-300 font-mono">
     ❌ App actively blocks MITM proxy inspection.
   </div>
 </div>
 
 </div>
 
-<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-indigo-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-indigo-200 font-medium leading-snug flex items-center gap-2">
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
     <span>💡</span>
-    <span><strong>The Testing Dilemma:</strong> SSL Pinning protects mobile banking &amp; production users from hostile networks, but completely blinds QA &amp; security engineers during integration testing.</span>
+    <span><strong>The Testing Dilemma:</strong> Crucial for mobile banking defense, but completely blinds QA &amp; automation suites unless bypassed in staging builds.</span>
   </div>
-  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Testing Crisis</span>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Testing Crisis</span>
 </div>
 
 <!--

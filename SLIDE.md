@@ -54,7 +54,7 @@ Quick navigation reference for presentations in `slides/`.
 | **38** | [📁 File-Based Response Templates (`bodyFileName`)](slides/slides.md#L1842) | Decoupling Large Dynamic JSON/XML Payloads from Mapping Stubs |
 | **39** | [⏱️ WireMock — Fixed Latency & Timeout Testing](slides/slides.md#L1891) | Deterministic Delay Injection (`fixedDelayMilliseconds`) |
 | **40** | [🎲 WireMock — Random Jitter & Latency Distributions](slides/slides.md#L1963) | Real-World Latency Simulation (`delayDistribution`) |
-| **41** | [💥 WireMock — Network Fault Injection](slides/slides.md#L2034) | Simulating Hard Network Failures & Socket Errors |
+| **41** | [💥 WireMock — Network Fault Injection (Chaos)](slides/slides.md#L2034) | Simulating Hard Network Failures & Socket Errors |
 | **42** | [🔄 WireMock — Stateful Scenario Primitives](slides/slides.md#L2108) | Transforming Stateless HTTP Mocks into Finite State Machines (FSM) |
 | **43** | [🔄 WireMock — Scenario Execution Flow](slides/slides.md#L2173) | State-Aware Request Evaluation & Transition Mechanics |
 | **44** | [🔄 Stateful Pattern 1: Single-Use Tokens & Replays](slides/slides.md#L2207) | OAuth Authorization Code &amp; OTP Replay Attack Prevention |
@@ -97,36 +97,36 @@ Quick navigation reference for presentations in `slides/`.
 | **81** | [🛡️ Burp CA Certificate Setup — Windows](slides/slides.md#L4434) | Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores |
 | **82** | [🛡️ Burp CA Certificate Setup — iOS](slides/slides.md#L4502) | Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator |
 | **83** | [🛡️ Burp CA Certificate Setup — Android](slides/slides.md#L4575) | User Certificate Store, Network Security Config & Emulator Root Injection |
-| **84** | [📱 Mobile SSL Pinning — Why It Breaks Proxies](slides/slides.md#L4656) | Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation |
-| **85** | [🤖 Mobile SSL Pinning — Android White-Box Setup](slides/slides.md#L4721) | res/xml/network_security_config.xml — Enabling Staging Proxying with Zero Production Risk |
-| **86** | [🍎 Mobile SSL Pinning — iOS White-Box Setup](slides/slides.md#L4769) | Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt |
-| **87** | [⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass](slides/slides.md#L4816) | Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing |
-| **88** | [⚡ Architectural Split: WireMock vs. Burp Suite](slides/slides.md#L4885) | Downstream Service Virtualization vs. In-Flight MITM Traffic Interception |
-| **89** | [🐳 Part 4](slides/slides.md#L4935) | Testcontainers — Hermetic Infrastructure |
-| **90** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L4945) | Programmable Docker Infrastructure Directly in Your Test Suite |
-| **91** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L5010) | Docker Daemon Requirement & Supported Runtimes |
-| **92** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L5042) | Dynamic Ports & Code-Driven Orchestration |
-| **93** | [🧪 Testcontainers — Network Isolation & Dynamic Ports](slides/slides.md#L5062) | Code-Driven Container Helper Architecture (tests/specs/support/containers.ts) |
-| **94** | [🗄️ Testcontainers — Database Migration Schema & Seeds](slides/slides.md#L5095) | Running Production DDL Scripts in Ephemeral Containers (tests/specs/support/containers.ts) |
-| **95** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L5138) | Complete Test Hook Pipeline (beforeAll Setup &amp; afterAll Teardown) |
-| **96** | [🎭 Part 5](slides/slides.md#L5180) | Playwright — Full-Stack E2E Automation |
-| **97** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L5190) | Modern Full-Stack Integration Testing Architecture |
-| **98** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L5255) | Eliminating Flaky `sleep()` Calls with Actionability Checks |
-| **99** | [🎭 Playwright — Network Route Interception](slides/slides.md#L5294) | Dynamic Mock Header Injection &amp; Multi-Scenario Steering as Code |
-| **100** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L5360) | Mocking Native Device APIs with `page.addInitScript()` |
-| **101** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L5388) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) |
-| **102** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L5416) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) |
-| **103** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L5446) | Record Every Action, DOM Snapshot &amp; Network Request for Post-Mortem Debugging |
-| **104** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L5496) | Common Locators, Actions, Web-First Assertions & Network Steering |
-| **105** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L5532) | Interactive UI, Debugging, Filtering & Code Generation |
-| **106** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L5564) | Dynamic Stubs, State Resets & Verification Endpoints |
-| **107** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L5602) | Everyday Monorepo, Build & Hermetic Test Commands |
-| **108** | [Live Walkthrough](slides/slides.md#L5643) | Hands-On Walkthrough 🚀 |
-| **109** | [💬 Open Q&A & Key Takeaways](slides/slides.md#L5658) | Bringing All 4 Pillars Together for Ultra Smoooooth Testing |
-| **110** | [🎉 Thank You!](slides/slides.md#L5704) | Happy Ultra Smoooooth Testing 🚀 |
-| **111** | [📚 Appendix](slides/slides.md#L5727) | Additional Tools — Trace Atlas & k6 Performance Testing |
-| **112** | [🗺️ Internal Tools — Trace Workspaces Catalog](slides/slides.md#L5738) | Multi-Repo Service Discovery, Workspaces & Ecosystem Scale |
-| **113** | [🕸️ Internal Tools — Multi-Tier Dependency Graph](slides/slides.md#L5752) | Visualizing Microservice Call Chains, External Dependencies & Datastores |
-| **114** | [⚡ k6 — Modern Load & Performance Testing](slides/slides.md#L5764) | Developer-Centric High-Concurrency Performance Testing & SLA Verification |
-| **115** | [⚡ k6 Load Scripting — Microservices Example](slides/slides.md#L5795) | Simulating High-Throughput BFF & Core Service Traffic with WireMock Backing |
-| **116** | [⚡ k6 CLI — Performance Runner & Metrics Cheat Sheet](slides/slides.md#L5875) | Everyday Execution Commands, Dynamic Overrides & Live Dashboards |
+| **84** | [📱 Mobile SSL Pinning — What It Is & Why It Breaks Proxies](slides/slides.md#L4656) | Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation |
+| **85** | [🤖 Mobile SSL Pinning — Android White-Box Setup](slides/slides.md#L4729) | res/xml/network_security_config.xml — Enabling Staging Proxying with Zero Production Risk |
+| **86** | [🍎 Mobile SSL Pinning — iOS White-Box Setup](slides/slides.md#L4777) | Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt |
+| **87** | [⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass](slides/slides.md#L4824) | Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing |
+| **88** | [⚡ Architectural Split: WireMock vs. Burp Suite](slides/slides.md#L4893) | Downstream Service Virtualization vs. In-Flight MITM Traffic Interception |
+| **89** | [🐳 Part 4](slides/slides.md#L4943) | Testcontainers — Hermetic Infrastructure |
+| **90** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L4953) | Programmable Docker Infrastructure Directly in Your Test Suite |
+| **91** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L5018) | Docker Daemon Requirement & Supported Runtimes |
+| **92** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L5050) | Dynamic Ports & Code-Driven Orchestration |
+| **93** | [🧪 Testcontainers — Network Isolation & Dynamic Ports](slides/slides.md#L5070) | Code-Driven Container Helper Architecture (tests/specs/support/containers.ts) |
+| **94** | [🗄️ Testcontainers — Database Migration Schema & Seeds](slides/slides.md#L5103) | Running Production DDL Scripts in Ephemeral Containers (tests/specs/support/containers.ts) |
+| **95** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L5146) | Complete Test Hook Pipeline (beforeAll Setup &amp; afterAll Teardown) |
+| **96** | [🎭 Part 5](slides/slides.md#L5188) | Playwright — Full-Stack E2E Automation |
+| **97** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L5198) | Modern Full-Stack Integration Testing Architecture |
+| **98** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L5263) | Eliminating Flaky `sleep()` Calls with Actionability Checks |
+| **99** | [🎭 Playwright — Network Route Interception](slides/slides.md#L5302) | Dynamic Mock Header Injection &amp; Multi-Scenario Steering as Code |
+| **100** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L5368) | Mocking Native Device APIs with `page.addInitScript()` |
+| **101** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L5396) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) |
+| **102** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L5424) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) |
+| **103** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L5454) | Record Every Action, DOM Snapshot &amp; Network Request for Post-Mortem Debugging |
+| **104** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L5504) | Common Locators, Actions, Web-First Assertions & Network Steering |
+| **105** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L5540) | Interactive UI, Debugging, Filtering & Code Generation |
+| **106** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L5572) | Dynamic Stubs, State Resets & Verification Endpoints |
+| **107** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L5610) | Everyday Monorepo, Build & Hermetic Test Commands |
+| **108** | [Live Walkthrough](slides/slides.md#L5651) | Hands-On Walkthrough 🚀 |
+| **109** | [💬 Open Q&A & Key Takeaways](slides/slides.md#L5666) | Bringing All 4 Pillars Together for Ultra Smoooooth Testing |
+| **110** | [🎉 Thank You!](slides/slides.md#L5712) | Happy Ultra Smoooooth Testing 🚀 |
+| **111** | [📚 Appendix](slides/slides.md#L5735) | Additional Tools — Trace Atlas & k6 Performance Testing |
+| **112** | [🗺️ Internal Tools — Trace Workspaces Catalog](slides/slides.md#L5746) | Multi-Repo Service Discovery, Workspaces & Ecosystem Scale |
+| **113** | [🕸️ Internal Tools — Multi-Tier Dependency Graph](slides/slides.md#L5760) | Visualizing Microservice Call Chains, External Dependencies & Datastores |
+| **114** | [⚡ k6 — Modern Load & Performance Testing](slides/slides.md#L5772) | Developer-Centric High-Concurrency Performance Testing & SLA Verification |
+| **115** | [⚡ k6 Load Scripting — Microservices Example](slides/slides.md#L5803) | Simulating High-Throughput BFF & Core Service Traffic with WireMock Backing |
+| **116** | [⚡ k6 CLI — Performance Runner & Metrics Cheat Sheet](slides/slides.md#L5883) | Everyday Execution Commands, Dynamic Overrides & Live Dashboards |

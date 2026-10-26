@@ -371,7 +371,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 🛠️ Proxy Setup & Verification (Prerequisites)
-- **Slide Reference**: [`slides.md#L3207`](slides/slides.md#L3207), [`slides.md#L3228`](slides/slides.md#L3228), [`slides.md#L3293`](slides/slides.md#L3293), [`slides.md#L3368`](slides/slides.md#L3368), [`slides.md#L3440`](slides/slides.md#L3440) & [`slides.md#L4361`](slides/slides.md#L4361)–[`slides.md#L4816`](slides/slides.md#L4816) (Slides 60–65: MITM Architecture, HTTPS & PKI; Slides 80–87: Platform Setup & SSL Pinning)
+- **Slide Reference**: [`slides.md#L3207`](slides/slides.md#L3207), [`slides.md#L3228`](slides/slides.md#L3228), [`slides.md#L3293`](slides/slides.md#L3293), [`slides.md#L3368`](slides/slides.md#L3368), [`slides.md#L3440`](slides/slides.md#L3440) & [`slides.md#L4361`](slides/slides.md#L4361)–[`slides.md#L4824`](slides/slides.md#L4824) (Slides 60–65: MITM Architecture, HTTPS & PKI; Slides 80–87: Platform Setup & SSL Pinning)
 - **Lab Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Companion Files**:
   - Mobile Testing & SSL Pinning Guide: [`labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide`](labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide)
