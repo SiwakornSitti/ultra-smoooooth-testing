@@ -3089,7 +3089,7 @@ layout: section
 class: pt-1.5 pb-1 px-8
 ---
 
-# 🛡️ What is Burp Suite? — Web Security & MITM Proxy
+# 🛡️ What is Burp Suite? — MITM Security Proxy
 
 <h3 class="text-slate-300 text-xs mb-1">The Industry-Standard Cybersecurity Platform for Web &amp; API Traffic Inspection</h3>
 
@@ -3135,11 +3135,12 @@ class: pt-1.5 pb-1 px-8
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Core Definition</strong>: Burp Suite sits between web/mobile clients and backend gateways, giving testers full visibility and control over in-flight traffic.
-  </span>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Transparent MITM Proxy</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Core Definition:</strong> Burp Suite sits between web/mobile clients and backend gateways, giving testers full visibility and control over in-flight traffic.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Transparent MITM Proxy</span>
 </div>
 
 <!--
@@ -3154,7 +3155,7 @@ Presenter Notes:
 class: pt-1.5 pb-1 px-8
 ---
 
-# 🔒 How HTTPS Works — TLS Handshake to Secure Tunnel
+# 🔒 How HTTPS Works — TLS Handshake & Tunnel
 
 <h3 class="text-slate-300 text-sm mb-1">Dual-Phase Cryptography: Asymmetric Authentication &amp; Symmetric Payload Encryption</h3>
 
@@ -3204,11 +3205,12 @@ class: pt-1.5 pb-1 px-8
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-amber-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-amber-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>MITM Implication:</strong> Standard proxies are blind to ciphertext. Burp Suite must terminate <strong>two separate TLS handshakes</strong> to inspect plaintext.
-  </span>
-  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded">Dual TLS Terminus</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-amber-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>MITM Implication:</strong> Standard proxies are blind to ciphertext. Burp Suite must terminate <strong>two separate TLS handshakes</strong> to inspect plaintext.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Dual TLS Terminus</span>
 </div>
 
 <!--
@@ -3235,7 +3237,7 @@ class: pt-2 pb-1 px-8
 class: pt-1.5 pb-1 px-8
 ---
 
-# 🏛️ Public Key Infrastructure (PKI) — Core Trust Flow
+# 🏛️ PKI Architecture — Core Trust Flow
 
 <h3 class="text-slate-300 text-xs mb-1">How Key Pairs, Digital Certificates &amp; Trusted CAs Establish Encrypted Identity</h3>
 
@@ -3245,9 +3247,12 @@ class: pt-1.5 pb-1 px-8
   </div>
 </div>
 
-<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
-  <span>💡 <strong>PKI Principle</strong>: Clients don't trust servers directly. Clients trust a <strong>Certification Authority (CA)</strong>, which cryptographically signs the server's public key inside a <strong>Certificate</strong>.</span>
-  <span class="text-emerald-400 font-mono text-[11px]">Asymmetric Trust Chain</span>
+<div class="slide-card text-xs mt-1 py-1.5 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
+  <div class="text-slate-200 leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>PKI Principle:</strong> Clients don't trust servers directly. Clients trust a <strong>Certification Authority (CA)</strong>, which cryptographically signs the server's public key inside a <strong>Certificate</strong>.</span>
+  </div>
+  <span class="text-emerald-400 font-mono text-[11px] bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Asymmetric Trust Chain</span>
 </div>
 
 <!--
@@ -3829,11 +3834,12 @@ class: pt-1.5 pb-1 px-8
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>The QA Advantage</strong>: Security tools excel at low-level packet manipulation, giving QA engineers raw power to simulate failure states application code normally prevents.
-  </span>
-  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">AppSec ➔ QA Superpower</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-cyan-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>The QA Advantage:</strong> Security tools excel at low-level packet manipulation, giving QA engineers raw power to simulate failure states application code normally prevents.</span>
+  </div>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">AppSec ➔ QA Superpower</span>
 </div>
 
 <!--
