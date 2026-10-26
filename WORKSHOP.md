@@ -352,13 +352,13 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 > **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
 
 #### 🛠️ Burp Suite Core Tools Reference & Playbook
-- **Slide Reference**: [`slides.md#L3864`](slides/slides.md#L3864) & [`slides.md#L4071`](slides/slides.md#L4071) (Slides 71 & 76–81)
+- **Slide Reference**: [`slides.md#L4034`](slides/slides.md#L4034) & [`slides.md#L4241`](slides/slides.md#L4241) (Slides 74 & 79–84)
 - **Role in Integration Testing**: Burp Suite acts as an in-flight Man-In-The-Middle (MITM) inspection, replay, and mutation proxy between browser/mobile clients and backend gateways (`bff-service`).
 
-| Tool &amp; Icon | Category | Core Capability &amp; Primary Shortcut | Microservices / API QA Testing Scenario |
+| Tool & Icon | Category | Core Capability & Primary Shortcut | Microservices / API QA Testing Scenario |
 | :--- | :--- | :--- | :--- |
 | ⚡ **Proxy** | Traffic Control | Captures live HTTP/S traffic; pause/edit/drop packets mid-flight. Toggle `Intercept is on`. | Tampering with request headers or JSON payloads in transit before reaching backend gateways. |
-| 🎯 **Target** | Topology &amp; Scope | Hierarchical site map tree of discovered hosts, paths, and endpoints. Filter by in-scope rules. | Scoping test suites strictly to `localhost` microservices and excluding external browser noise. |
+| 🎯 **Target** | Topology & Scope | Hierarchical site map tree of discovered hosts, paths, and endpoints. Filter by in-scope rules. | Scoping test suites strictly to `localhost` microservices and excluding external browser noise. |
 | 🔁 **Repeater** | Ad-Hoc Replay | Isolated HTTP request workbench. Modify payloads and re-issue instantly (`Cmd+R` / `Ctrl+R`). | Rapidly testing API edge cases, validation boundaries, and error codes without re-running UI suites. |
 | ⚡ **Intruder** | Automated Fuzzing | Configurable payload attack engine (`Sniper`, `Battering Ram`, `Pitchfork`, `Cluster Bomb`). | Concurrency race-condition testing, rate-limit boundary probes, and negative payload fuzzing. |
 | 📋 **Logger** | Unified Audit | Full-fidelity chronological traffic log across all Burp tools with regex filtering and 1-click handoff. | Real-time debugging of multi-step API sequences and inspecting raw server response headers. |
@@ -366,15 +366,15 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 | ⚖️ **Comparer** | Visual Diffing | Visual word-by-word and byte-by-byte diff engine between two requests, responses, or fuzz outputs. | Diffing successful `200 OK` vs failure `403 Forbidden` responses to isolate exact state discrepancies. |
 | 🎲 **Sequencer** | Entropy Testing | Statistical randomness analysis for session cookies, CSRF tokens, OTPs, and generated IDs. | Verifying that banking session identifiers and OTPs have high entropy and cannot be predicted. |
 | 🧩 **Extensions (BApp)** | Extensibility | Extensible plugin architecture supporting custom Python, Java, and Ruby automation scripts. | Exporting OpenAPI specs, custom HMAC authentication signing, and bespoke CI/CD test reporters. |
-| ⚙️ **Match &amp; Replace** | Headless Steering | Automatic regex find-and-replace rules inside Proxy settings without pausing traffic. | Unattended CI/CD test runs: auto-injecting `Mock-Scenario` headers into automated Playwright suites. |
+| ⚙️ **Match & Replace** | Headless Steering | Automatic regex find-and-replace rules inside Proxy settings without pausing traffic. | Unattended CI/CD test runs: auto-injecting `Mock-Scenario` headers into automated Playwright suites. |
 
 ---
 
-#### 🛠️ Proxy Setup &amp; Verification (Prerequisites)
-- **Slide Reference**: [`slides.md#L3158`](slides/slides.md#L3158), [`slides.md#L3240`](slides/slides.md#L3240), [`slides.md#L3272`](slides/slides.md#L3272) &amp; [`slides.md#L3711`](slides/slides.md#L3711) (Slides 60–69: HTTPS, PKI Infrastructure, CA Chaining, Platform Setup &amp; SSL Pinning)
+#### 🛠️ Proxy Setup & Verification (Prerequisites)
+- **Slide Reference**: [`slides.md#L3158`](slides/slides.md#L3158), [`slides.md#L3240`](slides/slides.md#L3240), [`slides.md#L3272`](slides/slides.md#L3272), [`slides.md#L3711`](slides/slides.md#L3711), [`slides.md#L3776`](slides/slides.md#L3776), [`slides.md#L3824`](slides/slides.md#L3824) & [`slides.md#L3871`](slides/slides.md#L3871) (Slides 60–72: HTTPS, PKI Infrastructure, CA Chaining, Platform Setup & SSL Pinning)
 - **Lab Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Companion Files**:
-  - Mobile Testing &amp; SSL Pinning Guide: [`labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide`](labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide)
+  - Mobile Testing & SSL Pinning Guide: [`labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide`](labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide)
   - Verification Helper: [`labs/burp-suite/verify-proxy.sh`](labs/burp-suite/verify-proxy.sh)
   - REST Client Walkthrough: [`labs/burp-suite/requests.http`](labs/burp-suite/requests.http)
   - Configuration Settings: [`labs/burp-suite/burp-config-example.json`](labs/burp-suite/burp-config-example.json)
@@ -397,7 +397,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L4001`](slides/slides.md#L4001) (Slide 75)
+- **Slide Reference**: [`slides.md#L4149`](slides/slides.md#L4149) (Slide 78)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -412,7 +412,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L4202`](slides/slides.md#L4202) (Slide 78)
+- **Slide Reference**: [`slides.md#L4350`](slides/slides.md#L4350) (Slide 81)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -492,7 +492,7 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L4429`](slides/slides.md#L4429) & [`slides.md#L4496`](slides/slides.md#L4496) (Slides 82 & 83)
+- **Slide Reference**: [`slides.md#L4577`](slides/slides.md#L4577) & [`slides.md#L4644`](slides/slides.md#L4644) (Slides 85 & 86)
 - **Test Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:

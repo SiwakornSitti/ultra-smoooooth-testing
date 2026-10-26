@@ -3705,86 +3705,234 @@ Presenter Notes:
 - Note Firefox's separate certificate store setting (security.enterprise_roots.enabled).
 -->
 ---
-class: pt-1.5 pb-1 px-8
+class: pt-2 pb-1 px-8
 ---
 
-# 📱 SSL Pinning & Mobile Bypass Architecture
+# 📱 Mobile SSL Pinning — Why It Breaks Proxies
 
-<h3 class="text-slate-300 text-xs mb-1">Overriding Hardcoded Public Key Hashes for Integration &amp; Security Testing</h3>
+<h3 class="text-slate-300 text-xs mb-2">Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+<div class="grid grid-cols-2 gap-4 flex-1">
 
-<div class="slide-card p-2 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+<div class="col-card p-3 border border-indigo-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🏗️</span> 1. White-Box Setup (Dev &amp; QA Builds)
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🌐</span> 1. Standard HTTPS Trust Flow
       </span>
-      <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded">Config as Code</span>
+      <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">OS Delegation</span>
     </div>
-
-<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
-  <div class="text-cyan-300 font-semibold">Android (res/xml/network_security_config.xml):</div>
-  <div class="text-slate-300">&lt;debug-overrides&gt;&lt;trust-anchors&gt;</div>
-  <div class="text-emerald-300 pl-2">&lt;certificates src="user" /&gt;</div>
-  <div class="text-slate-300">&lt;/trust-anchors&gt;&lt;/debug-overrides&gt;</div>
-  <div class="text-amber-300 font-semibold mt-0.5">iOS (Build Scheme Compiler Flags):</div>
-  <div class="text-slate-300">#if DEBUG || STAGING // Disable URLSession pinning</div>
-</div>
-
-<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
-  <li>• <strong>Zero Security Debt:</strong> Keeps production release builds pinned while enabling inspection in staging.</li>
-  <li>• <strong>Non-Root Devices:</strong> Works on standard unrooted physical test devices and simulators.</li>
-</ul>
+    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+      <li>• <strong>OS Trust Store:</strong> Mobile apps default to trusting any certificate signed by a root CA installed in the device settings.</li>
+      <li>• <strong>Proxy Interception:</strong> When the Burp CA certificate is installed in the device store, Burp generates dynamic leaf certs that the app accepts without complaint.</li>
+      <li>• <strong>Web &amp; Standard Apps:</strong> Browsers (Safari, Chrome) and unpinned mobile apps communicate seamlessly through Burp Suite.</li>
+    </ul>
   </div>
-  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[10px] text-emerald-300 font-mono">
-    ✅ Recommended pattern for engineering &amp; CI/CD test suites.
+  <div class="mt-2 pt-1 border-t border-indigo-500/30 text-xs text-indigo-300 font-mono">
+    ✅ Burp CA in OS store is 100% sufficient for unpinned traffic.
   </div>
 </div>
 
-<div class="slide-card p-2 border border-violet-500/40 bg-violet-950/20 flex flex-col justify-between">
+<div class="col-card p-3 border border-rose-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-violet-500/30">
-      <span class="text-violet-300 font-bold text-xs flex items-center gap-1.5">
-        <span>⚡</span> 2. Black-Box Bypass (Release Binaries)
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🛑</span> 2. SSL Pinning Rejection Flow
       </span>
-      <span class="text-[10px] font-mono text-violet-300 bg-violet-950/60 px-1.5 py-0.5 rounded">Dynamic Hooking</span>
+      <span class="text-[11px] font-mono text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded">App-Level Guard</span>
     </div>
-
-<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
-  <div class="text-violet-300 font-semibold">Frida / Objection (RAM Hooking):</div>
-  <div class="text-slate-300"># Android (Hooks TrustManagerImpl in memory):</div>
-  <div class="text-emerald-300">frida -U --codeshare akabe1/frida-multiple-unpinning -f app</div>
-  <div class="text-slate-300 mt-0.5"># iOS (Hooks SecTrustEvaluate in Security framework):</div>
-  <div class="text-amber-300">objection --gadget "App" explore -s "ios sslpinning disable"</div>
-</div>
-
-<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
-  <li>• <strong>Runtime Memory Patch:</strong> Overrides validation methods in RAM without re-signing the binary.</li>
-  <li>• <strong>System CA Injection:</strong> Push Burp CA to Android <code>/system/etc/security/cacerts/</code> via <code>adb remount</code>.</li>
-</ul>
+    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+      <li>• <strong>Hardcoded SPKI Hash:</strong> Production apps compile the server's Subject Public Key Info SHA-256 hash directly into the app binary.</li>
+      <li>• <strong>Handshake Abort:</strong> Even though the OS trusts Burp's CA, the app compares Burp's dynamic leaf key against its hardcoded hash. The hashes do not match!</li>
+      <li>• <strong>Fatal TLS Error:</strong> Handshake aborts with <code>SSLHandshakeException</code> or <code>certificate_unknown</code>. Zero packets reach Burp.</li>
+    </ul>
   </div>
-  <div class="mt-1 pt-0.5 border-t border-violet-500/30 text-[10px] text-violet-300 font-mono">
-    🔓 For penetration testing &amp; third-party release auditing.
+  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs text-rose-300 font-mono">
+    ❌ App actively blocks MITM proxy inspection.
   </div>
 </div>
 
 </div>
 
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-violet-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-violet-200 font-medium leading-snug flex items-center gap-2">
+<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-indigo-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-indigo-200 font-medium leading-snug flex items-center gap-2">
     <span>💡</span>
-    <span><strong>Pinning vs Trust Store:</strong> Pinning is enforced by <strong>app code</strong>, not the OS. QA builds use debug configs; release binaries use Frida runtime memory hooks.</span>
+    <span><strong>The Testing Dilemma:</strong> SSL Pinning protects mobile banking &amp; production users from hostile networks, but completely blinds QA &amp; security engineers during integration testing.</span>
   </div>
-  <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">App-Level Guard</span>
+  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Testing Crisis</span>
 </div>
 
 <!--
 Presenter Notes:
 - Contrast OS Root CA Trust with Application-Level SSL Pinning: Root CA satisfies the operating system, but pinned apps hardcode the server's SPKI public key hash.
-- Highlight the recommended team pattern: Never disable pinning in production; use Android network_security_config debug-overrides and iOS #if DEBUG build schemes.
-- Explain Frida/Objection: For black-box penetration testing where source code cannot be modified, dynamic instrumentation hooks the verification methods directly in memory.
-- Bridge: Now that TLS, PKI certificates, and trust stores are fully configured and traffic flows cleanly through Burp, let's explore why we use Burp Suite in integration testing and the superpowers it gives us.
+- Explain why banking and production apps pin: Defends against rogue or compromised CAs and hostile Wi-Fi routers in public venues.
+- Frame the testing dilemma: QA and developers need to inspect and steer traffic in staging, but cannot afford to weaken production security.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🤖 Mobile SSL Pinning — Android White-Box Setup
+
+<h3 class="text-slate-300 text-xs mb-1">res/xml/network_security_config.xml — Enabling Staging Proxying with Zero Production Risk</h3>
+
+<div class="col-card p-2.5 border border-emerald-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg flex-1">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🏗️</span> Android Network Security Configuration (Android 7.0+ / API 24+)
+      </span>
+      <span class="text-xs font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Config as Code</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-3 py-2 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-2">
+      <div class="text-cyan-300 font-semibold">// res/xml/network_security_config.xml</div>
+      <div class="text-slate-400">&lt;network-security-config&gt;</div>
+      <div class="text-emerald-300 pl-3">&lt;debug-overrides&gt;</div>
+      <div class="text-slate-400 pl-6">&lt;!-- Staging &amp; QA only: Trust user-installed PortSwigger CA --&gt;</div>
+      <div class="text-emerald-300 pl-6">&lt;trust-anchors&gt;&lt;certificates src="user" /&gt;&lt;/trust-anchors&gt;</div>
+      <div class="text-emerald-300 pl-3">&lt;/debug-overrides&gt;</div>
+      <div class="text-slate-400">&lt;/network-security-config&gt;</div>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-200 leading-snug mt-1">
+      <li>• <strong class="text-emerald-300">AndroidManifest.xml:</strong> Link config via <code>android:networkSecurityConfig="@xml/network_security_config"</code> in <code>&lt;application&gt;</code>.</li>
+      <li>• <strong class="text-emerald-300">Automated Guardrail:</strong> Production builds compile with <code>debuggable="false"</code>, automatically ignoring <code>&lt;debug-overrides&gt;</code>.</li>
+      <li>• <strong class="text-emerald-300">Physical &amp; Emulators:</strong> Intercepts staging traffic on standard unrooted physical test phones and emulators.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Android Best Practice:</strong> Never tamper with <code>&lt;base-config&gt;</code>. Using <code>&lt;debug-overrides&gt;</code> guarantees production builds remain 100% hermetically pinned.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Safe by Default</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain Android Network Security Config: Introduced in Android 7 (API 24) to stop apps from trusting user certs by default.
+- Show why debug-overrides is the clean architectural solution: The OS only activates debug-overrides when debuggable="true".
+- Reassure teams that standard Google Play release builds automatically compile with debuggable="false", preserving pinning.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🍎 Mobile SSL Pinning — iOS White-Box Setup
+
+<h3 class="text-slate-300 text-xs mb-1">Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt</h3>
+
+<div class="col-card p-2.5 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg flex-1">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🍏</span> Conditional URLSession Pinning via Swift Compiler Directives
+      </span>
+      <span class="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Swift Scheme</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-3 py-2 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-2">
+      <div class="text-cyan-300 font-semibold">// NetworkManager.swift</div>
+      <div class="text-amber-300 font-semibold">#if DEBUG || STAGING // Staging: Trust Burp Proxy</div>
+      <div class="text-emerald-300 pl-3">let session = URLSession(configuration: .default)</div>
+      <div class="text-amber-300 font-semibold">#else // Production: Enforce SPKI Public Key Pinning</div>
+      <div class="text-cyan-300 pl-3">let session = URLSession(configuration: .default, delegate: PinnedDelegate(), delegateQueue: nil)</div>
+      <div class="text-amber-300 font-semibold">#endif</div>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-200 leading-snug mt-1">
+      <li>• <strong class="text-cyan-300">Xcode Build Schemes:</strong> Set <code>DEBUG</code> or <code>STAGING</code> in Project Build Settings ➔ Active Compilation Conditions.</li>
+      <li>• <strong class="text-cyan-300">Compile-Time Safety:</strong> The Swift compiler completely excises bypass code from App Store release archives.</li>
+      <li>• <strong class="text-cyan-300">Standard Hardware:</strong> Intercepts staging traffic cleanly on real iPhones, iPads, and iOS Simulators without jailbreaking.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-cyan-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>iOS Clean Architecture:</strong> Encapsulate pinning logic inside the networking layer behind a protocol or factory so tests inject mock sessions cleanly.</span>
+  </div>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Clean Code</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain iOS Pinning: Unlike Android's XML declaration, iOS pinning is implemented imperatively in Swift/Objective-C via URLSessionDelegate.
+- Show how Swift conditional compilation (#if DEBUG || STAGING) completely excises the test branch from production binaries.
+- Highlight the developer experience: QA can install internal TestFlight staging builds and intercept traffic immediately.
+-->
+
+---
+class: pt-1 pb-1 px-8
+---
+
+# ⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass
+
+<h3 class="text-slate-300 text-xs mb-1">Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="col-card p-2.5 border border-violet-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-violet-500/30">
+      <span class="text-violet-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🧠</span> When &amp; How Dynamic Hooking Works
+      </span>
+      <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded">Runtime RAM Patch</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>When Needed:</strong> Auditing third-party vendor SDKs, legacy binaries with no source code, or conducting black-box penetration tests.</li>
+      <li>• <strong>Zero Recompilation:</strong> Avoids tampering with APK/IPA or breaking digital signatures; Frida injects JavaScript directly into RAM.</li>
+      <li>• <strong>Method Interception:</strong> Hooks TLS validation functions (e.g. <code>TrustManagerImpl</code>) in memory and forces them to return <code>true</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-violet-500/30 text-xs text-violet-300 font-mono">
+    🔓 For penetration testers &amp; security auditors.
+  </div>
+</div>
+
+<div class="col-card p-2.5 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🛠️</span> Practical Tooling &amp; Commands
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Frida / Objection</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1 font-mono text-[10px] text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-violet-300 font-semibold">Android (Frida RAM Hooking):</div>
+      <div class="text-slate-400"># Hook TrustManagerImpl in memory via USB:</div>
+      <div class="text-emerald-300">frida -U --codeshare akabe1/frida-multiple-unpinning -f app</div>
+      <div class="text-amber-300 font-semibold pt-1 border-t border-slate-800">iOS (Objection Mobile Exploration):</div>
+      <div class="text-slate-400"># Hook SecTrustEvaluate in Security framework:</div>
+      <div class="text-cyan-300">objection --gadget "App" explore -s "ios sslpinning disable"</div>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>System CA Injection:</strong> Push Burp CA to Android <code>/system/etc/security/cacerts/</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-cyan-500/30 text-xs text-cyan-300 font-mono">
+    ⚡ Injects hooks into live process memory without binary edits.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-violet-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-violet-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Defense-in-Depth Takeaway:</strong> Client-side SSL pinning is a speed bump, not an impenetrable wall. Mobile APIs must always enforce zero-trust token validation and server authorization.</span>
+  </div>
+  <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Zero Trust</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain black-box testing: When teams must evaluate third-party vendor binaries or test pre-release builds without modifying code, dynamic instrumentation is required.
+- Frida and Objection inject into the running process's memory space to hook TLS validation methods like TrustManagerImpl on Android and SecTrustEvaluate on iOS.
+- Reiterate the core security lesson: Client-side controls can always be bypassed by a motivated attacker in memory; robust security must live on the server.
 -->
 
 ---
@@ -4000,7 +4148,7 @@ class: pt-2 pb-2 px-8
 
 # 🧪 Practice Lab: Live MITM Packet Interception
 
-### Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses
+<h3 class="text-slate-300 text-xs mb-1">Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses</h3>
 
 <div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
 
@@ -4013,14 +4161,12 @@ class: pt-2 pb-2 px-8
       <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">:8080 MITM</span>
     </div>
     <p class="text-xs text-slate-300 mb-1.5 leading-snug">Toggle <strong>Intercept is ON</strong> in Burp Proxy, then send request:</p>
-
-```bash
-curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost.com:8081/api/v1/users \
-  -H "Content-Type: application/json" \
-  -d '{"username":"student","password":"secret"}'
-```
-
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
+      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/users \</div>
+      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
+      <div class="text-emerald-300 pl-3">-d '{"username":"student","password":"secret"}'</div>
+    </div>
   </div>
   <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs text-cyan-300 font-mono">
     ⏸️ Request pauses in Burp Suite Proxy tab
@@ -4036,12 +4182,11 @@ curl -x http://127.0.0.1:8080 -s -X POST \
       <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Forward</span>
     </div>
     <p class="text-xs text-slate-300 mb-1.5 leading-snug">In Burp Proxy window, append header before clicking <strong>Forward</strong>:</p>
-
-```http
-Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED
-```
-
-  <p class="text-[11px] text-slate-300 mt-1 leading-snug">WireMock intercepts header and returns downstream expired OTP error.</p>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-slate-400">// Append steering header:</div>
+      <div class="text-amber-300">Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED</div>
+    </div>
+    <p class="text-[11px] text-slate-300 mt-1 leading-snug">WireMock intercepts header and returns downstream expired OTP error.</p>
   </div>
   <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
     ✨ Client receives expired OTP without app code change!
@@ -4428,9 +4573,9 @@ class: pt-2 pb-2 px-8
 
 # 🎬 In-Flight Traffic Interception & Tampering
 
-### Live instructor walkthrough: Intercepting payloads and steering downstream failure states
+<h3 class="text-slate-300 text-xs mb-1">Live instructor walkthrough: Intercepting payloads and steering downstream failure states</h3>
 
-<div class="grid grid-cols-2 gap-3.5 mt-2">
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
 
 <div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
   <div>
@@ -4444,7 +4589,7 @@ class: pt-2 pb-2 px-8
       <li>• <strong>1. Intercept Traffic:</strong> In Burp Suite Proxy tab, toggle <strong>Intercept is ON</strong> on port <code>:8080</code>.</li>
       <li>• <strong>2. Dispatch Request:</strong> Issue client cURL with <code>-x http://127.0.0.1:8080</code> to route through proxy.</li>
       <li>• <strong>3. Mutate In-Flight:</strong> Inspect packet in Burp, edit payload or append steering header in real time.</li>
-      <li>• <strong>4. Forward & Assert:</strong> Click <strong>Forward</strong>; verify downstream service reacts to tampered request.</li>
+      <li>• <strong>4. Forward &amp; Assert:</strong> Click <strong>Forward</strong>; verify downstream service reacts to tampered request.</li>
     </ul>
   </div>
   <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
@@ -4460,25 +4605,30 @@ class: pt-2 pb-2 px-8
       </span>
       <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Proxy</span>
     </div>
-
-```bash
-# 1. Send outbound transfer through Burp Proxy
-curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost.com:8081/api/v1/transfers \
-  -H "Content-Type: application/json" \
-  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
-
-# 2. In Burp: Intercept pauses the request
-# 3. Tamper amount ➔ 999999, inject header, click Forward
-# 4. Observe downstream response in terminal
-```
-
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-slate-400"># 1. Send outbound transfer through Burp Proxy</div>
+      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
+      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/transfers \</div>
+      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
+      <div class="text-emerald-300 pl-3">-d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'</div>
+      <div class="text-slate-400 pt-0.5"># 2. In Burp: Intercept pauses the request</div>
+      <div class="text-amber-300"># 3. Tamper amount ➔ 999999, inject header, click Forward</div>
+      <div class="text-emerald-300"># 4. Observe downstream response in terminal</div>
+    </div>
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
     ⚡ Client receives downstream response seamlessly
   </div>
 </div>
 
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Duplex Interception Control:</strong> Burp Suite holds the raw TCP socket open while you tamper with headers or payload data, completely transparent to both caller and receiver.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Duplex MITM</span>
 </div>
 
 <!--
@@ -4495,9 +4645,9 @@ class: pt-2 pb-2 px-8
 
 # 🏆 Workshop: In-Flight Fraud Tampering
 
-### Tamper with transfer payload mid-flight and inject downstream fraud steering headers
+<h3 class="text-slate-300 text-xs mb-1">Tamper with transfer payload mid-flight and inject downstream fraud steering headers</h3>
 
-<div class="grid grid-cols-2 gap-3.5 mt-2">
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
 
 <div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
   <div>
@@ -4527,26 +4677,30 @@ class: pt-2 pb-2 px-8
       </span>
       <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / MITM</span>
     </div>
-
-```bash
-# 1. Send normal transfer through Burp Proxy
-curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost.com:8081/api/v1/transfers \
-  -H "Content-Type: application/json" \
-  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
-
-# 2. In Burp Intercept: Tamper amount to 999999
-#    and inject: Mock-Scenario: TRANSFER:FRAUD_ALERT
-
-# 3. Forward request -> Assert HTTP 403 Forbidden response
-```
-
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-slate-400"># 1. Send normal transfer through Burp Proxy</div>
+      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
+      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/transfers \</div>
+      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
+      <div class="text-emerald-300 pl-3">-d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'</div>
+      <div class="text-slate-400 pt-0.5"># 2. In Burp Intercept: Tamper amount to 999999 &amp; inject header:</div>
+      <div class="text-amber-300">Mock-Scenario: TRANSFER:FRAUD_ALERT</div>
+      <div class="text-slate-400 pt-0.5"># 3. Forward request ➔ Assert HTTP 403 Forbidden</div>
+    </div>
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
     ⚡ No application code changes required!
   </div>
 </div>
 
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>MITM Tampering Verification:</strong> When the tampered amount triggers a downstream fraud rule, WireMock immediately rejects the transfer with <code>HTTP 403 Forbidden</code>.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security QA</span>
 </div>
 
 <!--

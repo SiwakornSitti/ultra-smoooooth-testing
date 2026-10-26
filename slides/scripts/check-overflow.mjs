@@ -72,7 +72,7 @@ async function main() {
 
   for (let slideNo = startSlide; slideNo <= endSlide; slideNo++) {
     await page.goto(`${BASE_URL}/${slideNo}`, { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(180);
+    await page.waitForTimeout(350);
 
     const report = await page.evaluate(({ slideNo, CANVAS_HEIGHT, CANVAS_WIDTH, BOTTOM_TOLERANCE_PX }) => {
       const pageEl = document.querySelector(`.slidev-page-${slideNo}`);
