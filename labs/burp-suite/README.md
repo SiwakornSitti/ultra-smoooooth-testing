@@ -169,6 +169,27 @@ See the official [PortSwigger certificate setup guide](https://portswigger.net/b
 
 ---
 
+### 📍 Exercise 5: Concurrency & Race Condition Fuzzing with Burp Intruder
+
+**Goal**: Use **Burp Intruder** to simulate concurrent race-condition attacks (e.g. testing double-spending or TOCTOU coupon redemption) and observe how backend database transactions handle atomic state transitions.
+
+1. In Burp **Proxy** ➔ **HTTP history**, locate a `POST /api/v1/transfers` request.
+2. Right-click and choose **Send to Intruder** (or press `Cmd+I` / `Ctrl+I`).
+3. In the **Intruder** tab:
+   - **Positions**: Click **Clear §**.
+   - Highlight the transfer amount or transaction reference: `{"amount": §100.00§}`.
+   - Select **Attack type**: `Sniper` (for single parameter boundary fuzzing) or `Pitchfork` (for paired credentials).
+4. In the **Payloads** tab:
+   - **Payload type**: Choose **Numbers** (from `1` to `20`, step `1`) or **Null payloads** (to send 20 identical requests).
+5. In **Resource Pool**:
+   - Set **Maximum concurrent requests**: `20` (or enable HTTP/2 single-packet attack).
+6. Click **Start attack**.
+7. **Assertion**: Verify backend responses in the Intruder results table.
+   - Successful balance deductions return `200 OK`.
+   - Subsequent concurrent attempts exceeding balance or using the same idempotency key return `409 Conflict` or `422 Unprocessable Entity`—confirming database row locking (`SELECT ... FOR UPDATE`) is working as designed!
+
+---
+
 ---
 
 ## 📱 Mobile App Testing & SSL Pinning Bypass Guide

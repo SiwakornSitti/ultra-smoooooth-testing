@@ -3932,8 +3932,8 @@ class: pt-2 pb-2 px-8
     </div>
     <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
       <li>• <strong>Payload Positions:</strong> Mark parameters with <code>§...§</code> markers (e.g. <code>"amount": §100§</code> or <code>"otp": "§123456§"</code>).</li>
-      <li>• <strong>Attack Types:</strong> <em>Sniper</em> (one field at a time), <em>Battering Ram</em> (same payload across all), or <em>Cluster Bomb</em> (combinatorial matrices).</li>
-      <li>• <strong>Concurrency Testing:</strong> Send 20 parallel threads to probe distributed lock race conditions (e.g. double-spend transfers).</li>
+      <li>• <strong>4 Attack Modes:</strong> <em>Sniper</em> (1 field), <em>Battering Ram</em> (sync all), <em>Pitchfork</em> (paired lockstep), <em>Cluster Bomb</em> (Cartesian matrix).</li>
+      <li>• <strong>Concurrency &amp; TOCTOU:</strong> HTTP/2 single-packet bursts to probe database row locks &amp; double-spend race conditions.</li>
     </ul>
   </div>
   <div class="mt-2 pt-1 border-t border-purple-500/30 text-[11px] text-purple-300 font-mono">
