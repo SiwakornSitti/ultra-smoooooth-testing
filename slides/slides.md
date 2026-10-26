@@ -635,53 +635,82 @@ layout: section
 
 
 ---
-
-# 🪝 What is WireMock? — Core Capabilities
-
-### Programmable HTTP Mock Server for External API Simulation
-
-<div class="multi-col-grid-3">
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🌐 Precision Matching</h3>
-  <p>Match incoming HTTP traffic by exact URLs, regex patterns, custom headers (e.g. <code>Mock-Scenario</code>), query parameters, and semantic JSON payloads.</p>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🪄 Dynamic Templating</h3>
-  <p>Echo client request parameters, compute arithmetic fee calculations, and generate ISO dates/UUIDs dynamically via Handlebars.</p>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">⚡ Chaos &amp; FSM (Finite State Machine)</h3>
-  <p>Inject network latency, dropped TCP sockets, and model multi-step lifecycles (e.g. <code>Started → PAID</code>) with automatic test reset.</p>
-</div>
-
-</div>
-
+class: pt-2 pb-2 px-8
 ---
 
-# 🎯 Why WireMock in Testing?
+# 🪝 What is WireMock & Why Use It in Testing?
 
-### Deterministic Isolation, Zero Sandbox Flakiness & Fast Test Execution
+<h3 class="text-slate-300 text-sm mb-1.5">Programmable HTTP Mock Server • Deterministic Isolation &amp; Zero Sandbox Flakiness</h3>
 
-<div class="multi-col-grid-3">
+<div class="grid grid-cols-2 gap-3.5 mt-2">
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🛡️ Hermetic Isolation</h3>
-  <p>Eliminates third-party sandbox flakiness and maintenance windows by simulating SMS, OAuth, and banking APIs with deterministic local stubs.</p>
+<div class="slide-card p-3.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🪝</span> Core Mocking Engine
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded">Capabilities</span>
+    </div>
+    <p class="text-xs text-slate-200 leading-snug mb-2 font-medium">
+      Out-of-process HTTP stand-in server with deterministic stubbing &amp; fault injection
+    </p>
+    <ul class="space-y-1.5 text-[11px] text-slate-300 leading-snug">
+      <li class="flex items-start gap-1.5">
+        <span class="text-emerald-400 font-bold">•</span>
+        <span><strong class="text-emerald-300">Precision Matching:</strong> Match traffic by exact URLs, regex patterns, custom headers (e.g. <code>Mock-Scenario</code>), and JSONPath expressions.</span>
+      </li>
+      <li class="flex items-start gap-1.5">
+        <span class="text-emerald-400 font-bold">•</span>
+        <span><strong class="text-emerald-300">Dynamic Templating:</strong> Echo client data, calculate dynamic VAT math, and generate fresh UUIDs/timestamps on the fly via Handlebars.</span>
+      </li>
+      <li class="flex items-start gap-1.5">
+        <span class="text-emerald-400 font-bold">•</span>
+        <span><strong class="text-emerald-300">Chaos &amp; State Machines:</strong> Inject latency, socket faults, and model multi-step lifecycles (<code>Started → PAID</code>) with auto-reset.</span>
+      </li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-emerald-500/30 text-[10.5px] font-mono text-emerald-300">
+    ✨ Out-of-Process HTTP Stand-In Server
+  </div>
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">⚡ Sub-Millisecond Speed</h3>
-  <p>Executes tests in sub-milliseconds with zero remote network roundtrips, zero API credit costs, and zero provider rate-limit throttling.</p>
+<div class="slide-card p-3.5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> Why WireMock in Testing?
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">Strategic Value</span>
+    </div>
+    <p class="text-xs text-slate-200 leading-snug mb-2 font-medium">
+      Eliminates third-party sandbox flakiness and vendor maintenance outages entirely
+    </p>
+    <ul class="space-y-1.5 text-[11px] text-slate-300 leading-snug">
+      <li class="flex items-start gap-1.5">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Hermetic Isolation:</strong> Simulates SMS, OAuth, and banking APIs with deterministic local stubs—no external vendor downtime.</span>
+      </li>
+      <li class="flex items-start gap-1.5">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Sub-Millisecond Speed:</strong> Sub-millisecond execution with zero remote network roundtrips, zero API credit costs, and zero rate limits.</span>
+      </li>
+      <li class="flex items-start gap-1.5">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Live Proxy &amp; Record:</strong> Records live vendor HTTP traffic directly into JSON stubs and transparently proxies unmapped routes to upstream.</span>
+      </li>
+    </ul>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-cyan-500/30 text-[10.5px] font-mono text-cyan-300">
+    ✨ 100% Deterministic &amp; Fast CI Execution
+  </div>
 </div>
 
-<div class="col-card">
-  <h3 class="text-emerald-400">🔄 Live Proxy &amp; Record</h3>
-  <p>Records real-world HTTP traffic directly into JSON stub definitions and transparently proxies unmapped routes to live upstream providers.</p>
 </div>
 
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-slate-200">💡 <strong>Virtualization Foundation:</strong> WireMock virtualizes external boundaries so integration tests run completely offline, fast, and repeatable.</span>
+  <span class="text-[10.5px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Pillar 1 • Virtualization</span>
 </div>
 
 ---
