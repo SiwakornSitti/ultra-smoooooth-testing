@@ -3252,138 +3252,6 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
-# 🎬 In-Flight Traffic Interception & Tampering
-
-### Live instructor walkthrough: Intercepting payloads and steering downstream failure states
-
-<div class="grid grid-cols-2 gap-3.5 mt-2">
-
-<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Walkthrough Steps
-      </span>
-      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp MITM</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>1. Intercept Traffic:</strong> In Burp Suite Proxy tab, toggle <strong>Intercept is ON</strong> on port <code>:8080</code>.</li>
-      <li>• <strong>2. Dispatch Request:</strong> Issue client cURL with <code>-x http://127.0.0.1:8080</code> to route through proxy.</li>
-      <li>• <strong>3. Mutate In-Flight:</strong> Inspect packet in Burp, edit payload or append steering header in real time.</li>
-      <li>• <strong>4. Forward & Assert:</strong> Click <strong>Forward</strong>; verify downstream service reacts to tampered request.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
-    💡 Enables negative testing and security tampering without touching backend code.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>🖥️</span> Live Terminal Commands
-      </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Proxy</span>
-    </div>
-
-```bash
-# 1. Send outbound transfer through Burp Proxy
-curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost:8081/api/v1/transfers \
-  -H "Content-Type: application/json" \
-  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
-
-# 2. In Burp: Intercept pauses the request
-# 3. Tamper amount ➔ 999999, inject header, click Forward
-# 4. Observe downstream response in terminal
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ⚡ Client receives downstream response seamlessly
-  </div>
-</div>
-
-</div>
-
-<!--
-Presenter Notes:
-- Ensure Burp Suite Intercept is ON before running the curl command.
-- Show the paused request in Burp Proxy, highlight the headers and JSON payload.
-- Edit the payload live and forward the request to show instant downstream reaction.
--->
-
----
-class: pt-2 pb-2 px-8
----
-
-# 🏆 Workshop: In-Flight Fraud Tampering
-
-### Tamper with transfer payload mid-flight and inject downstream fraud steering headers
-
-<div class="grid grid-cols-2 gap-3.5 mt-2">
-
-<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🎯</span> Workshop Challenge Rules
-      </span>
-      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp Proxy :8080</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Target Transaction:</strong> Intercept outbound <code>POST /api/v1/transfers</code> packet before it reaches the backend gateway.</li>
-      <li>• <strong>Payload Mutation:</strong> Modify JSON body in transit from <code>"amount": 100</code> to <code>"amount": 999999</code>.</li>
-      <li>• <strong>Header Injection:</strong> Inject <code>Mock-Scenario: TRANSFER:FRAUD_ALERT</code> into the HTTP headers.</li>
-      <li>• <strong>Expected Verification:</strong> WireMock detects the tampered state and halts the transfer with <code>HTTP 403 Forbidden</code>.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
-    🛡️ Simulates malicious mobile client tampering &amp; gateway fraud defenses.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Verification Sequence
-      </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / MITM</span>
-    </div>
-
-```bash
-# 1. Send normal transfer through Burp Proxy
-curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost:8081/api/v1/transfers \
-  -H "Content-Type: application/json" \
-  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
-
-# 2. In Burp Intercept: Tamper amount to 999999
-#    and inject: Mock-Scenario: TRANSFER:FRAUD_ALERT
-
-# 3. Forward request -> Assert HTTP 403 Forbidden response
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ⚡ No application code changes required!
-  </div>
-</div>
-
-</div>
-
-<!--
-Presenter Notes:
-- Challenge participants to intercept the transfer request in Burp Proxy.
-- Observe how tampering with the amount and injecting the fraud scenario triggers an immediate 403 response.
--->
-
----
-class: pt-2 pb-2 px-8
----
-
 # 🔁 Burp Suite — Repeater: Manual Request Workbench
 
 <h3 class="text-slate-300 text-sm mb-1.5">Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation</h3>
@@ -3511,6 +3379,46 @@ Payload List: [-1, 0, 0.001, 999999999, "NaN", null, "'; DROP--"]
 <div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-purple-500/40 flex items-center justify-between">
   <span class="text-slate-200">💡 <strong>QA Superpower:</strong> Intruder rapidly validates that backend validation rejecting negative amounts returns <code>422 Unprocessable Entity</code>.</span>
   <span class="text-purple-300 font-mono text-[10px] bg-purple-950/60 px-2 py-0.5 rounded">Boundary Matrix</span>
+</div>
+
+---
+
+# ⚙️ Match & Replace Rules: Automated Transformation
+
+### Zero-Click Automated Header & Payload Manipulation
+
+<div class="multi-col-grid-2 gap-3 mb-1.5">
+
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-cyan-500/40">
+  <h3 class="text-cyan-400 text-sm mb-0.5">🛠️ What is Match &amp; Replace?</h3>
+  <p class="text-slate-300 text-xs leading-relaxed">
+    Built into Burp Proxy Settings. Automatically applies regex find-and-replace rules across all passing traffic <strong>without pausing the interceptor</strong>.
+  </p>
+  <ul class="space-y-1 text-slate-200 text-xs">
+    <li>• <strong>Header Injection</strong>: Auto-inject <code>Mock-Scenario</code> or <code>Authorization</code> into every outbound request.</li>
+    <li>• <strong>Host Redirection</strong>: Transparently redirect staging URLs to localhost.</li>
+    <li>• <strong>Feature Flag Flipping</strong>: Mutate boolean flags in inbound response JSON.</li>
+  </ul>
+</div>
+
+<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/40">
+  <h3 class="text-emerald-400 text-sm mb-0.5">📋 Example Match &amp; Replace Rule</h3>
+  <div class="bg-slate-950/90 rounded p-2 border border-emerald-500/30 font-mono text-[11px] text-emerald-200">
+    <div><strong>Item Type</strong>: Request header</div>
+    <div><strong>Match</strong>: <code>^User-Agent:.*$</code></div>
+    <div><strong>Replace</strong>: <code>Mock-Scenario: TRANSFER:FAIL</code></div>
+    <div><strong>Comment</strong>: Auto-steer transfer failure</div>
+  </div>
+  <p class="text-emerald-300/80 text-[11px] leading-tight mt-auto">
+    Any test suite running through the proxy will automatically execute failure paths without script edits.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
+  <span class="text-base">💡</span>
+  <span class="text-slate-200 leading-snug"><strong>Automated CI Integration</strong>: Configure Match &amp; Replace rules once, and your existing Playwright/Selenium suites seamlessly run against targeted failure scenarios!</span>
 </div>
 
 ---
@@ -3699,44 +3607,136 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
-# ⚙️ Match & Replace Rules: Automated Transformation
+# 🎬 In-Flight Traffic Interception & Tampering
 
-### Zero-Click Automated Header & Payload Manipulation
+### Live instructor walkthrough: Intercepting payloads and steering downstream failure states
 
-<div class="multi-col-grid-2 gap-3 mb-1.5">
+<div class="grid grid-cols-2 gap-3.5 mt-2">
 
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-cyan-500/40">
-  <h3 class="text-cyan-400 text-sm mb-0.5">🛠️ What is Match &amp; Replace?</h3>
-  <p class="text-slate-300 text-xs leading-relaxed">
-    Built into Burp Proxy Settings. Automatically applies regex find-and-replace rules across all passing traffic <strong>without pausing the interceptor</strong>.
-  </p>
-  <ul class="space-y-1 text-slate-200 text-xs">
-    <li>• <strong>Header Injection</strong>: Auto-inject <code>Mock-Scenario</code> or <code>Authorization</code> into every outbound request.</li>
-    <li>• <strong>Host Redirection</strong>: Transparently redirect staging URLs to localhost.</li>
-    <li>• <strong>Feature Flag Flipping</strong>: Mutate boolean flags in inbound response JSON.</li>
-  </ul>
-</div>
-
-<div class="col-card p-2.5 space-y-1.5 bg-slate-900/60 border-emerald-500/40">
-  <h3 class="text-emerald-400 text-sm mb-0.5">📋 Example Match &amp; Replace Rule</h3>
-  <div class="bg-slate-950/90 rounded p-2 border border-emerald-500/30 font-mono text-[11px] text-emerald-200">
-    <div><strong>Item Type</strong>: Request header</div>
-    <div><strong>Match</strong>: <code>^User-Agent:.*$</code></div>
-    <div><strong>Replace</strong>: <code>Mock-Scenario: TRANSFER:FAIL</code></div>
-    <div><strong>Comment</strong>: Auto-steer transfer failure</div>
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Walkthrough Steps
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp MITM</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. Intercept Traffic:</strong> In Burp Suite Proxy tab, toggle <strong>Intercept is ON</strong> on port <code>:8080</code>.</li>
+      <li>• <strong>2. Dispatch Request:</strong> Issue client cURL with <code>-x http://127.0.0.1:8080</code> to route through proxy.</li>
+      <li>• <strong>3. Mutate In-Flight:</strong> Inspect packet in Burp, edit payload or append steering header in real time.</li>
+      <li>• <strong>4. Forward & Assert:</strong> Click <strong>Forward</strong>; verify downstream service reacts to tampered request.</li>
+    </ul>
   </div>
-  <p class="text-emerald-300/80 text-[11px] leading-tight mt-auto">
-    Any test suite running through the proxy will automatically execute failure paths without script edits.
-  </p>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    💡 Enables negative testing and security tampering without touching backend code.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🖥️</span> Live Terminal Commands
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Proxy</span>
+    </div>
+
+```bash
+# 1. Send outbound transfer through Burp Proxy
+curl -x http://127.0.0.1:8080 -s -X POST \
+  http://localhost:8081/api/v1/transfers \
+  -H "Content-Type: application/json" \
+  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
+
+# 2. In Burp: Intercept pauses the request
+# 3. Tamper amount ➔ 999999, inject header, click Forward
+# 4. Observe downstream response in terminal
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ Client receives downstream response seamlessly
+  </div>
 </div>
 
 </div>
 
-<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/50 p-2 flex items-center gap-2 shadow-lg">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 leading-snug"><strong>Automated CI Integration</strong>: Configure Match &amp; Replace rules once, and your existing Playwright/Selenium suites seamlessly run against targeted failure scenarios!</span>
+<!--
+Presenter Notes:
+- Ensure Burp Suite Intercept is ON before running the curl command.
+- Show the paused request in Burp Proxy, highlight the headers and JSON payload.
+- Edit the payload live and forward the request to show instant downstream reaction.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🏆 Workshop: In-Flight Fraud Tampering
+
+### Tamper with transfer payload mid-flight and inject downstream fraud steering headers
+
+<div class="grid grid-cols-2 gap-3.5 mt-2">
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> Workshop Challenge Rules
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp Proxy :8080</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Target Transaction:</strong> Intercept outbound <code>POST /api/v1/transfers</code> packet before it reaches the backend gateway.</li>
+      <li>• <strong>Payload Mutation:</strong> Modify JSON body in transit from <code>"amount": 100</code> to <code>"amount": 999999</code>.</li>
+      <li>• <strong>Header Injection:</strong> Inject <code>Mock-Scenario: TRANSFER:FRAUD_ALERT</code> into the HTTP headers.</li>
+      <li>• <strong>Expected Verification:</strong> WireMock detects the tampered state and halts the transfer with <code>HTTP 403 Forbidden</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    🛡️ Simulates malicious mobile client tampering &amp; gateway fraud defenses.
+  </div>
 </div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Verification Sequence
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / MITM</span>
+    </div>
+
+```bash
+# 1. Send normal transfer through Burp Proxy
+curl -x http://127.0.0.1:8080 -s -X POST \
+  http://localhost:8081/api/v1/transfers \
+  -H "Content-Type: application/json" \
+  -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
+
+# 2. In Burp Intercept: Tamper amount to 999999
+#    and inject: Mock-Scenario: TRANSFER:FRAUD_ALERT
+
+# 3. Forward request -> Assert HTTP 403 Forbidden response
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ No application code changes required!
+  </div>
+</div>
+
+</div>
+
+<!--
+Presenter Notes:
+- Challenge participants to intercept the transfer request in Burp Proxy.
+- Observe how tampering with the amount and injecting the fraud scenario triggers an immediate 403 response.
+-->
 
 ---
 
@@ -4761,5 +4761,3 @@ export default function () {
 </div>
 
 </div>
-
-

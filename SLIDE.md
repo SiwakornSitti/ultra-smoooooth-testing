@@ -79,14 +79,14 @@ Quick navigation reference for presentations in `slides/`.
 | **63** | [⚡ Live Intercept in Action](slides/slides.md#L3098) | Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight |
 | **64** | [🧪 Hands-On Lab: Burp Proxy Setup &amp; Verification](slides/slides.md#L3123) | Configure Proxy Listener (:8080) &amp; Verify Local Socket Connectivity |
 | **65** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L3187) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
-| **66** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L3255) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
-| **67** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L3321) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
-| **68** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L3387) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
-| **69** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L3452) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
-| **70** | [🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation](slides/slides.md#L3520) | Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection |
-| **71** | [⚖️ Burp Suite — Comparer: Visual Response Diffing](slides/slides.md#L3584) | Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations |
-| **72** | [🎲 Burp Suite — Sequencer &amp; Extensibility (BApp)](slides/slides.md#L3650) | Token Entropy Analysis &amp; Custom Test Automation with Extensions |
-| **73** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L3703) | Zero-Click Automated Header & Payload Manipulation |
+| **66** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L3255) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
+| **67** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L3320) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
+| **68** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L3386) | Zero-Click Automated Header & Payload Manipulation |
+| **69** | [🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation](slides/slides.md#L3428) | Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection |
+| **70** | [⚖️ Burp Suite — Comparer: Visual Response Diffing](slides/slides.md#L3492) | Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations |
+| **71** | [🎲 Burp Suite — Sequencer &amp; Extensibility (BApp)](slides/slides.md#L3558) | Token Entropy Analysis &amp; Custom Test Automation with Extensions |
+| **72** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L3613) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
+| **73** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L3679) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
 | **74** | [⚡ Architectural Split: WireMock vs. Burp Suite](slides/slides.md#L3743) | Downstream Service Virtualization vs. In-Flight MITM Traffic Interception |
 | **75** | [🐳 Part 4](slides/slides.md#L3793) | Testcontainers — Hermetic Infrastructure |
 | **76** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L3803) | Programmable Docker Infrastructure Directly in Your Test Suite |
