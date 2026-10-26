@@ -3152,7 +3152,7 @@ Presenter Notes:
 
 
 ---
-class: pt-2 pb-1 px-8
+class: pt-1.5 pb-1 px-6
 ---
 
 # 🛡️ Burp Suite — MITM Proxy Architecture
@@ -3160,7 +3160,7 @@ class: pt-2 pb-1 px-8
 <h3 class="text-slate-300 text-sm mb-1">Client, MITM Proxy Engine & Backend Microservices Interaction</h3>
 
 <div class="flex justify-center items-center w-full mt-0.5">
-  <div class="adorable-arch-container">
+  <div class="adorable-arch-container !max-w-[772px] !h-[430px] !max-h-[435px]">
     <img src="/burp_suite_architecture.jpg" class="adorable-arch-img" alt="Burp Suite MITM Proxy Architecture" />
   </div>
 </div>
