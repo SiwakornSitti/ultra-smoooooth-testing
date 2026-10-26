@@ -3147,9 +3147,30 @@ class: pt-1.5 pb-1 px-8
 Presenter Notes:
 - Introduce Burp Suite's origin: Created by PortSwigger, it is the undisputed industry standard for web application security.
 - Demystify the tool: It's not magic—it's simply an HTTP/S proxy running on localhost:8080 that intercepts packets before they leave your machine.
-- Set up the transition: Since 100% of modern API traffic is encrypted with TLS, how does HTTPS actually work and why is transparent proxying challenging? Let's look at How HTTPS Works next.
+- Set up the transition: Let's see the high-level MITM proxy architecture showing how Burp positions itself between clients and backend gateways.
 -->
 
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🛡️ Burp Suite — MITM Proxy Architecture
+
+<h3 class="text-slate-300 text-sm mb-1">Client, MITM Proxy Engine & Backend Microservices Interaction</h3>
+
+<div class="flex justify-center items-center w-full mt-0.5">
+  <div class="adorable-arch-container">
+    <img src="/burp_suite_architecture.jpg" class="adorable-arch-img" alt="Burp Suite MITM Proxy Architecture" />
+  </div>
+</div>
+
+<!--
+Presenter Notes:
+- Walk through the three tiers: client (browser/mobile app), Burp Suite MITM proxy engine in the center, and backend microservices gateway.
+- Highlight the interception seam: traffic enters Burp, where it can be inspected, decoded, or modified before forwarding.
+- Set up the transition: Since modern web and API traffic is encrypted end-to-end, how does HTTPS actually work and how can Burp terminate both ends? Let's examine How HTTPS Works next.
+-->
 
 ---
 class: pt-1.5 pb-1 px-8
@@ -3236,21 +3257,8 @@ class: pt-1.5 pb-1 px-8
 Presenter Notes:
 - Walk through the two distinct phases: asymmetric cryptography for identity authentication and session key exchange, followed by symmetric cryptography for high-speed data transmission.
 - Emphasize that SNI in ClientHello is the only unencrypted hostname indicator in standard TLS (unless Encrypted Client Hello / ECH is active).
-- Point out why a standard proxy cannot see HTTP paths or bodies without terminating TLS, setting up the MITM architecture slide next.
+- Point out why a standard proxy cannot see HTTP paths or bodies without terminating TLS, setting up the PKI and Certificate Chaining slide next.
 -->
----
-class: pt-2 pb-1 px-8
----
-
-# 🛡️ Burp Suite — MITM Proxy Architecture
-
-<h3 class="text-slate-300 text-sm mb-1">Client, MITM Proxy Engine & Backend Microservices Interaction</h3>
-
-<div class="flex justify-center items-center w-full mt-0.5">
-  <div class="adorable-arch-container">
-    <img src="/burp_suite_architecture.jpg" class="adorable-arch-img" alt="Burp Suite MITM Proxy Architecture" />
-  </div>
-</div>
 
 ---
 class: pt-1.5 pb-1 px-8
