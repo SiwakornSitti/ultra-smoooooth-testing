@@ -1885,102 +1885,222 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
+class: pt-1.5 pb-1 px-8
+---
 
 # ⏱️ WireMock — Fixed Latency & Timeout Testing
 
-### Deterministic Delay Injection (`fixedDelayMilliseconds`)
+<h3 class="text-slate-300 text-xs mb-1">Deterministic Delay &amp; Chunked Dribble Simulation for HTTP Deadlines</h3>
 
-```json
-{
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/sms/send"
-  },
-  "response": {
-    "status": 200,
-    "fixedDelayMilliseconds": 8000,
-    "jsonBody": { "status": "DELIVERED" }
-  }
-}
-```
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
-<div class="slide-card text-sm mt-3">
-  ⏱️ Holds HTTP response for exactly <code>8000ms</code> to assert client timeout triggers (e.g. 5s HTTP context deadline) without hanging test workers.
+<div class="slide-card p-2.5 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
+        <span>⏱️</span> 1. Fixed Response Delay
+      </span>
+      <span class="text-[10px] font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded">fixedDelayMilliseconds</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-slate-400">"response": {</div>
+  <div class="text-amber-300 pl-2">"fixedDelayMilliseconds": 8000,</div>
+  <div class="text-emerald-300 pl-2">"status": 200, "jsonBody": { "status": "DELIVERED" }</div>
+  <div class="text-slate-400">}</div>
 </div>
 
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Deadline Testing:</strong> Holds response for 8,000ms to verify client timeout aborts (e.g. 5s context deadline).</li>
+  <li>• <strong>Deterministic Assertions:</strong> Guarantees client error handlers (e.g. <code>context deadline exceeded</code>) trigger reliably.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-amber-500/30 text-[10px] text-amber-300 font-mono">
+    ⏳ Proves client timeouts abort without hanging test workers.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🌊</span> 2. Chunked Dribble Delay
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded">chunkedDribbleDelay</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-slate-400">"response": {</div>
+  <div class="text-cyan-300 pl-2">"chunkedDribbleDelay": {</div>
+  <div class="text-amber-300 pl-4">"numberOfChunks": 5, "totalDuration": 5000</div>
+  <div class="text-cyan-300 pl-2">}</div>
+  <div class="text-slate-400">}</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Slow Streaming:</strong> Divides response body into 5 chunks emitted incrementally over 5,000ms.</li>
+  <li>• <strong>Backpressure Testing:</strong> Simulates slow mobile network connections and client read deadline timeouts.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-cyan-500/30 text-[10px] text-cyan-300 font-mono">
+    🌊 Tests socket read deadlines and streaming buffers.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-amber-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-amber-200 font-medium flex items-center gap-1.5 leading-snug">
+    <span>💡</span> <strong>Timeout Engineering:</strong> Validates that client context deadlines (<code>context.WithTimeout</code>) properly abort slow requests before backend connection pools are exhausted.
+  </span>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded">Fail Fast</span>
+</div>
+
+---
+class: pt-1.5 pb-1 px-8
 ---
 
 # 🎲 WireMock — Random Jitter & Latency Distributions
 
-### Real-World Latency Simulation (`delayDistribution`)
+<h3 class="text-slate-300 text-xs mb-1">Simulating Real-World Asymmetric Network Jitter &amp; Tail Spikes</h3>
 
-<div class="jitter-grid text-sm">
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
-<div class="slide-card space-y-2">
+<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
   <div>
-    <h3 class="text-emerald-400 font-bold mb-1">📈 Log-Normal</h3>
-    <p class="text-slate-300 mb-2">Fast median + realistic long-tail spikes — models real network traffic.</p>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>📈</span> 1. Log-Normal Distribution
+      </span>
+      <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded">Realistic Spikes</span>
+    </div>
 
-```json
-{
-  "response": {
-    "delayDistribution": {
-      "type": "lognormal",
-      "median": 150,
-      "sigma": 0.5
-    }
-  }
-}
-```
-  </div>
-
-  <p class="text-slate-300 text-sm mt-2 pt-1 border-t border-slate-700/50">📌 <strong>median</strong>: 50th-percentile ms &nbsp;|&nbsp; <strong>sigma</strong>: tail spread</p>
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-slate-400">"delayDistribution": {</div>
+  <div class="text-emerald-400 pl-2">"type": "lognormal",</div>
+  <div class="text-amber-300 pl-2">"median": 150, "sigma": 0.5</div>
+  <div class="text-slate-400">}</div>
 </div>
 
-<div class="slide-card space-y-2">
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Real Traffic Modeling:</strong> Fast median (150ms) with realistic asymmetric 99th-percentile long-tail spikes.</li>
+  <li>• <strong>Tail Latency:</strong> <code>sigma</code> governs variance spread—simulates cloud GC pauses and noisy neighbors.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[10px] text-emerald-300 font-mono">
+    📊 Best for simulating real-world production network traffic.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between">
   <div>
-    <h3 class="text-emerald-400 font-bold mb-1">📊 Uniform</h3>
-    <p class="text-slate-300 mb-2">Flat random delay between a fixed min and max — predictable jitter band.</p>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-blue-500/30">
+      <span class="text-blue-300 font-bold text-xs flex items-center gap-1.5">
+        <span>📊</span> 2. Uniform &amp; Pareto Distributions
+      </span>
+      <span class="text-[10px] font-mono text-blue-300 bg-blue-950/60 px-1.5 py-0.5 rounded">Jitter Bands</span>
+    </div>
 
-```json
-{
-  "response": {
-    "delayDistribution": {
-      "type": "uniform",
-      "lower": 100,
-      "upper": 500
-    }
-  }
-}
-```
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-cyan-300 font-semibold">Uniform (Flat Jitter Band):</div>
+  <div class="text-slate-300 pl-1">{"type": "uniform", "lower": 100, "upper": 500}</div>
+  <div class="text-violet-300 font-semibold mt-0.5">Pareto (Power-Law Decay):</div>
+  <div class="text-slate-300 pl-1">{"type": "pareto", "scale": 100, "alpha": 1.2}</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Uniform Window:</strong> Equal probability within min/max bounds—great for baseline latency variance.</li>
+  <li>• <strong>Pareto Curve:</strong> Heavy-tailed power-law decay—simulates 80/20 rule network congestion.</li>
+</ul>
   </div>
-
-  <p class="text-slate-300 text-sm mt-2 pt-1 border-t border-slate-700/50">📌 <strong>lower</strong>: min delay ms &nbsp;|&nbsp; <strong>upper</strong>: max delay ms</p>
+  <div class="mt-1 pt-0.5 border-t border-blue-500/30 text-[10px] text-blue-300 font-mono">
+    ⚡ Verifies adaptive client retry backoff under network variance.
+  </div>
 </div>
 
 </div>
 
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-emerald-200 font-medium flex items-center gap-1.5 leading-snug">
+    <span>💡</span> <strong>Thundering Herd Defense:</strong> Testing against jitter distributions validates that client retries incorporate randomized jitter to prevent synchronized retry spikes.
+  </span>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Jittered Backoff</span>
+</div>
 
 ---
+class: pt-1.5 pb-1 px-8
+---
 
-# 💥 WireMock — Network Fault Injection
+# 💥 WireMock — Network Fault Injection (Chaos)
 
-### Simulating Hard Network Failures & Socket Errors
+<h3 class="text-slate-300 text-xs mb-1">Simulating Hard Socket Failures, Packet Truncation &amp; Circuit Breaker Tripping</h3>
 
-```json
-{
-  "request": {
-    "method": "GET",
-    "urlPath": "/lab/api/unstable-upstream"
-  },
-  "response": {
-    "fault": "CONNECTION_RESET_BY_PEER"
-  }
-}
-```
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
-<div class="slide-card text-sm mt-3">
-  💥 <strong>Available Fault Types</strong>: <code>CONNECTION_RESET_BY_PEER</code> (abrupt TCP RST), <code>MALFORMED_RESPONSE_CHUNK</code> (corrupted byte stream), and <code>EMPTY_RESPONSE</code> (0 bytes).
+<div class="slide-card p-2.5 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-xs flex items-center gap-1.5">
+        <span>💥</span> 1. Hard Socket Faults vs HTTP 500
+      </span>
+      <span class="text-[10px] font-mono text-rose-300 bg-rose-950/60 px-1.5 py-0.5 rounded">TCP Layer</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div><span class="text-rose-400 font-semibold">• EMPTY_RESPONSE:</span> TCP closes immediately with 0 bytes</div>
+  <div><span class="text-amber-300 font-semibold">• MALFORMED_RESPONSE_CHUNK:</span> Sends corrupt bytes mid-stream</div>
+  <div><span class="text-violet-300 font-semibold">• RANDOM_DATA_THEN_CLOSE:</span> Sends garbage bytes and aborts</div>
+  <div><span class="text-cyan-300 font-semibold">• CONNECTION_RESET_BY_PEER:</span> Sends abrupt TCP RST frame</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Beyond HTTP 500:</strong> HTTP 500 is still a valid HTTP response. Socket faults test unhandled EOFs &amp; driver crashes.</li>
+  <li>• <strong>Circuit Breakers:</strong> Forces resilience wrappers (e.g. gobreaker) to increment failure counters and trip to <code>OPEN</code>.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-rose-500/30 text-[10px] text-rose-300 font-mono">
+    ⚡ Simulates network card crashes &amp; dropped TCP sockets.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>📄</span> 2. Declarative Fault Mapping Stub
+      </span>
+      <span class="text-[10px] font-mono text-rose-400 bg-rose-950/60 px-1.5 py-0.5 rounded">JSON Stub</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-slate-400">{</div>
+  <div class="text-slate-300 pl-2">"request": { "method": "GET", "urlPath": "/api/payments" },</div>
+  <div class="text-rose-400 font-bold pl-2">"response": { "fault": "EMPTY_RESPONSE" }</div>
+  <div class="text-slate-400">}</div>
+</div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-amber-300 font-semibold">Client-Side Error Mapping:</div>
+  <div>• Go: <code class="text-slate-300">net/http: unexpected EOF / connection reset</code></div>
+  <div>• Node/Axios: <code class="text-slate-300">ECONNRESET / socket hang up</code></div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Zero Mock Logic:</strong> WireMock natively terminates socket without spinning up external network proxies.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-slate-700/60 text-[10px] text-slate-400 font-mono">
+    🔍 Asserts client socket-level error handling.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-rose-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-rose-200 font-medium flex items-center gap-1.5 leading-snug">
+    <span>💡</span> <strong>Chaos Target:</strong> Proves that upstream gateway services fail gracefully and trip circuit breakers to <code>OPEN</code> without exhausting worker threads or crashing.
+  </span>
+  <span class="text-[11px] font-mono text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded">Circuit Breaker OPEN</span>
 </div>
 
 ---
