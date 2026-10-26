@@ -3120,6 +3120,70 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
+# 🧪 Hands-On Lab: Burp Proxy Setup &amp; Verification
+
+<h3 class="text-slate-300 text-sm mb-1.5">Configure Proxy Listener (:8080) &amp; Verify Local Socket Connectivity</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🛠️</span> 1. Proxy Listener Setup
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">127.0.0.1:8080</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Open Settings:</strong> In Burp Suite, navigate to <strong>Proxy ➔ Proxy settings</strong> (Options).</li>
+      <li>• <strong>Enable Listener:</strong> Under <em>Proxy Listeners</em>, ensure port <code>8080</code> is active and checked <strong>Running</strong>.</li>
+      <li>• <strong>Companion Lab Directory:</strong> All setup scripts &amp; HTTP samples are organized in <code>labs/burp-suite/</code>:
+        <br/>- <code>requests.http</code>: REST Client request walkthrough.
+        <br/>- <code>burp-config-example.json</code>: Pre-built Burp config.
+      </li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-[11px] text-amber-300 font-mono">
+    📁 Repo Folder: <code>labs/burp-suite/</code>
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. Automated Health Check
+      </span>
+      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">verify-proxy.sh</span>
+    </div>
+
+```bash
+# 1. Run the companion verification helper script
+chmod +x labs/burp-suite/verify-proxy.sh
+./labs/burp-suite/verify-proxy.sh
+
+# 2. Or test manually with cURL through proxy:
+curl -s -x http://127.0.0.1:8080 http://localhost:8080/health
+# Expected Output: OK
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
+    ✅ Socket active &amp; traffic routes through proxy cleanly!
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-amber-500/40 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>Quick Check:</strong> Ensure <code>Intercept is OFF</code> while testing basic connectivity so initial health probes aren't paused.</span>
+  <span class="text-amber-300 font-mono text-[10px] bg-amber-950/60 px-2 py-0.5 rounded">Listener Ready</span>
+</div>
+
+---
+class: pt-2 pb-2 px-8
+---
+
 # 🧪 Practice Lab: Live MITM Packet Interception
 
 ### Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses
