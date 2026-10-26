@@ -3089,19 +3089,83 @@ layout: section
 class: pt-1.5 pb-1 px-8
 ---
 
-# 🛡️ What is Burp Suite? — Core Capabilities
+# 🛡️ What is Burp Suite? — Web Security & MITM Proxy
 
-<h3 class="text-slate-300 text-xs mb-1">The Gold-Standard Web Security Tool — Repurposed for Microservices QA &amp; Integration Testing</h3>
+<h3 class="text-slate-300 text-xs mb-1">The Industry-Standard Cybersecurity Platform for Web &amp; API Traffic Inspection</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
+        <span>🛡️</span> 1. The Gold Standard in Web Security
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/60 px-1.5 py-0.5 rounded">PortSwigger</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Global AppSec Benchmark:</strong> The world's most widely used platform for web penetration testing and API security audits.</li>
+      <li>• <strong>Network-Level Interceptor:</strong> Captures raw HTTP/1.1, HTTP/2, and WebSocket traffic at the TCP socket layer.</li>
+      <li>• <strong>Zero Source Code Intrusion:</strong> Operates completely out-of-process—no SDKs, no agent injection, and zero code changes.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-emerald-300 font-mono">
+    🔒 Raw packet-level inspection without touching application code.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚙️</span> 2. How It Operates (Local MITM)
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded">127.0.0.1:8080</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Loopback Proxy Listener:</strong> Runs silently on local port <code>8080</code>; browsers, mobile emulators, and test runners route traffic through it.</li>
+      <li>• <strong>Dual-Terminus Decryption:</strong> Terminates TLS from client, inspects plaintext, and re-encrypts upstream to backend gateways.</li>
+      <li>• <strong>Integrated Tool Suite:</strong> One unified UI hosting <strong>Proxy</strong>, <strong>Repeater</strong>, <strong>Intruder</strong>, and <strong>Logger</strong> engines.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-cyan-300 font-mono">
+    ⚡ Transparent Man-In-The-Middle inspection engine.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Core Definition</strong>: Burp Suite sits between web/mobile clients and backend gateways, giving testers full visibility and control over in-flight traffic.
+  </span>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Transparent MITM Proxy</span>
+</div>
+
+<!--
+Presenter Notes:
+- Introduce Burp Suite's origin: Created by PortSwigger, it is the undisputed industry standard for web application security.
+- Demystify the tool: It's not magic—it's simply an HTTP/S proxy running on localhost:8080 that intercepts packets before they leave your machine.
+- Set up the transition: Why would a QA or integration testing team use a hacker's security tool? Let's look at why in the next slide.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🎯 Why Use Burp Suite in Integration Testing?
+
+<h3 class="text-slate-300 text-xs mb-1">Repurposing Cybersecurity Superpowers for Microservices QA &amp; Resilience</h3>
 
 <div class="multi-col-grid-3">
 
 <div class="col-card p-3 border border-emerald-500/30 bg-slate-900/60 flex flex-col justify-between">
   <div>
     <h3 class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>⚡</span> In-Flight MITM Proxy
+      <span>⚡</span> In-Flight Tampering
     </h3>
     <p class="text-xs text-slate-300 leading-snug">
-      Built as the world's leading web security proxy. Sits between browsers, mobile apps, and backend gateways to inspect, tamper with, or drop live encrypted HTTP/S packets without touching source code.
+      Pause requests mid-flight to inject <code>Mock-Scenario</code> headers that steer backend WireMock stubs. Mutate responses to HTTP 500 to test frontend fallback UI banners.
     </p>
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-emerald-300 font-mono">
@@ -3112,10 +3176,10 @@ class: pt-1.5 pb-1 px-8
 <div class="col-card p-3 border border-cyan-500/30 bg-slate-900/60 flex flex-col justify-between">
   <div>
     <h3 class="text-cyan-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>🔁</span> API Security &amp; QA Workbench
+      <span>🔁</span> Instant API Replay
     </h3>
     <p class="text-xs text-slate-300 leading-snug">
-      Modify headers, parameters, and payloads in <strong>Repeater</strong>. Re-issue packets instantly in total isolation to verify validation boundaries, security edge cases, and error responses without UI clicks.
+      1-click handoff from live logs into <strong>Repeater</strong>. Tweak JSON payloads, query params, or auth tokens to test edge cases in total isolation without repeating manual UI flows.
     </p>
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-cyan-300 font-mono">
@@ -3126,10 +3190,10 @@ class: pt-1.5 pb-1 px-8
 <div class="col-card p-3 border border-amber-500/30 bg-slate-900/60 flex flex-col justify-between">
   <div>
     <h3 class="text-amber-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>⚙️</span> Fuzzing &amp; Steering Engine
+      <span>⚙️</span> CI Steering &amp; Races
     </h3>
     <p class="text-xs text-slate-300 leading-snug">
-      Inject automated <code>Mock-Scenario</code> headers via <strong>Match &amp; Replace</strong> in CI pipelines, and execute high-throughput boundary fuzzing or HTTP/2 single-packet race testing in <strong>Intruder</strong>.
+      Auto-inject mock headers unattended in CI/CD using <strong>Match &amp; Replace</strong>. Stress-test TOCTOU race conditions and rate limits with <strong>Intruder</strong> multi-packet attacks.
     </p>
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-amber-300 font-mono">
@@ -3139,18 +3203,20 @@ class: pt-1.5 pb-1 px-8
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Security Heritage in QA</strong>: Because Burp Suite is built for cybersecurity testing, it gives QA engineers raw socket-level control to simulate fraud, steer mocks, and test race conditions with zero code changes.
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>The QA Advantage</strong>: Security tools excel at low-level packet manipulation, giving QA engineers raw power to simulate failure states application code normally prevents.
   </span>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">AppSec ➔ QA Power</span>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">AppSec ➔ QA Superpower</span>
 </div>
 
 <!--
 Presenter Notes:
-- Acknowledge Burp's heritage: It is universally recognized as the gold-standard offensive web security / penetration testing tool created by PortSwigger.
-- Explain why QA uses it: Security tools are engineered specifically for low-level packet manipulation, raw TLS interception, and high-throughput fuzzing. QA harnesses these exact capabilities to test resilience, error handling, and mock steering.
-- Transition to Slide 60: Because Burp operates as an in-flight proxy over encrypted HTTPS connections, it must establish a dual-terminus TLS handshake, which we explore next.
+- Emphasize the 3 key QA testing wins:
+  1. No code changes needed to test edge cases or error handling.
+  2. Instant reproduction in Repeater saves hours compared to clicking through multi-step browser forms.
+  3. Intruder proves whether microservice balances or promo codes are vulnerable to concurrency race conditions.
+- Lead into HTTPS: Since 100% of modern API traffic is encrypted with TLS, how does Burp actually decrypt traffic without throwing security warnings? Next slide: How HTTPS Works.
 -->
 
 
