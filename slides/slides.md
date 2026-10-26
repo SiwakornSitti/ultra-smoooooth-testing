@@ -3089,6 +3089,75 @@ layout: section
 class: pt-1.5 pb-1 px-8
 ---
 
+# 🛡️ What is Burp Suite? — Core Capabilities
+
+<h3 class="text-slate-300 text-xs mb-1">Programmable Man-In-The-Middle (MITM) Traffic Controller for Microservices QA</h3>
+
+<div class="multi-col-grid-3">
+
+<div class="col-card p-3 border border-emerald-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>⚡</span> In-Flight Interception
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      Pause, inspect, modify, or drop live HTTP/S requests and responses mid-flight between browsers, mobile apps, and backend API gateways without touching application source code.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-emerald-300 font-mono">
+    Proxy ➔ Duplex Traffic Control
+  </div>
+</div>
+
+<div class="col-card p-3 border border-cyan-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-cyan-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>🔁</span> Isolated API Workbench
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      Tamper with headers, query parameters, and JSON payloads in <strong>Repeater</strong>. Re-issue API requests instantly in total isolation without repeating multi-step UI test clicks.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-cyan-300 font-mono">
+    Repeater ➔ Rapid Edge Reproduction
+  </div>
+</div>
+
+<div class="col-card p-3 border border-amber-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-amber-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>⚙️</span> Steering &amp; Fuzzing
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      Inject automated <code>Mock-Scenario</code> headers via <strong>Match &amp; Replace</strong> in CI pipelines, and execute high-throughput parameter fuzzing or HTTP/2 race condition tests in <strong>Intruder</strong>.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-amber-300 font-mono">
+    Intruder ➔ Fuzzing &amp; Concurrency
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Zero-Code Traffic Control</strong>: Burp Suite sits silently on loopback (<code>127.0.0.1:8080</code>), enabling live fraud simulation, mock steering, and race-condition testing without redeploying code.
+  </span>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Local MITM Proxy</span>
+</div>
+
+<!--
+Presenter Notes:
+- Contrast WireMock with Burp Suite: WireMock mocks downstream 3rd-party dependencies; Burp Suite sits upstream between the client and the BFF gateway.
+- Highlight the 3 core testing superpowers: live manual tampering, fast 1-click isolated reproduction in Repeater, and automated headless steering in CI/CD.
+- Set up the immediate technical hurdle: Modern APIs use HTTPS/TLS everywhere, so before Burp can inspect or tamper with traffic, it must terminate and re-encrypt TLS, leading directly into the next slide on HTTPS.
+-->
+
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
 # 🔒 How HTTPS Works — TLS Handshake to Secure Tunnel
 
 <h3 class="text-slate-300 text-sm mb-1">Dual-Phase Cryptography: Asymmetric Authentication &amp; Symmetric Payload Encryption</h3>
