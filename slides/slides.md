@@ -903,70 +903,79 @@ class: pt-2 pb-1 px-8
 
 ### Specific Error Overrides vs. Default Happy Paths vs. Catch-All Proxies
 
-<div class="grid grid-cols-3 gap-3 mt-2 text-xs">
+<div class="grid grid-cols-3 gap-3.5 mt-2 flex-1">
 
-<div class="slide-card p-2.5 bg-slate-900/60 border-rose-500/30 flex flex-col justify-between">
+<div class="slide-card p-3 bg-slate-900/60 border border-rose-500/40 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-rose-500/30">
-      <span class="text-rose-400 font-bold text-xs">🥇 Tier 1: Fault Override</span>
-      <span class="text-xs font-mono text-rose-300 bg-rose-950 px-1.5 py-0.5 rounded">priority: 1</span>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🥇</span> Fault Override
+      </span>
+      <span class="text-[10px] font-mono font-semibold text-rose-300 bg-rose-950/80 border border-rose-500/40 px-2 py-0.5 rounded whitespace-nowrap">Priority 1</span>
     </div>
-    <p class="text-xs text-slate-300 mb-1.5">Explicit scenario fault contracts.</p>
-    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-xs text-rose-200 border border-slate-700/50 space-y-0.5">
-      <div><code>"priority": 1</code></div>
-      <div><code>"urlPath": "/api/transfers"</code></div>
-      <div><code>"headers": {"Mock-Scenario":"FUNDS"}</code></div>
-      <div><code>"status": 400 (ERR_FUNDS)</code></div>
+    <p class="text-xs text-slate-300 mb-2 leading-relaxed">Explicit scenario error &amp; fault contracts.</p>
+    <div class="bg-slate-950/90 rounded-md p-2 font-mono text-[10.5px] leading-relaxed border border-slate-800 text-slate-300 space-y-0.5">
+      <div><span class="text-rose-400 font-semibold">"priority"</span>: <span class="text-amber-300 font-bold">1</span>,</div>
+      <div><span class="text-slate-400">"urlPath"</span>: <span class="text-emerald-300">"/api/transfers"</span>,</div>
+      <div><span class="text-slate-400">"headers"</span>: { <span class="text-rose-300">"Mock-Scenario"</span>: <span class="text-emerald-300">"FUNDS"</span> },</div>
+      <div><span class="text-slate-400">"status"</span>: <span class="text-rose-400 font-bold">400</span> <span class="text-slate-500">// ERR_FUNDS</span></div>
     </div>
   </div>
-  <div class="pt-1 border-t border-rose-500/20 text-xs font-mono text-rose-300 mt-1.5">
-    🎯 Highest precedence
+  <div class="pt-1.5 border-t border-rose-500/30 text-[11px] font-mono text-rose-300 mt-2 flex items-center justify-between">
+    <span>🎯 Highest Precedence</span>
+    <span class="text-[9.5px] text-rose-400/90 bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">Tier 1</span>
   </div>
 </div>
 
-<div class="slide-card p-2.5 bg-slate-900/60 border-emerald-500/30 flex flex-col justify-between">
+<div class="slide-card p-3 bg-slate-900/60 border border-emerald-500/40 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-400 font-bold text-xs">🥈 Tier 2: Happy Path</span>
-      <span class="text-xs font-mono text-emerald-300 bg-emerald-950 px-1.5 py-0.5 rounded">priority: 10</span>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🥈</span> Happy Path
+      </span>
+      <span class="text-[10px] font-mono font-semibold text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded whitespace-nowrap">Priority 10</span>
     </div>
-    <p class="text-xs text-slate-300 mb-1.5">Standard routes without scenario header.</p>
-    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-xs text-emerald-200 border border-slate-700/50 space-y-0.5">
-      <div><code>"priority": 10</code></div>
-      <div><code>"urlPath": "/api/transfers"</code></div>
-      <div><code>"status": 201 Created</code></div>
-      <div><code>"jsonBody": {"status":"COMPLETED"}</code></div>
+    <p class="text-xs text-slate-300 mb-2 leading-relaxed">Standard domain routes without scenario headers.</p>
+    <div class="bg-slate-950/90 rounded-md p-2 font-mono text-[10.5px] leading-relaxed border border-slate-800 text-slate-300 space-y-0.5">
+      <div><span class="text-emerald-400 font-semibold">"priority"</span>: <span class="text-amber-300 font-bold">10</span>,</div>
+      <div><span class="text-slate-400">"urlPath"</span>: <span class="text-emerald-300">"/api/transfers"</span>,</div>
+      <div><span class="text-slate-400">"status"</span>: <span class="text-emerald-400 font-bold">201</span>,</div>
+      <div><span class="text-slate-400">"jsonBody"</span>: { <span class="text-cyan-300">"status"</span>: <span class="text-emerald-300">"COMPLETED"</span> }</div>
     </div>
   </div>
-  <div class="pt-1 border-t border-emerald-500/20 text-xs font-mono text-emerald-300 mt-1.5">
-    🎯 Default domain route
+  <div class="pt-1.5 border-t border-emerald-500/30 text-[11px] font-mono text-emerald-300 mt-2 flex items-center justify-between">
+    <span>🎯 Default Domain Route</span>
+    <span class="text-[9.5px] text-emerald-400/90 bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-500/30">Tier 2</span>
   </div>
 </div>
 
-<div class="slide-card p-2.5 bg-slate-900/60 border-cyan-500/30 flex flex-col justify-between">
+<div class="slide-card p-3 bg-slate-900/60 border border-cyan-500/40 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-400 font-bold text-xs">🛡️ Tier 3: Catch-All Proxy</span>
-      <span class="text-xs font-mono text-cyan-300 bg-cyan-950 px-1.5 py-0.5 rounded">priority: 100</span>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🛡️</span> Catch-All Proxy
+      </span>
+      <span class="text-[10px] font-mono font-semibold text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-2 py-0.5 rounded whitespace-nowrap">Priority 100</span>
     </div>
-    <p class="text-xs text-slate-300 mb-1.5">Fallback for unmatched upstream traffic.</p>
-    <div class="bg-slate-950/90 rounded p-1.5 font-mono text-xs text-cyan-200 border border-slate-700/50 space-y-0.5">
-      <div><code>"priority": 100</code></div>
-      <div><code>"urlPattern": "/.*"</code></div>
-      <div><code>"proxyBaseUrl":</code></div>
-      <div class="truncate"><code>"https://api.external.com"</code></div>
+    <p class="text-xs text-slate-300 mb-2 leading-relaxed">Fallback proxy for unmapped external traffic.</p>
+    <div class="bg-slate-950/90 rounded-md p-2 font-mono text-[10.5px] leading-relaxed border border-slate-800 text-slate-300 space-y-0.5">
+      <div><span class="text-cyan-400 font-semibold">"priority"</span>: <span class="text-amber-300 font-bold">100</span>,</div>
+      <div><span class="text-slate-400">"urlPattern"</span>: <span class="text-emerald-300">"/.*"</span>,</div>
+      <div><span class="text-slate-400">"proxyBaseUrl"</span>:</div>
+      <div class="pl-3 truncate"><span class="text-cyan-300">"https://api.external.com"</span></div>
     </div>
   </div>
-  <div class="pt-1 border-t border-cyan-500/20 text-xs font-mono text-cyan-300 mt-1.5">
-    🎯 Live fallback proxy
+  <div class="pt-1.5 border-t border-cyan-500/30 text-[11px] font-mono text-cyan-300 mt-2 flex items-center justify-between">
+    <span>🎯 Live Fallback Proxy</span>
+    <span class="text-[9.5px] text-cyan-400/90 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-500/30">Tier 3</span>
   </div>
 </div>
 
 </div>
 
-<div class="slide-card text-xs bg-slate-900/70 border-cyan-500/40 p-2 mt-2 flex items-center gap-2">
-  <span class="text-base">💡</span>
-  <span class="text-slate-200 text-xs"><strong>Precedence Rule:</strong> Lower integer = higher priority (<code>1 &gt; 10 &gt; 100</code>). WireMock stops evaluation on the first matching stub. If omitted, default is <strong>5</strong>.</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2.5 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-slate-200">💡 <strong>Precedence Rule:</strong> Lower integer = higher priority (<code class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded">1 &gt; 10 &gt; 100</code>). WireMock stops on first match. Default is <strong class="text-emerald-300 font-mono">5</strong>.</span>
+  <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Precedence Hierarchy</span>
 </div>
 
 ---

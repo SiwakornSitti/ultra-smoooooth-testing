@@ -262,7 +262,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ### 🪝 WireMock Practice Labs (`http://localhost:8088`)
 
 #### 📍 Practice Lab: Web UI & Precision Matching Challenge
-- **Slide Reference**: [`slides.md#L1307`](slides/slides.md#L1307) (Slide 27)
+- **Slide Reference**: [`slides.md#L1316`](slides/slides.md#L1316) (Slide 27)
 - **Goal**: Explore the live Web UI dashboard and verify JSONPath request matching.
 - **1. Open Web UI**: Navigate to [http://localhost:8088/__admin/webapp](http://localhost:8088/__admin/webapp) (Login: `admin` / `password`).
 - **2. Send High-Value Payment Request**:
@@ -283,7 +283,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Scenario Steering & Token Replay Challenge
-- **Slide Reference**: [`slides.md#L2267`](slides/slides.md#L2267) (Slide 43)
+- **Slide Reference**: [`slides.md#L2276`](slides/slides.md#L2276) (Slide 43)
 - **Goal**: Experience state transitions in WireMock Finite State Machines (FSM).
 - **1. First Call (Consumes Authorization Code)**:
   ```bash
@@ -314,7 +314,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Flapping Failure & Client Self-Healing
-- **Slide Reference**: [`slides.md#L2376`](slides/slides.md#L2376) (Slide 45)
+- **Slide Reference**: [`slides.md#L2385`](slides/slides.md#L2385) (Slide 45)
 - **Goal**: Validate client exponential backoff and circuit breaker recovery against transient upstream outages.
 - **Run Consecutive Calls**:
   ```bash
@@ -329,7 +329,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Dynamic Templating & Chaos Latency
-- **Slide Reference**: [`slides.md#L1777`](slides/slides.md#L1777) (Slide 35)
+- **Slide Reference**: [`slides.md#L1786`](slides/slides.md#L1786) (Slide 35)
 - **Goal**: Test Handlebars dynamic math calculations and assert client timeout cancellation.
 - **1. Math & VAT Calculation**:
   ```bash
@@ -352,7 +352,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 > **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
 
 #### 🛠️ Burp Suite Core Tools Reference & Playbook
-- **Slide Reference**: [`slides.md#L3646`](slides/slides.md#L3646) – [`slides.md#L4471`](slides/slides.md#L4471) (Slides 65–79: Core Tools Reference)
+- **Slide Reference**: [`slides.md#L3655`](slides/slides.md#L3655) – [`slides.md#L4480`](slides/slides.md#L4480) (Slides 65–79: Core Tools Reference)
 - **Role in Integration Testing**: Burp Suite acts as an in-flight Man-In-The-Middle (MITM) inspection, replay, and mutation proxy between browser/mobile clients and backend gateways (`bff-service`).
 
 | Tool & Icon | Category | Core Capability & Primary Shortcut | Microservices / API QA Testing Scenario |
@@ -371,7 +371,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 🛠️ Proxy Setup & Verification (Prerequisites)
-- **Slide Reference**: [`slides.md#L3760`](slides/slides.md#L3760) (Slide 68: Proxy Setup &amp; Verification), [`slides.md#L3267`](slides/slides.md#L3267), [`slides.md#L3288`](slides/slides.md#L3288), [`slides.md#L3353`](slides/slides.md#L3353), [`slides.md#L3428`](slides/slides.md#L3428), [`slides.md#L3500`](slides/slides.md#L3500) & [`slides.md#L4669`](slides/slides.md#L4669)–[`slides.md#L5132`](slides/slides.md#L5132) (Slides 59–64: MITM Architecture, HTTPS &amp; PKI; Slides 82–89: Platform Setup &amp; SSL Pinning)
+- **Slide Reference**: [`slides.md#L3769`](slides/slides.md#L3769) (Slide 68: Proxy Setup &amp; Verification), [`slides.md#L3276`](slides/slides.md#L3276), [`slides.md#L3297`](slides/slides.md#L3297), [`slides.md#L3362`](slides/slides.md#L3362), [`slides.md#L3437`](slides/slides.md#L3437), [`slides.md#L3509`](slides/slides.md#L3509) & [`slides.md#L4678`](slides/slides.md#L4678)–[`slides.md#L5141`](slides/slides.md#L5141) (Slides 59–64: MITM Architecture, HTTPS &amp; PKI; Slides 82–89: Platform Setup &amp; SSL Pinning)
 - **Lab Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Companion Files**:
   - Mobile Testing & SSL Pinning Guide: [`labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide`](labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide)
@@ -397,7 +397,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L3834`](slides/slides.md#L3834) (Slide 69)
+- **Slide Reference**: [`slides.md#L3843`](slides/slides.md#L3843) (Slide 69)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -412,7 +412,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L4299`](slides/slides.md#L4299) (Slide 76)
+- **Slide Reference**: [`slides.md#L4308`](slides/slides.md#L4308) (Slide 76)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -431,7 +431,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 Ready to test your skills with production scenarios? After watching the live instructor walkthrough, take on these hands-on workshop challenges.
 
 #### 🔄 Workshop Challenge A: WireMock Stateful Order Fulfillment Machine (Stateful)
-- **Slide Reference**: [`slides.md#L2811`](slides/slides.md#L2811) & [`slides.md#L2892`](slides/slides.md#L2892) (Slides 52 & 53)
+- **Slide Reference**: [`slides.md#L2820`](slides/slides.md#L2820) & [`slides.md#L2901`](slides/slides.md#L2901) (Slides 52 & 53)
 - **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
 - **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
 - **Requirements**:
@@ -457,7 +457,7 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🪝 Workshop Challenge B: WireMock Biometric Face Scan Stub (Stateless)
-- **Slide Reference**: [`slides.md#L3037`](slides/slides.md#L3037) & [`slides.md#L3116`](slides/slides.md#L3116) (Slides 55 & 56)
+- **Slide Reference**: [`slides.md#L3046`](slides/slides.md#L3046) & [`slides.md#L3125`](slides/slides.md#L3125) (Slides 55 & 56)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
@@ -492,7 +492,7 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L4526`](slides/slides.md#L4526) & [`slides.md#L4598`](slides/slides.md#L4598) (Slides 80 & 81)
+- **Slide Reference**: [`slides.md#L4535`](slides/slides.md#L4535) & [`slides.md#L4607`](slides/slides.md#L4607) (Slides 80 & 81)
 - **Test Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
