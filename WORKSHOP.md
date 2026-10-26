@@ -352,7 +352,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 > **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
 
 #### 🛠️ Burp Suite Core Tools Reference & Playbook
-- **Slide Reference**: [`slides.md#L3586`](slides/slides.md#L3586) – [`slides.md#L4337`](slides/slides.md#L4337) (Slides 66–79: Core Tools Reference)
+- **Slide Reference**: [`slides.md#L3586`](slides/slides.md#L3586) – [`slides.md#L4411`](slides/slides.md#L4411) (Slides 66–80: Core Tools Reference)
 - **Role in Integration Testing**: Burp Suite acts as an in-flight Man-In-The-Middle (MITM) inspection, replay, and mutation proxy between browser/mobile clients and backend gateways (`bff-service`).
 
 | Tool & Icon | Category | Core Capability & Primary Shortcut | Microservices / API QA Testing Scenario |
@@ -371,7 +371,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 🛠️ Proxy Setup & Verification (Prerequisites)
-- **Slide Reference**: [`slides.md#L3207`](slides/slides.md#L3207), [`slides.md#L3228`](slides/slides.md#L3228), [`slides.md#L3293`](slides/slides.md#L3293), [`slides.md#L3368`](slides/slides.md#L3368), [`slides.md#L3440`](slides/slides.md#L3440) & [`slides.md#L4535`](slides/slides.md#L4535)–[`slides.md#L4998`](slides/slides.md#L4998) (Slides 60–65: MITM Architecture, HTTPS & PKI; Slides 82–89: Platform Setup & SSL Pinning)
+- **Slide Reference**: [`slides.md#L3700`](slides/slides.md#L3700) (Slide 69: Proxy Setup &amp; Verification), [`slides.md#L3207`](slides/slides.md#L3207), [`slides.md#L3228`](slides/slides.md#L3228), [`slides.md#L3293`](slides/slides.md#L3293), [`slides.md#L3368`](slides/slides.md#L3368), [`slides.md#L3440`](slides/slides.md#L3440) & [`slides.md#L4609`](slides/slides.md#L4609)–[`slides.md#L5072`](slides/slides.md#L5072) (Slides 60–65: MITM Architecture, HTTPS &amp; PKI; Slides 83–90: Platform Setup &amp; SSL Pinning)
 - **Lab Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Companion Files**:
   - Mobile Testing & SSL Pinning Guide: [`labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide`](labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide)
@@ -397,7 +397,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L3700`](slides/slides.md#L3700) (Slide 69)
+- **Slide Reference**: [`slides.md#L3774`](slides/slides.md#L3774) (Slide 70)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -412,7 +412,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L4165`](slides/slides.md#L4165) (Slide 76)
+- **Slide Reference**: [`slides.md#L4239`](slides/slides.md#L4239) (Slide 77)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -492,7 +492,7 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L4392`](slides/slides.md#L4392) & [`slides.md#L4464`](slides/slides.md#L4464) (Slides 80 & 81)
+- **Slide Reference**: [`slides.md#L4466`](slides/slides.md#L4466) & [`slides.md#L4538`](slides/slides.md#L4538) (Slides 81 & 82)
 - **Test Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:

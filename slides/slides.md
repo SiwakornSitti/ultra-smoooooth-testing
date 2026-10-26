@@ -3694,6 +3694,80 @@ Presenter Notes:
 -->
 
 ---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🧪 Practice Lab: Proxy Setup & Verification
+
+<h3 class="text-slate-300 text-xs mb-1.5 -mt-1.5">Configure Proxy Listener, Local Hostname Aliasing &amp; End-to-End Pipeline Verification</h3>
+
+<div class="grid grid-cols-2 gap-3 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🛠️</span> Step 1: Listener &amp; Host Alias
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded whitespace-nowrap">:8080 Listener</span>
+    </div>
+    <ul class="space-y-1.5 text-[11px] text-slate-300 leading-snug mb-1.5">
+      <li>• <strong>Verify Listener:</strong> In Burp, go to <strong>Proxy ➔ Proxy settings</strong>. Ensure listener on <code>127.0.0.1:8080</code> is <strong>Running</strong>.</li>
+      <li>• <strong>macOS Loopback Fix:</strong> macOS bypasses proxies for <code>localhost</code>. Map a loopback alias in <code>/etc/hosts</code>:</li>
+    </ul>
+    <div class="bg-slate-950/80 border border-cyan-500/30 rounded p-2 font-mono text-[10px] leading-relaxed my-1">
+      <div class="text-slate-400 text-[9px] pb-0.5 border-b border-slate-800"># Add loopback alias to route through proxy:</div>
+      <div class="text-cyan-300 pt-1">echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts</div>
+    </div>
+  </div>
+  <div class="mt-1 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300">
+    ⚡ <strong>Prerequisite Ready:</strong> Traffic to <code>localhost.com</code> now routes cleanly into Burp.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🧪</span> Step 2: Route &amp; Verify Traffic
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded whitespace-nowrap">Audit &amp; Check</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-snug mb-1">
+      Send a health check through the proxy or run the automated lab helper:
+    </p>
+    <div class="bg-slate-950/80 border border-emerald-500/30 rounded p-2 font-mono text-[10px] leading-relaxed my-1 space-y-1">
+      <div>
+        <div class="text-slate-400 text-[9px]"># Option A: Manual cURL with proxy flag</div>
+        <div class="text-emerald-300">curl -s -x http://127.0.0.1:8080 http://localhost.com:8081/health</div>
+      </div>
+      <div>
+        <div class="text-slate-400 text-[9px]"># Option B: Automated verification script</div>
+        <div class="text-sky-300">bash labs/burp-suite/verify-proxy.sh</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-1 pt-1 border-t border-emerald-500/30 text-[10.5px] text-emerald-300">
+    ✅ <strong>Assertion:</strong> Request appears in Burp's <strong>Proxy ➔ HTTP history</strong> with <code>200 OK</code>.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1.5 border border-cyan-500/40 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-cyan-200 truncate">💡 <strong>Pro-Tip:</strong> Set <code>export HTTP_PROXY=http://127.0.0.1:8080</code> to route entire terminal sessions, SDKs, or Playwright tests into Burp.</span>
+  <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Terminal Proxy</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk participants through confirming that Burp Suite proxy listener on 127.0.0.1:8080 is running.
+- Explain why the localhost alias is necessary on macOS (Darwin network stack ignores proxies for localhost/127.0.0.1).
+- Run verify-proxy.sh and show students where the request appears in Burp's HTTP history tab.
+- Bridge to next slide: Now that our proxy is verified, let's turn Intercept ON and mutate live packets mid-flight.
+-->
+
+---
 class: pt-2 pb-2 px-8
 ---
 
