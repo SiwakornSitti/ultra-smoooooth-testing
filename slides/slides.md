@@ -2966,6 +2966,73 @@ layout: section
 
 
 ---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🔒 How HTTPS Works — TLS Handshake to Secure Tunnel
+
+<h3 class="text-slate-300 text-sm mb-1">Dual-Phase Cryptography: Asymmetric Authentication &amp; Symmetric Payload Encryption</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2.5 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-sky-500/30">
+      <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🤝</span> Phase 1: TLS Handshake
+      </span>
+      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Asymmetric (ECDHE)</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. ClientHello &amp; SNI:</strong> Client sends TLS version, cipher list &amp; target host (<code>api.shopvibe.com</code>).</li>
+      <li>• <strong>2. Certificate Chain:</strong> Server returns cipher + X.509 cert chain; client validates Root CA &amp; SAN.</li>
+      <li>• <strong>3. Key Exchange (ECDHE):</strong> Both parties compute shared <strong>Session Keys</strong> without transmitting secrets.</li>
+    </ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-sky-500/30 text-[11px] text-sky-300 font-mono">
+    🔑 Authenticates server identity &amp; establishes shared session keys.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔒</span> Phase 2: Symmetric Tunnel
+      </span>
+      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">AES-GCM / ChaCha20</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-0.5 font-mono text-[10px] text-slate-200 mb-1">
+  <span class="text-sky-400">Client</span> ──[ <span class="text-amber-300">Plaintext encrypted with Session Key</span> ]──► <span class="text-emerald-400">Server Decrypts</span>
+</div>
+
+<ul class="space-y-1 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Hardware Accelerated:</strong> Symmetric AES-GCM is thousands of times faster than asymmetric math for bulk payload streaming.</li>
+  <li>• <strong>Total Secrecy:</strong> URLs, headers, cookies, and JSON payloads are completely opaque to intermediate network routers.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
+    ⚡ High-speed authenticated encryption with tamper detection (AEAD).
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-amber-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-amber-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>MITM Implication:</strong> Standard proxies are blind to ciphertext. Burp Suite must terminate <strong>two separate TLS handshakes</strong> to inspect plaintext.
+  </span>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded">Dual TLS Terminus</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk through the two distinct phases: asymmetric cryptography for identity authentication and session key exchange, followed by symmetric cryptography for high-speed data transmission.
+- Emphasize that SNI in ClientHello is the only unencrypted hostname indicator in standard TLS (unless Encrypted Client Hello / ECH is active).
+- Point out why a standard proxy cannot see HTTP paths or bodies without terminating TLS, setting up the MITM architecture slide next.
+-->
+---
 class: pt-2 pb-1 px-8
 ---
 
