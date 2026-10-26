@@ -4003,101 +4003,8 @@ Presenter Notes:
   1. No code changes needed to test edge cases or error handling.
   2. Instant reproduction in Repeater saves hours compared to clicking through multi-step browser forms.
   3. Intruder proves whether microservice balances or promo codes are vulnerable to concurrency race conditions.
-- Bridge to the tools: Now let's explore each tool in the suite starting with Target & Scope Control to organize our traffic.
+- Bridge to the tools: Now let's explore each tool in the suite starting with the core Proxy Interception engine to capture and tamper with live traffic.
 -->
----
-class: pt-2 pb-2 px-8
----
-
-# 🎯 Burp Suite — Target: Site Map & Scope Control
-
-<h3 class="text-slate-300 text-sm mb-1.5">Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
-
-<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🎯</span> Core Capabilities &amp; Scoping
-      </span>
-      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Target Tab</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Endpoint Discovery:</strong> Passively builds a complete directory tree of all microservice routes, parameters, and query flags.</li>
-      <li>• <strong>Suite Scoping:</strong> Right-click <code>http://localhost:8080</code> ➔ <strong>Add to scope</strong> to isolate your microservices under test.</li>
-      <li>• <strong>Noise Reduction:</strong> Enable <em>"Show only in-scope items"</em> to filter out browser telemetry, CDN requests, and OS background pings.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-[11px] text-cyan-300 font-mono">
-    ⚡ Essential for keeping Logger &amp; Proxy focused purely on test APIs.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>🗺️</span> Discovered Microservices Tree
-      </span>
-      <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">In Scope</span>
-    </div>
-
-```text
-📁 http://localhost:8080 (bff-service gateway)
-├── 📂 /api/v1/users (user-service :8081)
-│   └── 📄 POST /register, POST /login
-├── 📂 /api/v1/accounts (bank-service :8082)
-│   └── 📄 GET /balance, POST /deposit
-├── 📂 /api/v1/ekyc (ekyc-service :8083)
-│   └── 📄 POST /biometrics
-└── 📂 /api/v1/transfers (transfer-service :8085)
-    └── 📄 POST /execute, GET /history
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
-    🎯 Right-click any node ➔ Send to Repeater (Cmd+R)
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-cyan-500/40 flex items-center justify-between">
-  <span class="text-slate-200">💡 <strong>Best Practice:</strong> Define target scope before running integration suites to prevent proxy log contamination.</span>
-  <span class="text-cyan-300 font-mono text-[10px] bg-cyan-950/60 px-2 py-0.5 rounded">Scope Isolation</span>
-</div>
-
----
-
-# 📋 Burp Suite — Logger / HTTP History
-
-### Real-Time Traffic Auditing & Inspection
-
-<div class="multi-col-grid-2">
-
-<div class="col-card">
-  <h3 class="text-emerald-400">📋 Real-Time Audit Trail</h3>
-  <p class="mb-2">
-    Maintains a complete chronological record of every outbound request and inbound response with filtering by status code, method, host, or payload size.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    🔍 Filter by regex or status code (e.g. <code>4xx / 5xx</code>) to isolate regressions instantly.
-  </div>
-</div>
-
-<div class="col-card">
-  <h3 class="text-emerald-400">🔍 Rapid Troubleshooting &amp; Tool Handoff</h3>
-  <p class="mb-2">
-    Instantly isolate failing API calls and right-click to send requests directly to <strong>Repeater</strong> for manual replay or <strong>Intruder</strong> for boundary fuzzing.
-  </p>
-  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
-    ⚡ One-click handoff between live logging, manual replay, and parameter fuzzing.
-  </div>
-</div>
-
-</div>
-
 ---
 class: pt-2 pb-1 px-8
 ---
@@ -4208,6 +4115,99 @@ Presenter Notes:
 - Walk participants through setting up Burp proxy and executing the curl command with -x.
 - Show how the downstream response changes dynamically based on the injected Mock-Scenario header.
 -->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🎯 Burp Suite — Target: Site Map & Scope Control
+
+<h3 class="text-slate-300 text-sm mb-1.5">Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> Core Capabilities &amp; Scoping
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Target Tab</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Endpoint Discovery:</strong> Passively builds a complete directory tree of all microservice routes, parameters, and query flags.</li>
+      <li>• <strong>Suite Scoping:</strong> Right-click <code>http://localhost:8080</code> ➔ <strong>Add to scope</strong> to isolate your microservices under test.</li>
+      <li>• <strong>Noise Reduction:</strong> Enable <em>"Show only in-scope items"</em> to filter out browser telemetry, CDN requests, and OS background pings.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-[11px] text-cyan-300 font-mono">
+    ⚡ Essential for keeping Logger &amp; Proxy focused purely on test APIs.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🗺️</span> Discovered Microservices Tree
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">In Scope</span>
+    </div>
+
+```text
+📁 http://localhost:8080 (bff-service gateway)
+├── 📂 /api/v1/users (user-service :8081)
+│   └── 📄 POST /register, POST /login
+├── 📂 /api/v1/accounts (bank-service :8082)
+│   └── 📄 GET /balance, POST /deposit
+├── 📂 /api/v1/ekyc (ekyc-service :8083)
+│   └── 📄 POST /biometrics
+└── 📂 /api/v1/transfers (transfer-service :8085)
+    └── 📄 POST /execute, GET /history
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
+    🎯 Right-click any node ➔ Send to Repeater (Cmd+R)
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-cyan-500/40 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>Best Practice:</strong> Define target scope before running integration suites to prevent proxy log contamination.</span>
+  <span class="text-cyan-300 font-mono text-[10px] bg-cyan-950/60 px-2 py-0.5 rounded">Scope Isolation</span>
+</div>
+
+---
+
+# 📋 Burp Suite — Logger / HTTP History
+
+### Real-Time Traffic Auditing & Inspection
+
+<div class="multi-col-grid-2">
+
+<div class="col-card">
+  <h3 class="text-emerald-400">📋 Real-Time Audit Trail</h3>
+  <p class="mb-2">
+    Maintains a complete chronological record of every outbound request and inbound response with filtering by status code, method, host, or payload size.
+  </p>
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+    🔍 Filter by regex or status code (e.g. <code>4xx / 5xx</code>) to isolate regressions instantly.
+  </div>
+</div>
+
+<div class="col-card">
+  <h3 class="text-emerald-400">🔍 Rapid Troubleshooting &amp; Tool Handoff</h3>
+  <p class="mb-2">
+    Instantly isolate failing API calls and right-click to send requests directly to <strong>Repeater</strong> for manual replay or <strong>Intruder</strong> for boundary fuzzing.
+  </p>
+  <div class="slide-card text-sm mt-auto bg-slate-900/60 p-2.5 border-emerald-500/30">
+    ⚡ One-click handoff between live logging, manual replay, and parameter fuzzing.
+  </div>
+</div>
+
+</div>
 
 ---
 class: pt-2 pb-2 px-8

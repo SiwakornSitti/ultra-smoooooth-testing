@@ -87,11 +87,11 @@ Quick navigation reference for presentations in `slides/`.
 | **71** | [🍎 Mobile SSL Pinning — iOS White-Box Setup](slides/slides.md#L3824) | Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt |
 | **72** | [⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass](slides/slides.md#L3871) | Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing |
 | **73** | [🎯 Why Use Burp Suite in Integration Testing?](slides/slides.md#L3942) | Repurposing Cybersecurity Superpowers for Microservices QA &amp; Resilience |
-| **74** | [🎯 Burp Suite — Target: Site Map & Scope Control](slides/slides.md#L4012) | Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise |
-| **75** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L4073) | Real-Time Traffic Auditing & Inspection |
-| **76** | [🔀 Deep Dive: Bi-Directional Duplex Interception](slides/slides.md#L4105) | Visualizing Request and Response Flow Through the MITM Engine |
-| **77** | [⚡ Live Intercept in Action](slides/slides.md#L4124) | Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight |
-| **78** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L4149) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
+| **74** | [🔀 Deep Dive: Bi-Directional Duplex Interception](slides/slides.md#L4012) | Visualizing Request and Response Flow Through the MITM Engine |
+| **75** | [⚡ Live Intercept in Action](slides/slides.md#L4031) | Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight |
+| **76** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L4056) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
+| **77** | [🎯 Burp Suite — Target: Site Map & Scope Control](slides/slides.md#L4123) | Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise |
+| **78** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L4184) | Real-Time Traffic Auditing & Inspection |
 | **79** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L4216) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
 | **80** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L4281) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
 | **81** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L4347) | Zero-Click Automated Header & Payload Manipulation |
