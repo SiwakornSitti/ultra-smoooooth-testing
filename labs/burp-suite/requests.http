@@ -1,6 +1,7 @@
 @proxyUrl = http://127.0.0.1:8080
-@bffUrl = http://localhost:8080
+@bffUrl = http://localhost.com:8080
 
+# Note for macOS: 'localhost' bypasses proxying. Ensure '127.0.0.1 localhost.com' is in /etc/hosts.
 # Configure the REST Client extension to use @proxyUrl before sending these requests.
 # VS Code setting: rest-client.http.proxy = http://127.0.0.1:8080
 

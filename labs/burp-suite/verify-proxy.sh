@@ -3,7 +3,8 @@
 
 PROXY_HOST="127.0.0.1"
 PROXY_PORT="8080"
-BFF_TARGET="http://localhost:8080"
+# Use localhost.com to bypass macOS loopback proxy exclusions (requires '127.0.0.1 localhost.com' in /etc/hosts)
+BFF_TARGET="http://localhost.com:8080"
 
 echo "========================================================"
 echo "🧪 Burp Suite MITM Proxy Verification Helper"

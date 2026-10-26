@@ -3138,7 +3138,7 @@ class: pt-2 pb-2 px-8
 
 ```bash
 curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost:8081/api/v1/users \
+  http://localhost.com:8081/api/v1/users \
   -H "Content-Type: application/json" \
   -d '{"username":"student","password":"secret"}'
 ```
@@ -3172,14 +3172,16 @@ Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED
 
 </div>
 
-<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+<div v-pre class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
   <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Zero-Touch Steering:</strong> Inject mock scenarios and simulate third-party failure responses without touching backend source code.
+    <span>💡</span> <strong>Zero-Touch Steering:</strong> Inject mock scenarios and simulate third-party failure responses without code changes.
   </span>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">macOS: 127.0.0.1 localhost.com</span>
 </div>
 
 <!--
 Presenter Notes:
+- macOS Note: macOS network stack and browsers bypass proxying for 'localhost'. Map '127.0.0.1 localhost.com' in /etc/hosts to route traffic through Burp.
 - Walk participants through setting up Burp proxy and executing the curl command with -x.
 - Show how the downstream response changes dynamically based on the injected Mock-Scenario header.
 -->
@@ -3584,7 +3586,7 @@ class: pt-2 pb-2 px-8
 ```bash
 # 1. Send outbound transfer through Burp Proxy
 curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost:8081/api/v1/transfers \
+  http://localhost.com:8081/api/v1/transfers \
   -H "Content-Type: application/json" \
   -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
 
@@ -3604,6 +3606,7 @@ curl -x http://127.0.0.1:8080 -s -X POST \
 <!--
 Presenter Notes:
 - Ensure Burp Suite Intercept is ON before running the curl command.
+- Note for macOS: Ensure '127.0.0.1 localhost.com' is mapped in /etc/hosts.
 - Show the paused request in Burp Proxy, highlight the headers and JSON payload.
 - Edit the payload live and forward the request to show instant downstream reaction.
 -->
@@ -3650,7 +3653,7 @@ class: pt-2 pb-2 px-8
 ```bash
 # 1. Send normal transfer through Burp Proxy
 curl -x http://127.0.0.1:8080 -s -X POST \
-  http://localhost:8081/api/v1/transfers \
+  http://localhost.com:8081/api/v1/transfers \
   -H "Content-Type: application/json" \
   -d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'
 

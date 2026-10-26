@@ -56,7 +56,17 @@ Open **Burp Suite Community Edition** (or Professional) and select **Temporary P
 
 The example configuration also scopes Burp to the `192.168.1.0/24` private subnet. Replace the subnet regex in `burp-config-example.json` with the LAN subnet used by your lab before importing it.
 
-### 3. Install Burp CA Certificate (for HTTPS Inspection)
+### 3. macOS Setup: Loopback Proxy Bypass & /etc/hosts
+
+On macOS, the operating system network stack and browsers (Chrome, Safari) automatically bypass HTTP proxies for `localhost` and `127.0.0.1`. To ensure traffic routes through Burp Suite on macOS, add a local hostname alias:
+
+```bash
+echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts
+```
+
+All requests can then target `http://localhost.com:8080` (or `http://localhost.com:8081`) cleanly through the proxy.
+
+### 4. Install Burp CA Certificate (for HTTPS Inspection)
 
 See the official [PortSwigger certificate setup guide](https://portswigger.net/burp/documentation/desktop/external-browser-config/certificate).
 
@@ -78,7 +88,7 @@ See the official [PortSwigger certificate setup guide](https://portswigger.net/b
 3. Send a user creation request via `cURL` using Burp Proxy:
 
    ```bash
-   curl -x http://127.0.0.1:8080 -X POST http://localhost:8080/api/v1/users \
+   curl -x http://127.0.0.1:8080 -X POST http://localhost.com:8080/api/v1/users \
      -H "Content-Type: application/json" \
      -d '{"name": "Original Name", "email": "original@example.com", "phone": "+66800000001"}'
    ```
@@ -98,7 +108,7 @@ See the official [PortSwigger certificate setup guide](https://portswigger.net/b
 2. Send an OTP verification request to `bff-service`:
 
    ```bash
-   curl -x http://127.0.0.1:8080 -X POST http://localhost:8080/auth/otp/verify \
+   curl -x http://127.0.0.1:8080 -X POST http://localhost.com:8080/auth/otp/verify \
      -H "Content-Type: application/json" \
      -d '{"phone": "+66800000001", "code": "123456"}'
    ```

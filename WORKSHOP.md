@@ -352,7 +352,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 > **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
 
 #### 🛠️ Burp Suite Core Tools Reference & Playbook
-- **Slide Reference**: [`slides.md#L2986`](slides/slides.md#L2986) & [`slides.md#L3191`](slides/slides.md#L3191) (Slides 60 & 65–70)
+- **Slide Reference**: [`slides.md#L2986`](slides/slides.md#L2986) & [`slides.md#L3193`](slides/slides.md#L3193) (Slides 60 & 65–70)
 - **Role in Integration Testing**: Burp Suite acts as an in-flight Man-In-The-Middle (MITM) inspection, replay, and mutation proxy between browser/mobile clients and backend gateways (`bff-service`).
 
 | Tool &amp; Icon | Category | Core Capability &amp; Primary Shortcut | Microservices / API QA Testing Scenario |
@@ -379,7 +379,13 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 - **1. Verify Proxy Listener**:
   - In Burp Suite, open **Proxy ➔ Proxy settings**.
   - Ensure the listener on port `8080` is active and checked **Running**.
-- **2. Run Verification Script**:
+- **2. macOS Loopback Bypass Fix (`/etc/hosts`)**:
+  - macOS network stack and browsers automatically bypass HTTP proxies for `localhost` and `127.0.0.1`.
+  - Add `localhost.com` to `/etc/hosts` to route local requests through Burp Suite:
+    ```bash
+    echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts
+    ```
+- **3. Run Verification Script**:
   ```bash
   chmod +x labs/burp-suite/verify-proxy.sh
   ./labs/burp-suite/verify-proxy.sh
@@ -394,7 +400,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
   ```bash
-  curl -x http://127.0.0.1:8080 -s -X POST http://localhost:8081/api/v1/users \
+  curl -x http://127.0.0.1:8080 -s -X POST http://localhost.com:8081/api/v1/users \
     -H "Content-Type: application/json" \
     -d '{"username":"student","password":"secret"}'
   ```
@@ -404,7 +410,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L3322`](slides/slides.md#L3322) (Slide 67)
+- **Slide Reference**: [`slides.md#L3324`](slides/slides.md#L3324) (Slide 67)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -412,7 +418,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
   - Turn **Intercept OFF**.
 - **2. Run Automated Request**:
   ```bash
-  curl -x http://127.0.0.1:8080 -s http://localhost:8081/api/v1/transfers
+  curl -x http://127.0.0.1:8080 -s http://localhost.com:8081/api/v1/transfers
   ```
   *Result*: Check Burp's **HTTP history** tab. Notice every outbound request automatically carries the injected failure steering header!
 
@@ -484,14 +490,14 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L3549`](slides/slides.md#L3549) (Slides 71 & 72)
+- **Slide Reference**: [`slides.md#L3551`](slides/slides.md#L3551) (Slides 71 & 72)
 - **Test Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
   1. In Burp Suite, turn **Intercept is on** on `127.0.0.1:8080`.
   2. Send transfer cURL:
      ```bash
-     curl -x http://127.0.0.1:8080 -s -X POST http://localhost:8081/api/v1/transfers \
+     curl -x http://127.0.0.1:8080 -s -X POST http://localhost.com:8081/api/v1/transfers \
        -H "Content-Type: application/json" \
        -d '{"fromAccount":"ACC-001","toAccount":"ACC-999","amount":500.00}'
      ```
