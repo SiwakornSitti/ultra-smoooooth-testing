@@ -1313,66 +1313,76 @@ Presenter Notes:
 class: pt-2 pb-1 px-8
 ---
 
-# 🎯 WireMock RegEx — Path & Dynamic Resource Routing
+# 🎯 WireMock RegEx — Path & Dynamic Routing
 
-### Multi-Segment Hierarchy Matching with `urlPathPattern`
+<h3 class="text-slate-300 text-sm mb-1.5">Multi-Segment Hierarchy Matching with <code class="text-cyan-300 font-mono text-xs">urlPathPattern</code></h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+<div class="grid grid-cols-2 gap-3.5 mt-2 flex-1">
 
-<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 rounded-lg flex flex-col justify-between">
   <div>
     <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
         <span>🌐</span> Path RegEx Patterns
       </span>
-      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Routing</span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">Routing</span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Standard UUID</strong>: <code>[a-z0-9-]+</code> (RFC 4122 identifiers)</li>
-      <li>• <strong>Entity Prefixes</strong>: <code>ACC-[0-9]{6}</code> (Banking account IDs)</li>
-      <li>• <strong>Hierarchy Routing</strong>: Combines static paths &amp; regex slots without hardcoded IDs.</li>
+    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
+      <li class="flex items-start gap-1.5">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Standard UUID:</strong> <code class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded">[a-z0-9-]+</code> (RFC 4122 IDs)</span>
+      </li>
+      <li class="flex items-start gap-1.5">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Entity Prefixes:</strong> <code class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded">ACC-[0-9]{6}</code> (Banking account IDs)</span>
+      </li>
+      <li class="flex items-start gap-1.5">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Hierarchy Routing:</strong> Combines static paths with dynamic regex slots.</span>
+      </li>
     </ul>
-    <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[11px] text-cyan-200 mt-2">
+    <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[10.5px] text-cyan-200 mt-2 truncate">
       <code>/api/users/[a-z0-9-]+/accounts/ACC-[0-9]{6}</code>
     </div>
   </div>
-  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
-    💡 <code>urlPathPattern</code> ignores arbitrary query parameters safely.
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300 flex items-center justify-between">
+    <span>💡 Ignores arbitrary query params</span>
+    <span class="text-[9.5px] text-cyan-400 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">Safe Path</span>
   </div>
 </div>
 
-<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
       <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
         <span>📄</span> Path Pattern Mapping Stub
       </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+      <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
     </div>
-
-```json
-{
-  "request": {
-    "method": "GET",
-    "urlPathPattern": "/api/users/[a-z0-9-]+/accounts/ACC-\\d{6}"
-  },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "accountType": "SAVINGS",
-      "currency": "THB",
-      "status": "ACTIVE"
-    }
-  }
-}
-```
-
+    <div class="bg-slate-950/90 rounded-md p-2 font-mono text-[10px] leading-relaxed border border-slate-800 text-slate-300 space-y-0.5">
+      <div>{</div>
+      <div class="pl-2.5"><span class="text-slate-400">"request"</span>: {</div>
+      <div class="pl-5"><span class="text-slate-400">"method"</span>: <span class="text-emerald-300">"GET"</span>,</div>
+      <div class="pl-5"><span class="text-slate-400">"urlPathPattern"</span>: <span class="text-cyan-300">"/api/users/[a-z0-9-]+/accounts/ACC-\\d{6}"</span></div>
+      <div class="pl-2.5">},</div>
+      <div class="pl-2.5"><span class="text-slate-400">"response"</span>: {</div>
+      <div class="pl-5"><span class="text-slate-400">"status"</span>: <span class="text-emerald-400 font-bold">200</span>,</div>
+      <div class="pl-5"><span class="text-slate-400">"jsonBody"</span>: { <span class="text-slate-400">"type"</span>: <span class="text-emerald-300">"SAVINGS"</span>, <span class="text-slate-400">"currency"</span>: <span class="text-emerald-300">"THB"</span>, <span class="text-slate-400">"status"</span>: <span class="text-emerald-300">"ACTIVE"</span> }</div>
+      <div class="pl-2.5">}</div>
+      <div>}</div>
+    </div>
   </div>
-  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
-    ✨ Matches dynamic multi-segment banking URLs deterministically.
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
+    <span>✨ Multi-Segment Banking Path</span>
+    <span class="text-[9.5px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">Dynamic URL</span>
   </div>
 </div>
 
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2.5 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-slate-200">💡 <strong>Best Practice:</strong> Use <code class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded">urlPathPattern</code> to validate nested resource hierarchies without pinning hardcoded database IDs.</span>
+  <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">urlPathPattern</span>
 </div>
 
 ---
