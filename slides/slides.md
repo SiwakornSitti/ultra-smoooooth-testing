@@ -1310,74 +1310,6 @@ Presenter Notes:
 -->
 
 ---
-class: pt-2 pb-2 px-8
----
-
-# 🧪 Practice Lab: Web UI & Precision Matching
-
-### Verify threshold routing and inspect unmatched diffs in WireMock Web UI
-
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
-
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>✅</span> Step 1: High-Value Match (> 1000)
-      </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">201 Created</span>
-    </div>
-    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>2500</code>. Body matches threshold filter:</p>
-
-```bash
-curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
-  -H "Content-Type: application/json" \
-  -d '{"payment":{"amount":2500}}'
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs text-emerald-300 font-mono">
-    🟢 Returns <code>201 Created</code> + <code>HIGH_VALUE_TRANSACTION</code>
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🔍</span> Step 2: Low-Value Diff (< 1000)
-      </span>
-      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">404 Diff</span>
-    </div>
-    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>500</code> below threshold. Trigger stub miss:</p>
-
-```bash
-curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
-  -H "Content-Type: application/json" \
-  -d '{"payment":{"amount":500}}'
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
-    🟡 Returns <code>404 Not Found</code>. Check diff in Web UI!
-  </div>
-</div>
-
-</div>
-
-<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>🌐</span> <strong>Interactive Inspection:</strong> Open <code>http://localhost:8088/__admin/webapp</code> to see visual diffs on unmatched requests.
-  </span>
-</div>
-
-<!--
-Presenter Notes:
-- Guide participants to open the WireMock Web UI at localhost:8088/__admin/webapp.
-- Point out the Requests tab where unmatched calls show line-by-line diffs.
--->
-
----
 class: pt-2 pb-1 px-8
 ---
 
@@ -1777,68 +1709,6 @@ class: pt-2 pb-2 px-8
   </div>
 </div>
 
-</div>
-
----
-class: pt-2 pb-2 px-8
----
-
-# 🧪 Practice Lab: Dynamic Templating & Chaos Latency
-
-### Validate Dynamic Math Calculations & Chaos Latency Timeout Handling
-
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
-
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🧮</span> Step 1: Dynamic Math &amp; VAT
-      </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">:8088 Stub</span>
-    </div>
-    <p class="text-xs text-slate-300 mb-1 leading-snug">Dispatches price 4000; WireMock calculates 7% VAT (4280.0) + UUID:</p>
-
-```bash
-curl -s -X POST \
-  http://localhost:8088/lab/api/stateless/orders \
-  -H "Content-Type: application/json" \
-  -d '{"userId":"U-100","price":4000}'
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
-    ✨ Returns <code>total: 4280.0</code> and unique <code>orderId</code> UUID.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-rose-500/30">
-      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
-        <span>⏱️</span> Step 2: Chaos Latency Timeout
-      </span>
-      <span class="text-[11px] font-mono text-rose-300/80 bg-rose-900/40 px-2 py-0.5 rounded">Resilience</span>
-    </div>
-    <p class="text-xs text-slate-300 mb-1 leading-snug">WireMock delays 8000ms; verify client cancels at 2s timeout:</p>
-
-```bash
-time curl -s --max-time 2 \
-  http://localhost:8088/lab/api/stateless/delayed
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs font-mono text-rose-300">
-    🚨 Exits code 28 after 2s without thread starvation!
-  </div>
-</div>
-
-</div>
-
-<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Hands-On Verification:</strong> Inspect live responses in terminal or visit <code>http://localhost:8088/__admin/webapp</code> to see matched requests.
-  </span>
 </div>
 
 ---
@@ -2814,6 +2684,136 @@ layout: section
 </p>
 
 ---
+class: pt-2 pb-2 px-8
+---
+
+# 🧪 Practice Lab: Web UI & Precision Matching
+
+### Verify threshold routing and inspect unmatched diffs in WireMock Web UI
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>✅</span> Step 1: High-Value Match (> 1000)
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">201 Created</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>2500</code>. Body matches threshold filter:</p>
+
+```bash
+curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+  -H "Content-Type: application/json" \
+  -d '{"payment":{"amount":2500}}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs text-emerald-300 font-mono">
+    🟢 Returns <code>201 Created</code> + <code>HIGH_VALUE_TRANSACTION</code>
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔍</span> Step 2: Low-Value Diff (< 1000)
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">404 Diff</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>500</code> below threshold. Trigger stub miss:</p>
+
+```bash
+curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+  -H "Content-Type: application/json" \
+  -d '{"payment":{"amount":500}}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
+    🟡 Returns <code>404 Not Found</code>. Check diff in Web UI!
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>🌐</span> <strong>Interactive Inspection:</strong> Open <code>http://localhost:8088/__admin/webapp</code> to see visual diffs on unmatched requests.
+  </span>
+</div>
+
+<!--
+Presenter Notes:
+- Guide participants to open the WireMock Web UI at localhost:8088/__admin/webapp.
+- Point out the Requests tab where unmatched calls show line-by-line diffs.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🧪 Practice Lab: Dynamic Templating & Chaos Latency
+
+### Validate Dynamic Math Calculations & Chaos Latency Timeout Handling
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🧮</span> Step 1: Dynamic Math &amp; VAT
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">:8088 Stub</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1 leading-snug">Dispatches price 4000; WireMock calculates 7% VAT (4280.0) + UUID:</p>
+
+```bash
+curl -s -X POST \
+  http://localhost:8088/lab/api/stateless/orders \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"U-100","price":4000}'
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
+    ✨ Returns <code>total: 4280.0</code> and unique <code>orderId</code> UUID.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⏱️</span> Step 2: Chaos Latency Timeout
+      </span>
+      <span class="text-[11px] font-mono text-rose-300/80 bg-rose-900/40 px-2 py-0.5 rounded">Resilience</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1 leading-snug">WireMock delays 8000ms; verify client cancels at 2s timeout:</p>
+
+```bash
+time curl -s --max-time 2 \
+  http://localhost:8088/lab/api/stateless/delayed
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs font-mono text-rose-300">
+    🚨 Exits code 28 after 2s without thread starvation!
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Hands-On Verification:</strong> Inspect live responses in terminal or visit <code>http://localhost:8088/__admin/webapp</code> to see matched requests.
+  </span>
+</div>
+
+---
 class: pt-2 pb-1.5 px-8
 ---
 
@@ -3763,147 +3763,6 @@ Presenter Notes:
 -->
 
 ---
-class: pt-1.5 pb-1 px-8
----
-
-# 🧪 Practice Lab: Proxy Setup & Verification
-
-<h3 class="text-slate-300 text-xs mb-1.5 -mt-1.5">Configure Proxy Listener, Local Hostname Aliasing &amp; End-to-End Pipeline Verification</h3>
-
-<div class="grid grid-cols-2 gap-3 flex-1">
-
-<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🛠️</span> Step 1: Listener &amp; Host Alias
-      </span>
-      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded whitespace-nowrap">:8080 Listener</span>
-    </div>
-    <ul class="space-y-1.5 text-[11px] text-slate-300 leading-snug mb-1.5">
-      <li>• <strong>Verify Listener:</strong> In Burp, go to <strong>Proxy ➔ Proxy settings</strong>. Ensure listener on <code>127.0.0.1:8080</code> is <strong>Running</strong>.</li>
-      <li>• <strong>macOS Loopback Fix:</strong> macOS bypasses proxies for <code>localhost</code>. Map a loopback alias in <code>/etc/hosts</code>:</li>
-    </ul>
-    <div class="bg-slate-950/80 border border-cyan-500/30 rounded p-2 font-mono text-[10px] leading-relaxed my-1">
-      <div class="text-slate-400 text-[9px] pb-0.5 border-b border-slate-800"># Add loopback alias to route through proxy:</div>
-      <div class="text-cyan-300 pt-1">echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts</div>
-    </div>
-  </div>
-  <div class="mt-1 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300">
-    ⚡ <strong>Prerequisite Ready:</strong> Traffic to <code>localhost.com</code> now routes cleanly into Burp.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🧪</span> Step 2: Route &amp; Verify Traffic
-      </span>
-      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded whitespace-nowrap">Audit &amp; Check</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-snug mb-1">
-      Send a health check through the proxy or run the automated lab helper:
-    </p>
-    <div class="bg-slate-950/80 border border-emerald-500/30 rounded p-2 font-mono text-[10px] leading-relaxed my-1 space-y-1">
-      <div>
-        <div class="text-slate-400 text-[9px]"># Option A: Manual cURL with proxy flag</div>
-        <div class="text-emerald-300">curl -s -x http://127.0.0.1:8080 http://localhost.com:8081/health</div>
-      </div>
-      <div>
-        <div class="text-slate-400 text-[9px]"># Option B: Automated verification script</div>
-        <div class="text-sky-300">bash labs/burp-suite/verify-proxy.sh</div>
-      </div>
-    </div>
-  </div>
-  <div class="mt-1 pt-1 border-t border-emerald-500/30 text-[10.5px] text-emerald-300">
-    ✅ <strong>Assertion:</strong> Request appears in Burp's <strong>Proxy ➔ HTTP history</strong> with <code>200 OK</code>.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1.5 border border-cyan-500/40 bg-slate-900/70 rounded-lg">
-  <span class="text-[11.5px] text-cyan-200 truncate">💡 <strong>Pro-Tip:</strong> Set <code>export HTTP_PROXY=http://127.0.0.1:8080</code> to route entire terminal sessions, SDKs, or Playwright tests into Burp.</span>
-  <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Terminal Proxy</span>
-</div>
-
-<!--
-Presenter Notes:
-- Walk participants through confirming that Burp Suite proxy listener on 127.0.0.1:8080 is running.
-- Explain why the localhost alias is necessary on macOS (Darwin network stack ignores proxies for localhost/127.0.0.1).
-- Run verify-proxy.sh and show students where the request appears in Burp's HTTP history tab.
-- Bridge to next slide: Now that our proxy is verified, let's turn Intercept ON and mutate live packets mid-flight.
--->
-
----
-class: pt-2 pb-2 px-8
----
-
-# 🧪 Practice Lab: Live MITM Packet Interception
-
-<h3 class="text-slate-300 text-xs mb-1">Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
-
-<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Step 1: Proxy Request
-      </span>
-      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">:8080 MITM</span>
-    </div>
-    <p class="text-xs text-slate-300 mb-1.5 leading-snug">Toggle <strong>Intercept is ON</strong> in Burp Proxy, then send request:</p>
-    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
-      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
-      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/users \</div>
-      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
-      <div class="text-emerald-300 pl-3">-d '{"username":"student","password":"secret"}'</div>
-    </div>
-  </div>
-  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs text-cyan-300 font-mono">
-    ⏸️ Request pauses in Burp Suite Proxy tab
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🔀</span> Step 2: Inject Steering Header
-      </span>
-      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Forward</span>
-    </div>
-    <p class="text-xs text-slate-300 mb-1.5 leading-snug">In Burp Proxy window, append header before clicking <strong>Forward</strong>:</p>
-    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
-      <div class="text-slate-400">// Append steering header:</div>
-      <div class="text-amber-300">Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED</div>
-    </div>
-    <p class="text-[11px] text-slate-300 mt-1 leading-snug">WireMock intercepts header and returns downstream expired OTP error.</p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
-    ✨ Client receives expired OTP without app code change!
-  </div>
-</div>
-
-</div>
-
-<div v-pre class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Zero-Touch Steering:</strong> Inject mock scenarios and simulate third-party failure responses without code changes.
-  </span>
-  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">macOS: 127.0.0.1 localhost.com</span>
-</div>
-
-<!--
-Presenter Notes:
-- macOS Note: macOS network stack and browsers bypass proxying for 'localhost'. Map '127.0.0.1 localhost.com' in /etc/hosts to route traffic through Burp.
-- Walk participants through setting up Burp proxy and executing the curl command with -x.
-- Show how the downstream response changes dynamically based on the injected Mock-Scenario header.
--->
-
----
 class: pt-2 pb-2 px-8
 ---
 
@@ -4532,149 +4391,6 @@ class: pt-2 pb-2 px-8
 class: pt-2 pb-2 px-8
 ---
 
-# 🎬 In-Flight Traffic Interception & Tampering
-
-<h3 class="text-slate-300 text-xs mb-1">Live instructor walkthrough: Intercepting payloads and steering downstream failure states</h3>
-
-<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
-
-<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Walkthrough Steps
-      </span>
-      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp MITM</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>1. Intercept Traffic:</strong> In Burp Suite Proxy tab, toggle <strong>Intercept is ON</strong> on port <code>:8080</code>.</li>
-      <li>• <strong>2. Dispatch Request:</strong> Issue client cURL with <code>-x http://127.0.0.1:8080</code> to route through proxy.</li>
-      <li>• <strong>3. Mutate In-Flight:</strong> Inspect packet in Burp, edit payload or append steering header in real time.</li>
-      <li>• <strong>4. Forward &amp; Assert:</strong> Click <strong>Forward</strong>; verify downstream service reacts to tampered request.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
-    💡 Enables negative testing and security tampering without touching backend code.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>🖥️</span> Live Terminal Commands
-      </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Proxy</span>
-    </div>
-    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
-      <div class="text-slate-400"># 1. Send outbound transfer through Burp Proxy</div>
-      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
-      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/transfers \</div>
-      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
-      <div class="text-emerald-300 pl-3">-d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'</div>
-      <div class="text-slate-400 pt-0.5"># 2. In Burp: Intercept pauses the request</div>
-      <div class="text-amber-300"># 3. Tamper amount ➔ 999999, inject header, click Forward</div>
-      <div class="text-emerald-300"># 4. Observe downstream response in terminal</div>
-    </div>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ⚡ Client receives downstream response seamlessly
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Duplex Interception Control:</strong> Burp Suite holds the raw TCP socket open while you tamper with headers or payload data, completely transparent to both caller and receiver.</span>
-  </div>
-  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Duplex MITM</span>
-</div>
-
-<!--
-Presenter Notes:
-- Ensure Burp Suite Intercept is ON before running the curl command.
-- Note for macOS: Ensure '127.0.0.1 localhost.com' is mapped in /etc/hosts.
-- Show the paused request in Burp Proxy, highlight the headers and JSON payload.
-- Edit the payload live and forward the request to show instant downstream reaction.
--->
-
----
-class: pt-2 pb-2 px-8
----
-
-# 🏆 Workshop: In-Flight Fraud Tampering
-
-<h3 class="text-slate-300 text-xs mb-1">Tamper with transfer payload mid-flight and inject downstream fraud steering headers</h3>
-
-<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
-
-<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🎯</span> Workshop Challenge Rules
-      </span>
-      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp Proxy :8080</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Target Transaction:</strong> Intercept outbound <code>POST /api/v1/transfers</code> packet before it reaches the backend gateway.</li>
-      <li>• <strong>Payload Mutation:</strong> Modify JSON body in transit from <code>"amount": 100</code> to <code>"amount": 999999</code>.</li>
-      <li>• <strong>Header Injection:</strong> Inject <code>Mock-Scenario: TRANSFER:FRAUD_ALERT</code> into the HTTP headers.</li>
-      <li>• <strong>Expected Verification:</strong> WireMock detects the tampered state and halts the transfer with <code>HTTP 403 Forbidden</code>.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
-    🛡️ Simulates malicious mobile client tampering &amp; gateway fraud defenses.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Verification Sequence
-      </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / MITM</span>
-    </div>
-    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
-      <div class="text-slate-400"># 1. Send normal transfer through Burp Proxy</div>
-      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
-      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/transfers \</div>
-      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
-      <div class="text-emerald-300 pl-3">-d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'</div>
-      <div class="text-slate-400 pt-0.5"># 2. In Burp Intercept: Tamper amount to 999999 &amp; inject header:</div>
-      <div class="text-amber-300">Mock-Scenario: TRANSFER:FRAUD_ALERT</div>
-      <div class="text-slate-400 pt-0.5"># 3. Forward request ➔ Assert HTTP 403 Forbidden</div>
-    </div>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ⚡ No application code changes required!
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>MITM Tampering Verification:</strong> When the tampered amount triggers a downstream fraud rule, WireMock immediately rejects the transfer with <code>HTTP 403 Forbidden</code>.</span>
-  </div>
-  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security QA</span>
-</div>
-
-<!--
-Presenter Notes:
-- Challenge participants to intercept the transfer request in Burp Proxy.
-- Observe how tampering with the amount and injecting the fraud scenario triggers an immediate 403 response.
-- Bridge to Platform Setup: Now that we've seen Burp in action on localhost APIs, let's explore the platform setup playbook to trust Burp CA on iOS, Android, macOS, Windows, and handle Mobile SSL Pinning.
--->
-
----
-class: pt-2 pb-2 px-8
----
-
 # 🛡️ Burp CA Certificate Setup — macOS
 
 <h3 class="text-slate-300 text-sm mb-1.5">Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass</h3>
@@ -5203,6 +4919,290 @@ Presenter Notes:
 - Explain black-box testing: When teams must evaluate third-party vendor binaries or test pre-release builds without modifying code, dynamic instrumentation is required.
 - Frida and Objection inject into the running process's memory space to hook TLS validation methods like TrustManagerImpl on Android and SecTrustEvaluate on iOS.
 - Reiterate the core security lesson: Client-side controls can always be bypassed by a motivated attacker in memory; robust security must live on the server.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🧪 Practice Lab: Proxy Setup & Verification
+
+<h3 class="text-slate-300 text-xs mb-1.5 -mt-1.5">Configure Proxy Listener, Local Hostname Aliasing &amp; End-to-End Pipeline Verification</h3>
+
+<div class="grid grid-cols-2 gap-3 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🛠️</span> Step 1: Listener &amp; Host Alias
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded whitespace-nowrap">:8080 Listener</span>
+    </div>
+    <ul class="space-y-1.5 text-[11px] text-slate-300 leading-snug mb-1.5">
+      <li>• <strong>Verify Listener:</strong> In Burp, go to <strong>Proxy ➔ Proxy settings</strong>. Ensure listener on <code>127.0.0.1:8080</code> is <strong>Running</strong>.</li>
+      <li>• <strong>macOS Loopback Fix:</strong> macOS bypasses proxies for <code>localhost</code>. Map a loopback alias in <code>/etc/hosts</code>:</li>
+    </ul>
+    <div class="bg-slate-950/80 border border-cyan-500/30 rounded p-2 font-mono text-[10px] leading-relaxed my-1">
+      <div class="text-slate-400 text-[9px] pb-0.5 border-b border-slate-800"># Add loopback alias to route through proxy:</div>
+      <div class="text-cyan-300 pt-1">echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts</div>
+    </div>
+  </div>
+  <div class="mt-1 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300">
+    ⚡ <strong>Prerequisite Ready:</strong> Traffic to <code>localhost.com</code> now routes cleanly into Burp.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🧪</span> Step 2: Route &amp; Verify Traffic
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded whitespace-nowrap">Audit &amp; Check</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-snug mb-1">
+      Send a health check through the proxy or run the automated lab helper:
+    </p>
+    <div class="bg-slate-950/80 border border-emerald-500/30 rounded p-2 font-mono text-[10px] leading-relaxed my-1 space-y-1">
+      <div>
+        <div class="text-slate-400 text-[9px]"># Option A: Manual cURL with proxy flag</div>
+        <div class="text-emerald-300">curl -s -x http://127.0.0.1:8080 http://localhost.com:8081/health</div>
+      </div>
+      <div>
+        <div class="text-slate-400 text-[9px]"># Option B: Automated verification script</div>
+        <div class="text-sky-300">bash labs/burp-suite/verify-proxy.sh</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-1 pt-1 border-t border-emerald-500/30 text-[10.5px] text-emerald-300">
+    ✅ <strong>Assertion:</strong> Request appears in Burp's <strong>Proxy ➔ HTTP history</strong> with <code>200 OK</code>.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1.5 border border-cyan-500/40 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-cyan-200 truncate">💡 <strong>Pro-Tip:</strong> Set <code>export HTTP_PROXY=http://127.0.0.1:8080</code> to route entire terminal sessions, SDKs, or Playwright tests into Burp.</span>
+  <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Terminal Proxy</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk participants through confirming that Burp Suite proxy listener on 127.0.0.1:8080 is running.
+- Explain why the localhost alias is necessary on macOS (Darwin network stack ignores proxies for localhost/127.0.0.1).
+- Run verify-proxy.sh and show students where the request appears in Burp's HTTP history tab.
+- Bridge to next slide: Now that our proxy is verified, let's turn Intercept ON and mutate live packets mid-flight.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🧪 Practice Lab: Live MITM Packet Interception
+
+<h3 class="text-slate-300 text-xs mb-1">Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Step 1: Proxy Request
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">:8080 MITM</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">Toggle <strong>Intercept is ON</strong> in Burp Proxy, then send request:</p>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
+      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/users \</div>
+      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
+      <div class="text-emerald-300 pl-3">-d '{"username":"student","password":"secret"}'</div>
+    </div>
+  </div>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs text-cyan-300 font-mono">
+    ⏸️ Request pauses in Burp Suite Proxy tab
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔀</span> Step 2: Inject Steering Header
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Forward</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">In Burp Proxy window, append header before clicking <strong>Forward</strong>:</p>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-slate-400">// Append steering header:</div>
+      <div class="text-amber-300">Mock-Scenario: PAOTANG:SUCCESS,OTP:EXPIRED</div>
+    </div>
+    <p class="text-[11px] text-slate-300 mt-1 leading-snug">WireMock intercepts header and returns downstream expired OTP error.</p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
+    ✨ Client receives expired OTP without app code change!
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Zero-Touch Steering:</strong> Inject mock scenarios and simulate third-party failure responses without code changes.
+  </span>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">macOS: 127.0.0.1 localhost.com</span>
+</div>
+
+<!--
+Presenter Notes:
+- macOS Note: macOS network stack and browsers bypass proxying for 'localhost'. Map '127.0.0.1 localhost.com' in /etc/hosts to route traffic through Burp.
+- Walk participants through setting up Burp proxy and executing the curl command with -x.
+- Show how the downstream response changes dynamically based on the injected Mock-Scenario header.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🎬 In-Flight Traffic Interception & Tampering
+
+<h3 class="text-slate-300 text-xs mb-1">Live instructor walkthrough: Intercepting payloads and steering downstream failure states</h3>
+
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Walkthrough Steps
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp MITM</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. Intercept Traffic:</strong> In Burp Suite Proxy tab, toggle <strong>Intercept is ON</strong> on port <code>:8080</code>.</li>
+      <li>• <strong>2. Dispatch Request:</strong> Issue client cURL with <code>-x http://127.0.0.1:8080</code> to route through proxy.</li>
+      <li>• <strong>3. Mutate In-Flight:</strong> Inspect packet in Burp, edit payload or append steering header in real time.</li>
+      <li>• <strong>4. Forward &amp; Assert:</strong> Click <strong>Forward</strong>; verify downstream service reacts to tampered request.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    💡 Enables negative testing and security tampering without touching backend code.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🖥️</span> Live Terminal Commands
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Proxy</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-slate-400"># 1. Send outbound transfer through Burp Proxy</div>
+      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
+      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/transfers \</div>
+      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
+      <div class="text-emerald-300 pl-3">-d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'</div>
+      <div class="text-slate-400 pt-0.5"># 2. In Burp: Intercept pauses the request</div>
+      <div class="text-amber-300"># 3. Tamper amount ➔ 999999, inject header, click Forward</div>
+      <div class="text-emerald-300"># 4. Observe downstream response in terminal</div>
+    </div>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ Client receives downstream response seamlessly
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Duplex Interception Control:</strong> Burp Suite holds the raw TCP socket open while you tamper with headers or payload data, completely transparent to both caller and receiver.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Duplex MITM</span>
+</div>
+
+<!--
+Presenter Notes:
+- Ensure Burp Suite Intercept is ON before running the curl command.
+- Note for macOS: Ensure '127.0.0.1 localhost.com' is mapped in /etc/hosts.
+- Show the paused request in Burp Proxy, highlight the headers and JSON payload.
+- Edit the payload live and forward the request to show instant downstream reaction.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🏆 Workshop: In-Flight Fraud Tampering
+
+<h3 class="text-slate-300 text-xs mb-1">Tamper with transfer payload mid-flight and inject downstream fraud steering headers</h3>
+
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
+
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> Workshop Challenge Rules
+      </span>
+      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">Burp Proxy :8080</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Target Transaction:</strong> Intercept outbound <code>POST /api/v1/transfers</code> packet before it reaches the backend gateway.</li>
+      <li>• <strong>Payload Mutation:</strong> Modify JSON body in transit from <code>"amount": 100</code> to <code>"amount": 999999</code>.</li>
+      <li>• <strong>Header Injection:</strong> Inject <code>Mock-Scenario: TRANSFER:FRAUD_ALERT</code> into the HTTP headers.</li>
+      <li>• <strong>Expected Verification:</strong> WireMock detects the tampered state and halts the transfer with <code>HTTP 403 Forbidden</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs font-mono text-amber-300">
+    🛡️ Simulates malicious mobile client tampering &amp; gateway fraud defenses.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Verification Sequence
+      </span>
+      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / MITM</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1.5 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-slate-400"># 1. Send normal transfer through Burp Proxy</div>
+      <div class="text-cyan-300">curl -x http://127.0.0.1:8080 -s -X POST \</div>
+      <div class="text-slate-300 pl-3">http://localhost.com:8081/api/v1/transfers \</div>
+      <div class="text-slate-300 pl-3">-H "Content-Type: application/json" \</div>
+      <div class="text-emerald-300 pl-3">-d '{"fromAccount":"ACC-001","toAccount":"ACC-002","amount":100}'</div>
+      <div class="text-slate-400 pt-0.5"># 2. In Burp Intercept: Tamper amount to 999999 &amp; inject header:</div>
+      <div class="text-amber-300">Mock-Scenario: TRANSFER:FRAUD_ALERT</div>
+      <div class="text-slate-400 pt-0.5"># 3. Forward request ➔ Assert HTTP 403 Forbidden</div>
+    </div>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ No application code changes required!
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>MITM Tampering Verification:</strong> When the tampered amount triggers a downstream fraud rule, WireMock immediately rejects the transfer with <code>HTTP 403 Forbidden</code>.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security QA</span>
+</div>
+
+<!--
+Presenter Notes:
+- Challenge participants to intercept the transfer request in Burp Proxy.
+- Observe how tampering with the amount and injecting the fraud scenario triggers an immediate 403 response.
+- Bridge to Platform Setup: Now that we've seen Burp in action on localhost APIs, let's explore the platform setup playbook to trust Burp CA on iOS, Android, macOS, Windows, and handle Mobile SSL Pinning.
 -->
 
 ---

@@ -40,31 +40,31 @@ Quick navigation reference for presentations in `slides/`.
 | **24** | [⚙️ WireMock — Body Match Operators & Lenient Flags](slides/slides.md#L1112) | Strict Matchers vs. Resilient Microservice Contracts |
 | **25** | [🔍 WireMock — JSONPath Expression Capabilities](slides/slides.md#L1176) | Advanced Payload Filtering with Jayway JsonPath |
 | **26** | [🔍 JSONPath Expression — High-Value Payment Filter](slides/slides.md#L1241) | Declarative threshold routing in WireMock request body patterns |
-| **27** | [🧪 Practice Lab: Web UI & Precision Matching](slides/slides.md#L1316) | Verify threshold routing and inspect unmatched diffs in WireMock Web UI |
-| **28** | [🎯 WireMock RegEx — Path & Dynamic Resource Routing](slides/slides.md#L1384) | Multi-Segment Hierarchy Matching with `urlPathPattern` |
-| **29** | [🎯 WireMock RegEx — Header & Scenario Steering](slides/slides.md#L1450) | Strict Bearer Token & Scenario Enum Validation |
-| **30** | [🎯 WireMock RegEx — Body & Parameter Matching](slides/slides.md#L1516) | 13-Digit National ID & Query Version Validation |
-| **31** | [🎯 WireMock RegEx — Multiple JSONPath Matchers](slides/slides.md#L1582) | Conjunctive (AND) Multi-Field Payload Validation with JSONPath |
-| **32** | [🔍 JSONPath RegEx Deep Dive — Expression Breakdown](slides/slides.md#L1610) | Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"` |
-| **33** | [📥 WireMock — Request Data Extraction & Echoing](slides/slides.md#L1651) | Path Segments, Query Parameters, Headers & JSONPath Payloads |
-| **34** | [🪄 Handlebars Logic, Math & Dynamic Data](slides/slides.md#L1719) | Conditionals, Arithmetic Calculations & Ephemeral Token Generators |
-| **35** | [🧪 Practice Lab: Dynamic Templating & Chaos Latency](slides/slides.md#L1786) | Validate Dynamic Math Calculations & Chaos Latency Timeout Handling |
-| **36** | [🔁 WireMock — Array Iteration & String Modifiers](slides/slides.md#L1848) | Loop Collections with each, Indexing, String Modifiers & Safe Defaults |
-| **37** | [📁 File-Based Response Templates (`bodyFileName`)](slides/slides.md#L1911) | Decoupling Large Dynamic JSON/XML Payloads from Mapping Stubs |
-| **38** | [⏱️ WireMock — Fixed Latency & Timeout Testing](slides/slides.md#L1960) | Deterministic Delay Injection (`fixedDelayMilliseconds`) |
-| **39** | [🎲 WireMock — Random Jitter & Latency Distributions](slides/slides.md#L2032) | Real-World Latency Simulation (`delayDistribution`) |
-| **40** | [💥 WireMock — Network Fault Injection (Chaos)](slides/slides.md#L2103) | Simulating Hard Network Failures & Socket Errors |
-| **41** | [🔄 WireMock — Stateful Scenario Primitives](slides/slides.md#L2177) | Transforming Stateless HTTP Mocks into Finite State Machines (FSM) |
-| **42** | [🔄 WireMock — Scenario Execution Flow](slides/slides.md#L2242) | State-Aware Request Evaluation & Transition Mechanics |
-| **43** | [🔄 Stateful Pattern 1: Single-Use Tokens & Replays](slides/slides.md#L2276) | OAuth Authorization Code &amp; OTP Replay Attack Prevention |
-| **44** | [🔄 Stateful Pattern 2: Multi-Step Order Lifecycle](slides/slides.md#L2339) | Modeling Sequential Domain State Transitions |
-| **45** | [🔄 Stateful Pattern 3: Transient Failure & Retries](slides/slides.md#L2385) | Testing Client Exponential Backoff &amp; Circuit Breaker Recovery |
-| **46** | [🔄 Stateful Pattern 4: Webhook Idempotency](slides/slides.md#L2448) | At-Least-Once Delivery &amp; Duplicate Message Detection |
-| **47** | [🪝 WireMock — Asynchronous Webhooks & Callbacks](slides/slides.md#L2511) | Triggering Outbound HTTP Events with serveEventListeners |
-| **48** | [⚠️ WireMock — The State Bleed Problem](slides/slides.md#L2578) | Why In-Memory Finite State Machines Cause Flaky CI Failures |
-| **49** | [🧹 WireMock — Automated Scenario Reset Hook](slides/slides.md#L2657) | Hermetic Test Isolation with POST /__admin/scenarios/reset |
-| **50** | [⚡ WireMock — Scenario Seeding & Inspection](slides/slides.md#L2737) | Fast-Forwarding Preconditions and Introspecting Live FSM States |
-| **51** | [🏆 Hands-On Workshops](slides/slides.md#L2809) | Production Challenge Missions & Controlled Chaos |
+| **27** | [🎯 WireMock RegEx — Path & Dynamic Resource Routing](slides/slides.md#L1316) | Multi-Segment Hierarchy Matching with `urlPathPattern` |
+| **28** | [🎯 WireMock RegEx — Header & Scenario Steering](slides/slides.md#L1382) | Strict Bearer Token & Scenario Enum Validation |
+| **29** | [🎯 WireMock RegEx — Body & Parameter Matching](slides/slides.md#L1448) | 13-Digit National ID & Query Version Validation |
+| **30** | [🎯 WireMock RegEx — Multiple JSONPath Matchers](slides/slides.md#L1514) | Conjunctive (AND) Multi-Field Payload Validation with JSONPath |
+| **31** | [🔍 JSONPath RegEx Deep Dive — Expression Breakdown](slides/slides.md#L1542) | Anatomy of `matchesJsonPath: "$[?(@.phone =~ /^0[689]\\d{8}$/)]"` |
+| **32** | [📥 WireMock — Request Data Extraction & Echoing](slides/slides.md#L1583) | Path Segments, Query Parameters, Headers & JSONPath Payloads |
+| **33** | [🪄 Handlebars Logic, Math & Dynamic Data](slides/slides.md#L1651) | Conditionals, Arithmetic Calculations & Ephemeral Token Generators |
+| **34** | [🔁 WireMock — Array Iteration & String Modifiers](slides/slides.md#L1718) | Loop Collections with each, Indexing, String Modifiers & Safe Defaults |
+| **35** | [📁 File-Based Response Templates (`bodyFileName`)](slides/slides.md#L1781) | Decoupling Large Dynamic JSON/XML Payloads from Mapping Stubs |
+| **36** | [⏱️ WireMock — Fixed Latency & Timeout Testing](slides/slides.md#L1830) | Deterministic Delay Injection (`fixedDelayMilliseconds`) |
+| **37** | [🎲 WireMock — Random Jitter & Latency Distributions](slides/slides.md#L1902) | Real-World Latency Simulation (`delayDistribution`) |
+| **38** | [💥 WireMock — Network Fault Injection (Chaos)](slides/slides.md#L1973) | Simulating Hard Network Failures & Socket Errors |
+| **39** | [🔄 WireMock — Stateful Scenario Primitives](slides/slides.md#L2047) | Transforming Stateless HTTP Mocks into Finite State Machines (FSM) |
+| **40** | [🔄 WireMock — Scenario Execution Flow](slides/slides.md#L2112) | State-Aware Request Evaluation & Transition Mechanics |
+| **41** | [🔄 Stateful Pattern 1: Single-Use Tokens & Replays](slides/slides.md#L2146) | OAuth Authorization Code &amp; OTP Replay Attack Prevention |
+| **42** | [🔄 Stateful Pattern 2: Multi-Step Order Lifecycle](slides/slides.md#L2209) | Modeling Sequential Domain State Transitions |
+| **43** | [🔄 Stateful Pattern 3: Transient Failure & Retries](slides/slides.md#L2255) | Testing Client Exponential Backoff &amp; Circuit Breaker Recovery |
+| **44** | [🔄 Stateful Pattern 4: Webhook Idempotency](slides/slides.md#L2318) | At-Least-Once Delivery &amp; Duplicate Message Detection |
+| **45** | [🪝 WireMock — Asynchronous Webhooks & Callbacks](slides/slides.md#L2381) | Triggering Outbound HTTP Events with serveEventListeners |
+| **46** | [⚠️ WireMock — The State Bleed Problem](slides/slides.md#L2448) | Why In-Memory Finite State Machines Cause Flaky CI Failures |
+| **47** | [🧹 WireMock — Automated Scenario Reset Hook](slides/slides.md#L2527) | Hermetic Test Isolation with POST /__admin/scenarios/reset |
+| **48** | [⚡ WireMock — Scenario Seeding & Inspection](slides/slides.md#L2607) | Fast-Forwarding Preconditions and Introspecting Live FSM States |
+| **49** | [🏆 Hands-On Workshops](slides/slides.md#L2679) | Production Challenge Missions & Controlled Chaos |
+| **50** | [🧪 Practice Lab: Web UI & Precision Matching](slides/slides.md#L2690) | Verify threshold routing and inspect unmatched diffs in WireMock Web UI |
+| **51** | [🧪 Practice Lab: Dynamic Templating & Chaos Latency](slides/slides.md#L2758) | Validate Dynamic Math Calculations & Chaos Latency Timeout Handling |
 | **52** | [🎬 Stateful Order Lifecycle Transitions](slides/slides.md#L2820) | Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs |
 | **53** | [🏆 Workshop: Stateful Order Fulfillment Machine](slides/slides.md#L2901) | Author a multi-state WireMock scenario modeling sequential order domain transitions |
 | **54** | [⚠️ Production Crisis: Biometric eKYC Dilemma](slides/slides.md#L2977) | Why External Vendor Sandboxes Threaten Mobile Banking Launches |
@@ -81,28 +81,28 @@ Quick navigation reference for presentations in `slides/`.
 | **65** | [🎯 Why Use Burp Suite in Integration Testing?](slides/slides.md#L3655) | Repurposing Cybersecurity Superpowers for Microservices QA &amp; Resilience |
 | **66** | [🔀 Deep Dive: Bi-Directional Duplex Interception](slides/slides.md#L3725) | Visualizing Request and Response Flow Through the MITM Engine |
 | **67** | [⚡ Live Intercept in Action](slides/slides.md#L3744) | Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight |
-| **68** | [🧪 Practice Lab: Proxy Setup & Verification](slides/slides.md#L3769) | Configure Proxy Listener, Local Hostname Aliasing &amp; End-to-End Pipeline Verification |
-| **69** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L3843) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
-| **70** | [🎯 Burp Suite — Target: Site Map & Scope Control](slides/slides.md#L3910) | Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise |
-| **71** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L3971) | Real-Time Traffic Auditing & Inspection |
-| **72** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L4003) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
-| **73** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L4068) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
-| **74** | [🎯 Intruder Modes — Sniper vs. Battering Ram](slides/slides.md#L4136) | Single Payload List: One Blank at a Time vs. Identical Twin Values Everywhere (ELI5) |
-| **75** | [🔱 Intruder Modes — Pitchfork vs. Cluster Bomb](slides/slides.md#L4223) | Multiple Payload Lists: Lockstep Pairs vs. Trying Every Possible Combination (ELI5) |
-| **76** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L4308) | Zero-Click Automated Header & Payload Manipulation |
-| **77** | [🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation](slides/slides.md#L4350) | Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection |
-| **78** | [⚖️ Burp Suite — Comparer: Visual Response Diffing](slides/slides.md#L4414) | Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations |
-| **79** | [🎲 Burp Suite — Sequencer &amp; Extensibility (BApp)](slides/slides.md#L4480) | Token Entropy Analysis &amp; Custom Test Automation with Extensions |
-| **80** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L4535) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
-| **81** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L4607) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
-| **82** | [🛡️ Burp CA Certificate Setup — macOS](slides/slides.md#L4678) | Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass |
-| **83** | [🛡️ Burp CA Certificate Setup — Windows](slides/slides.md#L4751) | Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores |
-| **84** | [🛡️ Burp CA Certificate Setup — iOS](slides/slides.md#L4819) | Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator |
-| **85** | [🛡️ Burp CA Certificate Setup — Android](slides/slides.md#L4892) | User Certificate Store, Network Security Config & Emulator Root Injection |
-| **86** | [📱 Mobile SSL Pinning — What It Is & Why It Breaks Proxies](slides/slides.md#L4973) | Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation |
-| **87** | [🤖 Mobile SSL Pinning — Android White-Box Setup](slides/slides.md#L5046) | res/xml/network_security_config.xml — Enabling Staging Proxying with Zero Production Risk |
-| **88** | [🍎 Mobile SSL Pinning — iOS White-Box Setup](slides/slides.md#L5094) | Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt |
-| **89** | [⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass](slides/slides.md#L5141) | Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing |
+| **68** | [🎯 Burp Suite — Target: Site Map & Scope Control](slides/slides.md#L3769) | Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise |
+| **69** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L3830) | Real-Time Traffic Auditing & Inspection |
+| **70** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L3862) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
+| **71** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L3927) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
+| **72** | [🎯 Intruder Modes — Sniper vs. Battering Ram](slides/slides.md#L3995) | Single Payload List: One Blank at a Time vs. Identical Twin Values Everywhere (ELI5) |
+| **73** | [🔱 Intruder Modes — Pitchfork vs. Cluster Bomb](slides/slides.md#L4082) | Multiple Payload Lists: Lockstep Pairs vs. Trying Every Possible Combination (ELI5) |
+| **74** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L4167) | Zero-Click Automated Header & Payload Manipulation |
+| **75** | [🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation](slides/slides.md#L4209) | Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection |
+| **76** | [⚖️ Burp Suite — Comparer: Visual Response Diffing](slides/slides.md#L4273) | Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations |
+| **77** | [🎲 Burp Suite — Sequencer &amp; Extensibility (BApp)](slides/slides.md#L4339) | Token Entropy Analysis &amp; Custom Test Automation with Extensions |
+| **78** | [🛡️ Burp CA Certificate Setup — macOS](slides/slides.md#L4394) | Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass |
+| **79** | [🛡️ Burp CA Certificate Setup — Windows](slides/slides.md#L4467) | Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores |
+| **80** | [🛡️ Burp CA Certificate Setup — iOS](slides/slides.md#L4535) | Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator |
+| **81** | [🛡️ Burp CA Certificate Setup — Android](slides/slides.md#L4608) | User Certificate Store, Network Security Config & Emulator Root Injection |
+| **82** | [📱 Mobile SSL Pinning — What It Is & Why It Breaks Proxies](slides/slides.md#L4689) | Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation |
+| **83** | [🤖 Mobile SSL Pinning — Android White-Box Setup](slides/slides.md#L4762) | res/xml/network_security_config.xml — Enabling Staging Proxying with Zero Production Risk |
+| **84** | [🍎 Mobile SSL Pinning — iOS White-Box Setup](slides/slides.md#L4810) | Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt |
+| **85** | [⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass](slides/slides.md#L4857) | Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing |
+| **86** | [🧪 Practice Lab: Proxy Setup & Verification](slides/slides.md#L4928) | Configure Proxy Listener, Local Hostname Aliasing &amp; End-to-End Pipeline Verification |
+| **87** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L5002) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
+| **88** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L5069) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
+| **89** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L5141) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
 | **90** | [⚡ Architectural Split: WireMock vs. Burp Suite](slides/slides.md#L5210) | Downstream Service Virtualization vs. In-Flight MITM Traffic Interception |
 | **91** | [🐳 Part 4](slides/slides.md#L5260) | Testcontainers — Hermetic Infrastructure |
 | **92** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L5270) | Programmable Docker Infrastructure Directly in Your Test Suite |
