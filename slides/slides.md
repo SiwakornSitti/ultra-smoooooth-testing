@@ -2980,6 +2980,364 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
+class: pt-2 pb-1 px-8
+---
+
+# 🔐 Why We Need Custom Certificate Chaining
+
+<h3 class="text-slate-300 text-sm mb-1.5">How Dynamic TLS Interception &amp; Hierarchical Trust Chains Solve HTTPS Encryption</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2.5 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🚫</span> 1. The Strict TLS Problem
+      </span>
+      <span class="text-[11px] font-mono text-rose-300/80 bg-rose-900/40 px-2 py-0.5 rounded">Alert 48</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Hostname Binding:</strong> TLS mandates certificate Subject Alternative Name (SAN) match the target host (e.g. <code>api.shopvibe.com</code>).</li>
+      <li>• <strong>Static Certs Fail:</strong> A static cert cannot predict arbitrary microservice domains. Clients abort with <code>ERR_CERT_COMMON_NAME_INVALID</code>.</li>
+      <li>• <strong>Untrusted Authority:</strong> Even if host matches, the OS rejects certs not signed by a recognized root authority (<code>unknown_ca</code>).</li>
+    </ul>
+  </div>
+  <div class="mt-1 pt-1 border-t border-rose-500/30 text-[11px] text-rose-300 font-mono">
+    🛑 Direct interception fails without dynamic per-host certificate generation.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⛓️</span> 2. Dynamic On-the-Fly Chaining
+      </span>
+      <span class="text-[11px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded">Root ➔ Leaf PKI</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded p-1.5 font-mono text-[11px] text-slate-200 space-y-0.5 mb-1">
+  <div class="text-emerald-400">1. OS Store ➔ Trusts PortSwigger Root CA (Installed ONCE)</div>
+  <div class="text-cyan-400 pl-2">↳ 2. SNI Captured ➔ 3. Leaf Generated ➔ 4. Signed by Root CA</div>
+</div>
+
+<ul class="space-y-1 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Install Once, Decrypt All:</strong> Trusting Root CA lets Burp mint valid leaf certs for any domain dynamically.</li>
+  <li>• <strong>Preserves PKI Hierarchy:</strong> Satisfies strict RFC 5280 chain validation in browsers, iOS ATS, and Android.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-1 border-t border-cyan-500/30 text-[11px] text-cyan-300 font-mono">
+    ✨ Transparent full-duplex TLS decryption and re-encryption.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Custom Enterprise CA:</strong> Exporting a shared custom Root CA to team workstations &amp; CI/CD runners standardizes test environments with 0 TLS warnings.
+  </span>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">RFC 5280 PKI Chain</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain that TLS handshake occurs before HTTP layer; SNI in ClientHello is the only plaintext indicator of target hostname.
+- Highlight the difference between self-signing every domain manually vs having an installed Root CA that signs dynamic leaf certificates in real time.
+- Mention that mTLS can be handled by configuring upstream client certificates (.p12) in Burp Proxy settings.
+-->
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — iOS
+
+<h3 class="text-slate-300 text-sm mb-1.5">Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
+        <span>📱</span> 1. Real Device (iPhone / iPad)
+      </span>
+      <span class="text-[11px] font-mono text-indigo-300/80 bg-indigo-900/40 px-2 py-0.5 rounded">Safari Only</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Download Profile:</strong> Configure proxy to <code>:8080</code>, open <strong>Safari</strong>, go to <code>http://burpsuite</code> ➔ tap <strong>CA Certificate</strong>.</li>
+      <li>• <strong>Install Profile:</strong> Open <strong>Settings ➔ Profile Downloaded</strong> ➔ Tap <strong>Install</strong> ➔ enter device passcode.</li>
+      <li>• <strong>Enable Full Trust (Crucial):</strong> Go to <strong>Settings ➔ General ➔ About ➔ Certificate Trust Settings</strong>.</li>
+      <li>• Under <em>Enable full trust for root certificates</em>, toggle <strong>PortSwigger CA</strong> to <strong>ON</strong>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-indigo-500/30 text-xs text-indigo-300 font-mono">
+    ⚠️ Must toggle in About, or apps reject TLS with NSURLErrorServerCertificateUntrusted.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. iOS Simulator & Automation
+      </span>
+      <span class="text-[11px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded">xcrun simctl</span>
+    </div>
+
+```bash
+# 1. Direct drag-and-drop:
+# Drag cacert.der into running Simulator window
+
+# 2. Or install via CLI automation:
+xcrun simctl keychain booted add-root-cert cacert.der
+
+# 3. Verify simulator trust status:
+xcrun simctl keychain booted status
+```
+
+<p class="text-[11px] text-slate-300 mt-1 leading-snug m-0">Works out-of-the-box for Swift, Objective-C, React Native, and Flutter iOS builds.</p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ✨ Ready for native iOS app &amp; Safari MITM testing!
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-indigo-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-indigo-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Safari Rule:</strong> Always download via <strong>Safari</strong> — iOS blocks Chrome from triggering configuration profile installers.
+  </span>
+  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">iOS 10+ Trust Policy</span>
+</div>
+
+<!--
+Presenter Notes:
+- Emphasize the Certificate Trust Settings step: 90% of students forget to toggle trust in Settings > General > About.
+- Show how xcrun simctl enables one-click root CA injection on macOS development machines for local simulators.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — Android
+
+<h3 class="text-slate-300 text-sm mb-1.5">User Certificate Store, Network Security Config & Emulator Root Injection</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🤖</span> 1. Device Store & App Security Config
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">API 24+</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Export Cert:</strong> Rename <code>cacert.der</code> ➔ <code>cacert.crt</code> (Android requires <code>.crt</code>).</li>
+      <li>• <strong>Install CA Cert:</strong> <strong>Settings ➔ Security ➔ Encryption &amp; credentials ➔ Install CA certificate</strong>.</li>
+      <li>• <strong>App Trust (Android 7.0+):</strong> Modern apps ignore user certs. Add to <code>res/xml/network_security_config.xml</code>:</li>
+    </ul>
+
+```xml
+<network-security-config>
+  <base-config><trust-anchors>
+    <certificates src="user" /><certificates src="system" />
+  </trust-anchors></base-config>
+</network-security-config>
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
+    📁 In AndroidManifest.xml: android:networkSecurityConfig="@xml/..."
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. Emulator System Root (No App Code Changes)
+      </span>
+      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">adb root</span>
+    </div>
+
+```bash
+# 1. Compute subject hash & convert to PEM
+HASH=$(openssl x509 -inform DER -in cacert.der \
+  -subject_hash_old | head -n 1)
+openssl x509 -inform DER -in cacert.der -out ${HASH}.0
+
+# 2. Push directly to Android system CA store
+adb root && adb remount
+adb push ${HASH}.0 /system/etc/security/cacerts/
+adb shell chmod 644 /system/etc/security/cacerts/${HASH}.0
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🛡️ Treated as a trusted system CA: works on ALL apps without rebuilding!
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>SSL Pinning Bypass:</strong> If third-party APKs enforce certificate pinning (OkHttp CertificatePinner), use <code>objection --gadget com.app explore</code> to disable pinning at runtime.
+  </span>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Frida / Objection</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain Android 7.0 (Nougat) breaking change: apps stopped trusting user-installed CA certificates by default.
+- Highlight the emulator trick: pushing directly to /system/etc/security/cacerts/ turns Burp CA into a system root, bypassing app-level restrictions.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — macOS
+
+<h3 class="text-slate-300 text-sm mb-1.5">Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-sky-500/30">
+      <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🍏</span> 1. Keychain Access (GUI Setup)
+      </span>
+      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Always Trust</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Export Cert:</strong> In Burp ➔ <strong>Proxy settings ➔ Import / Export CA certificate</strong> ➔ Export in DER format as <code>cacert.der</code>.</li>
+      <li>• <strong>Import to Keychain:</strong> Open <strong>Keychain Access.app</strong> ➔ Select <strong>System</strong> keychain ➔ Drag &amp; drop <code>cacert.der</code>.</li>
+      <li>• <strong>Set Always Trust:</strong> Double-click <strong>PortSwigger CA</strong> ➔ Expand <strong>Trust</strong> ➔ Set <em>When using this certificate</em> to <strong>Always Trust</strong>.</li>
+      <li>• Close window and enter your macOS administrator password.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-sky-500/30 text-xs text-sky-300 font-mono">
+    ✅ Instantly trusted by Safari, Chrome, Electron &amp; native macOS tools.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. CLI Automation &amp; Hosts Bypass
+      </span>
+      <span class="text-[11px] font-mono text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded">Terminal / CI</span>
+    </div>
+
+```bash
+# 1. Install & trust root CA via security CLI
+sudo security add-trusted-cert -d -r trustRoot \
+  -k /Library/Keychains/System.keychain cacert.der
+
+# 2. Fix macOS 'localhost' loopback proxy bypass:
+echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts
+
+# 3. Test HTTPS proxy routing cleanly:
+curl -x http://127.0.0.1:8080 -s https://localhost.com:8443
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ Fully scriptable for developer workstations and macOS CI runners.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-sky-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-sky-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Verify via CLI:</strong> Check trust in terminal: <code>security find-certificate -c "PortSwigger CA" -p /Library/Keychains/System.keychain</code>.
+  </span>
+  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded">Security CLI</span>
+</div>
+
+<!--
+Presenter Notes:
+- Emphasize the importance of selecting 'System' keychain rather than 'login' if running service background daemons.
+- Remind participants that macOS ignores proxies for 'localhost' by default; localhost.com in /etc/hosts is required.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — Windows
+
+<h3 class="text-slate-300 text-sm mb-1.5">Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2.5 border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-blue-500/30">
+      <span class="text-blue-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🪟</span> 1. Certificate Import Wizard (GUI)
+      </span>
+      <span class="text-[11px] font-mono text-blue-300/80 bg-blue-900/40 px-2 py-0.5 rounded">certmgr.msc</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Download:</strong> Open <code>http://burpsuite</code> in browser ➔ save <code>cacert.der</code>.</li>
+      <li>• <strong>Import Wizard:</strong> Double-click <code>cacert.der</code> ➔ <strong>Install Certificate...</strong> ➔ select <strong>Local Machine</strong>.</li>
+      <li>• <strong>Root Store (Crucial):</strong> Choose <em>Place all certificates in store</em> ➔ Browse ➔ select <strong>Trusted Root Certification Authorities</strong> ➔ Finish.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-blue-500/30 text-xs text-blue-300 font-mono">
+    ✅ Instantly trusted by Microsoft Edge, Chrome &amp; .NET runtime.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. PowerShell Administrator Automation
+      </span>
+      <span class="text-[11px] font-mono text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded">PowerShell 5+</span>
+    </div>
+
+```powershell
+# 1. Import cert to LocalMachine Root store
+Import-Certificate -FilePath .\cacert.der `
+  -CertStoreLocation Cert:\LocalMachine\Root
+
+# 2. Verify: Get-ChildItem Cert:\LocalMachine\Root
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🚀 Fully automated deployment for Windows test environments.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-blue-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-blue-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>Firefox Store Note:</strong> Firefox uses its own certificate store by default. In <code>about:config</code>, set <code>security.enterprise_roots.enabled = true</code> to trust the Windows Root Store.
+  </span>
+  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded">about:config</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk Windows users through selecting "Trusted Root Certification Authorities" specifically; automatic store selection places it in Intermediate CAs where it will not work.
+- Note Firefox's separate certificate store setting (security.enterprise_roots.enabled).
+-->
+---
 class: pt-2 pb-2 px-8
 ---
 
@@ -2987,7 +3345,7 @@ class: pt-2 pb-2 px-8
 
 <h3 class="text-slate-300 text-sm mb-1.5">Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
 <div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
   <div>
@@ -3194,7 +3552,7 @@ class: pt-2 pb-2 px-8
 
 <h3 class="text-slate-300 text-sm mb-1.5">Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
 <div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
   <div>
@@ -3259,7 +3617,7 @@ class: pt-2 pb-2 px-8
 
 <h3 class="text-slate-300 text-sm mb-1.5">High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
 <div class="slide-card p-3 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between">
   <div>
@@ -3367,7 +3725,7 @@ class: pt-2 pb-2 px-8
 
 <h3 class="text-slate-300 text-sm mb-1.5">Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
 <div class="slide-card p-2.5 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
   <div>
@@ -3431,7 +3789,7 @@ class: pt-2 pb-2 px-8
 
 <h3 class="text-slate-300 text-sm mb-1.5">Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
 <div class="slide-card p-2.5 border border-teal-500/40 bg-teal-950/20 flex flex-col justify-between">
   <div>
@@ -3497,7 +3855,7 @@ class: pt-2 pb-2 px-8
 
 <h3 class="text-slate-300 text-sm mb-1.5">Token Entropy Analysis &amp; Custom Test Automation with Extensions</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
 
 <div class="slide-card p-3 border border-pink-500/40 bg-pink-950/20 flex flex-col justify-between">
   <div>
