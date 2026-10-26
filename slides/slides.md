@@ -3146,77 +3146,7 @@ class: pt-1.5 pb-1 px-8
 Presenter Notes:
 - Introduce Burp Suite's origin: Created by PortSwigger, it is the undisputed industry standard for web application security.
 - Demystify the tool: It's not magic—it's simply an HTTP/S proxy running on localhost:8080 that intercepts packets before they leave your machine.
-- Set up the transition: Why would a QA or integration testing team use a hacker's security tool? Let's look at why in the next slide.
--->
-
----
-class: pt-1.5 pb-1 px-8
----
-
-# 🎯 Why Use Burp Suite in Integration Testing?
-
-<h3 class="text-slate-300 text-xs mb-1">Repurposing Cybersecurity Superpowers for Microservices QA &amp; Resilience</h3>
-
-<div class="multi-col-grid-3">
-
-<div class="col-card p-3 border border-emerald-500/30 bg-slate-900/60 flex flex-col justify-between">
-  <div>
-    <h3 class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>⚡</span> In-Flight Tampering
-    </h3>
-    <p class="text-xs text-slate-300 leading-snug">
-      Pause requests mid-flight to inject <code>Mock-Scenario</code> headers that steer backend WireMock stubs. Mutate responses to HTTP 500 to test frontend fallback UI banners.
-    </p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-emerald-300 font-mono">
-    Proxy ➔ Duplex Traffic Control
-  </div>
-</div>
-
-<div class="col-card p-3 border border-cyan-500/30 bg-slate-900/60 flex flex-col justify-between">
-  <div>
-    <h3 class="text-cyan-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>🔁</span> Instant API Replay
-    </h3>
-    <p class="text-xs text-slate-300 leading-snug">
-      1-click handoff from live logs into <strong>Repeater</strong>. Tweak JSON payloads, query params, or auth tokens to test edge cases in total isolation without repeating manual UI flows.
-    </p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-cyan-300 font-mono">
-    Repeater ➔ Rapid Edge Reproduction
-  </div>
-</div>
-
-<div class="col-card p-3 border border-amber-500/30 bg-slate-900/60 flex flex-col justify-between">
-  <div>
-    <h3 class="text-amber-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>⚙️</span> CI Steering &amp; Races
-    </h3>
-    <p class="text-xs text-slate-300 leading-snug">
-      Auto-inject mock headers unattended in CI/CD using <strong>Match &amp; Replace</strong>. Stress-test TOCTOU race conditions and rate limits with <strong>Intruder</strong> multi-packet attacks.
-    </p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-amber-300 font-mono">
-    Intruder ➔ Fuzzing &amp; Concurrency
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>The QA Advantage</strong>: Security tools excel at low-level packet manipulation, giving QA engineers raw power to simulate failure states application code normally prevents.
-  </span>
-  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">AppSec ➔ QA Superpower</span>
-</div>
-
-<!--
-Presenter Notes:
-- Emphasize the 3 key QA testing wins:
-  1. No code changes needed to test edge cases or error handling.
-  2. Instant reproduction in Repeater saves hours compared to clicking through multi-step browser forms.
-  3. Intruder proves whether microservice balances or promo codes are vulnerable to concurrency race conditions.
-- Lead into HTTPS: Since 100% of modern API traffic is encrypted with TLS, how does Burp actually decrypt traffic without throwing security warnings? Next slide: How HTTPS Works.
+- Set up the transition: Since 100% of modern API traffic is encrypted with TLS, how does HTTPS actually work and why is transparent proxying challenging? Let's look at How HTTPS Works next.
 -->
 
 
@@ -3842,6 +3772,77 @@ Presenter Notes:
 - Contrast OS Root CA Trust with Application-Level SSL Pinning: Root CA satisfies the operating system, but pinned apps hardcode the server's SPKI public key hash.
 - Highlight the recommended team pattern: Never disable pinning in production; use Android network_security_config debug-overrides and iOS #if DEBUG build schemes.
 - Explain Frida/Objection: For black-box penetration testing where source code cannot be modified, dynamic instrumentation hooks the verification methods directly in memory.
+- Bridge: Now that TLS, PKI certificates, and trust stores are fully configured and traffic flows cleanly through Burp, let's explore why we use Burp Suite in integration testing and the superpowers it gives us.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🎯 Why Use Burp Suite in Integration Testing?
+
+<h3 class="text-slate-300 text-xs mb-1">Repurposing Cybersecurity Superpowers for Microservices QA &amp; Resilience</h3>
+
+<div class="multi-col-grid-3">
+
+<div class="col-card p-3 border border-emerald-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>⚡</span> In-Flight Tampering
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      Pause requests mid-flight to inject <code>Mock-Scenario</code> headers that steer backend WireMock stubs. Mutate responses to HTTP 500 to test frontend fallback UI banners.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-emerald-300 font-mono">
+    Proxy ➔ Duplex Traffic Control
+  </div>
+</div>
+
+<div class="col-card p-3 border border-cyan-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-cyan-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>🔁</span> Instant API Replay
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      1-click handoff from live logs into <strong>Repeater</strong>. Tweak JSON payloads, query params, or auth tokens to test edge cases in total isolation without repeating manual UI flows.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-cyan-300 font-mono">
+    Repeater ➔ Rapid Edge Reproduction
+  </div>
+</div>
+
+<div class="col-card p-3 border border-amber-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-amber-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>⚙️</span> CI Steering &amp; Races
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      Auto-inject mock headers unattended in CI/CD using <strong>Match &amp; Replace</strong>. Stress-test TOCTOU race conditions and rate limits with <strong>Intruder</strong> multi-packet attacks.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-amber-300 font-mono">
+    Intruder ➔ Fuzzing &amp; Concurrency
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
+    <span>💡</span> <strong>The QA Advantage</strong>: Security tools excel at low-level packet manipulation, giving QA engineers raw power to simulate failure states application code normally prevents.
+  </span>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">AppSec ➔ QA Superpower</span>
+</div>
+
+<!--
+Presenter Notes:
+- Emphasize the 3 key QA testing wins:
+  1. No code changes needed to test edge cases or error handling.
+  2. Instant reproduction in Repeater saves hours compared to clicking through multi-step browser forms.
+  3. Intruder proves whether microservice balances or promo codes are vulnerable to concurrency race conditions.
+- Bridge to the tools: Now let's explore each tool in the suite starting with Target & Scope Control to organize our traffic.
 -->
 ---
 class: pt-2 pb-2 px-8
