@@ -87,7 +87,7 @@ Quick navigation reference for presentations in `slides/`.
 | **71** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L3828) | Real-Time Traffic Auditing & Inspection |
 | **72** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L3860) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
 | **73** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L3925) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
-| **74** | [🎯 Intruder — 4 Attack Modes](slides/slides.md#L3993) | Payload Mapping Strategies, Execution Mechanics &amp; Combinatorial Matrix |
+| **74** | [🎯 Intruder — 4 Attack Modes](slides/slides.md#L3993) | How Burp Fills In the Blanks — 4 Easy Ways to Test Inputs (ELI5) |
 | **75** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L4097) | Zero-Click Automated Header & Payload Manipulation |
 | **76** | [🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation](slides/slides.md#L4139) | Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection |
 | **77** | [⚖️ Burp Suite — Comparer: Visual Response Diffing](slides/slides.md#L4203) | Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations |
