@@ -2980,179 +2980,66 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
-class: pt-2 pb-1 px-8
+class: pt-2 pb-2 px-8
 ---
 
-# 🛡️ Burp Suite — Core Traffic & Interception Tools
+# 🎯 Burp Suite — Target: Site Map & Scope Control
 
-<h3 class="text-slate-300 text-xs mb-1">Primary Active Workbench for Intercepting, Replaying &amp; Fuzzing API Calls</h3>
+<h3 class="text-slate-300 text-sm mb-1.5">Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise</h3>
 
-<div class="grid grid-cols-2 gap-2 mt-0.5">
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
 
-<div class="slide-card p-2 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-amber-500/30">
-      <span class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
-        <span>⚡</span> 1. Proxy (Intercept &amp; History)
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> Core Capabilities &amp; Scoping
       </span>
-      <span class="text-[10px] font-mono text-amber-300/80 bg-amber-900/40 px-1.5 py-0.2 rounded">MITM Core</span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Target Tab</span>
     </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Captures in-flight HTTP/S traffic between client and gateway. Live pause, tamper with headers/body, or drop packets.
-    </p>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Endpoint Discovery:</strong> Passively builds a complete directory tree of all microservice routes, parameters, and query flags.</li>
+      <li>• <strong>Suite Scoping:</strong> Right-click <code>http://localhost:8080</code> ➔ <strong>Add to scope</strong> to isolate your microservices under test.</li>
+      <li>• <strong>Noise Reduction:</strong> Enable <em>"Show only in-scope items"</em> to filter out browser telemetry, CDN requests, and OS background pings.</li>
+    </ul>
   </div>
-  <div class="mt-1 text-[10px] text-amber-200/90 font-mono">
-    🎯 <em>Target</em>: Manual fraud injection &amp; steering headers.
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-[11px] text-cyan-300 font-mono">
+    ⚡ Essential for keeping Logger &amp; Proxy focused purely on test APIs.
   </div>
 </div>
 
-<div class="slide-card p-2 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🎯</span> 2. Target (Site Map &amp; Scope)
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🗺️</span> Discovered Microservices Tree
       </span>
-      <span class="text-[10px] font-mono text-cyan-300/80 bg-cyan-900/40 px-1.5 py-0.2 rounded">Topology</span>
+      <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">In Scope</span>
     </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Builds hierarchical tree of microservice endpoints and paths. Sets suite scope to filter out noisy external domains.
-    </p>
-  </div>
-  <div class="mt-1 text-[10px] text-cyan-200/90 font-mono">
-    🎯 <em>Target</em>: Scoping integration tests to localhost APIs.
-  </div>
-</div>
 
-<div class="slide-card p-2 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🔁</span> 3. Repeater
-      </span>
-      <span class="text-[10px] font-mono text-emerald-300/80 bg-emerald-900/40 px-1.5 py-0.2 rounded">Ad-Hoc Replay</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Isolated request workbench. Send intercepted requests with <code>Cmd+R</code>, adjust payload parameters, and re-issue instantly.
-    </p>
-  </div>
-  <div class="mt-1 text-[10px] text-emerald-200/90 font-mono">
-    🎯 <em>Target</em>: Rapidly validating API edge cases without UI.
-  </div>
-</div>
+```text
+📁 http://localhost:8080 (bff-service gateway)
+├── 📂 /api/v1/users (user-service :8081)
+│   └── 📄 POST /register, POST /login
+├── 📂 /api/v1/accounts (bank-service :8082)
+│   └── 📄 GET /balance, POST /deposit
+├── 📂 /api/v1/ekyc (ekyc-service :8083)
+│   └── 📄 POST /biometrics
+└── 📂 /api/v1/transfers (transfer-service :8085)
+    └── 📄 POST /execute, GET /history
+```
 
-<div class="slide-card p-2 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-purple-500/30">
-      <span class="text-purple-300 font-bold text-xs flex items-center gap-1.5">
-        <span>⚡</span> 4. Intruder
-      </span>
-      <span class="text-[10px] font-mono text-purple-300/80 bg-purple-900/40 px-1.5 py-0.2 rounded">Automated Fuzzing</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Configurable parameter attack engine. Defines payload positions to automate boundary tests, rate limits, and brute force.
-    </p>
   </div>
-  <div class="mt-1 text-[10px] text-purple-200/90 font-mono">
-    🎯 <em>Target</em>: Concurrency race conditions &amp; boundary values.
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
+    🎯 Right-click any node ➔ Send to Repeater (Cmd+R)
   </div>
 </div>
 
 </div>
 
-<div class="slide-card text-[11px] mt-1.5 p-1.5 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
-  <div class="flex items-center gap-2">
-    <span class="text-blue-400 font-bold">📋 5. Logger</span>
-    <span class="text-slate-300 text-[10px]">Unified chronological audit log across all tools with regex filtering and 1-click tool handoff.</span>
-  </div>
-  <span class="text-blue-300 font-mono text-[9px] bg-blue-950/50 px-2 py-0.5 rounded border border-blue-500/30">Unified Audit</span>
-</div>
-
----
-class: pt-2 pb-1 px-8
----
-
-# 🔍 Burp Suite — Analysis, Mutation &amp; Extension Utilities
-
-<h3 class="text-slate-300 text-xs mb-1">In-Flight Payload Analysis, Diffing, Entropy &amp; Automation Extensions</h3>
-
-<div class="grid grid-cols-2 gap-2 mt-0.5">
-
-<div class="slide-card p-2 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-indigo-500/30">
-      <span class="text-indigo-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🔤</span> 6. Decoder
-      </span>
-      <span class="text-[10px] font-mono text-indigo-300/80 bg-indigo-900/40 px-1.5 py-0.2 rounded">Transforms</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Multi-layer conversion tool for URL, Base64, Hex, HTML, and Gzip data. Includes real-time JWT token inspection and hashing.
-    </p>
-  </div>
-  <div class="mt-1 text-[10px] text-indigo-200/90 font-mono">
-    🎯 <em>Target</em>: Inspecting JWT claims &amp; serialized auth tokens.
-  </div>
-</div>
-
-<div class="slide-card p-2 border border-teal-500/40 bg-teal-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-teal-500/30">
-      <span class="text-teal-300 font-bold text-xs flex items-center gap-1.5">
-        <span>⚖️</span> 7. Comparer
-      </span>
-      <span class="text-[10px] font-mono text-teal-300/80 bg-teal-900/40 px-1.5 py-0.2 rounded">Visual Diff</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Visual side-by-side diff engine. Performs word or byte comparisons between two requests or responses to spot variations.
-    </p>
-  </div>
-  <div class="mt-1 text-[10px] text-teal-200/90 font-mono">
-    🎯 <em>Target</em>: Comparing 200 OK vs 403 Forbidden payload states.
-  </div>
-</div>
-
-<div class="slide-card p-2 border border-pink-500/40 bg-pink-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-pink-500/30">
-      <span class="text-pink-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🎲</span> 8. Sequencer
-      </span>
-      <span class="text-[10px] font-mono text-pink-300/80 bg-pink-900/40 px-1.5 py-0.2 rounded">Entropy Test</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Evaluates statistical entropy of session tokens, CSRF tokens, OTPs, or UUIDs against randomness quality standards.
-    </p>
-  </div>
-  <div class="mt-1 text-[10px] text-pink-200/90 font-mono">
-    🎯 <em>Target</em>: Verifying banking session tokens cannot be guessed.
-  </div>
-</div>
-
-<div class="slide-card p-2 border border-orange-500/40 bg-orange-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-orange-500/30">
-      <span class="text-orange-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🧩</span> 9. Extensions (BApp)
-      </span>
-      <span class="text-[10px] font-mono text-orange-300/80 bg-orange-900/40 px-1.5 py-0.2 rounded">Extensibility</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-tight">
-      Add-ons and automation plugins via Python/Java/Ruby APIs. Install community plugins or write bespoke CI/CD helpers.
-    </p>
-  </div>
-  <div class="mt-1 text-[10px] text-orange-200/90 font-mono">
-    🎯 <em>Target</em>: Exporting OpenAPI contracts &amp; HMAC signing.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-[11px] mt-1.5 p-1.5 bg-slate-900/70 border-emerald-500/40 flex items-center justify-between">
-  <div class="flex items-center gap-2">
-    <span class="text-emerald-400 font-bold">⚙️ Bonus: Match &amp; Replace</span>
-    <span class="text-slate-300 text-[10px]">Proxy rule engine for unattended regex header/payload rewriting during automated Playwright suites.</span>
-  </div>
-  <span class="text-emerald-300 font-mono text-[9px] bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-500/30">Headless Steering</span>
+<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-cyan-500/40 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>Best Practice:</strong> Define target scope before running integration suites to prevent proxy log contamination.</span>
+  <span class="text-cyan-300 font-mono text-[10px] bg-cyan-950/60 px-2 py-0.5 rounded">Scope Isolation</span>
 </div>
 
 ---
@@ -3428,6 +3315,324 @@ Presenter Notes:
 - Challenge participants to intercept the transfer request in Burp Proxy.
 - Observe how tampering with the amount and injecting the fraud scenario triggers an immediate 403 response.
 -->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🔁 Burp Suite — Repeater: Manual Request Workbench
+
+<h3 class="text-slate-300 text-sm mb-1.5">Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔁</span> Ad-Hoc API Workbench
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">Cmd+R / Ctrl+R</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Instant Handoff:</strong> Select any request in Proxy or Logger and press <code>Cmd+R</code> to clone it into Repeater.</li>
+      <li>• <strong>Isolated Re-Execution:</strong> Tweak headers, JSON fields, or auth tokens and hit <strong>Send</strong> without re-running the browser or test scripts.</li>
+      <li>• <strong>Tab Grouping:</strong> Organize tabs by microservice (e.g. <code>Transfer - Happy</code>, <code>Transfer - Timeout</code>, <code>Transfer - Fraud</code>).</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
+    ⚡ Fast-feedback loop for debugging API edge cases &amp; negative scenarios.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>📨</span> Repeater Tab: Tampered Transfer
+      </span>
+      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">POST :8080</span>
+    </div>
+
+```http
+POST /api/v1/transfers HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOi...
+Mock-Scenario: TRANSFER:FAIL,OTP:EXPIRED
+
+{
+  "fromAccount": "ACC-001",
+  "toAccount": "ACC-002",
+  "amount": 9999999.00
+}
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
+    ➔ Response: HTTP/1.1 403 Forbidden {"error":"LIMIT_EXCEEDED"}
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-emerald-500/40 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>Productivity Tip:</strong> Use Repeater history to step backward/forward through request mutations and inspect response variations.</span>
+  <span class="text-emerald-300 font-mono text-[10px] bg-emerald-950/60 px-2 py-0.5 rounded">Zero-UI Replay</span>
+</div>
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# ⚡ Burp Suite — Intruder: Automated Parameter Fuzzing
+
+<h3 class="text-slate-300 text-sm mb-1.5">High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+
+<div class="slide-card p-3 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-purple-500/30">
+      <span class="text-purple-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> Automated Attack Engine
+      </span>
+      <span class="text-[11px] font-mono text-purple-300/80 bg-purple-900/40 px-2 py-0.5 rounded">Cmd+I / Ctrl+I</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Payload Positions:</strong> Mark parameters with <code>§...§</code> markers (e.g. <code>"amount": §100§</code> or <code>"otp": "§123456§"</code>).</li>
+      <li>• <strong>Attack Types:</strong> <em>Sniper</em> (one field at a time), <em>Battering Ram</em> (same payload across all), or <em>Cluster Bomb</em> (combinatorial matrices).</li>
+      <li>• <strong>Concurrency Testing:</strong> Send 20 parallel threads to probe distributed lock race conditions (e.g. double-spend transfers).</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-purple-500/30 text-[11px] text-purple-300 font-mono">
+    ⚡ Uncovers rate-limit bypasses, boundary crashes &amp; missing idempotency keys.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🎯</span> Position Markers &amp; Attack Matrix
+      </span>
+      <span class="text-[11px] font-mono text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded">Sniper Mode</span>
+    </div>
+
+```http
+POST /api/v1/transfers HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+Idempotency-Key: §IDEMP-KEY-001§
+
+{
+  "fromAccount": "ACC-001",
+  "toAccount": "ACC-002",
+  "amount": §100.00§
+}
+```
+
+```text
+Payload List: [-1, 0, 0.001, 999999999, "NaN", null, "'; DROP--"]
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
+    🔍 Sort results by HTTP Status Code, Length &amp; Latency
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-purple-500/40 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>QA Superpower:</strong> Intruder rapidly validates that backend validation rejecting negative amounts returns <code>422 Unprocessable Entity</code>.</span>
+  <span class="text-purple-300 font-mono text-[10px] bg-purple-950/60 px-2 py-0.5 rounded">Boundary Matrix</span>
+</div>
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation
+
+<h3 class="text-slate-300 text-sm mb-1.5">Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+
+<div class="slide-card p-2.5 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔤</span> Multi-Layer Transform Lab
+      </span>
+      <span class="text-[11px] font-mono text-indigo-300/80 bg-indigo-900/40 px-2 py-0.5 rounded">Decoder Tab</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Format Conversions:</strong> Convert URL, HTML, Base64, Hex, ASCII, and Gzip data.</li>
+      <li>• <strong>Chained Transforms:</strong> Apply chained steps (URL-decode ➔ Base64-decode ➔ JSON unpack).</li>
+      <li>• <strong>Cryptographic Hashes:</strong> Compute MD5, SHA-256, and HMAC signatures on payloads.</li>
+      <li>• <strong>JWT Inspector:</strong> Parse auth tokens and mutate claims for privilege escalation probes.</li>
+    </ul>
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-indigo-500/30 text-[11px] text-indigo-300 font-mono">
+    ⚡ Essential for inspecting binary tokens &amp; serialized microservice states.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🔍</span> Practical JWT Inspection &amp; Tamper
+      </span>
+      <span class="text-[11px] font-mono text-indigo-400 bg-indigo-950/60 px-2 py-0.5 rounded">Base64URL</span>
+    </div>
+
+```json
+// Raw In-Flight Bearer Token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTAwMSIs...
+
+// Decoded Claims in Burp Decoder:
+{
+  "sub": "user-001",
+  "role": "CUSTOMER",        // <-- Tamper to "ADMIN"
+  "scope": ["transfer:read"] // <-- Add "transfer:write"
+}
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
+    ➔ Re-encode as Base64URL and paste back into Repeater!
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-1.5 p-1.5 bg-slate-900/70 border-indigo-500/40 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>Security Verification:</strong> Validate that backend gateways verify signatures and reject tampered tokens with <code>401 Unauthorized</code>.</span>
+  <span class="text-indigo-300 font-mono text-[10px] bg-indigo-950/60 px-2 py-0.5 rounded">JWT Verification</span>
+</div>
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# ⚖️ Burp Suite — Comparer: Visual Response Diffing
+
+<h3 class="text-slate-300 text-sm mb-1.5">Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+
+<div class="slide-card p-2.5 border border-teal-500/40 bg-teal-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-teal-500/30">
+      <span class="text-teal-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚖️</span> Precision Visual Comparison
+      </span>
+      <span class="text-[11px] font-mono text-teal-300/80 bg-teal-900/40 px-2 py-0.5 rounded">Comparer Tab</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Any-to-Any Diffing:</strong> Send any two requests or responses from Proxy, Logger, or Repeater to Comparer.</li>
+      <li>• <strong>Dual Comparison Modes:</strong>
+        <br/>- <em>Words:</em> Compares JSON structure, keys, and error messages.
+        <br/>- <em>Bytes:</em> Pinpoints binary variations and subtle encoding shifts.</li>
+      <li>• <strong>Color-Coded Analysis:</strong> Modified text (orange), deleted (blue), added (yellow).</li>
+    </ul>
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-teal-500/30 text-[11px] text-teal-300 font-mono">
+    ⚡ Instantly isolates regressions between microservice versions.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>🔍</span> Comparing 200 OK vs 403 Forbidden
+      </span>
+      <span class="text-[11px] font-mono text-teal-400 bg-teal-950/60 px-2 py-0.5 rounded">Word Diff</span>
+    </div>
+
+```diff
+- HTTP/1.1 200 OK
+- {"status": "SUCCESS", "txId": "TX-101"}
++ HTTP/1.1 403 Forbidden
++ {"status": "BLOCKED", "code": "FRAUD_ALERT"}
+```
+
+```text
+Headers Diff:
+- X-RateLimit-Remaining: 49
++ X-RateLimit-Remaining: 0 | Retry-After: 300
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
+    🎯 Quickly spots missing headers, unexpected status codes &amp; body diffs.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-1.5 p-1.5 bg-slate-900/70 border-teal-500/40 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>Regression Testing:</strong> Diff responses across staging vs local test containers to verify contract parity before merging PRs.</span>
+  <span class="text-teal-300 font-mono text-[10px] bg-teal-950/60 px-2 py-0.5 rounded">Parity Audit</span>
+</div>
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🎲 Burp Suite — Sequencer &amp; Extensibility (BApp)
+
+<h3 class="text-slate-300 text-sm mb-1.5">Token Entropy Analysis &amp; Custom Test Automation with Extensions</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
+
+<div class="slide-card p-3 border border-pink-500/40 bg-pink-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-pink-500/30">
+      <span class="text-pink-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🎲</span> Sequencer: Token Entropy
+      </span>
+      <span class="text-[11px] font-mono text-pink-300/80 bg-pink-900/40 px-2 py-0.5 rounded">Statistical Test</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Entropy Testing:</strong> Harvests sample tokens (session cookies, CSRF tokens, OTPs) across 1,000+ sequential requests.</li>
+      <li>• <strong>Randomness Evaluation:</strong> Performs FIPS 140-2 statistical tests to verify unpredictable randomness.</li>
+      <li>• <strong>Banking Security:</strong> Asserts that OTP codes or transaction IDs cannot be guessed by malicious actors.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-pink-500/30 text-[10px] text-pink-300 font-mono">
+    📊 Measures effective entropy bits against predictability.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-orange-500/40 bg-orange-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-orange-500/30">
+      <span class="text-orange-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🧩</span> Extensions: BApp Store &amp; APIs
+      </span>
+      <span class="text-[11px] font-mono text-orange-300/80 bg-orange-900/40 px-2 py-0.5 rounded">Extender</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>BApp Store:</strong> 1-click install community plugins (e.g. <em>OpenAPI Parser</em>, <em>Autorize</em>, <em>JSON Web Tokens</em>).</li>
+      <li>• <strong>Montoya API / Python:</strong> Author custom scripts to auto-sign requests with HMAC keys or export test traffic directly to Playwright specs.</li>
+      <li>• <strong>CI/CD Integration:</strong> Headless Burp extensions to export JUnit reports.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-orange-500/30 text-[10px] text-orange-300 font-mono">
+    🧩 Extensible in Python, Java, Kotlin &amp; Ruby.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-slate-700/60 flex items-center justify-between">
+  <span class="text-slate-200">💡 <strong>Synergy:</strong> Combine Burp extensions with WireMock stubs for fully automated end-to-end chaos pipelines.</span>
+  <span class="text-amber-400 font-mono text-[10px] bg-amber-950/60 px-2 py-0.5 rounded">Ecosystem Power</span>
+</div>
 
 ---
 
