@@ -3170,27 +3170,29 @@ class: pt-2 pb-1 px-8
 class: pt-1.5 pb-1 px-8
 ---
 
-# 🏛️ Public Key Infrastructure (PKI) — Trust Hierarchy
+# 🏛️ Public Key Infrastructure (PKI) — Core Trust Flow
 
-<h3 class="text-slate-300 text-xs mb-1">The Cryptographic Framework Governing Root CAs, Intermediates &amp; X.509 Chains</h3>
+<h3 class="text-slate-300 text-xs mb-1">How Key Pairs, Digital Certificates &amp; Trusted CAs Establish Encrypted Identity</h3>
 
 <div class="flex justify-center items-center w-full mt-0.5">
   <div class="adorable-arch-container !h-[315px] !max-h-[315px]">
-    <img src="/pki_trust_hierarchy.jpg" class="adorable-arch-img" alt="Public Key Infrastructure (PKI) Trust Hierarchy" />
+    <img src="/pki_flow_architecture.jpg" class="adorable-arch-img" alt="Public Key Infrastructure (PKI) Architecture Flow" />
   </div>
 </div>
 
 <div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
-  <span>🏛️ <strong>Trust Delegation</strong>: OS trusts the <strong>Root CA</strong> in its Trust Store; trust delegates down through <strong>Intermediate CAs</strong> to validate domain <strong>Leaf Certificates</strong>.</span>
-  <span class="text-blue-400 font-mono text-[11px]">RFC 5280 Trust Chain</span>
+  <span>💡 <strong>PKI Principle</strong>: Clients don't trust servers directly. Clients trust a <strong>Certification Authority (CA)</strong>, which cryptographically signs the server's public key inside a <strong>Certificate</strong>.</span>
+  <span class="text-emerald-400 font-mono text-[11px]">Asymmetric Trust Chain</span>
 </div>
 
 <!--
 Presenter Notes:
-- Explain the 3-tier hierarchy: Root CA (offline, air-gapped), Intermediate CA (active signer), and Leaf Certificate (domain specific).
-- Emphasize why intermediate CAs exist: to protect the root private key from ever touching a live network.
-- Explain the role of the Trust Store: Operating systems ship with pre-installed public root CAs (DigiCert, Let's Encrypt), and enterprises can install their own private root CAs.
-- Bridge to Burp Suite: Burp acts as a private, local PKI that generates dynamic leaf certificates for any microservice on demand.
+- Walk through the 4 steps of the flow:
+  1. Key Pair & Encryption: Server holds a private key securely and publishes its public key.
+  2. Certificate: Digital credential binding domain identity to the public key.
+  3. Certification Authority (CA): Institutional trust anchor that cryptographically stamps and signs the certificate.
+  4. Client Verification: Browser/App verifies the CA signature against pre-installed OS root trust stores, proving identity without pre-sharing keys.
+- Bridge to Burp Suite: Burp acts as a local CA on the tester's machine, generating signed certificates for microservices on the fly so clients can verify trust.
 -->
 
 ---

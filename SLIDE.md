@@ -74,53 +74,53 @@ Quick navigation reference for presentations in `slides/`.
 | **58** | [🛡️ Part 3](slides/slides.md#L3080) | Burp Suite — MITM Traffic Control & Interception |
 | **59** | [🔒 How HTTPS Works — TLS Handshake to Secure Tunnel](slides/slides.md#L3092) | Dual-Phase Cryptography: Asymmetric Authentication &amp; Symmetric Payload Encryption |
 | **60** | [🛡️ Burp Suite — MITM Proxy Architecture](slides/slides.md#L3159) | Client, MITM Proxy Engine & Backend Microservices Interaction |
-| **61** | [🏛️ Public Key Infrastructure (PKI) — Trust Hierarchy](slides/slides.md#L3173) | The Cryptographic Framework Governing Digital Identity, Key Management &amp; X.509 Chains |
-| **62** | [🔐 Why We Need Custom Certificate Chaining](slides/slides.md#L3200) | How Dynamic TLS Interception &amp; Hierarchical Trust Chains Solve HTTPS Encryption |
-| **63** | [⚙️ Why Certificate Chaining Works — Cryptographic Delegation](slides/slides.md#L3268) | Transitive Trust, RFC 5280 Path Validation &amp; Asymmetric Signature Verification |
-| **64** | [🛡️ Burp CA Certificate Setup — iOS](slides/slides.md#L3343) | Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator |
-| **65** | [🛡️ Burp CA Certificate Setup — Android](slides/slides.md#L3415) | User Certificate Store, Network Security Config & Emulator Root Injection |
-| **66** | [🛡️ Burp CA Certificate Setup — macOS](slides/slides.md#L3495) | Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass |
-| **67** | [🛡️ Burp CA Certificate Setup — Windows](slides/slides.md#L3567) | Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores |
-| **68** | [📱 SSL Pinning & Mobile Bypass Architecture](slides/slides.md#L3633) | Overriding Hardcoded Public Key Hashes for Integration &amp; Security Testing |
-| **69** | [🎯 Burp Suite — Target: Site Map & Scope Control](slides/slides.md#L3713) | Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise |
-| **70** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L3774) | Real-Time Traffic Auditing & Inspection |
-| **71** | [🔀 Deep Dive: Bi-Directional Duplex Interception](slides/slides.md#L3806) | Visualizing Request and Response Flow Through the MITM Engine |
-| **72** | [⚡ Live Intercept in Action](slides/slides.md#L3825) | Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight |
-| **73** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L3850) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
-| **74** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L3920) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
-| **75** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L3985) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
-| **76** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L4051) | Zero-Click Automated Header & Payload Manipulation |
-| **77** | [🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation](slides/slides.md#L4093) | Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection |
-| **78** | [⚖️ Burp Suite — Comparer: Visual Response Diffing](slides/slides.md#L4157) | Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations |
-| **79** | [🎲 Burp Suite — Sequencer &amp; Extensibility (BApp)](slides/slides.md#L4223) | Token Entropy Analysis &amp; Custom Test Automation with Extensions |
-| **80** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L4278) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
-| **81** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L4345) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
-| **82** | [⚡ Architectural Split: WireMock vs. Burp Suite](slides/slides.md#L4409) | Downstream Service Virtualization vs. In-Flight MITM Traffic Interception |
-| **83** | [🐳 Part 4](slides/slides.md#L4459) | Testcontainers — Hermetic Infrastructure |
-| **84** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L4469) | Programmable Docker Infrastructure Directly in Your Test Suite |
-| **85** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L4534) | Docker Daemon Requirement & Supported Runtimes |
-| **86** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L4566) | Dynamic Ports & Code-Driven Orchestration |
-| **87** | [🧪 Testcontainers — Network Isolation & Dynamic Ports](slides/slides.md#L4586) | Code-Driven Container Helper Architecture (tests/specs/support/containers.ts) |
-| **88** | [🗄️ Testcontainers — Database Migration Schema & Seeds](slides/slides.md#L4619) | Running Production DDL Scripts in Ephemeral Containers (tests/specs/support/containers.ts) |
-| **89** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L4662) | Complete Test Hook Pipeline (beforeAll Setup &amp; afterAll Teardown) |
-| **90** | [🎭 Part 5](slides/slides.md#L4704) | Playwright — Full-Stack E2E Automation |
-| **91** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L4714) | Modern Full-Stack Integration Testing Architecture |
-| **92** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L4779) | Eliminating Flaky `sleep()` Calls with Actionability Checks |
-| **93** | [🎭 Playwright — Network Route Interception](slides/slides.md#L4818) | Dynamic Mock Header Injection &amp; Multi-Scenario Steering as Code |
-| **94** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L4884) | Mocking Native Device APIs with `page.addInitScript()` |
-| **95** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L4912) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) |
-| **96** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L4940) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) |
-| **97** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L4970) | Record Every Action, DOM Snapshot &amp; Network Request for Post-Mortem Debugging |
-| **98** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L5020) | Common Locators, Actions, Web-First Assertions & Network Steering |
-| **99** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L5056) | Interactive UI, Debugging, Filtering & Code Generation |
-| **100** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L5088) | Dynamic Stubs, State Resets & Verification Endpoints |
-| **101** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L5126) | Everyday Monorepo, Build & Hermetic Test Commands |
-| **102** | [Live Walkthrough](slides/slides.md#L5167) | Hands-On Walkthrough 🚀 |
-| **103** | [💬 Open Q&A & Key Takeaways](slides/slides.md#L5182) | Bringing All 4 Pillars Together for Ultra Smoooooth Testing |
-| **104** | [🎉 Thank You!](slides/slides.md#L5228) | Happy Ultra Smoooooth Testing 🚀 |
-| **105** | [📚 Appendix](slides/slides.md#L5251) | Additional Tools — Trace Atlas & k6 Performance Testing |
-| **106** | [🗺️ Internal Tools — Trace Workspaces Catalog](slides/slides.md#L5262) | Multi-Repo Service Discovery, Workspaces & Ecosystem Scale |
-| **107** | [🕸️ Internal Tools — Multi-Tier Dependency Graph](slides/slides.md#L5276) | Visualizing Microservice Call Chains, External Dependencies & Datastores |
-| **108** | [⚡ k6 — Modern Load & Performance Testing](slides/slides.md#L5288) | Developer-Centric High-Concurrency Performance Testing & SLA Verification |
-| **109** | [⚡ k6 Load Scripting — Microservices Example](slides/slides.md#L5319) | Simulating High-Throughput BFF & Core Service Traffic with WireMock Backing |
-| **110** | [⚡ k6 CLI — Performance Runner & Metrics Cheat Sheet](slides/slides.md#L5399) | Everyday Execution Commands, Dynamic Overrides & Live Dashboards |
+| **61** | [🏛️ Public Key Infrastructure (PKI) — Core Trust Flow](slides/slides.md#L3173) | The Cryptographic Framework Governing Digital Identity, Key Management &amp; X.509 Chains |
+| **62** | [🔐 Why We Need Custom Certificate Chaining](slides/slides.md#L3202) | How Dynamic TLS Interception &amp; Hierarchical Trust Chains Solve HTTPS Encryption |
+| **63** | [⚙️ Why Certificate Chaining Works — Cryptographic Delegation](slides/slides.md#L3270) | Transitive Trust, RFC 5280 Path Validation &amp; Asymmetric Signature Verification |
+| **64** | [🛡️ Burp CA Certificate Setup — iOS](slides/slides.md#L3345) | Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator |
+| **65** | [🛡️ Burp CA Certificate Setup — Android](slides/slides.md#L3417) | User Certificate Store, Network Security Config & Emulator Root Injection |
+| **66** | [🛡️ Burp CA Certificate Setup — macOS](slides/slides.md#L3497) | Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass |
+| **67** | [🛡️ Burp CA Certificate Setup — Windows](slides/slides.md#L3569) | Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores |
+| **68** | [📱 SSL Pinning & Mobile Bypass Architecture](slides/slides.md#L3635) | Overriding Hardcoded Public Key Hashes for Integration &amp; Security Testing |
+| **69** | [🎯 Burp Suite — Target: Site Map & Scope Control](slides/slides.md#L3715) | Mapping Microservice Topology &amp; Isolating Test Traffic from External Noise |
+| **70** | [📋 Burp Suite — Logger / HTTP History](slides/slides.md#L3776) | Real-Time Traffic Auditing & Inspection |
+| **71** | [🔀 Deep Dive: Bi-Directional Duplex Interception](slides/slides.md#L3808) | Visualizing Request and Response Flow Through the MITM Engine |
+| **72** | [⚡ Live Intercept in Action](slides/slides.md#L3827) | Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight |
+| **73** | [🧪 Practice Lab: Live MITM Packet Interception](slides/slides.md#L3852) | Tamper with live HTTP traffic mid-flight to steer downstream WireMock responses |
+| **74** | [🔁 Burp Suite — Repeater: Manual Request Workbench](slides/slides.md#L3922) | Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation |
+| **75** | [⚡ Burp Suite — Intruder: Automated Parameter Fuzzing](slides/slides.md#L3987) | High-Throughput Payload Fuzzing, Boundary Probes &amp; Race Condition Testing |
+| **76** | [⚙️ Match & Replace Rules: Automated Transformation](slides/slides.md#L4053) | Zero-Click Automated Header & Payload Manipulation |
+| **77** | [🔤 Burp Suite — Decoder: Multi-Layer Payload Transformation](slides/slides.md#L4095) | Bi-Directional Encoding, Decoding, Hashing &amp; JWT Token Inspection |
+| **78** | [⚖️ Burp Suite — Comparer: Visual Response Diffing](slides/slides.md#L4159) | Side-by-Side Word &amp; Byte Level Diffs to Isolate Subtle State Variations |
+| **79** | [🎲 Burp Suite — Sequencer &amp; Extensibility (BApp)](slides/slides.md#L4225) | Token Entropy Analysis &amp; Custom Test Automation with Extensions |
+| **80** | [🎬 In-Flight Traffic Interception & Tampering](slides/slides.md#L4280) | Live instructor walkthrough: Intercepting payloads and steering downstream failure states |
+| **81** | [🏆 Workshop: In-Flight Fraud Tampering](slides/slides.md#L4347) | Tamper with transfer payload mid-flight and inject downstream fraud steering headers |
+| **82** | [⚡ Architectural Split: WireMock vs. Burp Suite](slides/slides.md#L4411) | Downstream Service Virtualization vs. In-Flight MITM Traffic Interception |
+| **83** | [🐳 Part 4](slides/slides.md#L4461) | Testcontainers — Hermetic Infrastructure |
+| **84** | [🐳 What is Testcontainers? — Core Concepts](slides/slides.md#L4471) | Programmable Docker Infrastructure Directly in Your Test Suite |
+| **85** | [🐳 Do We Need Docker for Testcontainers?](slides/slides.md#L4536) | Docker Daemon Requirement & Supported Runtimes |
+| **86** | [🧪 Testcontainers — Programmable Test Infrastructure](slides/slides.md#L4568) | Dynamic Ports & Code-Driven Orchestration |
+| **87** | [🧪 Testcontainers — Network Isolation & Dynamic Ports](slides/slides.md#L4588) | Code-Driven Container Helper Architecture (tests/specs/support/containers.ts) |
+| **88** | [🗄️ Testcontainers — Database Migration Schema & Seeds](slides/slides.md#L4621) | Running Production DDL Scripts in Ephemeral Containers (tests/specs/support/containers.ts) |
+| **89** | [🧪 Recommended Test Setup — 3-Step Hermetic Lifecycle](slides/slides.md#L4664) | Complete Test Hook Pipeline (beforeAll Setup &amp; afterAll Teardown) |
+| **90** | [🎭 Part 5](slides/slides.md#L4706) | Playwright — Full-Stack E2E Automation |
+| **91** | [🎭 Playwright — Unified UI & API Test Engine](slides/slides.md#L4716) | Modern Full-Stack Integration Testing Architecture |
+| **92** | [🎭 Playwright — Web-First Locators & Auto-Waiting](slides/slides.md#L4781) | Eliminating Flaky `sleep()` Calls with Actionability Checks |
+| **93** | [🎭 Playwright — Network Route Interception](slides/slides.md#L4820) | Dynamic Mock Header Injection &amp; Multi-Scenario Steering as Code |
+| **94** | [🎭 Playwright — Hybrid Mobile WebView & JSBridge](slides/slides.md#L4886) | Mocking Native Device APIs with `page.addInitScript()` |
+| **95** | [🎭 Playwright — Full-Stack Browser E2E Flow](slides/slides.md#L4914) | Testing Multi-Step Auth Flow with Mock Steer (`website.spec.ts`) |
+| **96** | [🎭 Playwright — Direct API Integration Testing](slides/slides.md#L4942) | Headless REST Verification & Scenario Resets (`bff.spec.ts`) |
+| **97** | [🎭 Playwright — Tracing & Diagnostics in CI](slides/slides.md#L4972) | Record Every Action, DOM Snapshot &amp; Network Request for Post-Mortem Debugging |
+| **98** | [🎭 Playwright Scripting — Essential TypeScript API Cheat Sheet](slides/slides.md#L5022) | Common Locators, Actions, Web-First Assertions & Network Steering |
+| **99** | [🎭 Playwright CLI — Debugging & Test Runner Cheat Sheet](slides/slides.md#L5058) | Interactive UI, Debugging, Filtering & Code Generation |
+| **100** | [🪝 WireMock — Admin API & Testing Cheat Sheet](slides/slides.md#L5090) | Dynamic Stubs, State Resets & Verification Endpoints |
+| **101** | [🐳 Testcontainers & Local Dev — Command Cheat Sheet](slides/slides.md#L5128) | Everyday Monorepo, Build & Hermetic Test Commands |
+| **102** | [Live Walkthrough](slides/slides.md#L5169) | Hands-On Walkthrough 🚀 |
+| **103** | [💬 Open Q&A & Key Takeaways](slides/slides.md#L5184) | Bringing All 4 Pillars Together for Ultra Smoooooth Testing |
+| **104** | [🎉 Thank You!](slides/slides.md#L5230) | Happy Ultra Smoooooth Testing 🚀 |
+| **105** | [📚 Appendix](slides/slides.md#L5253) | Additional Tools — Trace Atlas & k6 Performance Testing |
+| **106** | [🗺️ Internal Tools — Trace Workspaces Catalog](slides/slides.md#L5264) | Multi-Repo Service Discovery, Workspaces & Ecosystem Scale |
+| **107** | [🕸️ Internal Tools — Multi-Tier Dependency Graph](slides/slides.md#L5278) | Visualizing Microservice Call Chains, External Dependencies & Datastores |
+| **108** | [⚡ k6 — Modern Load & Performance Testing](slides/slides.md#L5290) | Developer-Centric High-Concurrency Performance Testing & SLA Verification |
+| **109** | [⚡ k6 Load Scripting — Microservices Example](slides/slides.md#L5321) | Simulating High-Throughput BFF & Core Service Traffic with WireMock Backing |
+| **110** | [⚡ k6 CLI — Performance Runner & Metrics Cheat Sheet](slides/slides.md#L5401) | Everyday Execution Commands, Dynamic Overrides & Live Dashboards |
