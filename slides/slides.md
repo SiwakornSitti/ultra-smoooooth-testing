@@ -3173,91 +3173,143 @@ Presenter Notes:
 -->
 
 ---
-class: pt-1.5 pb-1 px-8
+class: pt-2 pb-1 px-8
 ---
 
-# 🔒 How HTTPS Works — TLS Handshake & Tunnel
+# 🔒 How HTTPS Works — Phase 1: TLS Handshake
 
-<h3 class="text-slate-300 text-sm mb-1">Dual-Phase Cryptography: Asymmetric Authentication &amp; Symmetric Payload Encryption</h3>
+<h3 class="text-slate-300 text-sm mb-1.5">Asymmetric Authentication, SNI Routing &amp; Ephemeral Key Exchange (ECDHE)</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+<div class="grid grid-cols-2 gap-3 mt-1 flex-1">
 
-<div class="slide-card p-2.5 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-sky-500/30">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-sky-500/30">
       <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🤝</span> Phase 1: TLS Handshake
+        <span>🤝</span> Step 1 &amp; 2: Identity &amp; Certificates
       </span>
-      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Asymmetric (ECDHE)</span>
+      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Asymmetric (RSA / ECDSA)</span>
     </div>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>1. ClientHello &amp; SNI:</strong> Client sends TLS version, cipher list &amp; target host in SNI.</li>
-      <li>• <strong>2. Certificate Chain:</strong> Server returns cipher + X.509 cert chain; client validates Root CA &amp; SAN.</li>
-      <li>• <strong>3. Key Exchange (ECDHE):</strong> Both parties compute shared <strong>Session Keys</strong> without transmitting secrets.</li>
+    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. ClientHello &amp; SNI:</strong> Client announces TLS version, cipher suites &amp; target host via <strong>Server Name Indication</strong> (SNI).</li>
+      <li>• <strong>2. ServerHello &amp; Certificate:</strong> Server selects cipher parameters and returns its signed <strong>X.509 Certificate Chain</strong>.</li>
+      <li>• <strong>3. Trust Validation:</strong> Client verifies server certificate against pre-installed OS Root CAs and checks hostname match (SAN).</li>
     </ul>
   </div>
-  <div class="mt-1 pt-0.5 border-t border-sky-500/30 text-[11px] text-sky-300 font-mono">
-    🔑 Authenticates server identity &amp; establishes shared session keys.
+  <div class="mt-2 pt-1 border-t border-sky-500/30 text-[11px] text-sky-300 font-mono">
+    🔐 Authenticates server identity and guarantees authenticity.
   </div>
 </div>
 
-<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🔒</span> Phase 2: Symmetric Tunnel
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🔑</span> Step 3: Ephemeral Key Exchange
       </span>
-      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">AES-GCM / ChaCha20</span>
+      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">ECDHE (Curve25519)</span>
     </div>
-
-<div class="bg-slate-950/90 border border-slate-700/70 rounded p-1.5 font-mono text-[9px] text-slate-200 space-y-1 mb-1">
-  <div>
-    <div class="text-slate-400 text-[8.5px] font-sans font-semibold uppercase tracking-wider">Before Proxying (Direct TLS):</div>
-    <div class="flex items-center gap-1 text-[9px] mt-0.5">
-      <span class="text-sky-300 font-semibold">Client</span>
-      <span class="text-slate-500">──[</span>
-      <span class="text-amber-300">Single Encrypted Tunnel (Opaque)</span>
-      <span class="text-slate-500">]──►</span>
-      <span class="text-emerald-300 font-semibold">Server</span>
-    </div>
+    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Diffie-Hellman Exchange:</strong> Client and server exchange public elliptic curve parameters over the unencrypted wire.</li>
+      <li>• <strong>Shared Secret Derivation:</strong> Both sides independently compute identical <strong>Symmetric Session Keys</strong> without transmitting secrets.</li>
+      <li>• <strong>Perfect Forward Secrecy (PFS):</strong> Compromising the server's long-term private key cannot decrypt historical captured traffic.</li>
+    </ul>
   </div>
-  <div class="pt-1 border-t border-slate-800">
-    <div class="text-cyan-400 text-[8.5px] font-sans font-semibold uppercase tracking-wider">After Proxying (Burp MITM Dual-Terminus):</div>
-    <div class="flex items-center gap-1 text-[9px] mt-0.5">
-      <span class="text-sky-300 font-semibold">Client</span>
-      <span class="text-slate-500">─[</span><span class="text-amber-300">TLS 1</span><span class="text-slate-500">]─►</span>
-      <span class="text-cyan-300 font-bold bg-cyan-950/80 px-1 py-0.2 rounded border border-cyan-500/40">Burp (Plaintext)</span>
-      <span class="text-slate-500">─[</span><span class="text-emerald-300">TLS 2</span><span class="text-slate-500">]─►</span>
-      <span class="text-emerald-300 font-semibold">Server</span>
-    </div>
-  </div>
-</div>
-
-<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
-  <li>• <strong>Hardware Accelerated:</strong> Symmetric AES-GCM is thousands of times faster than asymmetric math for bulk payload streaming.</li>
-  <li>• <strong>Dual Terminus:</strong> Burp terminates TLS 1 with Client &amp; TLS 2 with Server, exposing raw plaintext at the inspection seam.</li>
-</ul>
-  </div>
-  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[10.5px] text-emerald-300 font-mono">
-    ⚡ High-speed authenticated encryption (AEAD) terminated twice.
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-[11px] text-cyan-300 font-mono">
+    ⚡ Shared session keys established without ever sending secrets.
   </div>
 </div>
 
 </div>
 
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-amber-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-sky-500/30 bg-slate-900/70 rounded-lg">
+  <div class="text-sky-200 font-medium leading-snug flex items-center gap-2">
     <span>💡</span>
-    <span><strong>MITM Implication:</strong> Standard proxies are blind to ciphertext. Burp Suite must terminate <strong>two separate TLS handshakes</strong> to inspect plaintext.</span>
+    <span><strong>Handshake Milestone:</strong> Once Phase 1 completes, both sides switch from heavy asymmetric math to high-speed symmetric AEAD streaming.</span>
   </div>
-  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Dual TLS Terminus</span>
+  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Ready for Phase 2</span>
 </div>
 
 <!--
 Presenter Notes:
-- Walk through the two distinct phases: asymmetric cryptography for identity authentication and session key exchange, followed by symmetric cryptography for high-speed data transmission.
-- Emphasize that SNI in ClientHello is the only unencrypted hostname indicator in standard TLS (unless Encrypted Client Hello / ECH is active).
-- Point out why a standard proxy cannot see HTTP paths or bodies without terminating TLS, setting up the PKI and Certificate Chaining slide next.
+- Walk through Phase 1: The client initiates ClientHello with SNI, the server presents its certificate chain, and client validates trust.
+- Highlight ECDHE: Elliptic Curve Diffie-Hellman Ephemeral creates forward secrecy without transmitting shared secrets over the wire.
+- Transition to Phase 2: Now that session keys are established, how does data flow in direct TLS vs how Burp intercepts it? Let's look at Phase 2 next.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🔒 How HTTPS Works — Phase 2: Direct TLS vs. MITM Dual-Terminus
+
+<h3 class="text-slate-300 text-sm mb-1.5">Symmetric Payload Encryption (AES-GCM): Single Direct Tunnel vs. Two Terminated Handshakes</h3>
+
+<div class="space-y-2 mt-1">
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50">
+  <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-800">
+    <div class="flex items-center gap-2">
+      <span class="text-amber-300 font-bold text-xs flex items-center gap-1">
+        <span>🌐</span> Direct TLS (Before Proxying)
+      </span>
+      <span class="text-[10px] text-slate-400 font-mono">Standard Production Flow</span>
+    </div>
+    <span class="text-[10.5px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.2 rounded border border-amber-500/30">Single Encrypted Tunnel</span>
+  </div>
+  
+  <div class="bg-slate-950/90 border border-slate-800 rounded p-1.5 font-mono text-[10px] flex items-center justify-center gap-2 text-slate-200 my-1">
+    <span class="text-sky-300 font-bold bg-sky-950/70 px-2 py-0.5 rounded border border-sky-500/30">💻 Client</span>
+    <span class="text-slate-500 font-bold">──────[</span>
+    <span class="text-amber-300 font-semibold">🔒 Opaque AES-GCM Ciphertext Tunnel</span>
+    <span class="text-slate-500 font-bold">]──────►</span>
+    <span class="text-emerald-300 font-bold bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">🏢 Server</span>
+  </div>
+
+  <p class="text-[11.5px] text-slate-300 leading-snug mt-1">
+    • <strong>Intermediaries Blind:</strong> Standard network proxies (Wireshark, Envoy, routers) see only ciphertext packets. HTTP verbs, paths, headers, and request bodies are 100% opaque.
+  </p>
+</div>
+
+<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/15">
+  <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/20">
+    <div class="flex items-center gap-2">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1">
+        <span>🛡️</span> Burp Suite MITM (After Proxying)
+      </span>
+      <span class="text-[10px] text-cyan-300 font-mono">Test Interception Seam</span>
+    </div>
+    <span class="text-[10.5px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.2 rounded border border-emerald-500/40">Dual TLS Terminus</span>
+  </div>
+
+  <div class="bg-slate-950/90 border border-slate-800 rounded p-1.5 font-mono text-[10px] flex items-center justify-center gap-2 text-slate-200 my-1">
+    <span class="text-sky-300 font-bold bg-sky-950/70 px-2 py-0.5 rounded border border-sky-500/30">💻 Client</span>
+    <span class="text-slate-500 font-bold">──[</span><span class="text-amber-300">TLS 1: PortSwigger CA</span><span class="text-slate-500 font-bold">]──►</span>
+    <span class="text-cyan-300 font-bold bg-cyan-950/90 px-2.5 py-0.5 rounded border border-cyan-400 shadow-md">🛡️ Burp (Plaintext)</span>
+    <span class="text-slate-500 font-bold">──[</span><span class="text-emerald-300">TLS 2: Target CA</span><span class="text-slate-500 font-bold">]──►</span>
+    <span class="text-emerald-300 font-bold bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/30">🏢 Server</span>
+  </div>
+
+  <p class="text-[11.5px] text-slate-300 leading-snug mt-1">
+    • <strong>Dual Terminus:</strong> Burp terminates TLS 1 with Client (forging the server cert) and terminates TLS 2 with Server. Traffic is unencrypted in memory at the seam for tampering and inspection.
+  </p>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/30 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Why PKI Matters:</strong> Because Burp terminates TLS 1, the client will show a <strong>Certificate Untrusted Warning</strong> unless Burp's Root CA is installed in the OS trust store.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Leads to PKI Flow</span>
+</div>
+
+<!--
+Presenter Notes:
+- Compare the two models clearly: Direct TLS creates a single opaque tunnel that no middlebox can read.
+- Explain Burp MITM: Burp breaks the single tunnel into two independent TLS sessions (TLS 1 with Client, TLS 2 with Server).
+- Highlight the transition: To terminate TLS 1 without security warnings, Burp must issue certificates signed by a trusted CA—leading into PKI Architecture next.
 -->
 
 ---

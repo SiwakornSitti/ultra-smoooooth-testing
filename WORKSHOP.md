@@ -352,7 +352,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 > **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
 
 #### 🛠️ Burp Suite Core Tools Reference & Playbook
-- **Slide Reference**: [`slides.md#L3485`](slides/slides.md#L3485) – [`slides.md#L4062`](slides/slides.md#L4062) (Slides 65–76: Core Tools Reference)
+- **Slide Reference**: [`slides.md#L3537`](slides/slides.md#L3537) – [`slides.md#L4114`](slides/slides.md#L4114) (Slides 66–77: Core Tools Reference)
 - **Role in Integration Testing**: Burp Suite acts as an in-flight Man-In-The-Middle (MITM) inspection, replay, and mutation proxy between browser/mobile clients and backend gateways (`bff-service`).
 
 | Tool & Icon | Category | Core Capability & Primary Shortcut | Microservices / API QA Testing Scenario |
@@ -371,7 +371,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 🛠️ Proxy Setup & Verification (Prerequisites)
-- **Slide Reference**: [`slides.md#L3158`](slides/slides.md#L3158), [`slides.md#L3179`](slides/slides.md#L3179), [`slides.md#L3267`](slides/slides.md#L3267), [`slides.md#L3339`](slides/slides.md#L3339) & [`slides.md#L4260`](slides/slides.md#L4260)–[`slides.md#L4715`](slides/slides.md#L4715) (Slides 60–64: MITM Architecture, HTTPS & PKI; Slides 79–86: Platform Setup & SSL Pinning)
+- **Slide Reference**: [`slides.md#L3158`](slides/slides.md#L3158), [`slides.md#L3179`](slides/slides.md#L3179), [`slides.md#L3244`](slides/slides.md#L3244), [`slides.md#L3319`](slides/slides.md#L3319), [`slides.md#L3391`](slides/slides.md#L3391) & [`slides.md#L4312`](slides/slides.md#L4312)–[`slides.md#L4767`](slides/slides.md#L4767) (Slides 60–65: MITM Architecture, HTTPS & PKI; Slides 80–87: Platform Setup & SSL Pinning)
 - **Lab Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Companion Files**:
   - Mobile Testing & SSL Pinning Guide: [`labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide`](labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide)
@@ -397,7 +397,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L3599`](slides/slides.md#L3599) (Slide 68)
+- **Slide Reference**: [`slides.md#L3651`](slides/slides.md#L3651) (Slide 69)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -412,7 +412,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L3890`](slides/slides.md#L3890) (Slide 73)
+- **Slide Reference**: [`slides.md#L3942`](slides/slides.md#L3942) (Slide 74)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -492,7 +492,7 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L4117`](slides/slides.md#L4117) & [`slides.md#L4189`](slides/slides.md#L4189) (Slides 77 & 78)
+- **Slide Reference**: [`slides.md#L4169`](slides/slides.md#L4169) & [`slides.md#L4241`](slides/slides.md#L4241) (Slides 78 & 79)
 - **Test Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
