@@ -169,6 +169,126 @@ See the official [PortSwigger certificate setup guide](https://portswigger.net/b
 
 ---
 
+---
+
+## 📱 Mobile App Testing & SSL Pinning Bypass Guide
+
+When testing native iOS and Android mobile banking applications against microservices, standard browser proxy configuration is insufficient due to operating system trust stores and application-level **SSL Pinning**.
+
+### 1. Device Wi-Fi Proxy Configuration
+
+1. Connect your physical mobile device or emulator to the **same Wi-Fi network / subnet** as your workstation running Burp Suite.
+2. In Burp Suite: **Proxy ➔ Proxy settings ➔ Proxy listeners**, edit the listener to bind to **All interfaces** or your specific LAN IP (e.g. `192.168.1.50:8080`).
+3. Configure the mobile device:
+   - **iOS**: **Settings ➔ Wi-Fi** ➔ tap your network `(i)` ➔ **Configure Proxy ➔ Manual** ➔ Server: `<Workstation-LAN-IP>`, Port: `8080`.
+   - **Android**: **Settings ➔ Network & Internet ➔ Wi-Fi** ➔ tap gear/edit ➔ **Proxy ➔ Manual** ➔ Proxy hostname: `<Workstation-LAN-IP>`, Port: `8080`.
+   - **Android Emulator**: Start from terminal:
+     ```bash
+     emulator -avd <emulator_name> -http-proxy http://10.0.2.2:8080
+     ```
+
+---
+
+### 2. CA Certificate Installation & Full Trust
+
+#### iOS (iPhone / iPad / Simulator)
+1. Open **Safari** on iOS and navigate to `http://burpsuite`.
+2. Tap **CA Certificate** to download `cacert.der`.
+3. Go to **Settings ➔ Profile Downloaded ➔ Install** (enter device passcode).
+4. **Mandatory Step**: Go to **Settings ➔ General ➔ About ➔ Certificate Trust Settings** and toggle **Enable Full Trust for Root Certificates** for the PortSwigger CA.
+
+#### Android (Phone / Emulator)
+1. Open **Chrome** on Android and navigate to `http://burpsuite` to download `cacert.der`.
+2. Rename the downloaded file to `cacert.crt` using a file manager.
+3. Go to **Settings ➔ Security ➔ Encryption & Credentials ➔ Install a certificate ➔ CA certificate**.
+4. Confirm installation. Note: On Android 7.0+ (API 24+), this installs as a **User** certificate, which release apps ignore by default.
+
+---
+
+### 3. White-Box App Configuration (Dev & QA Builds)
+
+#### Android: Network Security Config (`res/xml/network_security_config.xml`)
+To permit user-installed certificates without weakening production release security, use `<debug-overrides>`:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Production release uses default system trust anchors and pins -->
+    <base-config>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Debug and QA staging builds automatically trust Burp Suite user CA -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" />
+            <certificates src="system" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>
+```
+
+Reference this file in `AndroidManifest.xml`:
+```xml
+<application
+    android:networkSecurityConfig="@xml/network_security_config"
+    ...>
+</application>
+```
+
+#### iOS: Compiler Flags for Pinning (`#if DEBUG`)
+In your networking layer (e.g. `URLSessionDelegate` or `TrustKit`):
+```swift
+#if DEBUG || STAGING
+// Bypass SSL Pinning evaluation for local proxy testing
+completionHandler(.useCredential, URLCredential(trust: serverTrust))
+#else
+// Production: Enforce strict SPKI public key hash evaluation
+validateServerTrustWithPinning(serverTrust, completionHandler: completionHandler)
+#endif
+```
+
+---
+
+### 4. Black-Box Testing & SSL Pinning Bypass (Release APK / IPA)
+
+When testing pre-built production release candidates or third-party binaries where source code is unavailable, bypass pinning using dynamic binary instrumentation or system CA injection:
+
+#### Option A: Frida Dynamic Memory Hooking (Android & iOS)
+Install Frida and objection:
+```bash
+pip install frida-tools objection
+```
+
+Hook verification in RAM at runtime:
+```bash
+# Android (bypasses OkHttp, TrustManagerImpl, and custom pins)
+frida -U --codeshare akabe1/frida-multiple-unpinning -f com.shopvibe.mobile
+
+# iOS (bypasses SecTrustEvaluate and TrustKit in memory)
+objection --gadget "ShopVibe" explore -s "ios sslpinning disable"
+```
+
+#### Option B: Android Emulator System Store Injection (Rooted)
+Convert Burp's certificate into Android's native hashed subject format and mount into the system partition:
+```bash
+# 1. Calculate Android subject hash
+HASH=$(openssl x509 -inform DER -in asset/cacert.der -subject_hash_old -noout)
+openssl x509 -inform DER -in asset/cacert.der -out ${HASH}.0
+
+# 2. Mount and push to Android system store
+adb root
+adb remount
+adb push ${HASH}.0 /system/etc/security/cacerts/
+adb shell "chmod 644 /system/etc/security/cacerts/${HASH}.0"
+adb reboot
+```
+After reboot, Android treats Burp Suite as a factory-installed **System Root CA**, allowing all apps to be intercepted without code modifications.
+
+---
+
 ## 🛠️ Verification Script
 
 Run the included verification script to check proxy connectivity and BFF endpoint reachability:

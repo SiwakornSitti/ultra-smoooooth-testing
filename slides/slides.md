@@ -3561,6 +3561,86 @@ Presenter Notes:
 - Note Firefox's separate certificate store setting (security.enterprise_roots.enabled).
 -->
 ---
+class: pt-1.5 pb-1 px-8
+---
+
+# 📱 SSL Pinning & Mobile Bypass Architecture
+
+<h3 class="text-slate-300 text-xs mb-1">Overriding Hardcoded Public Key Hashes for Integration &amp; Security Testing</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🏗️</span> 1. White-Box Setup (Dev &amp; QA Builds)
+      </span>
+      <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded">Config as Code</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-cyan-300 font-semibold">Android (res/xml/network_security_config.xml):</div>
+  <div class="text-slate-300">&lt;debug-overrides&gt;&lt;trust-anchors&gt;</div>
+  <div class="text-emerald-300 pl-2">&lt;certificates src="user" /&gt;</div>
+  <div class="text-slate-300">&lt;/trust-anchors&gt;&lt;/debug-overrides&gt;</div>
+  <div class="text-amber-300 font-semibold mt-0.5">iOS (Build Scheme Compiler Flags):</div>
+  <div class="text-slate-300">#if DEBUG || STAGING // Disable URLSession pinning</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Zero Security Debt:</strong> Keeps production release builds pinned while enabling inspection in staging.</li>
+  <li>• <strong>Non-Root Devices:</strong> Works on standard unrooted physical test devices and simulators.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[10px] text-emerald-300 font-mono">
+    ✅ Recommended pattern for engineering &amp; CI/CD test suites.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-violet-500/40 bg-violet-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-violet-500/30">
+      <span class="text-violet-300 font-bold text-xs flex items-center gap-1.5">
+        <span>⚡</span> 2. Black-Box Bypass (Release Binaries)
+      </span>
+      <span class="text-[10px] font-mono text-violet-300 bg-violet-950/60 px-1.5 py-0.5 rounded">Dynamic Hooking</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-violet-300 font-semibold">Frida / Objection (RAM Hooking):</div>
+  <div class="text-slate-300"># Android (Hooks TrustManagerImpl in memory):</div>
+  <div class="text-emerald-300">frida -U --codeshare akabe1/frida-multiple-unpinning -f app</div>
+  <div class="text-slate-300 mt-0.5"># iOS (Hooks SecTrustEvaluate in Security framework):</div>
+  <div class="text-amber-300">objection --gadget "App" explore -s "ios sslpinning disable"</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Runtime Memory Patch:</strong> Overrides validation methods in RAM without re-signing the binary.</li>
+  <li>• <strong>System CA Injection:</strong> Push Burp CA to Android <code>/system/etc/security/cacerts/</code> via <code>adb remount</code>.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-violet-500/30 text-[10px] text-violet-300 font-mono">
+    🔓 For penetration testing &amp; third-party release auditing.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-indigo-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-indigo-200 font-medium flex items-center gap-1.5 leading-snug">
+    <span>💡</span> <strong>Pinning vs Trust Store:</strong> Pinning is enforced by <strong>app code</strong>, not the OS. QA builds use debug configs; release binaries use Frida runtime memory hooks.
+  </span>
+  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">App-Level Guard</span>
+</div>
+
+<!--
+Presenter Notes:
+- Contrast OS Root CA Trust with Application-Level SSL Pinning: Root CA satisfies the operating system, but pinned apps hardcode the server's SPKI public key hash.
+- Highlight the recommended team pattern: Never disable pinning in production; use Android network_security_config debug-overrides and iOS #if DEBUG build schemes.
+- Explain Frida/Objection: For black-box penetration testing where source code cannot be modified, dynamic instrumentation hooks the verification methods directly in memory.
+-->
+---
 class: pt-2 pb-2 px-8
 ---
 
