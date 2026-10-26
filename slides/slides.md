@@ -4249,6 +4249,147 @@ Presenter Notes:
 class: pt-2 pb-2 px-8
 ---
 
+# 🛡️ Burp CA Certificate Setup — macOS
+
+<h3 class="text-slate-300 text-sm mb-1.5">Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-sky-500/30">
+      <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🍏</span> 1. Keychain Access (GUI Setup)
+      </span>
+      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Always Trust</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Export Cert:</strong> In Burp ➔ <strong>Proxy settings ➔ Import / Export CA certificate</strong> ➔ Export in DER format as <code>cacert.der</code>.</li>
+      <li>• <strong>Import to Keychain:</strong> Open <strong>Keychain Access.app</strong> ➔ Select <strong>System</strong> keychain ➔ Drag &amp; drop <code>cacert.der</code>.</li>
+      <li>• <strong>Set Always Trust:</strong> Double-click <strong>PortSwigger CA</strong> ➔ Expand <strong>Trust</strong> ➔ Set <em>When using this certificate</em> to <strong>Always Trust</strong>.</li>
+      <li>• Close window and enter your macOS administrator password.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-sky-500/30 text-xs text-sky-300 font-mono">
+    ✅ Instantly trusted by Safari, Chrome, Electron &amp; native macOS tools.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. CLI Automation &amp; Hosts Bypass
+      </span>
+      <span class="text-[11px] font-mono text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded">Terminal / CI</span>
+    </div>
+
+```bash
+# 1. Install & trust root CA via security CLI
+sudo security add-trusted-cert -d -r trustRoot \
+  -k /Library/Keychains/System.keychain cacert.der
+
+# 2. Fix macOS 'localhost' loopback proxy bypass:
+echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts
+
+# 3. Test HTTPS proxy routing cleanly:
+curl -x http://127.0.0.1:8080 -s https://localhost.com:8443
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ Fully scriptable for developer workstations and macOS CI runners.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-sky-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-sky-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Verify via CLI:</strong> Check trust in terminal: <code>security find-certificate -c "PortSwigger CA" -p /Library/Keychains/System.keychain</code>.</span>
+  </div>
+  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security CLI</span>
+</div>
+
+<!--
+Presenter Notes:
+- Emphasize the importance of selecting 'System' keychain rather than 'login' if running service background daemons.
+- Remind participants that macOS ignores proxies for 'localhost' by default; localhost.com in /etc/hosts is required.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — Windows
+
+<h3 class="text-slate-300 text-sm mb-1.5">Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2.5 border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-blue-500/30">
+      <span class="text-blue-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🪟</span> 1. Certificate Import Wizard (GUI)
+      </span>
+      <span class="text-[11px] font-mono text-blue-300/80 bg-blue-900/40 px-2 py-0.5 rounded">certmgr.msc</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Download:</strong> Open <code>http://burpsuite</code> in browser ➔ save <code>cacert.der</code>.</li>
+      <li>• <strong>Import Wizard:</strong> Double-click <code>cacert.der</code> ➔ <strong>Install Certificate...</strong> ➔ select <strong>Local Machine</strong>.</li>
+      <li>• <strong>Root Store (Crucial):</strong> Choose <em>Place all certificates in store</em> ➔ Browse ➔ select <strong>Trusted Root Certification Authorities</strong> ➔ Finish.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-blue-500/30 text-xs text-blue-300 font-mono">
+    ✅ Instantly trusted by Microsoft Edge, Chrome &amp; .NET runtime.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. PowerShell Administrator Automation
+      </span>
+      <span class="text-[11px] font-mono text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded">PowerShell 5+</span>
+    </div>
+
+```powershell
+# 1. Import cert to LocalMachine Root store
+Import-Certificate -FilePath .\cacert.der `
+  -CertStoreLocation Cert:\LocalMachine\Root
+
+# 2. Verify: Get-ChildItem Cert:\LocalMachine\Root
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🚀 Fully automated deployment for Windows test environments.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-blue-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-blue-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Firefox Store Note:</strong> Firefox uses its own certificate store by default. In <code>about:config</code>, set <code>security.enterprise_roots.enabled = true</code> to trust the Windows Root Store.</span>
+  </div>
+  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">about:config</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk Windows users through selecting "Trusted Root Certification Authorities" specifically; automatic store selection places it in Intermediate CAs where it will not work.
+- Note Firefox's separate certificate store setting (security.enterprise_roots.enabled).
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
 # 🛡️ Burp CA Certificate Setup — iOS
 
 <h3 class="text-slate-300 text-sm mb-1.5">Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator</h3>
@@ -4399,146 +4540,6 @@ Presenter Notes:
 - Highlight the emulator trick: pushing directly to /system/etc/security/cacerts/ turns Burp CA into a system root, bypassing app-level restrictions.
 -->
 
----
-class: pt-2 pb-2 px-8
----
-
-# 🛡️ Burp CA Certificate Setup — macOS
-
-<h3 class="text-slate-300 text-sm mb-1.5">Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
-
-<div class="slide-card p-3 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-sky-500/30">
-      <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🍏</span> 1. Keychain Access (GUI Setup)
-      </span>
-      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Always Trust</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Export Cert:</strong> In Burp ➔ <strong>Proxy settings ➔ Import / Export CA certificate</strong> ➔ Export in DER format as <code>cacert.der</code>.</li>
-      <li>• <strong>Import to Keychain:</strong> Open <strong>Keychain Access.app</strong> ➔ Select <strong>System</strong> keychain ➔ Drag &amp; drop <code>cacert.der</code>.</li>
-      <li>• <strong>Set Always Trust:</strong> Double-click <strong>PortSwigger CA</strong> ➔ Expand <strong>Trust</strong> ➔ Set <em>When using this certificate</em> to <strong>Always Trust</strong>.</li>
-      <li>• Close window and enter your macOS administrator password.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-sky-500/30 text-xs text-sky-300 font-mono">
-    ✅ Instantly trusted by Safari, Chrome, Electron &amp; native macOS tools.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> 2. CLI Automation &amp; Hosts Bypass
-      </span>
-      <span class="text-[11px] font-mono text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded">Terminal / CI</span>
-    </div>
-
-```bash
-# 1. Install & trust root CA via security CLI
-sudo security add-trusted-cert -d -r trustRoot \
-  -k /Library/Keychains/System.keychain cacert.der
-
-# 2. Fix macOS 'localhost' loopback proxy bypass:
-echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts
-
-# 3. Test HTTPS proxy routing cleanly:
-curl -x http://127.0.0.1:8080 -s https://localhost.com:8443
-```
-
-  </div>
-  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ⚡ Fully scriptable for developer workstations and macOS CI runners.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-sky-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-sky-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Verify via CLI:</strong> Check trust in terminal: <code>security find-certificate -c "PortSwigger CA" -p /Library/Keychains/System.keychain</code>.</span>
-  </div>
-  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security CLI</span>
-</div>
-
-<!--
-Presenter Notes:
-- Emphasize the importance of selecting 'System' keychain rather than 'login' if running service background daemons.
-- Remind participants that macOS ignores proxies for 'localhost' by default; localhost.com in /etc/hosts is required.
--->
-
----
-class: pt-2 pb-1 px-8
----
-
-# 🛡️ Burp CA Certificate Setup — Windows
-
-<h3 class="text-slate-300 text-sm mb-1.5">Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
-
-<div class="slide-card p-2.5 border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-blue-500/30">
-      <span class="text-blue-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🪟</span> 1. Certificate Import Wizard (GUI)
-      </span>
-      <span class="text-[11px] font-mono text-blue-300/80 bg-blue-900/40 px-2 py-0.5 rounded">certmgr.msc</span>
-    </div>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Download:</strong> Open <code>http://burpsuite</code> in browser ➔ save <code>cacert.der</code>.</li>
-      <li>• <strong>Import Wizard:</strong> Double-click <code>cacert.der</code> ➔ <strong>Install Certificate...</strong> ➔ select <strong>Local Machine</strong>.</li>
-      <li>• <strong>Root Store (Crucial):</strong> Choose <em>Place all certificates in store</em> ➔ Browse ➔ select <strong>Trusted Root Certification Authorities</strong> ➔ Finish.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-blue-500/30 text-xs text-blue-300 font-mono">
-    ✅ Instantly trusted by Microsoft Edge, Chrome &amp; .NET runtime.
-  </div>
-</div>
-
-<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> 2. PowerShell Administrator Automation
-      </span>
-      <span class="text-[11px] font-mono text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded">PowerShell 5+</span>
-    </div>
-
-```powershell
-# 1. Import cert to LocalMachine Root store
-Import-Certificate -FilePath .\cacert.der `
-  -CertStoreLocation Cert:\LocalMachine\Root
-
-# 2. Verify: Get-ChildItem Cert:\LocalMachine\Root
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    🚀 Fully automated deployment for Windows test environments.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-blue-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-blue-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Firefox Store Note:</strong> Firefox uses its own certificate store by default. In <code>about:config</code>, set <code>security.enterprise_roots.enabled = true</code> to trust the Windows Root Store.</span>
-  </div>
-  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">about:config</span>
-</div>
-
-<!--
-Presenter Notes:
-- Walk Windows users through selecting "Trusted Root Certification Authorities" specifically; automatic store selection places it in Intermediate CAs where it will not work.
-- Note Firefox's separate certificate store setting (security.enterprise_roots.enabled).
--->
 ---
 class: pt-2 pb-1 px-8
 ---
