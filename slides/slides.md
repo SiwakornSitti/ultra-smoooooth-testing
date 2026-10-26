@@ -3320,11 +3320,12 @@ class: pt-2 pb-1 px-8
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Custom Enterprise CA:</strong> Exporting a shared custom Root CA to team workstations &amp; CI/CD runners standardizes test environments with 0 TLS warnings.
-  </span>
-  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">RFC 5280 PKI Chain</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-cyan-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Custom Enterprise CA:</strong> Exporting a shared custom Root CA to team workstations &amp; CI/CD runners standardizes test environments with 0 TLS warnings.</span>
+  </div>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">RFC 5280 PKI Chain</span>
 </div>
 
 <!--
@@ -3395,11 +3396,12 @@ class: pt-1.5 pb-1 px-8
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-emerald-200 font-medium flex items-center gap-1.5 leading-snug">
-    <span>💡</span> <strong>Why It Scales:</strong> Root CA is trusted <strong>once</strong> in OS store; client math automatically validates infinite microservices.
-  </span>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">O(1) Overhead</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Why It Scales:</strong> Root CA is trusted <strong>once</strong> in OS store; client math automatically validates infinite microservices.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">O(1) Overhead</span>
 </div>
 
 <!--
@@ -3467,11 +3469,12 @@ xcrun simctl keychain booted status
 
 </div>
 
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-indigo-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-indigo-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Safari Rule:</strong> Always download via <strong>Safari</strong> — iOS blocks Chrome from triggering configuration profile installers.
-  </span>
-  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">iOS 10+ Trust Policy</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Safari Rule:</strong> Always download via <strong>Safari</strong> — iOS blocks Chrome from triggering configuration profile installers.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">iOS 10+ Trust Policy</span>
 </div>
 
 <!--
@@ -3548,10 +3551,11 @@ adb shell chmod 644 /system/etc/security/cacerts/${HASH}.0
 </div>
 
 <div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-emerald-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>SSL Pinning Bypass:</strong> If third-party APKs enforce certificate pinning (OkHttp CertificatePinner), use <code>objection --gadget com.app explore</code> to disable pinning at runtime.
-  </span>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Frida / Objection</span>
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>SSL Pinning Bypass:</strong> If third-party APKs enforce certificate pinning (OkHttp CertificatePinner), use <code>objection --gadget com.app explore</code> to disable pinning at runtime.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Frida / Objection</span>
 </div>
 
 <!--
@@ -3619,11 +3623,12 @@ curl -x http://127.0.0.1:8080 -s https://localhost.com:8443
 
 </div>
 
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-sky-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-sky-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Verify via CLI:</strong> Check trust in terminal: <code>security find-certificate -c "PortSwigger CA" -p /Library/Keychains/System.keychain</code>.
-  </span>
-  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded">Security CLI</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-sky-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-sky-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Verify via CLI:</strong> Check trust in terminal: <code>security find-certificate -c "PortSwigger CA" -p /Library/Keychains/System.keychain</code>.</span>
+  </div>
+  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security CLI</span>
 </div>
 
 <!--
@@ -3687,10 +3692,11 @@ Import-Certificate -FilePath .\cacert.der `
 </div>
 
 <div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-blue-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-blue-200 font-medium flex items-center gap-2 leading-snug">
-    <span>💡</span> <strong>Firefox Store Note:</strong> Firefox uses its own certificate store by default. In <code>about:config</code>, set <code>security.enterprise_roots.enabled = true</code> to trust the Windows Root Store.
-  </span>
-  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded">about:config</span>
+  <div class="text-blue-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Firefox Store Note:</strong> Firefox uses its own certificate store by default. In <code>about:config</code>, set <code>security.enterprise_roots.enabled = true</code> to trust the Windows Root Store.</span>
+  </div>
+  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">about:config</span>
 </div>
 
 <!--
@@ -3765,11 +3771,12 @@ class: pt-1.5 pb-1 px-8
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-indigo-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-indigo-200 font-medium flex items-center gap-1.5 leading-snug">
-    <span>💡</span> <strong>Pinning vs Trust Store:</strong> Pinning is enforced by <strong>app code</strong>, not the OS. QA builds use debug configs; release binaries use Frida runtime memory hooks.
-  </span>
-  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">App-Level Guard</span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-violet-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-violet-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Pinning vs Trust Store:</strong> Pinning is enforced by <strong>app code</strong>, not the OS. QA builds use debug configs; release binaries use Frida runtime memory hooks.</span>
+  </div>
+  <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">App-Level Guard</span>
 </div>
 
 <!--
