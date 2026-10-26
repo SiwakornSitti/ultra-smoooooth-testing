@@ -3987,6 +3987,112 @@ Payload List: [-1, 0, 0.001, 999999999, "NaN", null, "'; DROP--"]
 </div>
 
 ---
+class: pt-1 pb-1 px-8
+---
+
+# 🎯 Intruder — 4 Attack Modes
+
+<h3 class="text-slate-300 text-xs mb-1 -mt-1.5">Payload Mapping Strategies, Execution Mechanics &amp; Combinatorial Matrix</h3>
+
+<div class="grid grid-cols-2 gap-2 flex-1">
+
+<div class="slide-card p-2 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-purple-500/30">
+      <span class="text-purple-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🎯</span> 1. Sniper (Sequential / 1 Target)
+      </span>
+      <span class="text-[9.5px] font-mono text-purple-300 bg-purple-900/50 px-1.5 py-0.2 rounded">1 Set • N × P Req</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-snug">
+      <strong>Mechanics:</strong> 1 payload set. Tests positions <em>one by one</em> while others retain base/default values.
+    </p>
+    <div class="mt-0.5 font-mono text-[9.5px] text-purple-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
+      §amount§ &amp; §code§ → [A1, base], [A2, base] ... [base, B1]
+    </div>
+  </div>
+  <div class="mt-0.5 pt-0.5 border-t border-purple-500/30 text-[10px] text-purple-300">
+    🎯 <strong>Best For:</strong> Boundary fuzzing, parameter SQLi/XSS probes.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🦹</span> 2. Battering Ram (All-at-Once Duplicate)
+      </span>
+      <span class="text-[9.5px] font-mono text-amber-300 bg-amber-900/50 px-1.5 py-0.2 rounded">1 Set • 1 × P Req</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-snug">
+      <strong>Mechanics:</strong> 1 payload set. Injects the <em>exact same payload</em> into all marked positions simultaneously.
+    </p>
+    <div class="mt-0.5 font-mono text-[9.5px] text-amber-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
+      user: §val§ / pass: §val§ → [admin, admin], [root, root]
+    </div>
+  </div>
+  <div class="mt-0.5 pt-0.5 border-t border-amber-500/30 text-[10px] text-amber-300">
+    🦹 <strong>Best For:</strong> Username = Password testing, CSRF token mirroring.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔱</span> 3. Pitchfork (Lockstep / Paired Sets)
+      </span>
+      <span class="text-[9.5px] font-mono text-cyan-300 bg-cyan-900/50 px-1.5 py-0.2 rounded">N Sets • Min(P) Req</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-snug">
+      <strong>Mechanics:</strong> 1 set per position. Iterates through all sets in <em>parallel lockstep</em> (Row 1 with Row 1).
+    </p>
+    <div class="mt-0.5 font-mono text-[9.5px] text-cyan-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
+      user: §u§ / pass: §p§ → [user1, pass1], [user2, pass2]
+    </div>
+  </div>
+  <div class="mt-0.5 pt-0.5 border-t border-cyan-500/30 text-[10px] text-cyan-300">
+    🔱 <strong>Best For:</strong> Known credential pairs, session-to-user IDOR audits.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-xs flex items-center gap-1.5">
+        <span>💣</span> 4. Cluster Bomb (Cartesian Product)
+      </span>
+      <span class="text-[9.5px] font-mono text-rose-300 bg-rose-900/50 px-1.5 py-0.2 rounded">N Sets • |A| × |B| Req</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-snug">
+      <strong>Mechanics:</strong> 1 set per position. Tests the <em>full Cartesian matrix</em> (every item in Set A × Set B).
+    </p>
+    <div class="mt-0.5 font-mono text-[9.5px] text-rose-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
+      10 users × 100 passwords → 1,000 total permutations tested
+    </div>
+  </div>
+  <div class="mt-0.5 pt-0.5 border-t border-rose-500/30 text-[10px] text-rose-300">
+    💣 <strong>Best For:</strong> Brute-force credential spray, multi-tier matrix testing.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-purple-500/40 bg-slate-900/70 rounded-lg">
+  <span class="text-[11px] text-purple-200 truncate">💡 <strong>Selection Rule:</strong> <strong>Sniper</strong> for single inputs • <strong>Pitchfork</strong> for paired accounts • <strong>Cluster Bomb</strong> for permutation matrix.</span>
+  <span class="text-[10px] font-mono text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Intruder Matrix</span>
+</div>
+
+<!--
+Presenter Notes:
+- Intruder Attack Modes define how payloads are mapped and substituted into position markers (§...§).
+- Sniper: The most common mode for QA. One list tested against each parameter sequentially.
+- Battering Ram: Injects identical value into all positions simultaneously (e.g. testing username == password).
+- Pitchfork: Advances multiple lists in parallel lockstep (Set 1 Row 1 with Set 2 Row 1). Perfect for known credential pairs.
+- Cluster Bomb: Warning on large lists! Evaluates full Cartesian product (|A| * |B| * ...), essential for credential spraying or matrix fuzzing.
+-->
+
+---
 
 # ⚙️ Match & Replace Rules: Automated Transformation
 
