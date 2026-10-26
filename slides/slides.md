@@ -3987,109 +3987,169 @@ Payload List: [-1, 0, 0.001, 999999999, "NaN", null, "'; DROP--"]
 </div>
 
 ---
-class: pt-1 pb-1 px-8
+class: pt-1.5 pb-1 px-8
 ---
 
-# 🎯 Intruder — 4 Attack Modes
+# 🎯 Intruder Modes — Sniper vs. Battering Ram
 
-<h3 class="text-slate-300 text-xs mb-1 -mt-1.5">How Burp Fills In the Blanks — 4 Easy Ways to Test Inputs (ELI5)</h3>
+<h3 class="text-slate-300 text-xs mb-1.5 -mt-1.5">Single Payload List: One Blank at a Time vs. Identical Twin Values Everywhere (ELI5)</h3>
 
-<div class="grid grid-cols-2 gap-2 flex-1">
+<div class="grid grid-cols-2 gap-3 flex-1">
 
-<div class="slide-card p-2 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between rounded-lg">
+<div class="slide-card p-3 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between rounded-lg">
   <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-purple-500/30">
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-purple-500/30">
       <span class="text-purple-300 font-bold text-xs flex items-center gap-1.5">
         <span>🎯</span> 1. Sniper (One Blank at a Time)
       </span>
-      <span class="text-[9.5px] font-mono text-purple-300 bg-purple-900/50 px-1.5 py-0.2 rounded">1 List • 1-by-1</span>
+      <span class="text-[10px] font-mono text-purple-300 bg-purple-900/50 px-2 py-0.5 rounded">1 List • 1-by-1</span>
     </div>
-    <p class="text-[11px] text-slate-300 leading-snug">
-      <strong>How it works:</strong> Tests words in <strong>one blank at a time</strong>. Leaves all other blanks alone at their normal values.
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+      <strong>How it works:</strong> Takes turns! Puts a test word in <strong>Blank #1</strong> while keeping all other blanks at their normal default values. Once finished, moves to <strong>Blank #2</strong>.
     </p>
-    <div class="mt-0.5 font-mono text-[9.5px] text-purple-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
-      [test, normal] → [normal, test] (take turns!)
-    </div>
+
+```text
+Template: { "amount": §100§, "fee": §5§ }
+Payload List: [-1, 999999]
+
+• Req 1: { "amount": -1,     "fee": 5 }      ← Blank #1
+• Req 2: { "amount": 999999, "fee": 5 }      ← Blank #1
+• Req 3: { "amount": 100,    "fee": -1 }     ← Blank #2
+• Req 4: { "amount": 100,    "fee": 999999 } ← Blank #2
+```
+  <div class="mt-1 font-mono text-[10.5px] text-purple-300/90">
+    📊 Math: 2 blanks × 2 words = <strong>4 total requests</strong>
   </div>
-  <div class="mt-0.5 pt-0.5 border-t border-purple-500/30 text-[10px] text-purple-300">
-    🎯 <strong>When to use:</strong> Finding which single input breaks or crashes the app.
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-purple-500/30 text-[10.5px] text-purple-300">
+    🎯 <strong>Best for:</strong> Isolating exactly which input field causes a validation error or crash.
   </div>
 </div>
 
-<div class="slide-card p-2 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between rounded-lg">
+<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between rounded-lg">
   <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-amber-500/30">
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
       <span class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🦹</span> 2. Battering Ram (Copy-Paste Twin)
+        <span>🦹</span> 2. Battering Ram (Copy-Paste)
       </span>
-      <span class="text-[9.5px] font-mono text-amber-300 bg-amber-900/50 px-1.5 py-0.2 rounded">1 List • Same Word</span>
+      <span class="text-[10px] font-mono text-amber-300 bg-amber-900/50 px-2 py-0.5 rounded whitespace-nowrap">1 List • Same Word</span>
     </div>
-    <p class="text-[11px] text-slate-300 leading-snug">
-      <strong>How it works:</strong> Pastes the <strong>exact same word into every blank</strong> at the same time. Twins everywhere!
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+      <strong>How it works:</strong> Types the <strong>exact same word into every blank simultaneously</strong>. Like pressing Ctrl+V into all fields at once — they are always identical twins!
     </p>
-    <div class="mt-0.5 font-mono text-[9.5px] text-amber-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
-      user: "admin", pass: "admin" (always matching twins)
-    </div>
-  </div>
-  <div class="mt-0.5 pt-0.5 border-t border-amber-500/30 text-[10px] text-amber-300">
-    🦹 <strong>When to use:</strong> Testing when fields must match (username = password).
-  </div>
-</div>
 
-<div class="slide-card p-2 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
-        <span>🔱</span> 3. Pitchfork (Buddy System / Pairs)
-      </span>
-      <span class="text-[9.5px] font-mono text-cyan-300 bg-cyan-900/50 px-1.5 py-0.2 rounded">2 Lists • Paired 1-to-1</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-snug">
-      <strong>How it works:</strong> Walks two lists <strong>hand-in-hand</strong>. Pair #1 with #1, pair #2 with #2. Like matching socks.
-    </p>
-    <div class="mt-0.5 font-mono text-[9.5px] text-cyan-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
-      (alice, alicePass), (bob, bobPass) (never mixed!)
-    </div>
-  </div>
-  <div class="mt-0.5 pt-0.5 border-t border-cyan-500/30 text-[10px] text-cyan-300">
-    🔱 <strong>When to use:</strong> Testing known pairs (matching username + password).
-  </div>
-</div>
+```text
+Template: { "user": §alice§, "pass": §secret§ }
+Payload List: ["admin", "root", "guest"]
 
-<div class="slide-card p-2 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-rose-500/30">
-      <span class="text-rose-300 font-bold text-xs flex items-center gap-1.5">
-        <span>💣</span> 4. Cluster Bomb (Try Every Combo)
-      </span>
-      <span class="text-[9.5px] font-mono text-rose-300 bg-rose-900/50 px-1.5 py-0.2 rounded">2 Lists • Every Combo</span>
-    </div>
-    <p class="text-[11px] text-slate-300 leading-snug">
-      <strong>How it works:</strong> Tries <strong>every word with every other word</strong>. Like cracking a bike lock from 00 to 99!
-    </p>
-    <div class="mt-0.5 font-mono text-[9.5px] text-rose-200/90 bg-slate-900/60 py-0.5 px-1.5 rounded truncate">
-      10 users × 100 passwords = 1,000 total tries!
-    </div>
+• Req 1: { "user": "admin", "pass": "admin" } ← Both!
+• Req 2: { "user": "root",  "pass": "root" }  ← Both!
+• Req 3: { "user": "guest", "pass": "guest" } ← Both!
+```
+  <div class="mt-1 font-mono text-[10.5px] text-amber-300/90">
+    📊 Math: 1 × 3 words = <strong>3 total requests</strong>
   </div>
-  <div class="mt-0.5 pt-0.5 border-t border-rose-500/30 text-[10px] text-rose-300">
-    💣 <strong>When to use:</strong> Guessing passwords or testing all combinations.
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-amber-500/30 text-[10.5px] text-amber-300">
+    🦹 <strong>Best for:</strong> Default credentials (user = password) or CSRF token reflection checks.
   </div>
 </div>
 
 </div>
 
-<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-purple-500/40 bg-slate-900/70 rounded-lg">
-  <span class="text-[11px] text-purple-200">💡 <strong>ELI5:</strong> <strong>Sniper</strong> = 1-by-1 • <strong>Battering Ram</strong> = twins • <strong>Pitchfork</strong> = pairs • <strong>Cluster Bomb</strong> = all combos.</span>
-  <span class="text-[10px] font-mono text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Simple Cheat Sheet</span>
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1.5 border border-purple-500/40 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-purple-200">💡 <strong>Single-List Rule:</strong> <strong>Sniper</strong> isolates 1 parameter at a time; <strong>Battering Ram</strong> forces identical twin values into all parameters.</span>
+  <span class="text-[10px] font-mono text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">1-List Modes</span>
 </div>
 
 <!--
 Presenter Notes:
-- Intruder Attack Modes define how payloads are mapped and substituted into position markers (§...§).
-- Sniper: The most common mode for QA. One list tested against each parameter sequentially.
-- Battering Ram: Injects identical value into all positions simultaneously (e.g. testing username == password).
-- Pitchfork: Advances multiple lists in parallel lockstep (Set 1 Row 1 with Set 2 Row 1). Perfect for known credential pairs.
-- Cluster Bomb: Warning on large lists! Evaluates full Cartesian product (|A| * |B| * ...), essential for credential spraying or matrix fuzzing.
+- Both Sniper and Battering Ram use only 1 single payload list.
+- Sniper: The bread and butter of API fuzzing. If an endpoint crashes on Req 1, you know 'amount' was the culprit because 'fee' was untouched.
+- Battering Ram: Useful when two parameters need to match, such as testing weak default accounts (admin/admin, root/root) or checking if an anti-CSRF token in the body must match a header.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🔱 Intruder Modes — Pitchfork vs. Cluster Bomb
+
+<h3 class="text-slate-300 text-xs mb-1.5 -mt-1.5">Multiple Payload Lists: Lockstep Pairs vs. Trying Every Possible Combination (ELI5)</h3>
+
+<div class="grid grid-cols-2 gap-3 flex-1">
+
+<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔱</span> 3. Pitchfork (Buddy Pairs)
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded whitespace-nowrap">2+ Lists • Paired</span>
+    </div>
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+      <strong>How it works:</strong> Walks lists <strong>hand-in-hand in parallel</strong>. Word #1 in List A pairs with Word #1 in List B. Items never cross or mix — strictly matching buddies!
+    </p>
+
+```text
+Template: POST /login { "user": §u§, "pass": §p§ }
+List A: ["alice", "bob"] | List B: ["alice123", "bob456"]
+
+• Req 1: { "user": "alice", "pass": "alice123" } ← Pair 1
+• Req 2: { "user": "bob",   "pass": "bob456" }   ← Pair 2
+(Stops when the shortest list runs out!)
+```
+  <div class="mt-1 font-mono text-[10.5px] text-cyan-300/90">
+    📊 Math: Min(|A|, |B|) = <strong>2 total requests</strong>
+  </div>
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300">
+    🔱 <strong>Best for:</strong> Testing known pairs: username + password, or User ID + matched Auth Token (IDOR).
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-xs flex items-center gap-1.5">
+        <span>💣</span> 4. Cluster Bomb (Every Combo)
+      </span>
+      <span class="text-[10px] font-mono text-rose-300 bg-rose-900/50 px-2 py-0.5 rounded whitespace-nowrap">2+ Lists • Combos</span>
+    </div>
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+      <strong>How it works:</strong> Tries <strong>every word in List A with every word in List B</strong>. Like spinning all dials on a bike lock to crack every possible combination!
+    </p>
+
+```text
+Template: POST /login { "user": §u§, "pass": §p§ }
+List A: ["alice", "bob"] | List B: ["1234", "password"]
+
+• Req 1: { "user": "alice", "pass": "1234" }
+• Req 2: { "user": "alice", "pass": "password" }
+• Req 3: { "user": "bob",   "pass": "1234" }
+• Req 4: { "user": "bob",   "pass": "password" }
+```
+  <div class="mt-1 font-mono text-[10.5px] text-rose-300/90">
+    📊 Math: |A| × |B| = 2 × 2 = <strong>4 requests</strong> (10 × 100 = 1,000!)
+  </div>
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-rose-500/30 text-[10.5px] text-rose-300">
+    💣 <strong>Best for:</strong> Credential spraying against usernames or multi-variable permutation testing.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1.5 border border-cyan-500/40 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-cyan-200">💡 <strong>Multi-List Rule:</strong> <strong>Pitchfork</strong> tests paired datasets in parallel; <strong>Cluster Bomb</strong> exhaustively tests every combination.</span>
+  <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Multi-List Modes</span>
+</div>
+
+<!--
+Presenter Notes:
+- Pitchfork and Cluster Bomb both take multiple payload lists (one list per marked position).
+- Pitchfork: Advances simultaneously. If you have 50 test users with their 50 respective passwords or tokens, you get 50 requests.
+- Cluster Bomb: Warning on large lists! If you have 50 users and 50 passwords, you get 50 x 50 = 2,500 requests. Great for brute forcing or testing permutation matrices.
 -->
 
 ---
