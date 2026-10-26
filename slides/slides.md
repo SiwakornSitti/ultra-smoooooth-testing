@@ -1469,39 +1469,39 @@ class: pt-2 pb-1 px-8
 
 # 🎯 WireMock RegEx — Body & Query Matching
 
-<h3 class="text-slate-300 text-sm mb-1.5">13-Digit Thai National ID & Query Versioning with <span class="font-mono text-amber-300 bg-amber-900/60 border border-amber-500/40 px-2 py-0.5 rounded text-xs font-bold">matches</span></h3>
+<h3 class="text-slate-300 text-sm mb-1.5">13-Digit Thai National ID & Query Versioning with <span class="font-mono text-cyan-300 bg-cyan-900/60 border border-cyan-500/40 px-2 py-0.5 rounded text-xs font-bold">matches</span></h3>
 
 <div class="grid grid-cols-2 gap-3 mt-1 flex-1">
 
-<div class="slide-card p-2.5 border border-amber-500/40 bg-amber-950/20 rounded-lg flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-cyan-500/40 bg-cyan-950/20 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
         <span>📝</span> Matching Evaluation
       </span>
-      <span class="text-[10px] font-mono text-amber-300 bg-amber-900/50 px-2 py-0.5 rounded">Validation</span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">Validation</span>
     </div>
     <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
       <li class="flex items-start gap-1.5">
-        <span class="text-amber-400 font-bold">•</span>
-        <span><strong class="text-amber-300">Query Versioning:</strong> <span class="font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded text-xs">v[1-3].*</span> routes across versions.</span>
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Query Versioning:</strong> <span class="font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded text-xs">v[1-3].*</span> routes across versions.</span>
       </li>
       <li class="flex items-start gap-1.5">
-        <span class="text-amber-400 font-bold">•</span>
-        <span><strong class="text-amber-300">Raw Body RegEx:</strong> Matches 13-digit Thai national IDs.</span>
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Raw Body RegEx:</strong> Matches 13-digit Thai national IDs.</span>
       </li>
       <li class="flex items-start gap-1.5">
-        <span class="text-amber-400 font-bold">•</span>
-        <span><strong class="text-amber-300">⚠️ Key Order:</strong> Raw regex breaks on key reordering.</span>
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">⚠️ Key Order:</strong> Raw regex breaks on key reordering.</span>
       </li>
     </ul>
-    <div class="bg-slate-950/90 rounded p-1.5 border border-amber-500/30 font-mono text-[10px] text-amber-200 mt-2 truncate">
-      <span class="text-amber-400 font-semibold">"matches"</span>: <span>".*\"national_id\":\"[0-9]{13}\".*"</span>
+    <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[10px] text-cyan-200 mt-2 truncate">
+      <span class="text-slate-400">"matches"</span>: <span class="text-cyan-300">".*\"national_id\":\"[0-9]{13}\".*"</span>
     </div>
   </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-[11px] text-amber-300 flex items-center justify-between">
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-[11px] text-cyan-300 flex items-center justify-between">
     <span>💡 Prefer matchesJsonPath for payload resilience</span>
-    <span class="text-[9.5px] text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30">Order Safe</span>
+    <span class="text-[9.5px] text-cyan-400 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">Order Safe</span>
   </div>
 </div>
 
@@ -1517,9 +1517,9 @@ class: pt-2 pb-1 px-8
       <div>{</div>
       <div class="pl-2.5"><span class="text-slate-400">"request"</span>: {</div>
       <div class="pl-5"><span class="text-slate-400">"method"</span>: <span class="text-emerald-300">"POST"</span>, <span class="text-slate-400">"urlPath"</span>: <span class="text-cyan-300">"/api/ekyc/verify"</span>,</div>
-      <div class="pl-5"><span class="text-slate-400">"queryParameters"</span>: { <span class="text-slate-400">"v"</span>: { <span class="text-amber-300 font-semibold">"matches"</span>: <span class="text-cyan-300">"v[1-3].*"</span> } },</div>
+      <div class="pl-5"><span class="text-slate-400">"queryParameters"</span>: { <span class="text-slate-400">"v"</span>: { <span class="text-slate-400">"matches"</span>: <span class="text-cyan-300">"v[1-3].*"</span> } },</div>
       <div class="pl-5"><span class="text-slate-400">"bodyPatterns"</span>: [</div>
-      <div class="pl-7">{ <span class="text-amber-300 font-semibold">"matches"</span>: <span class="text-amber-300">".*\"national_id\":\"[0-9]{13}\".*"</span> }</div>
+      <div class="pl-7">{ <span class="text-slate-400">"matches"</span>: <span class="text-cyan-300">".*\"national_id\":\"[0-9]{13}\".*"</span> }</div>
       <div class="pl-5">]</div>
       <div class="pl-2.5">},</div>
       <div class="pl-2.5"><span class="text-slate-400">"response"</span>: {</div>
@@ -1530,7 +1530,7 @@ class: pt-2 pb-1 px-8
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-[11px] text-slate-400 flex items-center justify-between">
     <span>🪪 Strict 13-digit ID across versions v1, v2, v3</span>
-    <span class="text-[9.5px] font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30">eKYC Gate</span>
+    <span class="text-[9.5px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">eKYC Gate</span>
   </div>
 </div>
 
@@ -1538,7 +1538,7 @@ class: pt-2 pb-1 px-8
 
 <div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-slate-700/60 bg-slate-900/70 rounded-lg">
   <span class="text-[11.5px] text-slate-200">💡 <strong>Best Practice:</strong> Use regex query parameters for version routing; prefer <span class="font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded text-xs font-semibold">matchesJsonPath</span> for resilient JSON body matching.</span>
-  <span class="text-[10px] font-mono text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Body & Query</span>
+  <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Body & Query</span>
 </div>
 
 ---
