@@ -2984,7 +2984,7 @@ class: pt-1.5 pb-1 px-8
       <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Asymmetric (ECDHE)</span>
     </div>
     <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>1. ClientHello &amp; SNI:</strong> Client sends TLS version, cipher list &amp; target host (<code>api.shopvibe.com</code>).</li>
+      <li>• <strong>1. ClientHello &amp; SNI:</strong> Client sends TLS version, cipher list &amp; target host in SNI.</li>
       <li>• <strong>2. Certificate Chain:</strong> Server returns cipher + X.509 cert chain; client validates Root CA &amp; SAN.</li>
       <li>• <strong>3. Key Exchange (ECDHE):</strong> Both parties compute shared <strong>Session Keys</strong> without transmitting secrets.</li>
     </ul>
@@ -3065,7 +3065,7 @@ class: pt-2 pb-1 px-8
       <span class="text-[11px] font-mono text-rose-300/80 bg-rose-900/40 px-2 py-0.5 rounded">Alert 48</span>
     </div>
     <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Hostname Binding:</strong> TLS mandates certificate Subject Alternative Name (SAN) match the target host (e.g. <code>api.shopvibe.com</code>).</li>
+      <li>• <strong>Hostname Binding:</strong> TLS mandates certificate Subject Alternative Name (SAN) match the requested target host.</li>
       <li>• <strong>Static Certs Fail:</strong> A static cert cannot predict arbitrary microservice domains. Clients abort with <code>ERR_CERT_COMMON_NAME_INVALID</code>.</li>
       <li>• <strong>Untrusted Authority:</strong> Even if host matches, the OS rejects certs not signed by a recognized root authority (<code>unknown_ca</code>).</li>
     </ul>
