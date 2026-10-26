@@ -4004,24 +4004,26 @@ class: pt-1.5 pb-1 px-8
       </span>
       <span class="text-[10px] font-mono text-purple-300 bg-purple-900/50 px-2 py-0.5 rounded">1 List • 1-by-1</span>
     </div>
-    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1">
       <strong>How it works:</strong> Takes turns! Puts a test word in <strong>Blank #1</strong> while keeping all other blanks at their normal default values. Once finished, moves to <strong>Blank #2</strong>.
     </p>
-
-```text
-Template: { "amount": §100§, "fee": §5§ }
-Payload List: [-1, 999999]
-
-• Req 1: { "amount": -1,     "fee": 5 }      ← Blank #1
-• Req 2: { "amount": 999999, "fee": 5 }      ← Blank #1
-• Req 3: { "amount": 100,    "fee": -1 }     ← Blank #2
-• Req 4: { "amount": 100,    "fee": 999999 } ← Blank #2
-```
-  <div class="mt-1 font-mono text-[10.5px] text-purple-300/90">
-    📊 Math: 2 blanks × 2 words = <strong>4 total requests</strong>
+    <div class="bg-slate-950/80 border border-purple-500/30 rounded p-2 font-mono text-[10.5px] leading-relaxed my-1">
+      <div class="text-slate-400 text-[9.5px] pb-0.5 border-b border-slate-800 flex justify-between">
+        <span>Template: { "amount": §100§, "fee": §5§ }</span>
+        <span class="text-purple-400">List: [-1, 999999]</span>
+      </div>
+      <div class="pt-1 space-y-0.5 text-slate-200">
+        <div>• <span class="text-purple-300">Req 1:</span> { "amount": <span class="text-amber-300 font-bold">-1</span>, "fee": 5 } <span class="text-slate-500 text-[9.5px]">← Blank 1</span></div>
+        <div>• <span class="text-purple-300">Req 2:</span> { "amount": <span class="text-amber-300 font-bold">999999</span>, "fee": 5 } <span class="text-slate-500 text-[9.5px]">← Blank 1</span></div>
+        <div>• <span class="text-purple-300">Req 3:</span> { "amount": 100, "fee": <span class="text-amber-300 font-bold">-1</span> } <span class="text-slate-500 text-[9.5px]">← Blank 2</span></div>
+        <div>• <span class="text-purple-300">Req 4:</span> { "amount": 100, "fee": <span class="text-amber-300 font-bold">999999</span> } <span class="text-slate-500 text-[9.5px]">← Blank 2</span></div>
+      </div>
+      <div class="pt-1 mt-1 border-t border-slate-800 text-[10px] text-purple-300 font-medium">
+        📊 Math: 2 blanks × 2 words = <strong>4 total requests</strong>
+      </div>
+    </div>
   </div>
-  </div>
-  <div class="mt-1.5 pt-1 border-t border-purple-500/30 text-[10.5px] text-purple-300">
+  <div class="mt-1 pt-1 border-t border-purple-500/30 text-[10.5px] text-purple-300">
     🎯 <strong>Best for:</strong> Isolating exactly which input field causes a validation error or crash.
   </div>
 </div>
@@ -4034,23 +4036,25 @@ Payload List: [-1, 999999]
       </span>
       <span class="text-[10px] font-mono text-amber-300 bg-amber-900/50 px-2 py-0.5 rounded whitespace-nowrap">1 List • Same Word</span>
     </div>
-    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1">
       <strong>How it works:</strong> Types the <strong>exact same word into every blank simultaneously</strong>. Like pressing Ctrl+V into all fields at once — they are always identical twins!
     </p>
-
-```text
-Template: { "user": §alice§, "pass": §secret§ }
-Payload List: ["admin", "root", "guest"]
-
-• Req 1: { "user": "admin", "pass": "admin" } ← Both!
-• Req 2: { "user": "root",  "pass": "root" }  ← Both!
-• Req 3: { "user": "guest", "pass": "guest" } ← Both!
-```
-  <div class="mt-1 font-mono text-[10.5px] text-amber-300/90">
-    📊 Math: 1 × 3 words = <strong>3 total requests</strong>
+    <div class="bg-slate-950/80 border border-amber-500/30 rounded p-2 font-mono text-[10.5px] leading-relaxed my-1">
+      <div class="text-slate-400 text-[9.5px] pb-0.5 border-b border-slate-800 flex justify-between">
+        <span>Template: { "user": §alice§, "pass": §secret§ }</span>
+        <span class="text-amber-400">1 List: [admin, root, guest]</span>
+      </div>
+      <div class="pt-1 space-y-0.5 text-slate-200">
+        <div>• <span class="text-amber-300">Req 1:</span> { "user": <span class="text-amber-300 font-bold">"admin"</span>, "pass": <span class="text-amber-300 font-bold">"admin"</span> } <span class="text-slate-500 text-[9.5px]">← Both!</span></div>
+        <div>• <span class="text-amber-300">Req 2:</span> { "user": <span class="text-amber-300 font-bold">"root"</span>,  "pass": <span class="text-amber-300 font-bold">"root"</span> } <span class="text-slate-500 text-[9.5px]">← Both!</span></div>
+        <div>• <span class="text-amber-300">Req 3:</span> { "user": <span class="text-amber-300 font-bold">"guest"</span>, "pass": <span class="text-amber-300 font-bold">"guest"</span> } <span class="text-slate-500 text-[9.5px]">← Both!</span></div>
+      </div>
+      <div class="pt-1 mt-1 border-t border-slate-800 text-[10px] text-amber-300 font-medium">
+        📊 Math: 1 × 3 words = <strong>3 total requests</strong>
+      </div>
+    </div>
   </div>
-  </div>
-  <div class="mt-1.5 pt-1 border-t border-amber-500/30 text-[10.5px] text-amber-300">
+  <div class="mt-1 pt-1 border-t border-amber-500/30 text-[10.5px] text-amber-300">
     🦹 <strong>Best for:</strong> Default credentials (user = password) or CSRF token reflection checks.
   </div>
 </div>
@@ -4087,23 +4091,25 @@ class: pt-1.5 pb-1 px-8
       </span>
       <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded whitespace-nowrap">2+ Lists • Paired</span>
     </div>
-    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1">
       <strong>How it works:</strong> Walks lists <strong>hand-in-hand in parallel</strong>. Word #1 in List A pairs with Word #1 in List B. Items never cross or mix — strictly matching buddies!
     </p>
-
-```text
-Template: POST /login { "user": §u§, "pass": §p§ }
-List A: ["alice", "bob"] | List B: ["alice123", "bob456"]
-
-• Req 1: { "user": "alice", "pass": "alice123" } ← Pair 1
-• Req 2: { "user": "bob",   "pass": "bob456" }   ← Pair 2
-(Stops when the shortest list runs out!)
-```
-  <div class="mt-1 font-mono text-[10.5px] text-cyan-300/90">
-    📊 Math: Min(|A|, |B|) = <strong>2 total requests</strong>
+    <div class="bg-slate-950/80 border border-cyan-500/30 rounded p-2 font-mono text-[10.5px] leading-relaxed my-1">
+      <div class="text-slate-400 text-[9.5px] pb-0.5 border-b border-slate-800 flex justify-between">
+        <span>Template: POST /login { user, pass }</span>
+        <span class="text-cyan-400">List A &amp; List B</span>
+      </div>
+      <div class="pt-1 space-y-0.5 text-slate-200">
+        <div>• <span class="text-cyan-300">Req 1:</span> { "user": <span class="text-cyan-300 font-bold">"alice"</span>, "pass": <span class="text-cyan-300 font-bold">"alice123"</span> } <span class="text-slate-500 text-[9.5px]">← Pair 1</span></div>
+        <div>• <span class="text-cyan-300">Req 2:</span> { "user": <span class="text-cyan-300 font-bold">"bob"</span>,   "pass": <span class="text-cyan-300 font-bold">"bob456"</span> }   <span class="text-slate-500 text-[9.5px]">← Pair 2</span></div>
+        <div class="text-slate-500 text-[9.5px] italic">(Stops when the shortest list runs out!)</div>
+      </div>
+      <div class="pt-1 mt-1 border-t border-slate-800 text-[10px] text-cyan-300 font-medium">
+        📊 Math: Min(|A|, |B|) = <strong>2 total requests</strong>
+      </div>
+    </div>
   </div>
-  </div>
-  <div class="mt-1.5 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300">
+  <div class="mt-1 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300">
     🔱 <strong>Best for:</strong> Testing known pairs: username + password, or User ID + matched Auth Token (IDOR).
   </div>
 </div>
@@ -4116,24 +4122,26 @@ List A: ["alice", "bob"] | List B: ["alice123", "bob456"]
       </span>
       <span class="text-[10px] font-mono text-rose-300 bg-rose-900/50 px-2 py-0.5 rounded whitespace-nowrap">2+ Lists • Combos</span>
     </div>
-    <p class="text-[11.5px] text-slate-300 leading-snug mb-1.5">
+    <p class="text-[11.5px] text-slate-300 leading-snug mb-1">
       <strong>How it works:</strong> Tries <strong>every word in List A with every word in List B</strong>. Like spinning all dials on a bike lock to crack every possible combination!
     </p>
-
-```text
-Template: POST /login { "user": §u§, "pass": §p§ }
-List A: ["alice", "bob"] | List B: ["1234", "password"]
-
-• Req 1: { "user": "alice", "pass": "1234" }
-• Req 2: { "user": "alice", "pass": "password" }
-• Req 3: { "user": "bob",   "pass": "1234" }
-• Req 4: { "user": "bob",   "pass": "password" }
-```
-  <div class="mt-1 font-mono text-[10.5px] text-rose-300/90">
-    📊 Math: |A| × |B| = 2 × 2 = <strong>4 requests</strong> (10 × 100 = 1,000!)
+    <div class="bg-slate-950/80 border border-rose-500/30 rounded p-2 font-mono text-[10.5px] leading-relaxed my-1">
+      <div class="text-slate-400 text-[9.5px] pb-0.5 border-b border-slate-800 flex justify-between">
+        <span>Template: POST /login { user, pass }</span>
+        <span class="text-rose-400">List A × List B</span>
+      </div>
+      <div class="pt-1 space-y-0.5 text-slate-200">
+        <div>• <span class="text-rose-300">Req 1:</span> { "user": <span class="text-cyan-300">"alice"</span>, "pass": <span class="text-amber-300">"1234"</span> }</div>
+        <div>• <span class="text-rose-300">Req 2:</span> { "user": <span class="text-cyan-300">"alice"</span>, "pass": <span class="text-amber-300">"password"</span> }</div>
+        <div>• <span class="text-rose-300">Req 3:</span> { "user": <span class="text-cyan-300">"bob"</span>,   "pass": <span class="text-amber-300">"1234"</span> }</div>
+        <div>• <span class="text-rose-300">Req 4:</span> { "user": <span class="text-cyan-300">"bob"</span>,   "pass": <span class="text-amber-300">"password"</span> }</div>
+      </div>
+      <div class="pt-1 mt-1 border-t border-slate-800 text-[10px] text-rose-300 font-medium">
+        📊 Math: |A| × |B| = 2 × 2 = <strong>4 requests</strong> (10 × 100 = 1,000!)
+      </div>
+    </div>
   </div>
-  </div>
-  <div class="mt-1.5 pt-1 border-t border-rose-500/30 text-[10.5px] text-rose-300">
+  <div class="mt-1 pt-1 border-t border-rose-500/30 text-[10.5px] text-rose-300">
     💣 <strong>Best for:</strong> Credential spraying against usernames or multi-variable permutation testing.
   </div>
 </div>
