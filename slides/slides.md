@@ -3189,17 +3189,36 @@ class: pt-1.5 pb-1 px-8
       <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">AES-GCM / ChaCha20</span>
     </div>
 
-<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-0.5 font-mono text-[10px] text-slate-200 mb-1">
-  <span class="text-sky-400">Client</span> ──[ <span class="text-amber-300">Plaintext encrypted with Session Key</span> ]──► <span class="text-emerald-400">Server Decrypts</span>
+<div class="bg-slate-950/90 border border-slate-700/70 rounded p-1.5 font-mono text-[9px] text-slate-200 space-y-1 mb-1">
+  <div>
+    <div class="text-slate-400 text-[8.5px] font-sans font-semibold uppercase tracking-wider">Before Proxying (Direct TLS):</div>
+    <div class="flex items-center gap-1 text-[9px] mt-0.5">
+      <span class="text-sky-300 font-semibold">Client</span>
+      <span class="text-slate-500">──[</span>
+      <span class="text-amber-300">Single Encrypted Tunnel (Opaque)</span>
+      <span class="text-slate-500">]──►</span>
+      <span class="text-emerald-300 font-semibold">Server</span>
+    </div>
+  </div>
+  <div class="pt-1 border-t border-slate-800">
+    <div class="text-cyan-400 text-[8.5px] font-sans font-semibold uppercase tracking-wider">After Proxying (Burp MITM Dual-Terminus):</div>
+    <div class="flex items-center gap-1 text-[9px] mt-0.5">
+      <span class="text-sky-300 font-semibold">Client</span>
+      <span class="text-slate-500">─[</span><span class="text-amber-300">TLS 1</span><span class="text-slate-500">]─►</span>
+      <span class="text-cyan-300 font-bold bg-cyan-950/80 px-1 py-0.2 rounded border border-cyan-500/40">Burp (Plaintext)</span>
+      <span class="text-slate-500">─[</span><span class="text-emerald-300">TLS 2</span><span class="text-slate-500">]─►</span>
+      <span class="text-emerald-300 font-semibold">Server</span>
+    </div>
+  </div>
 </div>
 
-<ul class="space-y-1 text-xs text-slate-300 leading-snug">
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
   <li>• <strong>Hardware Accelerated:</strong> Symmetric AES-GCM is thousands of times faster than asymmetric math for bulk payload streaming.</li>
-  <li>• <strong>Total Secrecy:</strong> URLs, headers, cookies, and JSON payloads are completely opaque to intermediate network routers.</li>
+  <li>• <strong>Dual Terminus:</strong> Burp terminates TLS 1 with Client &amp; TLS 2 with Server, exposing raw plaintext at the inspection seam.</li>
 </ul>
   </div>
-  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
-    ⚡ High-speed authenticated encryption with tamper detection (AEAD).
+  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[10.5px] text-emerald-300 font-mono">
+    ⚡ High-speed authenticated encryption (AEAD) terminated twice.
   </div>
 </div>
 
