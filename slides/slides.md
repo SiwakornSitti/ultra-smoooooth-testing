@@ -3047,6 +3047,87 @@ class: pt-2 pb-1 px-8
 </div>
 
 ---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🏛️ Public Key Infrastructure (PKI) — Trust Hierarchy & Lifecycle
+
+<h3 class="text-slate-300 text-xs mb-1">The Cryptographic Framework Governing Digital Identity, Key Management &amp; X.509 Chains</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2 border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-blue-500/30">
+      <span class="text-blue-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔺</span> 1. The 3-Tier Certificate Hierarchy
+      </span>
+      <span class="text-[10px] font-mono text-blue-300 bg-blue-950/60 px-1.5 py-0.5 rounded">X.509 Structure</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9.5px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div class="text-amber-300 font-semibold">Root CA (Trust Anchor):</div>
+  <div class="text-slate-300 pl-1">• Self-signed, air-gapped/offline, stored in OS Trust Stores</div>
+  <div class="text-cyan-300 font-semibold mt-0.5">↳ Intermediate CA (Issuing Authority):</div>
+  <div class="text-slate-300 pl-2">• Signs day-to-day certs; protects Root from exposure</div>
+  <div class="text-emerald-300 font-semibold mt-0.5">  ↳ Leaf / End-Entity (Domain SAN):</div>
+  <div class="text-slate-300 pl-3">• Bound to domain, 90-day TTL, non-CA (<code>CA:FALSE</code>)</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Blast Radius Protection:</strong> If an Intermediate is compromised, only its subtree is revoked—never the Root CA.</li>
+  <li>• <strong>Hierarchical Delegation:</strong> OS trusts the Root; trust delegates downward to any valid signed descendant.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-blue-500/30 text-[10px] text-blue-300 font-mono">
+    🛡️ Isolates root authority while enabling automated certificate issuance.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-violet-500/40 bg-violet-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-violet-500/30">
+      <span class="text-violet-300 font-bold text-xs flex items-center gap-1.5">
+        <span>⚙️</span> 2. Core PKI Components &amp; Roles
+      </span>
+      <span class="text-[10px] font-mono text-violet-300 bg-violet-950/60 px-1.5 py-0.5 rounded">CA • RA • CRL</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9.5px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div><span class="text-violet-300 font-semibold">1. CA (Certificate Authority):</span> Cryptographically mints &amp; signs</div>
+  <div><span class="text-amber-300 font-semibold">2. RA (Registration Authority):</span> Verifies entity domain identity (ACME)</div>
+  <div><span class="text-emerald-300 font-semibold">3. Trust Store:</span> Curated roots in OS (Keychain, Windows Store, NSS)</div>
+  <div><span class="text-rose-300 font-semibold">4. Revocation:</span> Real-time invalidation via CRLs &amp; OCSP stapling</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Automated Issuance:</strong> ACME protocol (Let's Encrypt / Vault) automates domain validation via DNS or HTTP challenges.</li>
+  <li>• <strong>Production vs Test:</strong> Cloudflare/DigiCert in prod; Burp Suite runs a private local PKI in test environments.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-violet-500/30 text-[10px] text-violet-300 font-mono">
+    🔑 End-to-end identity proof, lifecycle automation &amp; revocation.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-blue-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-blue-200 font-medium flex items-center gap-1.5 leading-snug">
+    <span>💡</span> <strong>MITM Connection:</strong> Burp Suite operates as a self-contained <strong>Private PKI</strong>—acting as both CA and RA to dynamically mint leaf certs in RAM.
+  </span>
+  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded">Local Private PKI</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain the 3-tier hierarchy: Root CA (offline, air-gapped), Intermediate CA (active signer), and Leaf Certificate (domain specific).
+- Emphasize why intermediate CAs exist: to protect the root private key from ever touching a live network.
+- Explain the role of the Trust Store: Operating systems ship with pre-installed public root CAs (DigiCert, Let's Encrypt), and enterprises can install their own private root CAs.
+- Bridge to Burp Suite: Burp acts as a private, local PKI that generates dynamic leaf certificates for any microservice on demand.
+-->
+
+---
 class: pt-2 pb-1 px-8
 ---
 
