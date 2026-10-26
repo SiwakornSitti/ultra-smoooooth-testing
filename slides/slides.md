@@ -3242,12 +3242,52 @@ class: pt-1.5 pb-1 px-8
 <h3 class="text-slate-300 text-xs mb-1">How Key Pairs, Digital Certificates &amp; Trusted CAs Establish Encrypted Identity</h3>
 
 <div class="flex justify-center items-center w-full mt-0.5">
-  <div class="adorable-arch-container !h-[315px] !max-h-[315px]">
-    <img src="/pki_flow_architecture.jpg" class="adorable-arch-img" alt="Public Key Infrastructure (PKI) Architecture Flow" />
+<div class="adorable-arch-container !h-[265px] !max-h-[265px] relative">
+<img src="/pki_flow_architecture.jpg" class="adorable-arch-img" alt="Public Key Infrastructure (PKI) Architecture Flow" />
+<div class="absolute top-2.5 left-[22%] -translate-x-1/2 bg-slate-950/85 border border-amber-500/50 text-amber-300 font-mono text-[10.5px] px-2 py-0.5 rounded-full shadow-lg backdrop-blur-sm flex items-center gap-1 pointer-events-none">
+<span>🔐</span> <strong>Server</strong> <span class="text-slate-400 text-[9.5px]">(Key Pair)</span>
+</div>
+<div class="absolute top-2 left-[49%] -translate-x-1/2 bg-slate-950/85 border border-cyan-500/50 text-cyan-300 font-mono text-[10.5px] px-2 py-0.5 rounded-full shadow-lg backdrop-blur-sm flex items-center gap-1 pointer-events-none">
+<span>📜</span> <strong>Certificate</strong>
+</div>
+<div class="absolute top-2.5 right-[22%] translate-x-1/2 bg-slate-950/85 border border-indigo-500/50 text-indigo-300 font-mono text-[10.5px] px-2 py-0.5 rounded-full shadow-lg backdrop-blur-sm flex items-center gap-1 pointer-events-none">
+<span>🏛️</span> <strong>CA</strong> <span class="text-slate-400 text-[9.5px]">(Root Authority)</span>
+</div>
+<div class="absolute bottom-2.5 left-[31%] -translate-x-1/2 bg-slate-950/85 border border-sky-500/50 text-sky-300 font-mono text-[10.5px] px-2 py-0.5 rounded-full shadow-lg backdrop-blur-sm flex items-center gap-1 pointer-events-none">
+<span>💻</span> <strong>Client</strong> <span class="text-slate-400 text-[9.5px]">(Browser/App)</span>
+</div>
+<div class="absolute bottom-2 left-[50%] -translate-x-1/2 bg-slate-950/85 border border-emerald-500/50 text-emerald-300 font-mono text-[10.5px] px-2 py-0.5 rounded-full shadow-lg backdrop-blur-sm flex items-center gap-1 pointer-events-none">
+<span>✓</span> <strong>Verified Trust</strong>
+</div>
+</div>
+</div>
+
+<!-- Architecture Roles Legend -->
+<div class="grid grid-cols-3 gap-2 mt-1.5 w-full max-w-[820px] mx-auto">
+  <div class="slide-card py-1 px-2.5 bg-slate-900/80 border-sky-500/40 flex items-center gap-2">
+    <span class="text-base">💻</span>
+    <div class="text-[11px] leading-tight">
+      <span class="font-bold text-sky-300">Client:</span>
+      <span class="text-slate-300"> Browser/OS store verifies Root CA</span>
+    </div>
+  </div>
+  <div class="slide-card py-1 px-2.5 bg-slate-900/80 border-indigo-500/40 flex items-center gap-2">
+    <span class="text-base">🏛️</span>
+    <div class="text-[11px] leading-tight">
+      <span class="font-bold text-indigo-300">CA:</span>
+      <span class="text-slate-300"> Trusted authority signs server identity</span>
+    </div>
+  </div>
+  <div class="slide-card py-1 px-2.5 bg-slate-900/80 border-amber-500/40 flex items-center gap-2">
+    <span class="text-base">🔐</span>
+    <div class="text-[11px] leading-tight">
+      <span class="font-bold text-amber-300">Server:</span>
+      <span class="text-slate-300"> Holds private key &amp; presents certificate</span>
+    </div>
   </div>
 </div>
 
-<div class="slide-card text-xs mt-1 py-1.5 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
+<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
   <div class="text-slate-200 leading-snug flex items-center gap-2">
     <span>💡</span>
     <span><strong>PKI Principle:</strong> Clients don't trust servers directly. Clients trust a <strong>Certification Authority (CA)</strong>, which cryptographically signs the server's public key inside a <strong>Certificate</strong>.</span>
