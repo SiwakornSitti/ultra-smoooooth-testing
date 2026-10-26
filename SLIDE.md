@@ -72,7 +72,7 @@ Quick navigation reference for presentations in `slides/`.
 | **56** | [🎬 Biometric Face Scan Virtualization](slides/slides.md#L2951) | Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating |
 | **57** | [🏆 Workshop: Biometric Face Scan Stub](slides/slides.md#L3018) | Author a self-service biometric verification stub with liveness confidence thresholding |
 | **58** | [🛡️ Part 3](slides/slides.md#L3080) | Burp Suite — MITM Traffic Control & Interception |
-| **59** | [🛡️ What is Burp Suite? — Core Capabilities](slides/slides.md#L3092) | Programmable Man-In-The-Middle (MITM) Traffic Controller for Microservices QA |
+| **59** | [🛡️ What is Burp Suite? — Core Capabilities](slides/slides.md#L3092) | The Gold-Standard Web Security Tool — Repurposed for Microservices QA &amp; Integration Testing |
 | **60** | [🔒 How HTTPS Works — TLS Handshake to Secure Tunnel](slides/slides.md#L3161) | Dual-Phase Cryptography: Asymmetric Authentication &amp; Symmetric Payload Encryption |
 | **61** | [🛡️ Burp Suite — MITM Proxy Architecture](slides/slides.md#L3228) | Client, MITM Proxy Engine & Backend Microservices Interaction |
 | **62** | [🏛️ Public Key Infrastructure (PKI) — Core Trust Flow](slides/slides.md#L3242) | The Cryptographic Framework Governing Digital Identity, Key Management &amp; X.509 Chains |
