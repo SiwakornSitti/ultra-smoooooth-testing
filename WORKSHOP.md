@@ -1,5 +1,11 @@
 # 🧪 Microservices Integration Testing Workshop Guide
 
+<div align="center">
+
+<img src="slides/public/content.png" alt="Microservices Integration Testing Workshop Cover" width="100%" style="border-radius: 10px; max-width: 820px; margin: 12px 0 20px 0;" />
+
+</div>
+
 > **Mock the world. Control the chaos. Test without limits.**
 
 Welcome to the **Microservices Integration Testing Workshop**! This guide provides a comprehensive framework, architecture overview, setup instructions, and **11 practical thinking cases with runnable verification recipes and solution keys** for testing microservices in a real-world enterprise banking ecosystem.
@@ -345,8 +351,27 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 > **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
 
+#### 🛠️ Burp Suite Core Tools Reference & Playbook
+- **Slide Reference**: [`slides.md#L2986`](slides/slides.md#L2986) & [`slides.md#L3074`](slides/slides.md#L3074) (Slides 60 & 61)
+- **Role in Integration Testing**: Burp Suite acts as an in-flight Man-In-The-Middle (MITM) inspection, replay, and mutation proxy between browser/mobile clients and backend gateways (`bff-service`).
+
+| Tool &amp; Icon | Category | Core Capability &amp; Primary Shortcut | Microservices / API QA Testing Scenario |
+| :--- | :--- | :--- | :--- |
+| ⚡ **Proxy** | Traffic Control | Captures live HTTP/S traffic; pause/edit/drop packets mid-flight. Toggle `Intercept is on`. | Tampering with request headers or JSON payloads in transit before reaching backend gateways. |
+| 🎯 **Target** | Topology &amp; Scope | Hierarchical site map tree of discovered hosts, paths, and endpoints. Filter by in-scope rules. | Scoping test suites strictly to `localhost` microservices and excluding external browser noise. |
+| 🔁 **Repeater** | Ad-Hoc Replay | Isolated HTTP request workbench. Modify payloads and re-issue instantly (`Cmd+R` / `Ctrl+R`). | Rapidly testing API edge cases, validation boundaries, and error codes without re-running UI suites. |
+| ⚡ **Intruder** | Automated Fuzzing | Configurable payload attack engine across targeted parameter positions (`Sniper`, `Battering Ram`). | Concurrency race condition testing, rate-limit boundary probes, and negative payload fuzzing. |
+| 📋 **Logger** | Unified Audit | Full-fidelity chronological traffic log across all Burp tools with regex filtering and 1-click handoff. | Real-time debugging of multi-step API sequences and inspecting raw server response headers. |
+| 🔤 **Decoder** | Transformations | Bi-directional encoding/decoding: URL, Base64, Hex, HTML, Hashes, and JWT token inspection. | Unpacking serialized session cookies, inspecting JWT claims, and decoding binary gateway payloads. |
+| ⚖️ **Comparer** | Visual Diffing | Visual word-by-word and byte-by-byte diff engine between two requests, responses, or fuzz outputs. | Diffing successful `200 OK` vs failure `403 Forbidden` responses to isolate exact state discrepancies. |
+| 🎲 **Sequencer** | Entropy Testing | Statistical randomness analysis for session cookies, CSRF tokens, OTPs, and generated IDs. | Verifying that banking session identifiers and OTPs have high entropy and cannot be predicted. |
+| 🧩 **Extensions (BApp)** | Extensibility | Extensible plugin architecture supporting custom Python, Java, and Ruby automation scripts. | Exporting OpenAPI specs, custom HMAC authentication signing, and bespoke CI/CD test reporters. |
+| ⚙️ **Match &amp; Replace** | Headless Steering | Automatic regex find-and-replace rules inside Proxy settings without pausing traffic. | Unattended CI/CD test runs: auto-injecting `Mock-Scenario` headers into automated Playwright suites. |
+
+---
+
 #### 📍 Practice Lab: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L3051`](slides/slides.md#L3051) (Slide 62)
+- **Slide Reference**: [`slides.md#L3236`](slides/slides.md#L3236) (Slide 65)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -361,7 +386,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L3249`](slides/slides.md#L3249) (Slide 65)
+- **Slide Reference**: [`slides.md#L3434`](slides/slides.md#L3434) (Slide 68)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -380,7 +405,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 Ready to test your skills with production scenarios? After watching the live instructor walkthrough, take on these hands-on workshop challenges.
 
 #### 🔄 Workshop Challenge A: WireMock Stateful Order Fulfillment Machine (Stateful)
-- **Slide Reference**: [`slides.md#L2620`](slides/slides.md#L2620) (Slides 52 & 53)
+- **Slide Reference**: [`slides.md#L2698`](slides/slides.md#L2698) (Slides 53 & 54)
 - **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
 - **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
 - **Requirements**:
@@ -406,7 +431,7 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🪝 Workshop Challenge B: WireMock Biometric Face Scan Stub (Stateless)
-- **Slide Reference**: [`slides.md#L2820`](slides/slides.md#L2820) (Slides 55 & 56)
+- **Slide Reference**: [`slides.md#L2898`](slides/slides.md#L2898) (Slides 56 & 57)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
@@ -441,7 +466,7 @@ Ready to test your skills with production scenarios? After watching the live ins
 ---
 
 #### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L3119`](slides/slides.md#L3119) (Slides 63 & 64)
+- **Slide Reference**: [`slides.md#L3370`](slides/slides.md#L3370) (Slides 66 & 67)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:
   1. In Burp Suite, turn **Intercept is on** on `127.0.0.1:8080`.

@@ -2614,6 +2614,17 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
+layout: section
+---
+
+# 🏆 Hands-On Workshops
+## Production Challenge Missions & Controlled Chaos
+
+<p class="section-narrative">
+  Put theory into practice: Author stateful scenarios, build resilient stubs under vendor failure, and tamper with live financial transactions in controlled chaos.
+</p>
+
+---
 class: pt-2 pb-2 px-8
 ---
 
@@ -2968,7 +2979,181 @@ class: pt-2 pb-1 px-8
   </div>
 </div>
 
+---
+class: pt-2 pb-1 px-8
+---
 
+# 🛡️ Burp Suite — Core Traffic & Interception Tools
+
+<h3 class="text-slate-300 text-xs mb-1">Primary Active Workbench for Intercepting, Replaying &amp; Fuzzing API Calls</h3>
+
+<div class="grid grid-cols-2 gap-2 mt-0.5">
+
+<div class="slide-card p-2 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
+        <span>⚡</span> 1. Proxy (Intercept &amp; History)
+      </span>
+      <span class="text-[10px] font-mono text-amber-300/80 bg-amber-900/40 px-1.5 py-0.2 rounded">MITM Core</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Captures in-flight HTTP/S traffic between client and gateway. Live pause, tamper with headers/body, or drop packets.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-amber-200/90 font-mono">
+    🎯 <em>Target</em>: Manual fraud injection &amp; steering headers.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🎯</span> 2. Target (Site Map &amp; Scope)
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300/80 bg-cyan-900/40 px-1.5 py-0.2 rounded">Topology</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Builds hierarchical tree of microservice endpoints and paths. Sets suite scope to filter out noisy external domains.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-cyan-200/90 font-mono">
+    🎯 <em>Target</em>: Scoping integration tests to localhost APIs.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔁</span> 3. Repeater
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300/80 bg-emerald-900/40 px-1.5 py-0.2 rounded">Ad-Hoc Replay</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Isolated request workbench. Send intercepted requests with <code>Cmd+R</code>, adjust payload parameters, and re-issue instantly.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-emerald-200/90 font-mono">
+    🎯 <em>Target</em>: Rapidly validating API edge cases without UI.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-purple-500/40 bg-purple-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-purple-500/30">
+      <span class="text-purple-300 font-bold text-xs flex items-center gap-1.5">
+        <span>⚡</span> 4. Intruder
+      </span>
+      <span class="text-[10px] font-mono text-purple-300/80 bg-purple-900/40 px-1.5 py-0.2 rounded">Automated Fuzzing</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Configurable parameter attack engine. Defines payload positions to automate boundary tests, rate limits, and brute force.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-purple-200/90 font-mono">
+    🎯 <em>Target</em>: Concurrency race conditions &amp; boundary values.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-[11px] mt-1.5 p-1.5 bg-slate-900/70 border-slate-700/50 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <span class="text-blue-400 font-bold">📋 5. Logger</span>
+    <span class="text-slate-300 text-[10px]">Unified chronological audit log across all tools with regex filtering and 1-click tool handoff.</span>
+  </div>
+  <span class="text-blue-300 font-mono text-[9px] bg-blue-950/50 px-2 py-0.5 rounded border border-blue-500/30">Unified Audit</span>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🔍 Burp Suite — Analysis, Mutation &amp; Extension Utilities
+
+<h3 class="text-slate-300 text-xs mb-1">In-Flight Payload Analysis, Diffing, Entropy &amp; Automation Extensions</h3>
+
+<div class="grid grid-cols-2 gap-2 mt-0.5">
+
+<div class="slide-card p-2 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔤</span> 6. Decoder
+      </span>
+      <span class="text-[10px] font-mono text-indigo-300/80 bg-indigo-900/40 px-1.5 py-0.2 rounded">Transforms</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Multi-layer conversion tool for URL, Base64, Hex, HTML, and Gzip data. Includes real-time JWT token inspection and hashing.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-indigo-200/90 font-mono">
+    🎯 <em>Target</em>: Inspecting JWT claims &amp; serialized auth tokens.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-teal-500/40 bg-teal-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-teal-500/30">
+      <span class="text-teal-300 font-bold text-xs flex items-center gap-1.5">
+        <span>⚖️</span> 7. Comparer
+      </span>
+      <span class="text-[10px] font-mono text-teal-300/80 bg-teal-900/40 px-1.5 py-0.2 rounded">Visual Diff</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Visual side-by-side diff engine. Performs word or byte comparisons between two requests or responses to spot variations.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-teal-200/90 font-mono">
+    🎯 <em>Target</em>: Comparing 200 OK vs 403 Forbidden payload states.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-pink-500/40 bg-pink-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-pink-500/30">
+      <span class="text-pink-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🎲</span> 8. Sequencer
+      </span>
+      <span class="text-[10px] font-mono text-pink-300/80 bg-pink-900/40 px-1.5 py-0.2 rounded">Entropy Test</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Evaluates statistical entropy of session tokens, CSRF tokens, OTPs, or UUIDs against randomness quality standards.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-pink-200/90 font-mono">
+    🎯 <em>Target</em>: Verifying banking session tokens cannot be guessed.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-orange-500/40 bg-orange-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-0.5 pb-0.5 border-b border-orange-500/30">
+      <span class="text-orange-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🧩</span> 9. Extensions (BApp)
+      </span>
+      <span class="text-[10px] font-mono text-orange-300/80 bg-orange-900/40 px-1.5 py-0.2 rounded">Extensibility</span>
+    </div>
+    <p class="text-[11px] text-slate-300 leading-tight">
+      Add-ons and automation plugins via Python/Java/Ruby APIs. Install community plugins or write bespoke CI/CD helpers.
+    </p>
+  </div>
+  <div class="mt-1 text-[10px] text-orange-200/90 font-mono">
+    🎯 <em>Target</em>: Exporting OpenAPI contracts &amp; HMAC signing.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card text-[11px] mt-1.5 p-1.5 bg-slate-900/70 border-emerald-500/40 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <span class="text-emerald-400 font-bold">⚙️ Bonus: Match &amp; Replace</span>
+    <span class="text-slate-300 text-[10px]">Proxy rule engine for unattended regex header/payload rewriting during automated Playwright suites.</span>
+  </div>
+  <span class="text-emerald-300 font-mono text-[9px] bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-500/30">Headless Steering</span>
+</div>
 
 ---
 
