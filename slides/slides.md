@@ -443,34 +443,71 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
+class: pt-2 pb-2 px-8
+---
 
 # ⚙️ Technology Stack — Core Runtime & Services
 
-### Monorepo Workspaces, Modern Web & Relational Persistence
+<h3 class="text-slate-300 text-sm mb-1.5">Monorepo Workspaces, Modern Web &amp; Relational Persistence</h3>
 
-<div class="slide-card text-sm space-y-3 pt-2">
+<div class="grid grid-cols-3 gap-3.5 mt-2 flex-1">
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐹 Go Workspaces (`go.work`)</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Unifies all 6 microservices in a single monorepo with cross-service dependency synchronization, fast incremental compilation, and shared domain models.
-  </p>
+<div class="slide-card p-3.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🐹</span> Go Workspaces
+      </span>
+      <span class="text-[10.5px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded">go.work</span>
+    </div>
+    <p class="text-xs text-slate-300 leading-relaxed">
+      Unifies all 6 microservices in a single monorepo with cross-service dependency synchronization, fast incremental compilation, and shared domain models.
+    </p>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-emerald-500/30 text-[11px] font-mono text-emerald-300">
+    ✨ 6 Services • Monorepo
+  </div>
 </div>
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">⚛️ Next.js 19</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Modern React 19 application with Tailwind CSS for testing full-stack user journeys, authentication flows, and dynamic client routing.
-  </p>
+<div class="slide-card p-3.5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>⚛️</span> Next.js 19
+      </span>
+      <span class="text-[10.5px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">React 19</span>
+    </div>
+    <p class="text-xs text-slate-300 leading-relaxed">
+      Modern React 19 application with Tailwind CSS for testing full-stack user journeys, authentication flows, and dynamic client routing.
+    </p>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-cyan-500/30 text-[11px] font-mono text-cyan-300">
+    ✨ Full-Stack Web Frontend
+  </div>
 </div>
 
-<div>
-  <h3 class="text-emerald-400 font-bold mb-1 text-base">🐘 PostgreSQL Relational Database</h3>
-  <p class="text-slate-300 leading-relaxed">
-    Provides transactional ACID integrity for bank balances, atomic transfer rollbacks, and concurrent debit race condition testing.
-  </p>
+<div class="slide-card p-3.5 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-sky-500/30">
+      <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🐘</span> PostgreSQL
+      </span>
+      <span class="text-[10.5px] font-mono text-sky-300 bg-sky-900/50 px-2 py-0.5 rounded">ACID DB</span>
+    </div>
+    <p class="text-xs text-slate-300 leading-relaxed">
+      Provides transactional ACID integrity for bank balances, atomic transfer rollbacks, and concurrent debit race condition testing.
+    </p>
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-sky-500/30 text-[11px] font-mono text-sky-300">
+    ✨ ACID Isolation • Row Locks
+  </div>
 </div>
 
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11.5px] text-slate-200">💡 <strong>Monorepo Foundation:</strong> Unified Go backend services, Next.js web client, and PostgreSQL persistence with single-command local orchestration.</span>
+  <span class="text-[10.5px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Core Runtime</span>
 </div>
 
 ---
