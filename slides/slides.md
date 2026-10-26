@@ -1391,7 +1391,7 @@ class: pt-2 pb-1 px-8
 
 # 🎯 WireMock RegEx — Header & Scenario Steering
 
-<h3 class="text-slate-300 text-xs mb-1.5">Strict Bearer Token & Scenario Enum Validation with <code class="text-cyan-300 font-mono text-xs">matches</code></h3>
+<h3 class="text-slate-300 text-sm mb-1.5">Strict Bearer Token & Scenario Enum Validation with <span class="font-mono text-cyan-300 bg-cyan-900/60 border border-cyan-500/40 px-2 py-0.5 rounded text-xs font-bold">matches</span></h3>
 
 <div class="grid grid-cols-2 gap-3 mt-1 flex-1">
 
@@ -1406,19 +1406,19 @@ class: pt-2 pb-1 px-8
     <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
       <li class="flex items-start gap-1.5">
         <span class="text-cyan-400 font-bold">•</span>
-        <span><span class="font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded text-[10px]">matches</span>: Target value must satisfy regular expression.</span>
+        <span><span class="font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded text-xs font-semibold">matches</span>: Target must satisfy regular expression.</span>
       </li>
       <li class="flex items-start gap-1.5">
         <span class="text-cyan-400 font-bold">•</span>
-        <span><span class="font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded text-[10px]">doesNotMatch</span>: Passes only when pattern fails.</span>
+        <span><span class="font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded text-xs font-semibold">doesNotMatch</span>: Passes only when pattern fails.</span>
       </li>
       <li class="flex items-start gap-1.5">
         <span class="text-cyan-400 font-bold">•</span>
         <span><strong class="text-cyan-300">Strict Enums:</strong> Restricts scenarios to registered values.</span>
       </li>
     </ul>
-    <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[9px] text-cyan-300 mt-2 truncate">
-      <span class="text-slate-400">"matches"</span>: <span>"TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</span>
+    <div class="bg-slate-950/90 rounded p-1.5 border border-cyan-500/30 font-mono text-[10.5px] text-cyan-300 mt-2 truncate">
+      <span class="text-cyan-400 font-semibold">"matches"</span>: <span>"TRANSFER:(SUCCESS|INSUFFICIENT_FUNDS)"</span>
     </div>
   </div>
   <div class="mt-2 pt-1 border-t border-cyan-500/30 text-[11px] text-cyan-300 flex items-center justify-between">
@@ -1440,8 +1440,8 @@ class: pt-2 pb-1 px-8
       <div class="pl-2.5"><span class="text-slate-400">"request"</span>: {</div>
       <div class="pl-5"><span class="text-slate-400">"method"</span>: <span class="text-emerald-300">"POST"</span>, <span class="text-slate-400">"urlPath"</span>: <span class="text-cyan-300">"/api/transfers"</span>,</div>
       <div class="pl-5"><span class="text-slate-400">"headers"</span>: {</div>
-      <div class="pl-7"><span class="text-slate-400">"Authorization"</span>: { <span class="text-slate-400">"matches"</span>: <span class="text-emerald-300">"Bearer .*"</span> },</div>
-      <div class="pl-7"><span class="text-slate-400">"Mock-Scenario"</span>: { <span class="text-slate-400">"matches"</span>: <span class="text-cyan-300">"TRANSFER:(SUCCESS|FAIL)"</span> }</div>
+      <div class="pl-7"><span class="text-slate-400">"Authorization"</span>: { <span class="text-cyan-300 font-semibold">"matches"</span>: <span class="text-emerald-300">"Bearer .*"</span> },</div>
+      <div class="pl-7"><span class="text-slate-400">"Mock-Scenario"</span>: { <span class="text-cyan-300 font-semibold">"matches"</span>: <span class="text-cyan-300">"TRANSFER:(SUCCESS|FAIL)"</span> }</div>
       <div class="pl-5">}</div>
       <div class="pl-2.5">},</div>
       <div class="pl-2.5"><span class="text-slate-400">"response"</span>: {</div>
@@ -1469,7 +1469,7 @@ class: pt-2 pb-1 px-8
 
 # 🎯 WireMock RegEx — Body & Query Matching
 
-<h3 class="text-slate-300 text-xs mb-1.5">13-Digit Thai National ID & Query Versioning with <span class="font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded text-[10px]">matches</span></h3>
+<h3 class="text-slate-300 text-sm mb-1.5">13-Digit Thai National ID & Query Versioning with <span class="font-mono text-amber-300 bg-amber-900/60 border border-amber-500/40 px-2 py-0.5 rounded text-xs font-bold">matches</span></h3>
 
 <div class="grid grid-cols-2 gap-3 mt-1 flex-1">
 
@@ -1484,7 +1484,7 @@ class: pt-2 pb-1 px-8
     <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
       <li class="flex items-start gap-1.5">
         <span class="text-amber-400 font-bold">•</span>
-        <span><strong class="text-amber-300">Query Versioning:</strong> <span class="font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded text-[10px]">v[1-3].*</span> routes across versions.</span>
+        <span><strong class="text-amber-300">Query Versioning:</strong> <span class="font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded text-xs">v[1-3].*</span> routes across versions.</span>
       </li>
       <li class="flex items-start gap-1.5">
         <span class="text-amber-400 font-bold">•</span>
@@ -1495,8 +1495,8 @@ class: pt-2 pb-1 px-8
         <span><strong class="text-amber-300">⚠️ Key Order:</strong> Raw regex breaks on key reordering.</span>
       </li>
     </ul>
-    <div class="bg-slate-950/90 rounded p-1.5 border border-amber-500/30 font-mono text-[9.5px] text-amber-200 mt-2 truncate">
-      <span class="text-slate-400">"matches"</span>: <span>".*\"national_id\":\"[0-9]{13}\".*"</span>
+    <div class="bg-slate-950/90 rounded p-1.5 border border-amber-500/30 font-mono text-[10px] text-amber-200 mt-2 truncate">
+      <span class="text-amber-400 font-semibold">"matches"</span>: <span>".*\"national_id\":\"[0-9]{13}\".*"</span>
     </div>
   </div>
   <div class="mt-2 pt-1 border-t border-amber-500/30 text-[11px] text-amber-300 flex items-center justify-between">
@@ -1517,9 +1517,9 @@ class: pt-2 pb-1 px-8
       <div>{</div>
       <div class="pl-2.5"><span class="text-slate-400">"request"</span>: {</div>
       <div class="pl-5"><span class="text-slate-400">"method"</span>: <span class="text-emerald-300">"POST"</span>, <span class="text-slate-400">"urlPath"</span>: <span class="text-cyan-300">"/api/ekyc/verify"</span>,</div>
-      <div class="pl-5"><span class="text-slate-400">"queryParameters"</span>: { <span class="text-slate-400">"v"</span>: { <span class="text-slate-400">"matches"</span>: <span class="text-cyan-300">"v[1-3].*"</span> } },</div>
+      <div class="pl-5"><span class="text-slate-400">"queryParameters"</span>: { <span class="text-slate-400">"v"</span>: { <span class="text-amber-300 font-semibold">"matches"</span>: <span class="text-cyan-300">"v[1-3].*"</span> } },</div>
       <div class="pl-5"><span class="text-slate-400">"bodyPatterns"</span>: [</div>
-      <div class="pl-7">{ <span class="text-slate-400">"matches"</span>: <span class="text-amber-300">".*\"national_id\":\"[0-9]{13}\".*"</span> }</div>
+      <div class="pl-7">{ <span class="text-amber-300 font-semibold">"matches"</span>: <span class="text-amber-300">".*\"national_id\":\"[0-9]{13}\".*"</span> }</div>
       <div class="pl-5">]</div>
       <div class="pl-2.5">},</div>
       <div class="pl-2.5"><span class="text-slate-400">"response"</span>: {</div>
@@ -1537,7 +1537,7 @@ class: pt-2 pb-1 px-8
 </div>
 
 <div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-slate-700/60 bg-slate-900/70 rounded-lg">
-  <span class="text-[11.5px] text-slate-200">💡 <strong>Best Practice:</strong> Use regex query parameters for version routing; prefer <span class="font-mono text-cyan-300 bg-cyan-950/60 px-1 py-0.5 rounded text-[10px]">matchesJsonPath</span> for resilient JSON body matching.</span>
+  <span class="text-[11.5px] text-slate-200">💡 <strong>Best Practice:</strong> Use regex query parameters for version routing; prefer <span class="font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded text-xs font-semibold">matchesJsonPath</span> for resilient JSON body matching.</span>
   <span class="text-[10px] font-mono text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Body & Query</span>
 </div>
 
