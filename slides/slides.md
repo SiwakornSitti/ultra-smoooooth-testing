@@ -3449,532 +3449,8 @@ Presenter Notes:
 - Walk through the two sides: Burp signing with Root Private Key, and Client verifying with Root Public Key from OS trust store.
 - Highlight the math: H1 = SHA-256(Leaf) vs H2 = Decrypt(Signature, Root_PublicKey). If they match, the cert is authentic and untampered.
 - Explain transitive trust: The client doesn't need to know every microservice in advance. As long as the issuer chain leads to a trusted Root CA in the OS store, the entire chain is valid.
+- Bridge to the tools: Now that we understand how MITM TLS decryption works under the hood, let's explore why and how QA engineers use Burp Suite in real-world integration testing.
 -->
----
-class: pt-2 pb-2 px-8
----
-
-# 🛡️ Burp CA Certificate Setup — iOS
-
-<h3 class="text-slate-300 text-sm mb-1.5">Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
-
-<div class="slide-card p-3 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-indigo-500/30">
-      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
-        <span>📱</span> 1. Real Device (iPhone / iPad)
-      </span>
-      <span class="text-[11px] font-mono text-indigo-300/80 bg-indigo-900/40 px-2 py-0.5 rounded">Safari Only</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Download Profile:</strong> Configure proxy to <code>:8080</code>, open <strong>Safari</strong>, go to <code>http://burpsuite</code> ➔ tap <strong>CA Certificate</strong>.</li>
-      <li>• <strong>Install Profile:</strong> Open <strong>Settings ➔ Profile Downloaded</strong> ➔ Tap <strong>Install</strong> ➔ enter device passcode.</li>
-      <li>• <strong>Enable Full Trust (Crucial):</strong> Go to <strong>Settings ➔ General ➔ About ➔ Certificate Trust Settings</strong>.</li>
-      <li>• Under <em>Enable full trust for root certificates</em>, toggle <strong>PortSwigger CA</strong> to <strong>ON</strong>.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-indigo-500/30 text-xs text-indigo-300 font-mono">
-    ⚠️ Must toggle in About, or apps reject TLS with NSURLErrorServerCertificateUntrusted.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> 2. iOS Simulator & Automation
-      </span>
-      <span class="text-[11px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded">xcrun simctl</span>
-    </div>
-
-```bash
-# 1. Direct drag-and-drop:
-# Drag cacert.der into running Simulator window
-
-# 2. Or install via CLI automation:
-xcrun simctl keychain booted add-root-cert cacert.der
-
-# 3. Verify simulator trust status:
-xcrun simctl keychain booted status
-```
-
-<p class="text-[11px] text-slate-300 mt-1 leading-snug m-0">Works out-of-the-box for Swift, Objective-C, React Native, and Flutter iOS builds.</p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ✨ Ready for native iOS app &amp; Safari MITM testing!
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Safari Rule:</strong> Always download via <strong>Safari</strong> — iOS blocks Chrome from triggering configuration profile installers.</span>
-  </div>
-  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">iOS 10+ Trust Policy</span>
-</div>
-
-<!--
-Presenter Notes:
-- Emphasize the Certificate Trust Settings step: 90% of students forget to toggle trust in Settings > General > About.
-- Show how xcrun simctl enables one-click root CA injection on macOS development machines for local simulators.
--->
-
----
-class: pt-2 pb-1 px-8
----
-
-# 🛡️ Burp CA Certificate Setup — Android
-
-<h3 class="text-slate-300 text-sm mb-1.5">User Certificate Store, Network Security Config & Emulator Root Injection</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
-
-<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🤖</span> 1. Device Store & App Security Config
-      </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">API 24+</span>
-    </div>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Export Cert:</strong> Rename <code>cacert.der</code> ➔ <code>cacert.crt</code> (Android requires <code>.crt</code>).</li>
-      <li>• <strong>Install CA Cert:</strong> <strong>Settings ➔ Security ➔ Encryption &amp; credentials ➔ Install CA certificate</strong>.</li>
-      <li>• <strong>App Trust (Android 7.0+):</strong> Modern apps ignore user certs. Add to <code>res/xml/network_security_config.xml</code>:</li>
-    </ul>
-
-```xml
-<network-security-config>
-  <base-config><trust-anchors>
-    <certificates src="user" /><certificates src="system" />
-  </trust-anchors></base-config>
-</network-security-config>
-```
-
-  </div>
-  <div class="mt-1 pt-1 border-t border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
-    📁 In AndroidManifest.xml: android:networkSecurityConfig="@xml/..."
-  </div>
-</div>
-
-<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> 2. Emulator System Root (No App Code Changes)
-      </span>
-      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">adb root</span>
-    </div>
-
-```bash
-# 1. Compute subject hash & convert to PEM
-HASH=$(openssl x509 -inform DER -in cacert.der \
-  -subject_hash_old | head -n 1)
-openssl x509 -inform DER -in cacert.der -out ${HASH}.0
-
-# 2. Push directly to Android system CA store
-adb root && adb remount
-adb push ${HASH}.0 /system/etc/security/cacerts/
-adb shell chmod 644 /system/etc/security/cacerts/${HASH}.0
-```
-
-  </div>
-  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    🛡️ Treated as a trusted system CA: works on ALL apps without rebuilding!
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>SSL Pinning Bypass:</strong> If third-party APKs enforce certificate pinning (OkHttp CertificatePinner), use <code>objection --gadget com.app explore</code> to disable pinning at runtime.</span>
-  </div>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Frida / Objection</span>
-</div>
-
-<!--
-Presenter Notes:
-- Explain Android 7.0 (Nougat) breaking change: apps stopped trusting user-installed CA certificates by default.
-- Highlight the emulator trick: pushing directly to /system/etc/security/cacerts/ turns Burp CA into a system root, bypassing app-level restrictions.
--->
-
----
-class: pt-2 pb-2 px-8
----
-
-# 🛡️ Burp CA Certificate Setup — macOS
-
-<h3 class="text-slate-300 text-sm mb-1.5">Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
-
-<div class="slide-card p-3 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-sky-500/30">
-      <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🍏</span> 1. Keychain Access (GUI Setup)
-      </span>
-      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Always Trust</span>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Export Cert:</strong> In Burp ➔ <strong>Proxy settings ➔ Import / Export CA certificate</strong> ➔ Export in DER format as <code>cacert.der</code>.</li>
-      <li>• <strong>Import to Keychain:</strong> Open <strong>Keychain Access.app</strong> ➔ Select <strong>System</strong> keychain ➔ Drag &amp; drop <code>cacert.der</code>.</li>
-      <li>• <strong>Set Always Trust:</strong> Double-click <strong>PortSwigger CA</strong> ➔ Expand <strong>Trust</strong> ➔ Set <em>When using this certificate</em> to <strong>Always Trust</strong>.</li>
-      <li>• Close window and enter your macOS administrator password.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-sky-500/30 text-xs text-sky-300 font-mono">
-    ✅ Instantly trusted by Safari, Chrome, Electron &amp; native macOS tools.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> 2. CLI Automation &amp; Hosts Bypass
-      </span>
-      <span class="text-[11px] font-mono text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded">Terminal / CI</span>
-    </div>
-
-```bash
-# 1. Install & trust root CA via security CLI
-sudo security add-trusted-cert -d -r trustRoot \
-  -k /Library/Keychains/System.keychain cacert.der
-
-# 2. Fix macOS 'localhost' loopback proxy bypass:
-echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts
-
-# 3. Test HTTPS proxy routing cleanly:
-curl -x http://127.0.0.1:8080 -s https://localhost.com:8443
-```
-
-  </div>
-  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ⚡ Fully scriptable for developer workstations and macOS CI runners.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-sky-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-sky-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Verify via CLI:</strong> Check trust in terminal: <code>security find-certificate -c "PortSwigger CA" -p /Library/Keychains/System.keychain</code>.</span>
-  </div>
-  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security CLI</span>
-</div>
-
-<!--
-Presenter Notes:
-- Emphasize the importance of selecting 'System' keychain rather than 'login' if running service background daemons.
-- Remind participants that macOS ignores proxies for 'localhost' by default; localhost.com in /etc/hosts is required.
--->
-
----
-class: pt-2 pb-1 px-8
----
-
-# 🛡️ Burp CA Certificate Setup — Windows
-
-<h3 class="text-slate-300 text-sm mb-1.5">Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
-
-<div class="slide-card p-2.5 border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-blue-500/30">
-      <span class="text-blue-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🪟</span> 1. Certificate Import Wizard (GUI)
-      </span>
-      <span class="text-[11px] font-mono text-blue-300/80 bg-blue-900/40 px-2 py-0.5 rounded">certmgr.msc</span>
-    </div>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Download:</strong> Open <code>http://burpsuite</code> in browser ➔ save <code>cacert.der</code>.</li>
-      <li>• <strong>Import Wizard:</strong> Double-click <code>cacert.der</code> ➔ <strong>Install Certificate...</strong> ➔ select <strong>Local Machine</strong>.</li>
-      <li>• <strong>Root Store (Crucial):</strong> Choose <em>Place all certificates in store</em> ➔ Browse ➔ select <strong>Trusted Root Certification Authorities</strong> ➔ Finish.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-blue-500/30 text-xs text-blue-300 font-mono">
-    ✅ Instantly trusted by Microsoft Edge, Chrome &amp; .NET runtime.
-  </div>
-</div>
-
-<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> 2. PowerShell Administrator Automation
-      </span>
-      <span class="text-[11px] font-mono text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded">PowerShell 5+</span>
-    </div>
-
-```powershell
-# 1. Import cert to LocalMachine Root store
-Import-Certificate -FilePath .\cacert.der `
-  -CertStoreLocation Cert:\LocalMachine\Root
-
-# 2. Verify: Get-ChildItem Cert:\LocalMachine\Root
-```
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    🚀 Fully automated deployment for Windows test environments.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-blue-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-blue-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Firefox Store Note:</strong> Firefox uses its own certificate store by default. In <code>about:config</code>, set <code>security.enterprise_roots.enabled = true</code> to trust the Windows Root Store.</span>
-  </div>
-  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">about:config</span>
-</div>
-
-<!--
-Presenter Notes:
-- Walk Windows users through selecting "Trusted Root Certification Authorities" specifically; automatic store selection places it in Intermediate CAs where it will not work.
-- Note Firefox's separate certificate store setting (security.enterprise_roots.enabled).
--->
----
-class: pt-2 pb-1 px-8
----
-
-# 📱 Mobile SSL Pinning — Why It Breaks Proxies
-
-<h3 class="text-slate-300 text-xs mb-2">Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation</h3>
-
-<div class="grid grid-cols-2 gap-4 flex-1">
-
-<div class="col-card p-3 border border-indigo-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-indigo-500/30">
-      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🌐</span> 1. Standard HTTPS Trust Flow
-      </span>
-      <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">OS Delegation</span>
-    </div>
-    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-      <li>• <strong>OS Trust Store:</strong> Mobile apps default to trusting any certificate signed by a root CA installed in the device settings.</li>
-      <li>• <strong>Proxy Interception:</strong> When the Burp CA certificate is installed in the device store, Burp generates dynamic leaf certs that the app accepts without complaint.</li>
-      <li>• <strong>Web &amp; Standard Apps:</strong> Browsers (Safari, Chrome) and unpinned mobile apps communicate seamlessly through Burp Suite.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-indigo-500/30 text-xs text-indigo-300 font-mono">
-    ✅ Burp CA in OS store is 100% sufficient for unpinned traffic.
-  </div>
-</div>
-
-<div class="col-card p-3 border border-rose-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-rose-500/30">
-      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🛑</span> 2. SSL Pinning Rejection Flow
-      </span>
-      <span class="text-[11px] font-mono text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded">App-Level Guard</span>
-    </div>
-    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
-      <li>• <strong>Hardcoded SPKI Hash:</strong> Production apps compile the server's Subject Public Key Info SHA-256 hash directly into the app binary.</li>
-      <li>• <strong>Handshake Abort:</strong> Even though the OS trusts Burp's CA, the app compares Burp's dynamic leaf key against its hardcoded hash. The hashes do not match!</li>
-      <li>• <strong>Fatal TLS Error:</strong> Handshake aborts with <code>SSLHandshakeException</code> or <code>certificate_unknown</code>. Zero packets reach Burp.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs text-rose-300 font-mono">
-    ❌ App actively blocks MITM proxy inspection.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-indigo-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-indigo-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>The Testing Dilemma:</strong> SSL Pinning protects mobile banking &amp; production users from hostile networks, but completely blinds QA &amp; security engineers during integration testing.</span>
-  </div>
-  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Testing Crisis</span>
-</div>
-
-<!--
-Presenter Notes:
-- Contrast OS Root CA Trust with Application-Level SSL Pinning: Root CA satisfies the operating system, but pinned apps hardcode the server's SPKI public key hash.
-- Explain why banking and production apps pin: Defends against rogue or compromised CAs and hostile Wi-Fi routers in public venues.
-- Frame the testing dilemma: QA and developers need to inspect and steer traffic in staging, but cannot afford to weaken production security.
--->
-
----
-class: pt-1.5 pb-1 px-8
----
-
-# 🤖 Mobile SSL Pinning — Android White-Box Setup
-
-<h3 class="text-slate-300 text-xs mb-1">res/xml/network_security_config.xml — Enabling Staging Proxying with Zero Production Risk</h3>
-
-<div class="col-card p-2.5 border border-emerald-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg flex-1">
-  <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🏗️</span> Android Network Security Configuration (Android 7.0+ / API 24+)
-      </span>
-      <span class="text-xs font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Config as Code</span>
-    </div>
-    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-3 py-2 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-2">
-      <div class="text-cyan-300 font-semibold">// res/xml/network_security_config.xml</div>
-      <div class="text-slate-400">&lt;network-security-config&gt;</div>
-      <div class="text-emerald-300 pl-3">&lt;debug-overrides&gt;</div>
-      <div class="text-slate-400 pl-6">&lt;!-- Staging &amp; QA only: Trust user-installed PortSwigger CA --&gt;</div>
-      <div class="text-emerald-300 pl-6">&lt;trust-anchors&gt;&lt;certificates src="user" /&gt;&lt;/trust-anchors&gt;</div>
-      <div class="text-emerald-300 pl-3">&lt;/debug-overrides&gt;</div>
-      <div class="text-slate-400">&lt;/network-security-config&gt;</div>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-200 leading-snug mt-1">
-      <li>• <strong class="text-emerald-300">AndroidManifest.xml:</strong> Link config via <code>android:networkSecurityConfig="@xml/network_security_config"</code> in <code>&lt;application&gt;</code>.</li>
-      <li>• <strong class="text-emerald-300">Automated Guardrail:</strong> Production builds compile with <code>debuggable="false"</code>, automatically ignoring <code>&lt;debug-overrides&gt;</code>.</li>
-      <li>• <strong class="text-emerald-300">Physical &amp; Emulators:</strong> Intercepts staging traffic on standard unrooted physical test phones and emulators.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Android Best Practice:</strong> Never tamper with <code>&lt;base-config&gt;</code>. Using <code>&lt;debug-overrides&gt;</code> guarantees production builds remain 100% hermetically pinned.</span>
-  </div>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Safe by Default</span>
-</div>
-
-<!--
-Presenter Notes:
-- Explain Android Network Security Config: Introduced in Android 7 (API 24) to stop apps from trusting user certs by default.
-- Show why debug-overrides is the clean architectural solution: The OS only activates debug-overrides when debuggable="true".
-- Reassure teams that standard Google Play release builds automatically compile with debuggable="false", preserving pinning.
--->
-
----
-class: pt-1.5 pb-1 px-8
----
-
-# 🍎 Mobile SSL Pinning — iOS White-Box Setup
-
-<h3 class="text-slate-300 text-xs mb-1">Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt</h3>
-
-<div class="col-card p-2.5 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg flex-1">
-  <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🍏</span> Conditional URLSession Pinning via Swift Compiler Directives
-      </span>
-      <span class="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Swift Scheme</span>
-    </div>
-    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-3 py-2 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-2">
-      <div class="text-cyan-300 font-semibold">// NetworkManager.swift</div>
-      <div class="text-amber-300 font-semibold">#if DEBUG || STAGING // Staging: Trust Burp Proxy</div>
-      <div class="text-emerald-300 pl-3">let session = URLSession(configuration: .default)</div>
-      <div class="text-amber-300 font-semibold">#else // Production: Enforce SPKI Public Key Pinning</div>
-      <div class="text-cyan-300 pl-3">let session = URLSession(configuration: .default, delegate: PinnedDelegate(), delegateQueue: nil)</div>
-      <div class="text-amber-300 font-semibold">#endif</div>
-    </div>
-    <ul class="space-y-1.5 text-xs text-slate-200 leading-snug mt-1">
-      <li>• <strong class="text-cyan-300">Xcode Build Schemes:</strong> Set <code>DEBUG</code> or <code>STAGING</code> in Project Build Settings ➔ Active Compilation Conditions.</li>
-      <li>• <strong class="text-cyan-300">Compile-Time Safety:</strong> The Swift compiler completely excises bypass code from App Store release archives.</li>
-      <li>• <strong class="text-cyan-300">Standard Hardware:</strong> Intercepts staging traffic cleanly on real iPhones, iPads, and iOS Simulators without jailbreaking.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-cyan-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>iOS Clean Architecture:</strong> Encapsulate pinning logic inside the networking layer behind a protocol or factory so tests inject mock sessions cleanly.</span>
-  </div>
-  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Clean Code</span>
-</div>
-
-<!--
-Presenter Notes:
-- Explain iOS Pinning: Unlike Android's XML declaration, iOS pinning is implemented imperatively in Swift/Objective-C via URLSessionDelegate.
-- Show how Swift conditional compilation (#if DEBUG || STAGING) completely excises the test branch from production binaries.
-- Highlight the developer experience: QA can install internal TestFlight staging builds and intercept traffic immediately.
--->
-
----
-class: pt-1 pb-1 px-8
----
-
-# ⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass
-
-<h3 class="text-slate-300 text-xs mb-1">Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing</h3>
-
-<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
-
-<div class="col-card p-2.5 border border-violet-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-violet-500/30">
-      <span class="text-violet-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🧠</span> When &amp; How Dynamic Hooking Works
-      </span>
-      <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded">Runtime RAM Patch</span>
-    </div>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>When Needed:</strong> Auditing third-party vendor SDKs, legacy binaries with no source code, or conducting black-box penetration tests.</li>
-      <li>• <strong>Zero Recompilation:</strong> Avoids tampering with APK/IPA or breaking digital signatures; Frida injects JavaScript directly into RAM.</li>
-      <li>• <strong>Method Interception:</strong> Hooks TLS validation functions (e.g. <code>TrustManagerImpl</code>) in memory and forces them to return <code>true</code>.</li>
-    </ul>
-  </div>
-  <div class="mt-1 pt-0.5 border-t border-violet-500/30 text-xs text-violet-300 font-mono">
-    🔓 For penetration testers &amp; security auditors.
-  </div>
-</div>
-
-<div class="col-card p-2.5 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🛠️</span> Practical Tooling &amp; Commands
-      </span>
-      <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Frida / Objection</span>
-    </div>
-    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1 font-mono text-[10px] text-slate-200 leading-snug space-y-0.5 mb-1">
-      <div class="text-violet-300 font-semibold">Android (Frida RAM Hooking):</div>
-      <div class="text-slate-400"># Hook TrustManagerImpl in memory via USB:</div>
-      <div class="text-emerald-300">frida -U --codeshare akabe1/frida-multiple-unpinning -f app</div>
-      <div class="text-amber-300 font-semibold pt-1 border-t border-slate-800">iOS (Objection Mobile Exploration):</div>
-      <div class="text-slate-400"># Hook SecTrustEvaluate in Security framework:</div>
-      <div class="text-cyan-300">objection --gadget "App" explore -s "ios sslpinning disable"</div>
-    </div>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>System CA Injection:</strong> Push Burp CA to Android <code>/system/etc/security/cacerts/</code>.</li>
-    </ul>
-  </div>
-  <div class="mt-1 pt-0.5 border-t border-cyan-500/30 text-xs text-cyan-300 font-mono">
-    ⚡ Injects hooks into live process memory without binary edits.
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-violet-500/40 bg-slate-900/70 rounded-lg">
-  <div class="text-violet-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Defense-in-Depth Takeaway:</strong> Client-side SSL pinning is a speed bump, not an impenetrable wall. Mobile APIs must always enforce zero-trust token validation and server authorization.</span>
-  </div>
-  <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Zero Trust</span>
-</div>
-
-<!--
-Presenter Notes:
-- Explain black-box testing: When teams must evaluate third-party vendor binaries or test pre-release builds without modifying code, dynamic instrumentation is required.
-- Frida and Objection inject into the running process's memory space to hook TLS validation methods like TrustManagerImpl on Android and SecTrustEvaluate on iOS.
-- Reiterate the core security lesson: Client-side controls can always be bypassed by a motivated attacker in memory; robust security must live on the server.
--->
-
 ---
 class: pt-1.5 pb-1 px-8
 ---
@@ -4747,6 +4223,532 @@ class: pt-2 pb-2 px-8
 Presenter Notes:
 - Challenge participants to intercept the transfer request in Burp Proxy.
 - Observe how tampering with the amount and injecting the fraud scenario triggers an immediate 403 response.
+- Bridge to Platform Setup: Now that we've seen Burp in action on localhost APIs, let's explore the platform setup playbook to trust Burp CA on iOS, Android, macOS, Windows, and handle Mobile SSL Pinning.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — iOS
+
+<h3 class="text-slate-300 text-sm mb-1.5">Trusting PortSwigger Root CA on iPhone, iPad & iOS Simulator</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
+        <span>📱</span> 1. Real Device (iPhone / iPad)
+      </span>
+      <span class="text-[11px] font-mono text-indigo-300/80 bg-indigo-900/40 px-2 py-0.5 rounded">Safari Only</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Download Profile:</strong> Configure proxy to <code>:8080</code>, open <strong>Safari</strong>, go to <code>http://burpsuite</code> ➔ tap <strong>CA Certificate</strong>.</li>
+      <li>• <strong>Install Profile:</strong> Open <strong>Settings ➔ Profile Downloaded</strong> ➔ Tap <strong>Install</strong> ➔ enter device passcode.</li>
+      <li>• <strong>Enable Full Trust (Crucial):</strong> Go to <strong>Settings ➔ General ➔ About ➔ Certificate Trust Settings</strong>.</li>
+      <li>• Under <em>Enable full trust for root certificates</em>, toggle <strong>PortSwigger CA</strong> to <strong>ON</strong>.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-indigo-500/30 text-xs text-indigo-300 font-mono">
+    ⚠️ Must toggle in About, or apps reject TLS with NSURLErrorServerCertificateUntrusted.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. iOS Simulator & Automation
+      </span>
+      <span class="text-[11px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded">xcrun simctl</span>
+    </div>
+
+```bash
+# 1. Direct drag-and-drop:
+# Drag cacert.der into running Simulator window
+
+# 2. Or install via CLI automation:
+xcrun simctl keychain booted add-root-cert cacert.der
+
+# 3. Verify simulator trust status:
+xcrun simctl keychain booted status
+```
+
+<p class="text-[11px] text-slate-300 mt-1 leading-snug m-0">Works out-of-the-box for Swift, Objective-C, React Native, and Flutter iOS builds.</p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ✨ Ready for native iOS app &amp; Safari MITM testing!
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-amber-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-amber-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Safari Rule:</strong> Always download via <strong>Safari</strong> — iOS blocks Chrome from triggering configuration profile installers.</span>
+  </div>
+  <span class="text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">iOS 10+ Trust Policy</span>
+</div>
+
+<!--
+Presenter Notes:
+- Emphasize the Certificate Trust Settings step: 90% of students forget to toggle trust in Settings > General > About.
+- Show how xcrun simctl enables one-click root CA injection on macOS development machines for local simulators.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — Android
+
+<h3 class="text-slate-300 text-sm mb-1.5">User Certificate Store, Network Security Config & Emulator Root Injection</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🤖</span> 1. Device Store & App Security Config
+      </span>
+      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">API 24+</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Export Cert:</strong> Rename <code>cacert.der</code> ➔ <code>cacert.crt</code> (Android requires <code>.crt</code>).</li>
+      <li>• <strong>Install CA Cert:</strong> <strong>Settings ➔ Security ➔ Encryption &amp; credentials ➔ Install CA certificate</strong>.</li>
+      <li>• <strong>App Trust (Android 7.0+):</strong> Modern apps ignore user certs. Add to <code>res/xml/network_security_config.xml</code>:</li>
+    </ul>
+
+```xml
+<network-security-config>
+  <base-config><trust-anchors>
+    <certificates src="user" /><certificates src="system" />
+  </trust-anchors></base-config>
+</network-security-config>
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
+    📁 In AndroidManifest.xml: android:networkSecurityConfig="@xml/..."
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. Emulator System Root (No App Code Changes)
+      </span>
+      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">adb root</span>
+    </div>
+
+```bash
+# 1. Compute subject hash & convert to PEM
+HASH=$(openssl x509 -inform DER -in cacert.der \
+  -subject_hash_old | head -n 1)
+openssl x509 -inform DER -in cacert.der -out ${HASH}.0
+
+# 2. Push directly to Android system CA store
+adb root && adb remount
+adb push ${HASH}.0 /system/etc/security/cacerts/
+adb shell chmod 644 /system/etc/security/cacerts/${HASH}.0
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🛡️ Treated as a trusted system CA: works on ALL apps without rebuilding!
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>SSL Pinning Bypass:</strong> If third-party APKs enforce certificate pinning (OkHttp CertificatePinner), use <code>objection --gadget com.app explore</code> to disable pinning at runtime.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Frida / Objection</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain Android 7.0 (Nougat) breaking change: apps stopped trusting user-installed CA certificates by default.
+- Highlight the emulator trick: pushing directly to /system/etc/security/cacerts/ turns Burp CA into a system root, bypassing app-level restrictions.
+-->
+
+---
+class: pt-2 pb-2 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — macOS
+
+<h3 class="text-slate-300 text-sm mb-1.5">Keychain Access Trust, Terminal CLI One-Liner & Loopback Proxy Bypass</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+
+<div class="slide-card p-3 border border-sky-500/40 bg-sky-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-sky-500/30">
+      <span class="text-sky-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🍏</span> 1. Keychain Access (GUI Setup)
+      </span>
+      <span class="text-[11px] font-mono text-sky-300/80 bg-sky-900/40 px-2 py-0.5 rounded">Always Trust</span>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Export Cert:</strong> In Burp ➔ <strong>Proxy settings ➔ Import / Export CA certificate</strong> ➔ Export in DER format as <code>cacert.der</code>.</li>
+      <li>• <strong>Import to Keychain:</strong> Open <strong>Keychain Access.app</strong> ➔ Select <strong>System</strong> keychain ➔ Drag &amp; drop <code>cacert.der</code>.</li>
+      <li>• <strong>Set Always Trust:</strong> Double-click <strong>PortSwigger CA</strong> ➔ Expand <strong>Trust</strong> ➔ Set <em>When using this certificate</em> to <strong>Always Trust</strong>.</li>
+      <li>• Close window and enter your macOS administrator password.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-sky-500/30 text-xs text-sky-300 font-mono">
+    ✅ Instantly trusted by Safari, Chrome, Electron &amp; native macOS tools.
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. CLI Automation &amp; Hosts Bypass
+      </span>
+      <span class="text-[11px] font-mono text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded">Terminal / CI</span>
+    </div>
+
+```bash
+# 1. Install & trust root CA via security CLI
+sudo security add-trusted-cert -d -r trustRoot \
+  -k /Library/Keychains/System.keychain cacert.der
+
+# 2. Fix macOS 'localhost' loopback proxy bypass:
+echo "127.0.0.1 localhost.com" | sudo tee -a /etc/hosts
+
+# 3. Test HTTPS proxy routing cleanly:
+curl -x http://127.0.0.1:8080 -s https://localhost.com:8443
+```
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    ⚡ Fully scriptable for developer workstations and macOS CI runners.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-sky-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-sky-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Verify via CLI:</strong> Check trust in terminal: <code>security find-certificate -c "PortSwigger CA" -p /Library/Keychains/System.keychain</code>.</span>
+  </div>
+  <span class="text-[11px] font-mono text-sky-300 bg-sky-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Security CLI</span>
+</div>
+
+<!--
+Presenter Notes:
+- Emphasize the importance of selecting 'System' keychain rather than 'login' if running service background daemons.
+- Remind participants that macOS ignores proxies for 'localhost' by default; localhost.com in /etc/hosts is required.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🛡️ Burp CA Certificate Setup — Windows
+
+<h3 class="text-slate-300 text-sm mb-1.5">Certificate Import Wizard, PowerShell Automation & Enterprise Browser Stores</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2.5 border border-blue-500/40 bg-blue-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-blue-500/30">
+      <span class="text-blue-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🪟</span> 1. Certificate Import Wizard (GUI)
+      </span>
+      <span class="text-[11px] font-mono text-blue-300/80 bg-blue-900/40 px-2 py-0.5 rounded">certmgr.msc</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Download:</strong> Open <code>http://burpsuite</code> in browser ➔ save <code>cacert.der</code>.</li>
+      <li>• <strong>Import Wizard:</strong> Double-click <code>cacert.der</code> ➔ <strong>Install Certificate...</strong> ➔ select <strong>Local Machine</strong>.</li>
+      <li>• <strong>Root Store (Crucial):</strong> Choose <em>Place all certificates in store</em> ➔ Browse ➔ select <strong>Trusted Root Certification Authorities</strong> ➔ Finish.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-blue-500/30 text-xs text-blue-300 font-mono">
+    ✅ Instantly trusted by Microsoft Edge, Chrome &amp; .NET runtime.
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>⚡</span> 2. PowerShell Administrator Automation
+      </span>
+      <span class="text-[11px] font-mono text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded">PowerShell 5+</span>
+    </div>
+
+```powershell
+# 1. Import cert to LocalMachine Root store
+Import-Certificate -FilePath .\cacert.der `
+  -CertStoreLocation Cert:\LocalMachine\Root
+
+# 2. Verify: Get-ChildItem Cert:\LocalMachine\Root
+```
+
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🚀 Fully automated deployment for Windows test environments.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1.5 border border-blue-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-blue-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Firefox Store Note:</strong> Firefox uses its own certificate store by default. In <code>about:config</code>, set <code>security.enterprise_roots.enabled = true</code> to trust the Windows Root Store.</span>
+  </div>
+  <span class="text-[11px] font-mono text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">about:config</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk Windows users through selecting "Trusted Root Certification Authorities" specifically; automatic store selection places it in Intermediate CAs where it will not work.
+- Note Firefox's separate certificate store setting (security.enterprise_roots.enabled).
+-->
+---
+class: pt-2 pb-1 px-8
+---
+
+# 📱 Mobile SSL Pinning — Why It Breaks Proxies
+
+<h3 class="text-slate-300 text-xs mb-2">Hardcoded SPKI Public Key Hashes vs. Operating System Trust Store Delegation</h3>
+
+<div class="grid grid-cols-2 gap-4 flex-1">
+
+<div class="col-card p-3 border border-indigo-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🌐</span> 1. Standard HTTPS Trust Flow
+      </span>
+      <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded">OS Delegation</span>
+    </div>
+    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+      <li>• <strong>OS Trust Store:</strong> Mobile apps default to trusting any certificate signed by a root CA installed in the device settings.</li>
+      <li>• <strong>Proxy Interception:</strong> When the Burp CA certificate is installed in the device store, Burp generates dynamic leaf certs that the app accepts without complaint.</li>
+      <li>• <strong>Web &amp; Standard Apps:</strong> Browsers (Safari, Chrome) and unpinned mobile apps communicate seamlessly through Burp Suite.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-indigo-500/30 text-xs text-indigo-300 font-mono">
+    ✅ Burp CA in OS store is 100% sufficient for unpinned traffic.
+  </div>
+</div>
+
+<div class="col-card p-3 border border-rose-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🛑</span> 2. SSL Pinning Rejection Flow
+      </span>
+      <span class="text-[11px] font-mono text-rose-300 bg-rose-950/60 px-2 py-0.5 rounded">App-Level Guard</span>
+    </div>
+    <ul class="space-y-2 text-xs text-slate-300 leading-relaxed">
+      <li>• <strong>Hardcoded SPKI Hash:</strong> Production apps compile the server's Subject Public Key Info SHA-256 hash directly into the app binary.</li>
+      <li>• <strong>Handshake Abort:</strong> Even though the OS trusts Burp's CA, the app compares Burp's dynamic leaf key against its hardcoded hash. The hashes do not match!</li>
+      <li>• <strong>Fatal TLS Error:</strong> Handshake aborts with <code>SSLHandshakeException</code> or <code>certificate_unknown</code>. Zero packets reach Burp.</li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs text-rose-300 font-mono">
+    ❌ App actively blocks MITM proxy inspection.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-indigo-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-indigo-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>The Testing Dilemma:</strong> SSL Pinning protects mobile banking &amp; production users from hostile networks, but completely blinds QA &amp; security engineers during integration testing.</span>
+  </div>
+  <span class="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Testing Crisis</span>
+</div>
+
+<!--
+Presenter Notes:
+- Contrast OS Root CA Trust with Application-Level SSL Pinning: Root CA satisfies the operating system, but pinned apps hardcode the server's SPKI public key hash.
+- Explain why banking and production apps pin: Defends against rogue or compromised CAs and hostile Wi-Fi routers in public venues.
+- Frame the testing dilemma: QA and developers need to inspect and steer traffic in staging, but cannot afford to weaken production security.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🤖 Mobile SSL Pinning — Android White-Box Setup
+
+<h3 class="text-slate-300 text-xs mb-1">res/xml/network_security_config.xml — Enabling Staging Proxying with Zero Production Risk</h3>
+
+<div class="col-card p-2.5 border border-emerald-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg flex-1">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🏗️</span> Android Network Security Configuration (Android 7.0+ / API 24+)
+      </span>
+      <span class="text-xs font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Config as Code</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-3 py-2 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-2">
+      <div class="text-cyan-300 font-semibold">// res/xml/network_security_config.xml</div>
+      <div class="text-slate-400">&lt;network-security-config&gt;</div>
+      <div class="text-emerald-300 pl-3">&lt;debug-overrides&gt;</div>
+      <div class="text-slate-400 pl-6">&lt;!-- Staging &amp; QA only: Trust user-installed PortSwigger CA --&gt;</div>
+      <div class="text-emerald-300 pl-6">&lt;trust-anchors&gt;&lt;certificates src="user" /&gt;&lt;/trust-anchors&gt;</div>
+      <div class="text-emerald-300 pl-3">&lt;/debug-overrides&gt;</div>
+      <div class="text-slate-400">&lt;/network-security-config&gt;</div>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-200 leading-snug mt-1">
+      <li>• <strong class="text-emerald-300">AndroidManifest.xml:</strong> Link config via <code>android:networkSecurityConfig="@xml/network_security_config"</code> in <code>&lt;application&gt;</code>.</li>
+      <li>• <strong class="text-emerald-300">Automated Guardrail:</strong> Production builds compile with <code>debuggable="false"</code>, automatically ignoring <code>&lt;debug-overrides&gt;</code>.</li>
+      <li>• <strong class="text-emerald-300">Physical &amp; Emulators:</strong> Intercepts staging traffic on standard unrooted physical test phones and emulators.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Android Best Practice:</strong> Never tamper with <code>&lt;base-config&gt;</code>. Using <code>&lt;debug-overrides&gt;</code> guarantees production builds remain 100% hermetically pinned.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Safe by Default</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain Android Network Security Config: Introduced in Android 7 (API 24) to stop apps from trusting user certs by default.
+- Show why debug-overrides is the clean architectural solution: The OS only activates debug-overrides when debuggable="true".
+- Reassure teams that standard Google Play release builds automatically compile with debuggable="false", preserving pinning.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🍎 Mobile SSL Pinning — iOS White-Box Setup
+
+<h3 class="text-slate-300 text-xs mb-1">Build Schemes &amp; URLSessionDelegate — Safe Staging Inspection Without Production Debt</h3>
+
+<div class="col-card p-2.5 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg flex-1">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🍏</span> Conditional URLSession Pinning via Swift Compiler Directives
+      </span>
+      <span class="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Swift Scheme</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-3 py-2 font-mono text-xs text-slate-200 leading-snug space-y-0.5 mb-2">
+      <div class="text-cyan-300 font-semibold">// NetworkManager.swift</div>
+      <div class="text-amber-300 font-semibold">#if DEBUG || STAGING // Staging: Trust Burp Proxy</div>
+      <div class="text-emerald-300 pl-3">let session = URLSession(configuration: .default)</div>
+      <div class="text-amber-300 font-semibold">#else // Production: Enforce SPKI Public Key Pinning</div>
+      <div class="text-cyan-300 pl-3">let session = URLSession(configuration: .default, delegate: PinnedDelegate(), delegateQueue: nil)</div>
+      <div class="text-amber-300 font-semibold">#endif</div>
+    </div>
+    <ul class="space-y-1.5 text-xs text-slate-200 leading-snug mt-1">
+      <li>• <strong class="text-cyan-300">Xcode Build Schemes:</strong> Set <code>DEBUG</code> or <code>STAGING</code> in Project Build Settings ➔ Active Compilation Conditions.</li>
+      <li>• <strong class="text-cyan-300">Compile-Time Safety:</strong> The Swift compiler completely excises bypass code from App Store release archives.</li>
+      <li>• <strong class="text-cyan-300">Standard Hardware:</strong> Intercepts staging traffic cleanly on real iPhones, iPads, and iOS Simulators without jailbreaking.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-cyan-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>iOS Clean Architecture:</strong> Encapsulate pinning logic inside the networking layer behind a protocol or factory so tests inject mock sessions cleanly.</span>
+  </div>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Clean Code</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain iOS Pinning: Unlike Android's XML declaration, iOS pinning is implemented imperatively in Swift/Objective-C via URLSessionDelegate.
+- Show how Swift conditional compilation (#if DEBUG || STAGING) completely excises the test branch from production binaries.
+- Highlight the developer experience: QA can install internal TestFlight staging builds and intercept traffic immediately.
+-->
+
+---
+class: pt-1 pb-1 px-8
+---
+
+# ⚡ SSL Pinning — Dynamic Hooking & Black-Box Bypass
+
+<h3 class="text-slate-300 text-xs mb-1">Runtime Memory Instrumentation with Frida &amp; Objection for Penetration Testing</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="col-card p-2.5 border border-violet-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-violet-500/30">
+      <span class="text-violet-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🧠</span> When &amp; How Dynamic Hooking Works
+      </span>
+      <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded">Runtime RAM Patch</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>When Needed:</strong> Auditing third-party vendor SDKs, legacy binaries with no source code, or conducting black-box penetration tests.</li>
+      <li>• <strong>Zero Recompilation:</strong> Avoids tampering with APK/IPA or breaking digital signatures; Frida injects JavaScript directly into RAM.</li>
+      <li>• <strong>Method Interception:</strong> Hooks TLS validation functions (e.g. <code>TrustManagerImpl</code>) in memory and forces them to return <code>true</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-violet-500/30 text-xs text-violet-300 font-mono">
+    🔓 For penetration testers &amp; security auditors.
+  </div>
+</div>
+
+<div class="col-card p-2.5 border border-cyan-500/40 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+        <span>🛠️</span> Practical Tooling &amp; Commands
+      </span>
+      <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Frida / Objection</span>
+    </div>
+    <div class="bg-slate-950/90 border border-slate-700/80 rounded px-2.5 py-1 font-mono text-[10px] text-slate-200 leading-snug space-y-0.5 mb-1">
+      <div class="text-violet-300 font-semibold">Android (Frida RAM Hooking):</div>
+      <div class="text-slate-400"># Hook TrustManagerImpl in memory via USB:</div>
+      <div class="text-emerald-300">frida -U --codeshare akabe1/frida-multiple-unpinning -f app</div>
+      <div class="text-amber-300 font-semibold pt-1 border-t border-slate-800">iOS (Objection Mobile Exploration):</div>
+      <div class="text-slate-400"># Hook SecTrustEvaluate in Security framework:</div>
+      <div class="text-cyan-300">objection --gadget "App" explore -s "ios sslpinning disable"</div>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li>• <strong>System CA Injection:</strong> Push Burp CA to Android <code>/system/etc/security/cacerts/</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-cyan-500/30 text-xs text-cyan-300 font-mono">
+    ⚡ Injects hooks into live process memory without binary edits.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-violet-500/40 bg-slate-900/70 rounded-lg">
+  <div class="text-violet-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Defense-in-Depth Takeaway:</strong> Client-side SSL pinning is a speed bump, not an impenetrable wall. Mobile APIs must always enforce zero-trust token validation and server authorization.</span>
+  </div>
+  <span class="text-[11px] font-mono text-violet-300 bg-violet-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Zero Trust</span>
+</div>
+
+<!--
+Presenter Notes:
+- Explain black-box testing: When teams must evaluate third-party vendor binaries or test pre-release builds without modifying code, dynamic instrumentation is required.
+- Frida and Objection inject into the running process's memory space to hook TLS validation methods like TrustManagerImpl on Android and SecTrustEvaluate on iOS.
+- Reiterate the core security lesson: Client-side controls can always be bypassed by a motivated attacker in memory; robust security must live on the server.
 -->
 
 ---
