@@ -3115,6 +3115,81 @@ Presenter Notes:
 - Mention that mTLS can be handled by configuring upstream client certificates (.p12) in Burp Proxy settings.
 -->
 ---
+class: pt-1.5 pb-1 px-8
+---
+
+# ⚙️ Why Certificate Chaining Works — Cryptographic Delegation
+
+<h3 class="text-slate-300 text-xs mb-1">Transitive Trust, RFC 5280 Path Validation &amp; Asymmetric Signature Verification</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+
+<div class="slide-card p-2 border border-indigo-500/40 bg-indigo-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-indigo-500/30">
+      <span class="text-indigo-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔏</span> 1. Burp Minting &amp; Signing
+      </span>
+      <span class="text-[10px] font-mono text-indigo-300 bg-indigo-950/60 px-1.5 py-0.5 rounded">Private Key Mint</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9.5px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div><span class="text-amber-300 font-semibold">Burp Dynamic Minting:</span> Read SNI ➔ <span class="text-cyan-300">order-service.internal</span></div>
+  <div>• Leaf SAN: <span class="text-cyan-300">order-service.internal</span> | Hash: <span class="text-emerald-300">SHA-256(Leaf)</span></div>
+  <div>• Signature: <span class="text-violet-300">Encrypt(Hash, Root_PrivateKey)</span></div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Asymmetric Delegation:</strong> Burp keeps Root Private Key secret, using it strictly to mint and sign leaf certs.</li>
+  <li>• <strong>Any Target Domain:</strong> Whether 1 or 1,000 internal services, Burp mints custom certs on TLS connection.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-indigo-500/30 text-[10px] text-indigo-300 font-mono">
+    🔑 Root CA Private Key signs on-the-fly leaf certificates.
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-0.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>✅</span> 2. Client Cryptographic Verification
+      </span>
+      <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded">RFC 5280 Loop</span>
+    </div>
+
+<div class="bg-slate-950/80 border border-slate-700/60 rounded px-1.5 py-1 font-mono text-[9.5px] text-slate-200 leading-tight space-y-0.5 mb-1">
+  <div><span class="text-emerald-300 font-semibold">OS RFC 5280 Verification:</span> H1 = <span class="text-emerald-300">SHA-256(Leaf)</span></div>
+  <div>• Decrypt Sig: <span class="text-violet-300">H2 = Decrypt(Sig, Root_PublicKey)</span></div>
+  <div class="text-emerald-400 font-semibold">• If H1 == H2 &amp; SAN matches ➔ Valid Trust! ✓</div>
+</div>
+
+<ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+  <li>• <strong>Transitive Trust:</strong> Client trusts Root CA ➔ therefore trusts any leaf cert signed by Root CA's private key.</li>
+  <li>• <strong>Zero Warnings:</strong> Because signature decrypts with Root Public Key, OS marks connection fully secure.</li>
+</ul>
+  </div>
+  <div class="mt-1 pt-0.5 border-t border-emerald-500/30 text-[10px] text-emerald-300 font-mono">
+    🛡️ Mathematical proof of authenticity without pre-installing leaf certs.
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-emerald-500/30 bg-slate-900/60 rounded-lg">
+  <span class="text-emerald-200 font-medium flex items-center gap-1.5 leading-snug">
+    <span>💡</span> <strong>Why It Scales:</strong> Root CA is trusted <strong>once</strong> in OS store; client math automatically validates infinite microservices.
+  </span>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">O(1) Overhead</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk through the two sides: Burp signing with Root Private Key, and Client verifying with Root Public Key from OS trust store.
+- Highlight the math: H1 = SHA-256(Leaf) vs H2 = Decrypt(Signature, Root_PublicKey). If they match, the cert is authentic and untampered.
+- Explain transitive trust: The client doesn't need to know every microservice in advance. As long as the issuer chain leads to a trusted Root CA in the OS store, the entire chain is valid.
+-->
+---
 class: pt-2 pb-2 px-8
 ---
 
