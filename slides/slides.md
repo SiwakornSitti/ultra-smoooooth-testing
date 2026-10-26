@@ -2745,28 +2745,28 @@ layout: section
 </p>
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-2 pb-1.5 px-8
 ---
 
 # 🎬 Stateful Order Lifecycle Transitions
 
-### Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs
+<h3 class="text-slate-300 text-sm mb-1.5">Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs</h3>
 
-<div class="grid grid-cols-2 gap-3.5 mt-2">
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
 
 <div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
       <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
         <span>⚡</span> Walkthrough Steps
       </span>
       <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">FSM Lifecycle</span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>1. Reset State:</strong> Reset all active scenarios to <code>Started</code> via <code>POST /__admin/scenarios/reset</code>.</li>
-      <li>• <strong>2. Trigger Advance:</strong> Execute payment transition <code>POST /lab/api/orders/101/pay</code> to move state to <code>PAID</code>.</li>
-      <li>• <strong>3. Introspect FSM:</strong> Query <code>GET /__admin/scenarios</code> to observe the real-time state shift.</li>
-      <li>• <strong>4. Terminal Enforcement:</strong> Attempt illegal duplicate shipment to verify WireMock returns <code>400 Bad Request</code>.</li>
+    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
+      <li>• <strong>1. Reset State:</strong> Clear in-flight states back to <code>Started</code> via <code>POST /__admin/scenarios/reset</code>.</li>
+      <li>• <strong>2. Trigger Advance:</strong> Execute payment <code>POST /lab/api/orders/101/pay</code> to move FSM to <code>PAID</code>.</li>
+      <li>• <strong>3. Introspect FSM:</strong> Query <code>GET /__admin/scenarios</code> to observe the live state transition.</li>
+      <li>• <strong>4. Terminal Enforcement:</strong> Advance to <code>SHIPPED</code>; repeated calls trigger <code>400 Bad Request</code>.</li>
     </ul>
   </div>
   <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
@@ -2776,32 +2776,46 @@ class: pt-2 pb-2 px-8
 
 <div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
       <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
         <span>🖥️</span> Live Terminal Commands
       </span>
       <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / FSM</span>
     </div>
 
-```bash
-# 1. Inspect initial state (Starts in 'Started')
-curl -s http://localhost:8088/__admin/scenarios \
-  | jq '.scenarios[] | {name, state}'
-
-# 2. Advance state: Started ➔ PAID
-curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
-
-# 3. Verify scenario state advanced to PAID
-curl -s http://localhost:8088/__admin/scenarios \
-  | jq '.scenarios[] | {name, state}'
-```
-
+<div class="bg-slate-950/90 border border-slate-800 rounded p-2 font-mono text-[10.5px] text-slate-200 space-y-1.5">
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 1. Reset all scenarios to Started</div>
+    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/__admin/scenarios/reset</div>
   </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    🔄 Live FSM verification without database queries
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 2. Advance state: Started ➔ PAID</div>
+    <div class="text-sky-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/pay</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 3. Query active FSM state in real time</div>
+    <div class="text-amber-300">curl -s http://localhost:8088/__admin/scenarios | jq '.scenarios[]'</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 4. Advance to SHIPPED &amp; test 400 enforcement</div>
+    <div class="text-cyan-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/ship</div>
   </div>
 </div>
 
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
+    🔄 Live FSM verification without external databases
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-emerald-500/30 bg-slate-900/70 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Deterministic State Machines:</strong> WireMock holds sequential transitions entirely in-memory, isolating multi-step order tests without database pollution.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">In-Memory FSM</span>
 </div>
 
 <!--
@@ -2812,53 +2826,57 @@ Presenter Notes:
 -->
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-2 pb-1.5 px-8
 ---
 
 # 🏆 Workshop: Stateful Order Fulfillment Machine
 
-### Author a multi-state WireMock scenario modeling sequential order domain transitions
+<h3 class="text-slate-300 text-sm mb-1.5">Author a multi-state WireMock scenario modeling sequential order domain transitions</h3>
 
-<div class="grid grid-cols-2 gap-3.5 mt-2">
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
 
 <div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
       <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
         <span>🎯</span> Workshop Challenge Rules
       </span>
       <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded"><code>order-lifecycle</code></span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
       <li>• <strong>Step 1 (Started):</strong> <code>POST /lab/api/orders/101/pay</code> in state <code>Started</code> transitions to <code>PAID</code> (returns <code>200 OK {"status": "PAID"}</code>).</li>
       <li>• <strong>Step 2 (PAID):</strong> <code>POST /lab/api/orders/101/ship</code> in state <code>PAID</code> transitions to <code>SHIPPED</code> (returns <code>200 OK {"status": "SHIPPED"}</code>).</li>
       <li>• <strong>Step 3 (SHIPPED):</strong> Repeated <code>POST /lab/api/orders/101/ship</code> in state <code>SHIPPED</code> returns <code>400 Bad Request {"error": "ALREADY_SHIPPED"}</code>.</li>
     </ul>
   </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
-    📂 Save stubs to: <code>wiremock/mappings/diy-order-lifecycle.json</code>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-[11px] font-mono text-emerald-300 flex items-center gap-1">
+    <span>📂</span> Save stubs to: <code class="text-[10px]">wiremock/mappings/diy-order-lifecycle.json</code>
   </div>
 </div>
 
 <div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
       <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
         <span>⚡</span> Verification Sequence
       </span>
       <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / FSM</span>
     </div>
 
-```bash
-# 1. Pay order ➔ Transitions state to PAID
-curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
-
-# 2. Ship order ➔ Transitions state to SHIPPED
-curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
-
-# 3. Duplicate ship ➔ Expect HTTP 400 ALREADY_SHIPPED
-curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
-```
+<div class="bg-slate-950/90 border border-slate-800 rounded p-2 font-mono text-[10.5px] text-slate-200 space-y-1.5">
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 1. Pay order ➔ Transitions state to PAID</div>
+    <div class="text-sky-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/pay</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 2. Ship order ➔ Transitions state to SHIPPED</div>
+    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/ship</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 3. Duplicate ship ➔ Expect HTTP 400 ALREADY_SHIPPED</div>
+    <div class="text-rose-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/ship</div>
+  </div>
+</div>
 
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
@@ -2866,6 +2884,14 @@ curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
   </div>
 </div>
 
+</div>
+
+<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-emerald-500/30 bg-slate-900/70 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Challenge Objective:</strong> Model sequential order fulfillment logic with <code>scenarioName</code>, <code>requiredScenarioState</code>, and <code>newScenarioState</code>.</span>
+  </div>
+  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">15 Min Hands-On</span>
 </div>
 
 <!--
@@ -2945,24 +2971,24 @@ Presenter Notes:
 -->
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-2 pb-1.5 px-8
 ---
 
 # 🎬 Biometric Face Scan Virtualization
 
-### Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating
+<h3 class="text-slate-300 text-sm mb-1.5">Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating</h3>
 
-<div class="grid grid-cols-2 gap-3.5 mt-2">
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
 
 <div class="slide-card p-3 border border-fuchsia-500/40 bg-fuchsia-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-fuchsia-500/30">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-fuchsia-500/30">
       <span class="text-fuchsia-400 font-bold text-sm flex items-center gap-1.5">
         <span>⚡</span> Walkthrough Steps
       </span>
       <span class="text-[11px] font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded">Stateless Stubbing</span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
       <li>• <strong>1. Contract Matching:</strong> Match <code>POST /lab/api/ekyc/biometrics</code> with numeric confidence thresholding.</li>
       <li>• <strong>2. Conditional Branching:</strong> Route confidence &lt; 85.0 to <code>422 Unprocessable</code> and &ge; 85.0 to <code>200 OK</code>.</li>
       <li>• <strong>3. Dynamic Synthesis:</strong> Synthesize unique UUID <code>scanId</code> and echo request <code>nationalId</code> via Handlebars.</li>
@@ -2976,25 +3002,29 @@ class: pt-2 pb-2 px-8
 
 <div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
       <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
         <span>🖥️</span> Live Terminal Commands
       </span>
       <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Verification</span>
     </div>
 
-```bash
-# 1. Hot-reload stub mappings into WireMock
-curl -s -X POST http://localhost:8088/__admin/mappings/reset
-
-# 2. Test Low Confidence (< 85.0) ➔ 422 Unprocessable
-curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \
-  -d '{"nationalId":"11005","confidence":72.5}' | head -n 1
-
-# 3. Test High Confidence (>= 85.0) ➔ 200 OK + Dynamic UUID
-curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
-  -d '{"nationalId":"11005","confidence":96.8}'
-```
+<div class="bg-slate-950/90 border border-slate-800 rounded p-2 font-mono text-[10.5px] text-slate-200 space-y-1.5">
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 1. Hot-reload stub mappings into WireMock</div>
+    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/__admin/mappings/reset</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 2. Test Low Confidence (&lt; 85.0) ➔ 422 Unprocessable</div>
+    <div class="text-rose-300">curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
+    <div class="text-rose-300 pl-3">-d '{"nationalId":"11005","confidence":72.5}' | head -n 1</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 3. Test High Confidence (&ge; 85.0) ➔ 200 OK + Dynamic UUID</div>
+    <div class="text-sky-300">curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
+    <div class="text-sky-300 pl-3">-d '{"nationalId":"11005","confidence":96.8}'</div>
+  </div>
+</div>
 
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
@@ -3002,6 +3032,14 @@ curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
   </div>
 </div>
 
+</div>
+
+<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-fuchsia-500/30 bg-slate-900/70 rounded-lg">
+  <div class="text-fuchsia-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Hermetic Face Verification:</strong> Deterministic response mocking replaces flaky third-party biometric sandboxes with sub-millisecond local execution.</span>
+  </div>
+  <span class="text-[11px] font-mono text-fuchsia-300 bg-fuchsia-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Zero Downtime</span>
 </div>
 
 <!--
@@ -3012,52 +3050,55 @@ Presenter Notes:
 -->
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-2 pb-1.5 px-8
 ---
 
 # 🏆 Workshop: Biometric Face Scan Stub
 
-### Author a self-service biometric verification stub with liveness confidence thresholding
+<h3 class="text-slate-300 text-sm mb-1.5">Author a self-service biometric verification stub with liveness confidence thresholding</h3>
 
-<div class="grid grid-cols-2 gap-3.5 mt-2">
+<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
 
 <div class="slide-card p-3 border border-fuchsia-500/40 bg-fuchsia-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-fuchsia-500/30">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-fuchsia-500/30">
       <span class="text-fuchsia-400 font-bold text-sm flex items-center gap-1.5">
         <span>🎯</span> Workshop Challenge Rules
       </span>
       <span class="text-[11px] font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded"><code>POST /lab/api/ekyc/biometrics</code></span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
+    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
       <li>• <strong>Low Confidence (&lt; 85.0):</strong> Return <code>422 Unprocessable</code> with body <code>{"error": "LIVENESS_FAILED"}</code>.</li>
       <li>• <strong>High Confidence (&ge; 85.0):</strong> Return <code>200 OK</code> with dynamic UUID <code>scanId</code>, echoed <code>nationalId</code>, and timestamp.</li>
       <li>• <strong>Chaos Latency:</strong> Inject <code>2500ms</code> delay to test client timeout cancellation.</li>
     </ul>
   </div>
-  <div class="mt-2 pt-1 border-t border-fuchsia-500/30 text-xs font-mono text-fuchsia-300">
-    📂 Save file to: <code>wiremock/mappings/diy-biometrics.json</code>
+  <div class="mt-2 pt-1 border-t border-fuchsia-500/30 text-[11px] font-mono text-fuchsia-300 flex items-center gap-1">
+    <span>📂</span> Save file to: <code class="text-[10px]">wiremock/mappings/diy-biometrics.json</code>
   </div>
 </div>
 
 <div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
       <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
         <span>⚡</span> Verification Commands
       </span>
       <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal</span>
     </div>
 
-```bash
-# 1. Low Confidence (< 85.0) ➔ Expect HTTP 422
-curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
-  -d '{"nationalId":"11005","confidence":71.2}'
-
-# 2. High Confidence (>= 85.0) ➔ Expect HTTP 200 + UUID
-curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
-  -d '{"nationalId":"11005","confidence":92.4}'
-```
+<div class="bg-slate-950/90 border border-slate-800 rounded p-2 font-mono text-[10.5px] text-slate-200 space-y-1.5">
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 1. Low Confidence (&lt; 85.0) ➔ Expect HTTP 422</div>
+    <div class="text-rose-300">curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
+    <div class="text-rose-300 pl-3">-d '{"nationalId":"11005","confidence":71.2}'</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[9.5px]"># 2. High Confidence (&ge; 85.0) ➔ Expect HTTP 200 + UUID</div>
+    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
+    <div class="text-emerald-300 pl-3">-d '{"nationalId":"11005","confidence":92.4}'</div>
+  </div>
+</div>
 
   </div>
   <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
@@ -3065,6 +3106,14 @@ curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \
   </div>
 </div>
 
+</div>
+
+<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-fuchsia-500/30 bg-slate-900/70 rounded-lg">
+  <div class="text-fuchsia-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Stateless Challenge:</strong> Build a high-precision contract stub with thresholding logic and Handlebars templating in under 15 minutes.</span>
+  </div>
+  <span class="text-[11px] font-mono text-fuchsia-300 bg-fuchsia-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">15 Min Hands-On</span>
 </div>
 
 <!--
