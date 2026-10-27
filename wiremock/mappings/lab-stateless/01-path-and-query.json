@@ -1,0 +1,40 @@
+{
+  "id" : "67473987-210b-483b-b8b9-34c4aebaa73e",
+  "name" : "1. Users - Query Match",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/users",
+    "method" : "GET",
+    "queryParameters" : {
+      "role" : {
+        "equalTo" : "admin",
+        "caseInsensitive" : true
+      },
+      "status" : {
+        "equalTo" : "active",
+        "caseInsensitive" : false
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "users" : [ {
+        "id" : "usr-99",
+        "role" : "admin",
+        "status" : "active"
+      } ]
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "67473987-210b-483b-b8b9-34c4aebaa73e",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless/001 - Users - Query Match"
+    }
+  },
+  "insertionIndex" : 37
+}

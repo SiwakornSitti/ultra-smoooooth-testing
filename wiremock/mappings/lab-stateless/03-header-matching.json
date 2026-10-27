@@ -1,0 +1,35 @@
+{
+  "id" : "fa60bc33-27e8-4192-ab4b-e5616ccd8aca",
+  "name" : "3. Secure Endpoint - Header Match",
+  "request" : {
+    "urlPath" : "/lab/api/stateless/secure",
+    "method" : "POST",
+    "headers" : {
+      "Authorization" : {
+        "matches" : "Bearer secret-token-[0-9]+"
+      },
+      "X-Client-ID" : {
+        "equalTo" : "qa-client"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "jsonBody" : {
+      "authenticated" : true,
+      "scope" : "read:write"
+    },
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "fa60bc33-27e8-4192-ab4b-e5616ccd8aca",
+  "persistent" : true,
+  "priority" : 1,
+  "metadata" : {
+    "wiremock-gui" : {
+      "folder" : "/lab-stateless/003 - Secure Endpoint - Header Match"
+    }
+  },
+  "insertionIndex" : 36
+}
