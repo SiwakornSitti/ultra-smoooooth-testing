@@ -78,7 +78,7 @@ flowchart TD
 | **Docker & Docker Compose** | Orchestrating PostgreSQL, WireMock, and microservice containers. |
 | **Playwright** | Running End-to-End (E2E) browser tests and API integration test suites. |
 | **Burp Suite** | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic. |
-| **Go (v1.25+)** | Workspace development (`go.work`) and executing unit/integration test suites. |
+| **Go (v1.27+)** | Workspace development (`go.work`) and executing unit/integration test suites. |
 | **WireMock GUI** | Stubbing 3rd-party external APIs (Paotang Pass OAuth, SMS Gateway, OTP) at `http://localhost:8088/__admin/webapp`. |
 
 ### 🌐 Quick Access URLs
@@ -262,7 +262,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ### 🪝 WireMock Practice Labs (`http://localhost:8088`)
 
 #### 📍 Practice Lab: Web UI & Precision Matching Challenge
-- **Slide Reference**: [`slides.md#L2724`](slides/slides.md#L2724) (Slide 50)
+- **Slide Reference**: [`slides.md#L2787`](slides/slides.md#L2787) (Slide 51: Baseline Match & Slide 52: Challenge Rejection)
 - **Goal**: Explore the live Web UI dashboard and verify JSONPath request matching.
 - **1. Open Web UI**: Navigate to [http://localhost:8088/__admin/webapp](http://localhost:8088/__admin/webapp) (Login: `admin` / `password`).
 - **2. Send High-Value Payment Request**:
@@ -278,7 +278,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
     -H "Content-Type: application/json" \
     -d '{"payment":{"amount":500},"customer":{"name":"Alice","email":"alice@bank.local"},"items":[{"sku":"SKU-001"}]}'
   ```
-  *Result*: Returns `404 Not Found`. Inspect the diff in the **Requests** tab of the Web UI to see why the stub rejected it!
+  *Result*: Returns `400 Bad Request` (`{"error": "BAD_REQUEST", "message": "Payment amount must be > 1000"}`). Inspect the matched rejection stub in the **Requests** tab of the Web UI!
 
 ---
 
@@ -329,7 +329,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Dynamic Templating & Chaos Latency
-- **Slide Reference**: [`slides.md#L2792`](slides/slides.md#L2792) (Slide 51)
+- **Slide Reference**: [`slides.md#L2951`](slides/slides.md#L2951) (Slide 53)
 - **Goal**: Test Handlebars dynamic math calculations and assert client timeout cancellation.
 - **1. Math & VAT Calculation**:
   ```bash
@@ -352,7 +352,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 > **Port Notice**: Burp Suite's default proxy runs on `127.0.0.1:8080`. In these labs, client requests are sent via proxy directly to the core services (e.g. `user-service :8081` or `transfer-service :8085`), routing packets through Burp cleanly.
 
 #### 🛠️ Burp Suite Core Tools Reference & Playbook
-- **Slide Reference**: [`slides.md#L3689`](slides/slides.md#L3689) – [`slides.md#L4373`](slides/slides.md#L4373) (Slides 65–77: Core Tools Reference)
+- **Slide Reference**: [`slides.md#L3798`](slides/slides.md#L3798) – [`slides.md#L4519`](slides/slides.md#L4519) (Slides 68–78: Core Tools Reference)
 - **Role in Integration Testing**: Burp Suite acts as an in-flight Man-In-The-Middle (MITM) inspection, replay, and mutation proxy between browser/mobile clients and backend gateways (`bff-service`).
 
 | Tool & Icon | Category | Core Capability & Primary Shortcut | Microservices / API QA Testing Scenario |
@@ -371,7 +371,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 🛠️ Proxy Setup & Verification (Prerequisites)
-- **Slide Reference**: [`slides.md#L4962`](slides/slides.md#L4962) (Slide 86: Proxy Setup &amp; Verification), [`slides.md#L3310`](slides/slides.md#L3310), [`slides.md#L3331`](slides/slides.md#L3331), [`slides.md#L3396`](slides/slides.md#L3396), [`slides.md#L3471`](slides/slides.md#L3471), [`slides.md#L3543`](slides/slides.md#L3543) & [`slides.md#L4428`](slides/slides.md#L4428)–[`slides.md#L4891`](slides/slides.md#L4891) (Slides 59–64: MITM Architecture, HTTPS &amp; PKI; Slides 78–85: Platform Setup &amp; SSL Pinning)
+- **Slide Reference**: [`slides.md#L4957`](slides/slides.md#L4957) (Slide 86: Proxy Setup &amp; Verification), [`slides.md#L3439`](slides/slides.md#L3439)–[`slides.md#L3720`](slides/slides.md#L3720) (Slides 63–67: HTTPS &amp; PKI), and [`slides.md#L4380`](slides/slides.md#L4380)–[`slides.md#L4914`](slides/slides.md#L4914) (Slides 78–85: Platform Setup &amp; SSL Pinning)
 - **Lab Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Companion Files**:
   - Mobile Testing & SSL Pinning Guide: [`labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide`](labs/burp-suite/README.md#mobile-app-testing--ssl-pinning-bypass-guide)
@@ -397,7 +397,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Live MITM Packet Interception
-- **Slide Reference**: [`slides.md#L5036`](slides/slides.md#L5036) (Slide 87)
+- **Slide Reference**: [`slides.md#L5104`](slides/slides.md#L5104) (Slide 88)
 - **Goal**: Intercept live HTTP traffic mid-flight and tamper with headers to steer downstream mocks without modifying application source code.
 - **1. Turn Intercept ON**: In Burp Suite, open **Proxy ➔ Intercept** and toggle **Intercept is ON**.
 - **2. Send Request via Proxy**:
@@ -412,7 +412,7 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 ---
 
 #### 📍 Practice Lab: Automated Match & Replace Rules
-- **Slide Reference**: [`slides.md#L4201`](slides/slides.md#L4201) (Slide 74)
+- **Slide Reference**: [`slides.md#L4269`](slides/slides.md#L4269) (Slide 75)
 - **Goal**: Configure unattended rule-based traffic steering for automated test suites.
 - **1. Configure Rule**:
   - In Burp Suite, go to **Proxy ➔ Proxy settings ➔ Match and replace**.
@@ -430,34 +430,8 @@ The workshop presentations include dedicated **Hands-On Practice Checkpoints** t
 
 Ready to test your skills with production scenarios? After watching the live instructor walkthrough, take on these hands-on workshop challenges.
 
-#### 🔄 Workshop Challenge A: WireMock Stateful Order Fulfillment Machine (Stateful)
-- **Slide Reference**: [`slides.md#L2854`](slides/slides.md#L2854) & [`slides.md#L2935`](slides/slides.md#L2935) (Slides 52 & 53)
-- **Test Folder**: [`labs/wiremock-stateful/order-fulfillment-lifecycle/`](labs/wiremock-stateful/order-fulfillment-lifecycle/)
-- **Target File**: `wiremock/mappings/diy-order-lifecycle.json`
-- **Requirements**:
-  1. Define scenario `order-lifecycle`.
-  2. Step 1 (`Started`): `POST /lab/api/orders/101/pay` transitions to `PAID` (returns `200 OK {"status": "PAID"}`).
-  3. Step 2 (`PAID`): `POST /lab/api/orders/101/ship` transitions to `SHIPPED` (returns `200 OK {"status": "SHIPPED"}`).
-  4. Step 3 (`SHIPPED`): Repeated `POST /lab/api/orders/101/ship` returns `400 Bad Request {"error": "ALREADY_SHIPPED"}`.
-- **Verification Commands**:
-  ```bash
-  # Reset scenario state before test
-  curl -s -X POST http://localhost:8088/__admin/scenarios/reset
-
-  # 1. Pay order -> PAID
-  curl -s -X POST http://localhost:8088/lab/api/orders/101/pay
-
-  # 2. Ship order -> SHIPPED
-  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
-
-  # 3. Duplicate ship -> 400 ALREADY_SHIPPED
-  curl -s -X POST http://localhost:8088/lab/api/orders/101/ship
-  ```
-
----
-
-#### 🪝 Workshop Challenge B: WireMock Biometric Face Scan Stub (Stateless)
-- **Slide Reference**: [`slides.md#L3080`](slides/slides.md#L3080) & [`slides.md#L3159`](slides/slides.md#L3159) (Slides 55 & 56)
+#### 🪝 Workshop Challenge A: WireMock Biometric Face Scan Stub (Stateless)
+- **Slide Reference**: [`slides.md#L3027`](slides/slides.md#L3027) (Slide 55)
 - **Test File**: [`labs/wiremock-stateless/diy-biometrics.http`](labs/wiremock-stateless/diy-biometrics.http)
 - **Requirements**:
   1. Virtualize `POST /lab/api/ekyc/biometrics`.
@@ -491,8 +465,36 @@ Ready to test your skills with production scenarios? After watching the live ins
 
 ---
 
+#### 🔄 Workshop Challenge B: WireMock Patient Medical Checkup Machine (Stateful)
+- **Slide Reference**: [`slides.md#L3100`](slides/slides.md#L3100) (Slide 56)
+- **Mapping File**: [`wiremock/mappings/lab-stateful/05-medical-checkup.json`](wiremock/mappings/lab-stateful/05-medical-checkup.json)
+- **Requirements**:
+  1. Define scenario `medical-checkup-flow`.
+  2. Step 1 (`Started`): `POST /lab/api/medical/checkup/start` in state `Started` transitions to `SAMPLE_COLLECTED` (returns `201 Created {"status": "SAMPLE_COLLECTED"}`).
+  3. Step 2 (`SAMPLE_COLLECTED`): `POST /lab/api/medical/checkup/diagnose` advances state to `DIAGNOSED` (returns `200 OK {"verdict": "FIT_FOR_WORK"}`).
+  4. Step 3 (`DIAGNOSED`): Repeated `POST` to alter or re-diagnose a sealed record returns `409 Conflict {"error": "RECORD_SEALED"}`.
+  5. Step 4 (Targeted Teardown): Reset ONLY this scenario back to `Started` via `PUT /__admin/scenarios/medical-checkup-flow/state` with `{"state": "Started"}`.
+- **Verification Commands**:
+  ```bash
+  # 1. Start checkup -> 201 Created & state -> SAMPLE_COLLECTED
+  curl -s -X POST http://localhost:8088/lab/api/medical/checkup/start
+
+  # 2. Complete diagnosis -> 200 OK & state -> DIAGNOSED
+  curl -s -X POST http://localhost:8088/lab/api/medical/checkup/diagnose
+
+  # 3. Alter sealed record -> Expect HTTP 409 RECORD_SEALED
+  curl -s -X POST http://localhost:8088/lab/api/medical/checkup/diagnose
+
+  # 4. Rewind ONLY this scenario to Started (isolated teardown)
+  curl -s -X PUT http://localhost:8088/__admin/scenarios/medical-checkup-flow/state \
+    -H "Content-Type: application/json" \
+    -d '{"state": "Started"}'
+  ```
+
+---
+
 #### 🛡️ Workshop Challenge C: Burp Suite In-Flight Fraud Tampering
-- **Slide Reference**: [`slides.md#L5103`](slides/slides.md#L5103) & [`slides.md#L5175`](slides/slides.md#L5175) (Slides 88 & 89)
+- **Slide Reference**: [`slides.md#L5171`](slides/slides.md#L5171) & [`slides.md#L5243`](slides/slides.md#L5243) (Slides 89 & 90)
 - **Test Folder**: [`labs/burp-suite/`](labs/burp-suite/)
 - **Goal**: Intercept an outbound transfer and tamper with both body and headers to observe how the client application and downstream services handle unexpected fraud alerts.
 - **Steps**:

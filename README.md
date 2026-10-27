@@ -102,7 +102,7 @@ Before setting up and running the microservices ecosystem, ensure the following 
 | **Docker & Docker Compose** | Docker Desktop 4.x+ | Orchestrating containerized services (PostgreSQL, WireMock, microservices). |
 | **Burp Suite** | Community / Professional | **MITM Proxy**: Intercepting, inspecting, and security testing HTTP API traffic between frontend, BFF, and microservices. |
 | **Playwright** | v1.40+ | **Test Runner**: Executing end-to-end (E2E) browser automation tests and API integration test suites (`specs/e2e`, `specs/integration`). |
-| **Go** | 1.25+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
+| **Go** | 1.27+ | Compiling Go binaries and running workspace-level unit & integration tests (`go.work`). |
 | **Node.js / Bun** | Node v20+ / Bun v1.2+ | Building the Website and running Playwright test suites. |
 
 ---

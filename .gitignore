@@ -156,6 +156,7 @@ test-results/
 playwright-report/
 slides/*-export.*
 *.pptx
+slides.pdf
 
 # Go Binaries
 bin/

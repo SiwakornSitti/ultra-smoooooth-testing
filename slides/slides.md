@@ -20,6 +20,91 @@ mdc: true
 </div>
 
 ---
+class: pt-2 pb-1.5 px-8
+---
+
+# 📦 Workshop Materials &amp; Quick Access
+
+<h3 class="text-slate-300 text-xs mb-1.5">Scan the QR Code or Clone the Repository to Follow Along Live</h3>
+
+<div class="grid grid-cols-[45%_1fr] gap-3 mt-1 flex-1">
+<div class="slide-card p-2.5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col items-center justify-between text-center rounded-lg">
+  <div class="w-full flex flex-col items-center">
+    <div class="text-xs font-bold text-cyan-300 mb-0.5 flex items-center gap-1.5">
+      <span>📱</span> Scan for Workshop Materials &amp; Labs
+    </div>
+    <div class="bg-white p-2 rounded-xl shadow-xl border-2 border-cyan-400/80 inline-block my-1">
+      <img src="/qr-repo.svg" class="w-56 h-56 object-contain block" alt="Workshop GitHub Repository QR Code" />
+    </div>
+    <div class="mt-0.5 font-mono text-[10px] text-cyan-200 font-semibold tracking-wide">
+      github.com/SiwakornSitti/ultra-smoooooth-testing
+    </div>
+  </div>
+  <div class="w-full pt-1 border-t border-cyan-500/30 text-[9.5px] font-mono text-cyan-300 flex items-center justify-between">
+    <span>Public GitHub Repository</span>
+    <span class="bg-cyan-900/50 px-1.5 py-0.2 rounded border border-cyan-500/30">Free Access</span>
+  </div>
+</div>
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/60 flex flex-col justify-between rounded-lg">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>🚀</span> Quick Clone &amp; Environment Setup
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded">Terminal Setup</span>
+    </div>
+    <div class="space-y-1.5 text-xs text-slate-300">
+      <div>
+        <div class="text-[11px] font-semibold text-slate-200 mb-0.5">1. Clone the Workshop Monorepo:</div>
+        <div class="bg-slate-950/90 border border-slate-800 rounded px-2 py-1 font-mono text-[9.5px] text-emerald-300 select-all truncate">
+          git clone https://github.com/SiwakornSitti/ultra-smoooooth-testing.git
+        </div>
+      </div>
+      <div>
+        <div class="text-[11px] font-semibold text-slate-200 mb-0.5">2. Navigate to Workspace:</div>
+        <div class="bg-slate-950/90 border border-slate-800 rounded px-2 py-1 font-mono text-[10px] text-cyan-300 select-all">
+          cd ultra-smoooooth-testing
+        </div>
+      </div>
+      <div>
+        <div class="text-[11px] font-semibold text-slate-200 mb-0.5">3. Local Stack Prerequisites:</div>
+        <div class="grid grid-cols-3 gap-1.5 text-center font-mono text-[9.5px] pt-0.5">
+          <div class="bg-slate-950/80 border border-slate-800 p-1 rounded">
+            <span class="text-emerald-300 font-bold">Go 1.27+</span>
+            <span class="text-slate-400 block text-[8.5px]">Microservices</span>
+          </div>
+          <div class="bg-slate-950/80 border border-slate-800 p-1 rounded">
+            <span class="text-sky-300 font-bold">Docker 24+</span>
+            <span class="text-slate-400 block text-[8.5px]">Testcontainers</span>
+          </div>
+          <div class="bg-slate-950/80 border border-slate-800 p-1 rounded">
+            <span class="text-purple-300 font-bold">Node 20+</span>
+            <span class="text-slate-400 block text-[8.5px]">Playwright &amp; Slidev</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[10px] text-slate-400 flex items-center justify-between">
+    <span>Follow along in <code>WORKSHOP.md</code></span>
+    <span class="font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">Ready to Rock</span>
+  </div>
+</div>
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11px] text-slate-200">💡 <strong>Workshop Companion:</strong> All exercise source files, WireMock JSON stubs, and Playwright specs are in this repository.</span>
+  <span class="text-[9.5px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Open Source</span>
+</div>
+
+<!--
+Presenter Notes:
+- Keep this slide on screen for 2-3 minutes as attendees enter the room and settle in.
+- Encourage everyone to scan the QR code with their mobile device or clone directly in their terminal.
+- Remind attendees to check their prerequisites (Go, Docker, Node.js) while you introduce the workshop.
+-->
+
+---
 class: pt-3 pb-2 px-8
 ---
 
@@ -1611,138 +1696,174 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-1.5 pb-1 px-8
 ---
 
 # 📥 WireMock — Request Data Extraction & Echoing
 
-### Path Segments, Query Parameters, Headers & JSONPath Payloads
+<h3 class="text-slate-300 text-xs mb-1">Path Segments, Query Parameters, Headers &amp; JSONPath Payloads</h3>
 
-<div v-pre class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+<div v-pre class="grid grid-cols-[46%_1fr] gap-3 mt-1.5">
 
-<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-cyan-500/40 bg-cyan-950/20 rounded-lg flex flex-col justify-between">
   <div>
     <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-300 font-bold text-sm flex items-center gap-1.5">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
         <span>🌐</span> Request Model Helpers
       </span>
-      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">Handlebars</span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">Handlebars</span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Path Segments</strong>: <code>{{request.pathSegments.[2]}}</code> (0-indexed segments).</li>
-      <li>• <strong>Query Params</strong>: <code>{{request.query.paramName}}</code> (URL query strings).</li>
-      <li>• <strong>HTTP Headers</strong>: <code>{{request.headers.[X-Trace-ID]}}</code> (In-flight headers).</li>
-      <li>• <strong>JSONPath Body</strong>: <code>{{jsonPath request.body '$.customer.id'}}</code> (Payloads).</li>
-      <li>• <strong>Encoders</strong>: <code>{{base64 request.body}}</code> &amp; <code>{{urlEncode request.query.q}}</code>.</li>
-    </ul>
+    <div class="space-y-1.5 text-xs text-slate-200">
+      <div>
+        <div class="font-semibold text-cyan-300 mb-0.5 text-[11px] flex items-center justify-between">
+          <span>🌐 URL Path Segment (0-indexed):</span>
+          <span class="text-[9.5px] font-mono text-slate-400">/users/[0-9]+</span>
+        </div>
+        <div class="font-mono text-[11px] text-cyan-200 bg-slate-950/80 px-2 py-1 rounded border border-cyan-500/30">
+          {{request.pathSegments.[3]}}
+        </div>
+      </div>
+      <div>
+        <div class="font-semibold text-sky-300 mb-0.5 text-[11px] flex items-center justify-between">
+          <span>🔑 In-Flight HTTP Header:</span>
+          <span class="text-[9.5px] font-mono text-slate-400">X-Trace-ID</span>
+        </div>
+        <div class="font-mono text-[11px] text-sky-200 bg-slate-950/80 px-2 py-1 rounded border border-sky-500/30">
+          {{request.headers.[X-Trace-ID]}}
+        </div>
+      </div>
+      <div>
+        <div class="font-semibold text-amber-300 mb-0.5 text-[11px] flex items-center justify-between">
+          <span>📦 JSONPath Request Body:</span>
+          <span class="text-[9.5px] font-mono text-slate-400">$.accountId</span>
+        </div>
+        <div class="font-mono text-[11px] text-amber-200 bg-slate-950/80 px-2 py-1 rounded border border-amber-500/30">
+          {{jsonPath request.body '$.accountId'}}
+        </div>
+      </div>
+      <div class="pt-1 flex items-center justify-between text-[10.5px] text-slate-300 border-t border-cyan-500/20">
+        <span>🔍 Query: <code class="text-cyan-300 font-mono text-[10px] bg-slate-950/80 px-1 py-0.5 rounded border border-slate-800">{{request.query.q}}</code></span>
+        <span>🔒 Encode: <code class="text-cyan-300 font-mono text-[10px] bg-slate-950/80 px-1 py-0.5 rounded border border-slate-800">{{base64 request.body}}</code></span>
+      </div>
+    </div>
   </div>
-  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
-    💡 Always declare <code>"transformers": ["response-template"]</code> in response.
+  <div class="mt-1.5 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300 flex items-center justify-between">
+    <span>💡 Requires response-template</span>
+    <span class="text-[9px] font-mono text-cyan-400 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">Transformers</span>
   </div>
 </div>
 
-<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
       <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
         <span>📄</span> Dynamic Echo Mapping Stub
       </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
+      <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
     </div>
-
-```json
-{
-  "request": {
-    "method": "POST",
-    "urlPathPattern": "/lab/api/users/[0-9]+"
-  },
-  "response": {
-    "status": 200,
-    "jsonBody": {
-      "userId": "{{request.pathSegments.[3]}}",
-      "traceId": "{{request.headers.[X-Trace-ID]}}",
-      "account": "{{jsonPath request.body '$.accountId'}}"
-    },
-    "transformers": ["response-template"]
-  }
-}
-```
-
+    <div class="bg-slate-950/95 rounded-md p-2 font-mono text-[10.5px] leading-relaxed border border-slate-800 text-slate-300 space-y-0.5 overflow-x-auto">
+      <div>{</div>
+      <div class="pl-2.5"><span class="text-slate-400">"request"</span>: { <span class="text-slate-400">"method"</span>: <span class="text-emerald-300">"POST"</span>, <span class="text-slate-400">"urlPathPattern"</span>: <span class="text-cyan-300">"/lab/api/users/[0-9]+"</span> },</div>
+      <div class="pl-2.5"><span class="text-slate-400">"response"</span>: {</div>
+      <div class="pl-5"><span class="text-slate-400">"status"</span>: <span class="text-emerald-400 font-bold">200</span>, <span class="text-slate-400">"transformers"</span>: [<span class="text-cyan-300">"response-template"</span>],</div>
+      <div class="pl-5"><span class="text-slate-400">"jsonBody"</span>: {</div>
+      <div class="pl-7"><span class="text-slate-400">"userId"</span>: <span class="text-cyan-300">"{{request.pathSegments.[3]}}"</span>,</div>
+      <div class="pl-7"><span class="text-slate-400">"traceId"</span>: <span class="text-sky-300">"{{request.headers.[X-Trace-ID]}}"</span>,</div>
+      <div class="pl-7"><span class="text-slate-400">"account"</span>: <span class="text-amber-300">"{{jsonPath request.body '$.accountId'}}"</span></div>
+      <div class="pl-5">}</div>
+      <div class="pl-2.5">}</div>
+      <div>}</div>
+    </div>
   </div>
-  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
-    ✨ Echoes path parameters, trace headers, and payload attributes into response.
+  <div class="mt-1.5 pt-1 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
+    <span>✨ Echoes path parameters, headers &amp; body</span>
+    <span class="text-[9px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">Echo Stub</span>
   </div>
 </div>
 
 </div>
 
-
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11px] text-slate-200">💡 <strong>Echo Precision:</strong> WireMock exposes the full incoming HTTP request model directly into Handlebars, eliminating hardcoded test IDs.</span>
+  <span class="text-[9.5px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Request Model</span>
+</div>
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-2 pb-1.5 px-8
 ---
 
 # 🪄 Handlebars Logic, Math & Dynamic Data
 
-### Conditionals, Arithmetic Calculations & Ephemeral Token Generators
+<h3 class="text-slate-300 text-sm mb-1.5">Conditionals, Arithmetic Calculations &amp; Ephemeral Token Generators</h3>
 
-<div v-pre class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+<div v-pre class="grid grid-cols-[42%_1fr] gap-3 mt-1.5">
 
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🎲</span> Generators &amp; Math Helpers
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🎲</span> Handlebars Helpers
       </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">Calculations</span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded">Capabilities</span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Random UUID</strong>: <code>{{randomValue type='UUID'}}</code> (Fresh IDs).</li>
-      <li>• <strong>Random Numeric</strong>: <code>{{randomValue type='NUMERIC' length=6}}</code> (SMS OTP).</li>
-      <li>• <strong>Timestamps</strong>: <code>{{now offset='1 days' format='yyyy-MM-dd'}}</code>.</li>
-      <li>• <strong>Timezones</strong>: <code>{{now timezone='Asia/Bangkok' format='HH:mm:ss'}}</code>.</li>
-      <li>• <strong>Dynamic Math</strong>: <code>{{math (jsonPath request.body '$.price') '*' 1.07}}</code>.</li>
-    </ul>
+    <div class="space-y-2 text-xs text-slate-200">
+      <div>
+        <div class="font-semibold text-emerald-300 mb-0.5 text-xs">🎲 Random UUID &amp; Entropy:</div>
+        <div class="font-mono text-[10.5px] text-emerald-200 bg-slate-950/80 px-2 py-1 rounded border border-emerald-500/30">
+          {{randomValue type='UUID'}}
+        </div>
+      </div>
+      <div>
+        <div class="font-semibold text-amber-300 mb-0.5 text-xs">➗ Arithmetic Math (7% VAT):</div>
+        <div class="font-mono text-[10.5px] text-amber-200 bg-slate-950/80 px-2 py-1 rounded border border-amber-500/30">
+          {{math (jsonPath request.body '$.price') '*' 1.07}}
+        </div>
+      </div>
+      <div>
+        <div class="font-semibold text-cyan-300 mb-0.5 text-xs">⏱️ Current Timestamps:</div>
+        <div class="font-mono text-[10.5px] text-cyan-200 bg-slate-950/80 px-2 py-1 rounded border border-cyan-500/30">
+          {{now format='yyyy-MM-dd HH:mm:ss'}}
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
-    💡 Conditionals: <code>{{#if (eq (jsonPath request.body '$.amount') 0)}}...{{/if}}</code>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs text-emerald-300 flex items-center justify-between">
+    <span>💡 In-memory arithmetic</span>
+    <span class="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">Deterministic</span>
   </div>
 </div>
 
-<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/50 flex flex-col justify-between">
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
-        <span>📄</span> Dynamic Math &amp; Token Stub
+    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
+        <span>📄</span> Dynamic Response Stub
       </span>
       <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">JSON</span>
     </div>
-
-```json
-{
-  "request": {
-    "method": "POST",
-    "urlPath": "/lab/api/stateless/orders"
-  },
-  "response": {
-    "status": 201,
-    "jsonBody": {
-      "orderId": "{{randomValue type='UUID'}}",
-      "userId": "{{jsonPath request.body '$.userId'}}",
-      "total": {{math (jsonPath request.body '$.price') '*' 1.07}},
-      "createdAt": "{{now format='yyyy-MM-dd HH:mm:ss'}}"
-    },
-    "transformers": ["response-template"]
-  }
-}
-```
-
+    <div class="bg-slate-950/95 rounded-md p-2.5 font-mono text-[10.5px] leading-relaxed border border-slate-800 text-slate-200 space-y-0.5 overflow-x-auto">
+      <div>{</div>
+      <div class="pl-3"><span class="text-slate-400">"status"</span>: <span class="text-emerald-400 font-bold">201</span>,</div>
+      <div class="pl-3"><span class="text-slate-400">"jsonBody"</span>: {</div>
+      <div class="pl-6"><span class="text-slate-400">"orderId"</span>: <span class="text-cyan-300">"{{randomValue type='UUID'}}"</span>,</div>
+      <div class="pl-6"><span class="text-slate-400">"total"</span>: <span class="text-amber-300 font-semibold">{{math (jsonPath request.body '$.price') '*' 1.07}}</span>,</div>
+      <div class="pl-6"><span class="text-slate-400">"createdAt"</span>: <span class="text-cyan-300">"{{now format='yyyy-MM-dd'}}"</span></div>
+      <div class="pl-3">},</div>
+      <div class="pl-3"><span class="text-slate-400">"transformers"</span>: [<span class="text-cyan-300">"response-template"</span>]</div>
+      <div>}</div>
+    </div>
   </div>
-  <div class="mt-1 pt-1 border-t border-slate-700/60 text-xs text-slate-400">
-    ✨ Computes 7% VAT total and stamps fresh UUIDs directly in response.
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs text-slate-300 flex items-center justify-between">
+    <span>✨ Computes 7% VAT &amp; stamps fresh UUID</span>
+    <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">Response Template</span>
   </div>
 </div>
 
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-2 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-xs text-slate-200 leading-snug">💡 <strong>Dynamic Synthesis:</strong> Combine Handlebars math calculations with entropy generators to produce unique, collision-free API fixtures on every call.</span>
+  <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Handlebars Math</span>
 </div>
 
 ---
@@ -2555,83 +2676,148 @@ class: pt-2 pb-2 px-8
 </div>
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-2 pb-1 px-8
 ---
 
 # 🧹 WireMock — Automated Scenario Reset Hook
 
-### Hermetic Test Isolation with POST /__admin/scenarios/reset
+<h3 class="text-slate-300 text-sm mb-1.5">Hermetic Test Isolation with <span class="font-mono text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 px-2 py-0.5 rounded text-xs font-bold">POST /__admin/scenarios/reset</span></h3>
 
-<div class="grid grid-cols-2 gap-3.5 mb-2.5">
+<div class="grid grid-cols-[44%_1fr] gap-3 mb-2">
 
-  <div class="slide-card bg-slate-900/70 border-emerald-500/40 p-3.5 flex flex-col justify-between">
-    <div>
-      <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-emerald-500/30">
-        <span class="text-base">🔄</span>
-        <span class="text-emerald-400 font-bold text-sm">How Scenario Reset Works</span>
-      </div>
-      <p class="text-xs text-slate-300 leading-relaxed mb-2.5">
-        WireMock provides a dedicated administrative endpoint to reset all active state machines back to initial state:
-      </p>
-      <div class="space-y-2 text-xs text-slate-300">
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400">⚡</span>
-          <div>
-            <strong class="text-slate-200">Ultra-Fast Execution:</strong> Takes <code class="text-emerald-300">&lt; 5ms</code> over HTTP. No container restart or mapping reloading needed.
-          </div>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400">🎯</span>
-          <div>
-            <strong class="text-slate-200">Rewinds All Scenarios:</strong> Every scenario name transitions back to <code class="text-amber-300">"Started"</code> simultaneously.
-          </div>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400">🛡️</span>
-          <div>
-            <strong class="text-slate-200">Preserves Mappings:</strong> Only state is reset. Stubs, templates, and delays remain loaded in memory.
-          </div>
-        </div>
-      </div>
+<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔄</span> Global Reset Mechanics
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded">Rewind All</span>
     </div>
-    <div class="mt-2 pt-1.5 border-t border-slate-700/50 font-mono text-xs text-emerald-300/80">
-      POST http://localhost:8088/__admin/scenarios/reset
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li class="flex items-start gap-2">
+        <span class="text-emerald-400 font-bold">•</span>
+        <span><strong class="text-emerald-300">Ultra-Fast Execution:</strong> Takes <code class="text-emerald-300 font-mono text-[11px]">&lt; 5ms</code> over HTTP. Zero restart overhead.</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="text-emerald-400 font-bold">•</span>
+        <span><strong class="text-emerald-300">Rewinds All Scenarios:</strong> Every scenario transitions back to <span class="font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded text-[11px]">"Started"</span> simultaneously.</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="text-emerald-400 font-bold">•</span>
+        <span><strong class="text-slate-200">Preserves Stubs:</strong> Only in-memory state resets. Stubs, templates, and fault delays stay cached.</span>
+      </li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-[10.5px] font-mono text-emerald-300 flex items-center justify-between">
+    <span>POST /__admin/scenarios/reset</span>
+    <span class="text-[9.5px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">:8088</span>
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>🎭</span> Playwright Global Teardown Hook
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">TypeScript</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1">
+      Configure <code class="text-cyan-300 font-mono text-[11px]">test.afterEach()</code> to rewind state after every single test:
+    </p>
+    <div class="bg-slate-950/90 rounded-md p-2 font-mono text-[10px] leading-snug border border-slate-800 text-slate-300 space-y-0.5 overflow-x-auto">
+      <div><span class="text-purple-400">import</span> { test } <span class="text-purple-400">from</span> <span class="text-emerald-300">'@playwright/test'</span>;</div>
+      <div>test.<span class="text-yellow-300">afterEach</span>(<span class="text-purple-400">async</span> ({ request }) =&gt; {</div>
+      <div class="pl-2.5 text-slate-500">// Rewind all WireMock scenarios to 'Started'</div>
+      <div class="pl-2.5"><span class="text-purple-400">await</span> request.<span class="text-yellow-300">post</span>(</div>
+      <div class="pl-5"><span class="text-emerald-300">'http://localhost:8088/__admin/scenarios/reset'</span></div>
+      <div class="pl-2.5">);</div>
+      <div>});</div>
     </div>
   </div>
-
-  <div class="slide-card bg-slate-900/70 border-cyan-500/40 p-3.5 flex flex-col justify-between">
-    <div>
-      <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-cyan-500/30">
-        <span class="text-base">🎭</span>
-        <span class="text-cyan-400 font-bold text-sm">Playwright Teardown Hook</span>
-      </div>
-      <p class="text-xs text-slate-300 leading-relaxed mb-1.5">
-        Configure <code class="text-cyan-300">test.afterEach()</code> in your test runner setup to reset state after every single test:
-      </p>
-
-```typescript
-import { test } from '@playwright/test';
-
-test.afterEach(async ({ request }) => {
-  // Rewind all state machines to 'Started'
-  await request.post(
-    'http://localhost:8088/__admin/scenarios/reset'
-  );
-});
-```
-    </div>
-    <div class="mt-1.5 pt-1.5 border-t border-slate-700/50 text-[11px] text-slate-400">
-      💡 Running in <code>afterEach</code> ensures cleanup even if a test throws an assertion error.
-    </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[11px] text-slate-400 flex items-center justify-between">
+    <span>💡 Runs in <code>afterEach</code> even if test assertions fail</span>
   </div>
+</div>
 
 </div>
 
-<div class="slide-card text-xs bg-slate-900/60 p-2.5 border-emerald-500/30 flex items-center gap-3">
-  <span class="text-lg">✨</span>
-  <span class="text-slate-300">
-    <strong>Guaranteed Hermeticity</strong>: With <code>afterEach</code> reset, every test receives a pristine WireMock environment. Tests can be run in parallel, shuffled, or filtered without failure.
-  </span>
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-xs text-slate-200">✨ <strong>Guaranteed Hermeticity:</strong> In sequential suites, resetting in <code>afterEach</code> ensures every test receives a clean, deterministic WireMock environment.</span>
+  <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded whitespace-nowrap ml-2">Sequential Hermetic</span>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎯 WireMock — Targeted Per-Scenario Teardown
+
+<h3 class="text-slate-300 text-sm mb-1.5">Avoiding Cross-Spec Collisions with <span class="font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-2 py-0.5 rounded text-xs font-bold">PUT /__admin/scenarios/:name/state</span></h3>
+
+<div class="grid grid-cols-[42%_1fr] gap-3 mb-2">
+
+<div class="slide-card p-2.5 border border-cyan-500/40 bg-cyan-950/20 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>⚠️</span> The Parallel Execution Hazard
+      </span>
+      <span class="text-[10px] font-mono text-rose-300 bg-rose-900/50 px-2 py-0.5 rounded">Concurrency</span>
+    </div>
+    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
+      <li class="flex items-start gap-2">
+        <span class="text-rose-400 font-bold">•</span>
+        <span><strong class="text-rose-300">Global Reset Hazard:</strong> <code class="text-rose-300 font-mono text-[10.5px]">POST /reset</code> clears <em>everything</em> globally, wiping active states of sibling concurrent specs.</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-cyan-300">Surgical Teardown:</strong> Rewind <em>only</em> the scenario touched by this spec back to <span class="font-mono text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded text-[11px]">"Started"</span>.</span>
+      </li>
+      <li class="flex items-start gap-2">
+        <span class="text-cyan-400 font-bold">•</span>
+        <span><strong class="text-slate-200">Shared Mock Safe:</strong> Parallel tests executing against other scenarios remain completely unaffected.</span>
+      </li>
+    </ul>
+  </div>
+  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-[10.5px] font-mono text-cyan-200 flex items-center justify-between">
+    <span>PUT /__admin/scenarios/<span class="text-cyan-400">{name}</span>/state</span>
+    <span class="text-[9.5px] text-cyan-400 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">:8088</span>
+  </div>
+</div>
+
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>🎭</span> Targeted Teardown Implementation
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">TypeScript</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1">
+      Reset <em>only</em> the scenario used in this test file to avoid race conditions:
+    </p>
+    <div class="bg-slate-950/90 rounded-md p-2 font-mono text-[10px] leading-snug border border-slate-800 text-slate-300 space-y-0.5 overflow-x-auto">
+      <div><span class="text-purple-400">import</span> { test } <span class="text-purple-400">from</span> <span class="text-emerald-300">'@playwright/test'</span>;</div>
+      <div>test.<span class="text-yellow-300">afterEach</span>(<span class="text-purple-400">async</span> ({ request }) =&gt; {</div>
+      <div class="pl-2.5 text-slate-500">// Rewind ONLY 'order-flow' back to 'Started'</div>
+      <div class="pl-2.5"><span class="text-purple-400">await</span> request.<span class="text-yellow-300">put</span>(</div>
+      <div class="pl-5"><span class="text-emerald-300">'http://localhost:8088/__admin/scenarios/order-flow/state'</span>,</div>
+      <div class="pl-5">{ <span class="text-slate-400">data:</span> { <span class="text-slate-400">state:</span> <span class="text-amber-300">'Started'</span> } }</div>
+      <div class="pl-2.5">);</div>
+      <div>});</div>
+    </div>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[11px] text-slate-400 flex items-center justify-between">
+    <span>💡 Resets state to 'Started' without touching sibling scenarios</span>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-xs text-slate-200">🛡️ <strong>Production Rule:</strong> Use targeted teardown when sharing a WireMock instance; use Testcontainers (Pillar 3) for 100% ephemeral isolation per worker.</span>
+  <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded whitespace-nowrap ml-2">Parallel Safe</span>
 </div>
 
 ---
@@ -2710,6 +2896,17 @@ class: pt-2 pb-2 px-8
 layout: section
 ---
 
+# 🎬 Live Demo
+## WireMock in Action — Virtualization & Scenario Steering
+
+<p class="section-narrative">
+  Instructor walkthrough: Precision contract matching, dynamic response templating, chaos latency injection, and stateful scenario state machines in real time.
+</p>
+
+---
+layout: section
+---
+
 # 🏆 Hands-On Workshops
 ## Production Challenge Missions & Controlled Chaos
 
@@ -2718,71 +2915,175 @@ layout: section
 </p>
 
 ---
-class: pt-2 pb-2 px-8
+class: pt-2 pb-1 px-8
 ---
 
-# 🧪 Practice Lab: Web UI & Precision Matching
+# 🧪 Practice Lab: Precision Matching — Baseline
 
-### Verify threshold routing and inspect unmatched diffs in WireMock Web UI
+<h3 class="text-slate-300 text-sm mb-2">Step 1: Verify High-Value JSONPath Filter (&gt; 1000) in WireMock</h3>
 
-<div class="grid grid-cols-2 gap-3 mt-1.5 flex-1">
+<div class="grid grid-cols-2 gap-3 mb-2.5">
 
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>✅</span> Step 1: High-Value Match (> 1000)
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>📤</span> Request Dispatch
       </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">201 Created</span>
+      <span class="text-[10px] font-mono text-emerald-300 bg-emerald-900/50 px-2 py-0.5 rounded">POST :8088</span>
     </div>
-    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>2500</code>. Body matches threshold filter:</p>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">Send amount <code>2500</code> to satisfy the threshold filter:</p>
 
 ```bash
-curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+curl -s -X POST \
+  http://localhost:8088/lab/api/stateless/payments \
   -H "Content-Type: application/json" \
   -d '{"payment":{"amount":2500}}'
 ```
 
   </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs text-emerald-300 font-mono">
-    🟢 Returns <code>201 Created</code> + <code>HIGH_VALUE_TRANSACTION</code>
+  <div class="mt-2.5 pt-1.5 border-t border-emerald-500/30">
+    <div class="flex items-center justify-between text-xs mb-1">
+      <span class="font-semibold text-emerald-300 flex items-center gap-1 text-[11px]">
+        <span>📥</span> Expected Response:
+      </span>
+      <span class="font-mono text-[10px] text-emerald-300 bg-emerald-950/90 px-1.5 py-0.5 rounded border border-emerald-500/40 font-bold">HTTP 201 Created</span>
+    </div>
+    <div class="bg-slate-950/90 rounded px-2.5 py-1.5 font-mono text-[11px] text-emerald-200 border border-emerald-500/30">
+      { <span class="text-slate-400">"status"</span>: <span class="text-emerald-300">"APPROVED"</span>, <span class="text-slate-400">"flag"</span>: <span class="text-amber-300">"HIGH_VALUE_TRANSACTION"</span> }
+    </div>
   </div>
 </div>
 
-<div class="slide-card p-3 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-amber-500/30">
-      <span class="text-amber-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🔍</span> Step 2: Low-Value Diff (< 1000)
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-700/60">
+      <span class="text-slate-200 font-bold text-xs flex items-center gap-1.5">
+        <span>⚙️</span> WireMock JSONPath Rule
       </span>
-      <span class="text-[11px] font-mono text-amber-300/80 bg-amber-900/40 px-2 py-0.5 rounded">404 Diff</span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded">Priority 1</span>
     </div>
-    <p class="text-xs text-slate-300 mb-2 leading-snug">Send amount <code>500</code> below threshold. Trigger stub miss:</p>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">Stub intercepts payload using precision JSONPath filter:</p>
+
+```json
+{
+  "matchesJsonPath": "$.payment[?(@.amount > 1000)]"
+}
+```
+
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-slate-700/60">
+    <div class="flex items-center justify-between text-xs mb-1">
+      <span class="font-semibold text-slate-200 flex items-center gap-1 text-[11px]">
+        <span>🎯</span> Rule Verdict:
+      </span>
+      <span class="font-mono text-[10px] text-emerald-400 bg-emerald-950/90 px-1.5 py-0.5 rounded border border-emerald-500/40 font-bold">MATCH SUCCESS</span>
+    </div>
+    <div class="bg-slate-950/90 rounded px-2.5 py-1.5 font-mono text-[11px] text-emerald-200 border border-slate-700/60">
+      <span class="text-slate-400">2500 &gt; 1000</span>: <span class="text-emerald-300 font-bold">TRUE</span> ➔ Routes to <span class="text-cyan-300">02-json-body-matching</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div v-pre class="slide-card py-2 px-3 flex items-center justify-between text-xs border border-emerald-500/30 bg-slate-900/70 rounded-lg">
+  <span class="text-emerald-200 text-xs flex items-center gap-2">
+    <span class="text-base">🌐</span> <strong>Web UI Verification:</strong> Open <code class="text-emerald-300 font-mono text-[11px]">http://localhost:8088/__admin/webapp</code> ➔ Inspect <strong>Matched Stubs</strong> tab.
+  </span>
+  <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded whitespace-nowrap ml-2">Matched Tab</span>
+</div>
+
+<!--
+Presenter Notes:
+- Guide participants to open WireMock Web UI at localhost:8088/__admin/webapp.
+- Show how the incoming 2500 request matches the JSONPath expression.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🧪 Practice Lab: Precision Matching — Challenge
+
+<h3 class="text-slate-300 text-sm mb-2">Step 2: Participant Challenge — Trigger Threshold Rejection (&lt;= 1000)</h3>
+
+<div class="grid grid-cols-2 gap-3 mb-2.5">
+
+<div class="slide-card p-3 border border-rose-500/40 bg-rose-950/20 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-rose-500/30">
+      <span class="text-rose-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🎯</span> Participant Challenge
+      </span>
+      <span class="text-[10px] font-mono text-rose-300 bg-rose-900/50 px-2 py-0.5 rounded">POST :8088</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">Change amount to <code>500</code> (violates threshold, triggers rejection):</p>
 
 ```bash
-curl -s -X POST http://localhost:8088/lab/api/stateless/payments \
+curl -s -X POST \
+  http://localhost:8088/lab/api/stateless/payments \
   -H "Content-Type: application/json" \
   -d '{"payment":{"amount":500}}'
 ```
 
   </div>
-  <div class="mt-2 pt-1 border-t border-amber-500/30 text-xs text-amber-300 font-mono">
-    🟡 Returns <code>404 Not Found</code>. Check diff in Web UI!
+  <div class="mt-2.5 pt-1.5 border-t border-rose-500/30">
+    <div class="flex items-center justify-between text-xs mb-1">
+      <span class="font-semibold text-rose-300 flex items-center gap-1 text-[11px]">
+        <span>📥</span> Expected Response:
+      </span>
+      <span class="font-mono text-[10px] text-rose-300 bg-rose-950/90 px-1.5 py-0.5 rounded border border-rose-500/40 font-bold">HTTP 400 Bad Request</span>
+    </div>
+    <div class="bg-slate-950/90 rounded px-2.5 py-1.5 font-mono text-[11px] text-rose-200 border border-rose-500/30">
+      { <span class="text-slate-400">"error"</span>: <span class="text-rose-300">"BAD_REQUEST"</span>, <span class="text-slate-400">"message"</span>: <span class="text-slate-300">"Payment amount must be &gt; 1000"</span> }
+    </div>
+  </div>
+</div>
+
+<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-700/60">
+      <span class="text-slate-200 font-bold text-xs flex items-center gap-1.5">
+        <span>🛡️</span> Validation Rejection Rule
+      </span>
+      <span class="text-[10px] font-mono text-amber-300 bg-amber-900/50 px-2 py-0.5 rounded">Priority 1</span>
+    </div>
+    <p class="text-xs text-slate-300 mb-1.5 leading-snug">Negative condition stub rejects requests that fail threshold:</p>
+
+```json
+{
+  "matchesJsonPath": "$.payment[?(@.amount <= 1000)]"
+}
+```
+
+  </div>
+  <div class="mt-2.5 pt-1.5 border-t border-slate-700/60">
+    <div class="flex items-center justify-between text-xs mb-1">
+      <span class="font-semibold text-slate-200 flex items-center gap-1 text-[11px]">
+        <span>🎯</span> Rule Verdict:
+      </span>
+      <span class="font-mono text-[10px] text-rose-400 bg-rose-950/90 px-1.5 py-0.5 rounded border border-rose-500/40 font-bold">REJECTION TRIGGERED</span>
+    </div>
+    <div class="bg-slate-950/90 rounded px-2.5 py-1.5 font-mono text-[11px] text-rose-200 border border-slate-700/60">
+      <span class="text-slate-400">500 &lt;= 1000</span>: <span class="text-rose-300 font-bold">TRUE</span> ➔ Routes to <span class="text-amber-300">02b-payments-low-value</span>
+    </div>
   </div>
 </div>
 
 </div>
 
-<div v-pre class="slide-card py-1.5 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>🌐</span> <strong>Interactive Inspection:</strong> Open <code>http://localhost:8088/__admin/webapp</code> to see visual diffs on unmatched requests.
+<div v-pre class="slide-card py-2 px-3 flex items-center justify-between text-xs border border-rose-500/30 bg-slate-900/70 rounded-lg">
+  <span class="text-rose-200 text-xs flex items-center gap-2">
+    <span class="text-base">🔍</span> <strong>Web UI Inspection:</strong> Open <code class="text-rose-300 font-mono text-[11px]">http://localhost:8088/__admin/webapp</code> ➔ Inspect <strong>Requests</strong> tab to verify rule logs.
   </span>
+  <span class="text-[10px] font-mono text-rose-400 bg-rose-950/60 border border-rose-500/30 px-2 py-0.5 rounded whitespace-nowrap ml-2">Requests Tab</span>
 </div>
 
 <!--
 Presenter Notes:
-- Guide participants to open the WireMock Web UI at localhost:8088/__admin/webapp.
-- Point out the Requests tab where unmatched calls show line-by-line diffs.
+- Guide participants to send amount: 500 in their terminal.
+- Have them open the Requests tab to observe how WireMock routed the call to the 400 rejection stub.
 -->
 
 ---
@@ -2846,311 +3147,6 @@ time curl -s --max-time 2 \
     <span>💡</span> <strong>Hands-On Verification:</strong> Inspect live responses in terminal or visit <code>http://localhost:8088/__admin/webapp</code> to see matched requests.
   </span>
 </div>
-
----
-class: pt-2 pb-1.5 px-8
----
-
-# 🎬 Stateful Order Lifecycle Transitions
-
-<h3 class="text-slate-300 text-sm mb-1.5">Live instructor walkthrough: Authoring, advancing, and introspecting scenario FSMs</h3>
-
-<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
-
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Walkthrough Steps
-      </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">FSM Lifecycle</span>
-    </div>
-    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
-      <li>• <strong>1. Reset State:</strong> Clear in-flight states back to <code>Started</code> via <code>POST /__admin/scenarios/reset</code>.</li>
-      <li>• <strong>2. Trigger Advance:</strong> Execute payment <code>POST /lab/api/orders/101/pay</code> to move FSM to <code>PAID</code>.</li>
-      <li>• <strong>3. Introspect FSM:</strong> Query <code>GET /__admin/scenarios</code> to observe the live state transition.</li>
-      <li>• <strong>4. Terminal Enforcement:</strong> Advance to <code>SHIPPED</code>; repeated calls trigger <code>400 Bad Request</code>.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-xs font-mono text-emerald-300">
-    💡 Eliminates brittle sleep timers with deterministic state assertions.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>🖥️</span> Live Terminal Commands
-      </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / FSM</span>
-    </div>
-
-<div class="bg-slate-950/90 border border-slate-800 rounded p-2 font-mono text-[10.5px] text-slate-200 space-y-1.5">
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 1. Reset all scenarios to Started</div>
-    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/__admin/scenarios/reset</div>
-  </div>
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 2. Advance state: Started ➔ PAID</div>
-    <div class="text-sky-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/pay</div>
-  </div>
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 3. Query active FSM state in real time</div>
-    <div class="text-amber-300">curl -s http://localhost:8088/__admin/scenarios | jq '.scenarios[]'</div>
-  </div>
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 4. Advance to SHIPPED &amp; test 400 enforcement</div>
-    <div class="text-cyan-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/ship</div>
-  </div>
-</div>
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    🔄 Live FSM verification without external databases
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-emerald-500/30 bg-slate-900/70 rounded-lg">
-  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Deterministic State Machines:</strong> WireMock holds sequential transitions entirely in-memory, isolating multi-step order tests without database pollution.</span>
-  </div>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">In-Memory FSM</span>
-</div>
-
-<!--
-Presenter Notes:
-- Reset the WireMock scenarios live using curl -s -X POST http://localhost:8088/__admin/scenarios/reset.
-- Execute step 1 and step 2 to demonstrate how WireMock holds state across independent HTTP requests.
-- Point to the active state change in the terminal output before handing over to the attendee workshop.
--->
-
----
-class: pt-2 pb-1.5 px-8
----
-
-# 🏆 Workshop: Stateful Order Fulfillment Machine
-
-<h3 class="text-slate-300 text-sm mb-1.5">Author a multi-state WireMock scenario modeling sequential order domain transitions</h3>
-
-<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
-
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🎯</span> Workshop Challenge Rules
-      </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded"><code>order-lifecycle</code></span>
-    </div>
-    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Step 1 (Started):</strong> <code>POST /lab/api/orders/101/pay</code> in state <code>Started</code> transitions to <code>PAID</code> (returns <code>200 OK {"status": "PAID"}</code>).</li>
-      <li>• <strong>Step 2 (PAID):</strong> <code>POST /lab/api/orders/101/ship</code> in state <code>PAID</code> transitions to <code>SHIPPED</code> (returns <code>200 OK {"status": "SHIPPED"}</code>).</li>
-      <li>• <strong>Step 3 (SHIPPED):</strong> Repeated <code>POST /lab/api/orders/101/ship</code> in state <code>SHIPPED</code> returns <code>400 Bad Request {"error": "ALREADY_SHIPPED"}</code>.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-[11px] font-mono text-emerald-300 flex items-center gap-1">
-    <span>📂</span> Save stubs to: <code class="text-[10px]">wiremock/mappings/diy-order-lifecycle.json</code>
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Verification Sequence
-      </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / FSM</span>
-    </div>
-
-<div class="bg-slate-950/90 border border-slate-800 rounded p-2 font-mono text-[10.5px] text-slate-200 space-y-1.5">
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 1. Pay order ➔ Transitions state to PAID</div>
-    <div class="text-sky-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/pay</div>
-  </div>
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 2. Ship order ➔ Transitions state to SHIPPED</div>
-    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/ship</div>
-  </div>
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 3. Duplicate ship ➔ Expect HTTP 400 ALREADY_SHIPPED</div>
-    <div class="text-rose-300">curl -s -X POST http://localhost:8088/lab/api/orders/101/ship</div>
-  </div>
-</div>
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    🔄 Reset state: <code>POST /__admin/scenarios/reset</code>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-emerald-500/30 bg-slate-900/70 rounded-lg">
-  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Challenge Objective:</strong> Model sequential order fulfillment logic with <code>scenarioName</code>, <code>requiredScenarioState</code>, and <code>newScenarioState</code>.</span>
-  </div>
-  <span class="text-[11px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">15 Min Hands-On</span>
-</div>
-
-<!--
-Presenter Notes:
-- Give attendees 15 minutes to implement the stateful scenario stubs in wiremock/mappings/diy-order-lifecycle.json.
-- Remind them to use scenarioName: "order-lifecycle", requiredScenarioState, and newScenarioState.
-- Show how curl -s http://localhost:8088/__admin/scenarios can introspect their live scenario state.
--->
-
----
-class: pt-2 pb-2 px-8
----
-
-# ⚠️ Production Crisis: Biometric eKYC Dilemma
-
-### Why External Vendor Sandboxes Threaten Mobile Banking Launches
-
-<div class="grid grid-cols-2 gap-3 mt-1.5">
-
-<div class="slide-card p-3 border border-rose-500/40 bg-rose-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-rose-500/30">
-      <span class="text-rose-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🔴</span> The Vendor Sandbox Bottleneck
-      </span>
-      <span class="text-[11px] font-mono text-rose-300/80 bg-rose-900/40 px-2 py-0.5 rounded">Vendor Risk</span>
-    </div>
-    <p class="text-xs text-slate-200 leading-snug mb-1.5 font-medium">
-      Third-party face biometric vendors are unreliable, rate-limited, and fragile:
-    </p>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Sandbox Downtime:</strong> Vendor staging environments flap during off-hours, blocking automated CI PR gates.</li>
-      <li>• <strong>Test Data Collisions:</strong> Remote sandboxes only permit 2 static test IDs, making parallel test suites collide.</li>
-      <li>• <strong>Quota Throttling:</strong> Strict vendor rate limits (10 req/min) trigger unexpected HTTP 429 errors in regression suites.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-rose-500/30 text-xs font-mono text-rose-300">
-    ❌ Fragile external dependencies stall release velocity
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-cyan-500/30">
-      <span class="text-cyan-400 font-bold text-sm flex items-center gap-1.5">
-        <span>🛡️</span> The Virtualization Solution
-      </span>
-      <span class="text-[11px] font-mono text-cyan-300/80 bg-cyan-900/40 px-2 py-0.5 rounded">WireMock</span>
-    </div>
-    <p class="text-xs text-slate-200 leading-snug mb-1.5 font-medium">
-      Virtualize the biometric vendor locally with full contract and chaos fidelity:
-    </p>
-    <ul class="space-y-1 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Liveness Compliance:</strong> Bank mandate requires 85.0% confidence; stubs must return 422 for fraudulent faces.</li>
-      <li>• <strong>Dynamic Telemetry:</strong> Stubs must echo incoming national IDs and generate random UUID scan tokens.</li>
-      <li>• <strong>Resilience Testing:</strong> Must inject 2.5s network lag to verify client timeout cancellation handlers.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-cyan-500/30 text-xs font-mono text-cyan-300">
-    ✨ 100% deterministic local stubs restore developer confidence
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-2 px-3 flex items-center text-xs mt-2 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <span class="text-cyan-200 font-medium flex items-center gap-2 leading-snug">
-    <span>🎯</span> <strong>Your Mission:</strong> Watch the live walkthrough, then author a production-ready WireMock stub with confidence thresholding, dynamic templating, and chaos delay.
-  </span>
-</div>
-
-<!--
-Presenter Notes:
-- Paint the production picture: The team is 1 week away from launching mobile onboarding.
-- The external face scan provider goes down every Tuesday at midnight.
-- Explain why we need local virtualization: We cannot block QA testing on an external third-party vendor.
--->
-
----
-class: pt-2 pb-1.5 px-8
----
-
-# 🎬 Biometric Face Scan Virtualization
-
-<h3 class="text-slate-300 text-sm mb-1.5">Live instructor walkthrough: Authoring stubs with confidence thresholds and dynamic templating</h3>
-
-<div class="grid grid-cols-2 gap-3.5 mt-1 flex-1">
-
-<div class="slide-card p-3 border border-fuchsia-500/40 bg-fuchsia-950/20 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-fuchsia-500/30">
-      <span class="text-fuchsia-400 font-bold text-sm flex items-center gap-1.5">
-        <span>⚡</span> Walkthrough Steps
-      </span>
-      <span class="text-[11px] font-mono text-fuchsia-300/80 bg-fuchsia-900/40 px-2 py-0.5 rounded">Stateless Stubbing</span>
-    </div>
-    <ul class="space-y-2 text-xs text-slate-300 leading-snug">
-      <li>• <strong>1. Contract Matching:</strong> Match <code>POST /lab/api/ekyc/biometrics</code> with numeric confidence thresholding.</li>
-      <li>• <strong>2. Conditional Branching:</strong> Route confidence &lt; 85.0 to <code>422 Unprocessable</code> and &ge; 85.0 to <code>200 OK</code>.</li>
-      <li>• <strong>3. Dynamic Synthesis:</strong> Synthesize unique UUID <code>scanId</code> and echo request <code>nationalId</code> via Handlebars.</li>
-      <li>• <strong>4. Chaos Latency:</strong> Attach <code>2500ms</code> delay to stress-test client-side timeout cancellation.</li>
-    </ul>
-  </div>
-  <div class="mt-2 pt-1 border-t border-fuchsia-500/30 text-xs font-mono text-fuchsia-300">
-    💡 Zero external vendor downtime or staging rate limits.
-  </div>
-</div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
-  <div>
-    <div class="flex items-center justify-between mb-2 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>🖥️</span> Live Terminal Commands
-      </span>
-      <span class="text-[11px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / Verification</span>
-    </div>
-
-<div class="bg-slate-950/90 border border-slate-800 rounded p-2 font-mono text-[10.5px] text-slate-200 space-y-1.5">
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 1. Hot-reload stub mappings into WireMock</div>
-    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/__admin/mappings/reset</div>
-  </div>
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 2. Test Low Confidence (&lt; 85.0) ➔ 422 Unprocessable</div>
-    <div class="text-rose-300">curl -s -i -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
-    <div class="text-rose-300 pl-3">-d '{"nationalId":"11005","confidence":72.5}' | head -n 1</div>
-  </div>
-  <div>
-    <div class="text-slate-500 text-[9.5px]"># 3. Test High Confidence (&ge; 85.0) ➔ 200 OK + Dynamic UUID</div>
-    <div class="text-sky-300">curl -s -X POST http://localhost:8088/lab/api/ekyc/biometrics \</div>
-    <div class="text-sky-300 pl-3">-d '{"nationalId":"11005","confidence":96.8}'</div>
-  </div>
-</div>
-
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-xs font-mono text-slate-300">
-    ✨ Fast hot-reload in milliseconds via admin API
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-2 px-3 flex items-center justify-between text-xs mt-2 border border-fuchsia-500/30 bg-slate-900/70 rounded-lg">
-  <div class="text-fuchsia-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>Hermetic Face Verification:</strong> Deterministic response mocking replaces flaky third-party biometric sandboxes with sub-millisecond local execution.</span>
-  </div>
-  <span class="text-[11px] font-mono text-fuchsia-300 bg-fuchsia-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">Zero Downtime</span>
-</div>
-
-<!--
-Presenter Notes:
-- Demonstrate hot-reloading mappings using curl -s -X POST http://localhost:8088/__admin/mappings/reset.
-- Execute low-confidence vs high-confidence requests live to show instant contract validation.
-- Point out how dynamic Handlebars templating produces isolated, non-colliding test fixtures.
--->
 
 ---
 class: pt-2 pb-1.5 px-8
@@ -3223,6 +3219,90 @@ class: pt-2 pb-1.5 px-8
 Presenter Notes:
 - Give attendees 15 minutes to implement the stub in wiremock/mappings/diy-biometrics.json.
 - Solution reference is available in labs/wiremock-stateless/diy-biometrics.http.
+-->
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🏆 Workshop: Patient Medical Checkup Machine
+
+<h3 class="text-slate-300 text-sm mb-1">Author a stateful clinical workflow FSM from sample collection to sealed diagnosis</h3>
+
+<div class="grid grid-cols-2 gap-3 mb-1">
+
+<div class="slide-card p-2 border border-emerald-500/40 bg-emerald-950/20 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-400 font-bold text-xs flex items-center gap-1.5">
+        <span>🏥</span> Clinical Workflow Rules
+      </span>
+      <span class="text-[10px] font-mono text-emerald-300/90 bg-emerald-900/40 px-2 py-0.5 rounded"><code>medical-checkup-flow</code></span>
+    </div>
+    <ul class="space-y-0.5 text-xs text-slate-300 leading-snug">
+      <li>• <strong>Step 1 (Started):</strong> <code>POST .../start</code> in <code>Started</code> ➔ <code>SAMPLE_COLLECTED</code> (<code>201 Created</code>).</li>
+      <li>• <strong>Step 2 (Diagnose):</strong> <code>POST .../diagnose</code> in <code>SAMPLE_COLLECTED</code> ➔ <code>DIAGNOSED</code> (<code>200 OK</code>).</li>
+      <li>• <strong>Step 3 (Sealed Lock):</strong> Duplicate <code>POST</code> in <code>DIAGNOSED</code> ➔ <code>409 Conflict {"error": "RECORD_SEALED"}</code>.</li>
+      <li>• <strong>Step 4 (Targeted Teardown):</strong> <code>PUT .../medical-checkup-flow/state</code> resets <em>only</em> this FSM back to <code>Started</code>.</li>
+    </ul>
+  </div>
+  <div class="mt-1 pt-1 border-t border-emerald-500/30 text-[10px] font-mono text-emerald-300 flex items-center gap-1">
+    <span>📂</span> Stubs: <code class="text-[9px]">wiremock/mappings/lab-stateful/05-medical-checkup.json</code>
+  </div>
+</div>
+
+<div class="slide-card p-2 border border-slate-700/60 bg-slate-900/60 rounded-lg flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>⚡</span> Verification Sequence
+      </span>
+      <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Terminal / FSM</span>
+    </div>
+
+<div class="bg-slate-950/90 border border-slate-800 rounded p-1 font-mono text-[9px] text-slate-200 space-y-0.5">
+  <div>
+    <div class="text-slate-500 text-[8.5px]"># 1. Start checkup ➔ 201 Created &amp; state ➔ SAMPLE_COLLECTED</div>
+    <div class="text-sky-300">curl -s -X POST http://localhost:8088/lab/api/medical/checkup/start</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[8.5px]"># 2. Complete diagnosis ➔ 200 OK &amp; state ➔ DIAGNOSED</div>
+    <div class="text-emerald-300">curl -s -X POST http://localhost:8088/lab/api/medical/checkup/diagnose</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[8.5px]"># 3. Alter sealed record ➔ Expect HTTP 409 RECORD_SEALED</div>
+    <div class="text-rose-300">curl -s -X POST http://localhost:8088/lab/api/medical/checkup/diagnose</div>
+  </div>
+  <div>
+    <div class="text-slate-500 text-[8.5px]"># 4. Rewind ONLY this scenario to Started (isolated reset)</div>
+    <div class="text-amber-300 truncate">curl -s -X PUT http://localhost:8088/__admin/scenarios/medical-checkup-flow/state \</div>
+    <div class="text-slate-400 pl-2 text-[8.5px]">-H "Content-Type: application/json" -d '{"state":"Started"}'</div>
+  </div>
+</div>
+
+  </div>
+  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[9.5px] font-mono text-cyan-300 flex items-center justify-between">
+    <span>🎯 Targeted Teardown:</span>
+    <code class="text-[8.5px] text-slate-300 bg-slate-950/80 px-1.5 py-0.5 rounded border border-slate-800">PUT /scenarios/medical-checkup-flow/state</code>
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs border border-emerald-500/30 bg-slate-900/70 rounded-lg">
+  <div class="text-emerald-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>Challenge Objective:</strong> Model healthcare data governance with <code>scenarioName</code>, <code>requiredScenarioState</code>, and <code>newScenarioState</code> to prevent tampering with finalized medical diagnoses.</span>
+  </div>
+  <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">15 Min Hands-On</span>
+</div>
+
+<!--
+Presenter Notes:
+- Guide attendees to implement or inspect clinical checkup stateful scenario stubs.
+- Show how the scenario advances: Started ➔ SAMPLE_COLLECTED ➔ DIAGNOSED.
+- Highlight how WireMock returns 409 Conflict once the diagnosis is sealed.
+- Demonstrate resetting only this scenario via PUT /__admin/scenarios/medical-checkup-flow/state.
 -->
 
 ---
@@ -3321,7 +3401,120 @@ class: pt-1.5 pb-1 px-6
 Presenter Notes:
 - Walk through the three tiers: client (browser/mobile app), Burp Suite MITM proxy engine in the center, and backend microservices gateway.
 - Highlight the interception seam: traffic enters Burp, where it can be inspected, decoded, or modified before forwarding.
-- Set up the transition: Since modern web and API traffic is encrypted end-to-end, how does HTTPS actually work and how can Burp terminate both ends? Let's examine How HTTPS Works next.
+- Set up the transition: Now let's explore how QA engineers repurpose this proxy architecture in integration testing, starting with duplex interception.
+-->
+
+---
+class: pt-1.5 pb-1 px-8
+---
+
+# 🎯 Why Use Burp Suite in Integration Testing?
+
+<h3 class="text-slate-300 text-xs mb-1">Repurposing Cybersecurity Superpowers for Microservices QA &amp; Resilience</h3>
+
+<div class="multi-col-grid-3">
+
+<div class="col-card p-3 border border-emerald-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>⚡</span> In-Flight Tampering
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      Pause requests mid-flight to inject <code>Mock-Scenario</code> headers that steer backend WireMock stubs. Mutate responses to HTTP 500 to test frontend fallback UI banners.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-emerald-300 font-mono">
+    Proxy ➔ Duplex Traffic Control
+  </div>
+</div>
+
+<div class="col-card p-3 border border-cyan-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-cyan-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>🔁</span> Instant API Replay
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      1-click handoff from live logs into <strong>Repeater</strong>. Tweak JSON payloads, query params, or auth tokens to test edge cases in total isolation without repeating manual UI flows.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-cyan-300 font-mono">
+    Repeater ➔ Rapid Edge Reproduction
+  </div>
+</div>
+
+<div class="col-card p-3 border border-amber-500/30 bg-slate-900/60 flex flex-col justify-between">
+  <div>
+    <h3 class="text-amber-400 font-bold text-sm mb-1 flex items-center gap-1.5">
+      <span>⚙️</span> CI Steering &amp; Races
+    </h3>
+    <p class="text-xs text-slate-300 leading-snug">
+      Auto-inject mock headers unattended in CI/CD using <strong>Match &amp; Replace</strong>. Stress-test TOCTOU race conditions and rate limits with <strong>Intruder</strong> multi-packet attacks.
+    </p>
+  </div>
+  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-amber-300 font-mono">
+    Intruder ➔ Fuzzing &amp; Concurrency
+  </div>
+</div>
+
+</div>
+
+<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
+  <div class="text-cyan-200 font-medium leading-snug flex items-center gap-2">
+    <span>💡</span>
+    <span><strong>The QA Advantage:</strong> Security tools excel at low-level packet manipulation, giving QA engineers raw power to simulate failure states application code normally prevents.</span>
+  </div>
+  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">AppSec ➔ QA Superpower</span>
+</div>
+
+<!--
+Presenter Notes:
+- Emphasize the 3 key QA testing wins: in-flight tampering, rapid replay, and automated race condition testing.
+- Bridge to the tools: Now let's explore the core Proxy Interception engine in depth.
+-->
+
+---
+class: pt-1.5 pb-1 px-6
+---
+
+# 🔀 Deep Dive: Bi-Directional Duplex Interception
+
+<h3 class="text-slate-300 text-sm mb-1">Visualizing Request and Response Flow Through the MITM Engine</h3>
+
+<div class="flex justify-center items-center w-full mt-0.5">
+  <div class="adorable-arch-container !max-w-[700px] !h-[390px] !max-h-[395px]">
+    <img src="/burp_duplex_intercept.jpg" class="adorable-arch-img" alt="Bi-Directional Duplex Interception" />
+  </div>
+</div>
+
+<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
+  <span class="text-[11.5px] text-slate-200">🔀 <strong>Duplex Control:</strong> Intercept outbound requests to steer backend stubs; intercept responses to test client fallbacks.</span>
+  <span class="text-amber-400 font-mono text-[10.5px] bg-amber-950/60 px-2 py-0.5 rounded ml-2 whitespace-nowrap">Bi-Directional Mutation</span>
+</div>
+
+---
+class: pt-1.5 pb-1 px-6
+---
+
+# ⚡ Live Intercept in Action
+
+<h3 class="text-slate-300 text-sm mb-1">Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight</h3>
+
+<div class="flex justify-center items-center w-full mt-0.5">
+  <div class="adorable-arch-container !max-w-[700px] !h-[390px] !max-h-[395px]">
+    <img src="/burp_intercept_action.jpg" class="adorable-arch-img" alt="Live Intercept Action in Burp Suite" />
+  </div>
+</div>
+
+<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
+  <span class="text-[11.5px] text-slate-200">⏯️ <strong>Action Controls:</strong> <code>Forward</code> passes packet; <code>Drop</code> kills TCP socket; <code>Action</code> sends to Repeater/Intruder.</span>
+  <span class="text-cyan-400 font-mono text-[10.5px] bg-cyan-950/60 px-2 py-0.5 rounded ml-2 whitespace-nowrap">Real-Time Inspection</span>
+</div>
+
+<!--
+Presenter Notes:
+- Demonstrate pausing traffic in Burp Suite Proxy Intercept tab.
+- Show how the browser or curl hangs waiting for operator decision (Forward or Drop).
+- Set up the transition: We've seen how the proxy intercepts plain HTTP traffic. But modern web and API traffic is encrypted with HTTPS/SSL! How does Burp decrypt traffic mid-flight without browser security warnings? Let's examine How HTTPS & SSL Work next.
 -->
 
 ---
@@ -3680,120 +3873,7 @@ Presenter Notes:
 - Walk through the two sides: Burp signing with Root Private Key, and Client verifying with Root Public Key from OS trust store.
 - Highlight the math: H1 = SHA-256(Leaf) vs H2 = Decrypt(Signature, Root_PublicKey). If they match, the cert is authentic and untampered.
 - Explain transitive trust: The client doesn't need to know every microservice in advance. As long as the issuer chain leads to a trusted Root CA in the OS store, the entire chain is valid.
-- Bridge to the tools: Now that we understand how MITM TLS decryption works under the hood, let's explore why and how QA engineers use Burp Suite in real-world integration testing.
--->
----
-class: pt-1.5 pb-1 px-8
----
-
-# 🎯 Why Use Burp Suite in Integration Testing?
-
-<h3 class="text-slate-300 text-xs mb-1">Repurposing Cybersecurity Superpowers for Microservices QA &amp; Resilience</h3>
-
-<div class="multi-col-grid-3">
-
-<div class="col-card p-3 border border-emerald-500/30 bg-slate-900/60 flex flex-col justify-between">
-  <div>
-    <h3 class="text-emerald-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>⚡</span> In-Flight Tampering
-    </h3>
-    <p class="text-xs text-slate-300 leading-snug">
-      Pause requests mid-flight to inject <code>Mock-Scenario</code> headers that steer backend WireMock stubs. Mutate responses to HTTP 500 to test frontend fallback UI banners.
-    </p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-emerald-300 font-mono">
-    Proxy ➔ Duplex Traffic Control
-  </div>
-</div>
-
-<div class="col-card p-3 border border-cyan-500/30 bg-slate-900/60 flex flex-col justify-between">
-  <div>
-    <h3 class="text-cyan-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>🔁</span> Instant API Replay
-    </h3>
-    <p class="text-xs text-slate-300 leading-snug">
-      1-click handoff from live logs into <strong>Repeater</strong>. Tweak JSON payloads, query params, or auth tokens to test edge cases in total isolation without repeating manual UI flows.
-    </p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-cyan-300 font-mono">
-    Repeater ➔ Rapid Edge Reproduction
-  </div>
-</div>
-
-<div class="col-card p-3 border border-amber-500/30 bg-slate-900/60 flex flex-col justify-between">
-  <div>
-    <h3 class="text-amber-400 font-bold text-sm mb-1 flex items-center gap-1.5">
-      <span>⚙️</span> CI Steering &amp; Races
-    </h3>
-    <p class="text-xs text-slate-300 leading-snug">
-      Auto-inject mock headers unattended in CI/CD using <strong>Match &amp; Replace</strong>. Stress-test TOCTOU race conditions and rate limits with <strong>Intruder</strong> multi-packet attacks.
-    </p>
-  </div>
-  <div class="mt-2 pt-1 border-t border-slate-700/60 text-[10px] text-amber-300 font-mono">
-    Intruder ➔ Fuzzing &amp; Concurrency
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card py-1.5 px-3 flex items-center justify-between text-xs mt-1 border border-cyan-500/30 bg-slate-900/60 rounded-lg">
-  <div class="text-cyan-200 font-medium leading-snug flex items-center gap-2">
-    <span>💡</span>
-    <span><strong>The QA Advantage:</strong> Security tools excel at low-level packet manipulation, giving QA engineers raw power to simulate failure states application code normally prevents.</span>
-  </div>
-  <span class="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-3">AppSec ➔ QA Superpower</span>
-</div>
-
-<!--
-Presenter Notes:
-- Emphasize the 3 key QA testing wins:
-  1. No code changes needed to test edge cases or error handling.
-  2. Instant reproduction in Repeater saves hours compared to clicking through multi-step browser forms.
-  3. Intruder proves whether microservice balances or promo codes are vulnerable to concurrency race conditions.
-- Bridge to the tools: Now let's explore each tool in the suite starting with the core Proxy Interception engine to capture and tamper with live traffic.
--->
----
-class: pt-1.5 pb-1 px-6
----
-
-# 🔀 Deep Dive: Bi-Directional Duplex Interception
-
-<h3 class="text-slate-300 text-sm mb-1">Visualizing Request and Response Flow Through the MITM Engine</h3>
-
-<div class="flex justify-center items-center w-full mt-0.5">
-  <div class="adorable-arch-container !max-w-[700px] !h-[390px] !max-h-[395px]">
-    <img src="/burp_duplex_intercept.jpg" class="adorable-arch-img" alt="Bi-Directional Duplex Interception" />
-  </div>
-</div>
-
-<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
-  <span class="text-[11.5px] text-slate-200">🔀 <strong>Duplex Control:</strong> Intercept outbound requests to steer backend stubs; intercept responses to test client fallbacks.</span>
-  <span class="text-amber-400 font-mono text-[10.5px] bg-amber-950/60 px-2 py-0.5 rounded ml-2 whitespace-nowrap">Bi-Directional Mutation</span>
-</div>
-
----
-class: pt-1.5 pb-1 px-6
----
-
-# ⚡ Live Intercept in Action
-
-<h3 class="text-slate-300 text-sm mb-1">Pausing, Inspecting, Modifying &amp; Forwarding Packets Mid-Flight</h3>
-
-<div class="flex justify-center items-center w-full mt-0.5">
-  <div class="adorable-arch-container !max-w-[700px] !h-[390px] !max-h-[395px]">
-    <img src="/burp_intercept_action.jpg" class="adorable-arch-img" alt="Live Intercept Action in Burp Suite" />
-  </div>
-</div>
-
-<div class="slide-card text-xs mt-1 py-1 px-3 bg-slate-900/70 border-slate-700/50 flex items-center justify-between rounded-lg">
-  <span class="text-[11.5px] text-slate-200">⏯️ <strong>Action Controls:</strong> <code>Forward</code> passes packet; <code>Drop</code> kills TCP socket; <code>Action</code> sends to Repeater/Intruder.</span>
-  <span class="text-cyan-400 font-mono text-[10.5px] bg-cyan-950/60 px-2 py-0.5 rounded ml-2 whitespace-nowrap">Real-Time Inspection</span>
-</div>
-
-<!--
-Presenter Notes:
-- Demonstrate pausing traffic in Burp Suite Proxy Intercept tab.
-- Show how the browser or curl hangs waiting for operator decision (Forward or Drop).
+- Bridge to the tools: Now that we understand both Proxy interception and how SSL decryption works under the hood, let's explore the rest of Burp Suite's test workbench, starting with Target and Scope.
 -->
 
 ---
@@ -3895,64 +3975,160 @@ class: pt-2 pb-2 px-8
 
 # 🔁 Burp Suite — Repeater: Manual Request Workbench
 
-<h3 class="text-slate-300 text-sm mb-1.5">Modify Headers, Tamper Payloads &amp; Re-Issue API Packets in Total Isolation</h3>
+<h3 class="text-slate-300 text-xs mb-1.5">Zero-UI API Workbench for Ad-Hoc Modification, Edge-Case Probing &amp; Rapid Replay</h3>
 
 <div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
-
-<div class="slide-card p-3 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-emerald-500/40 bg-emerald-950/20 flex flex-col justify-between">
   <div>
-    <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-emerald-500/30">
-      <span class="text-emerald-300 font-bold text-sm flex items-center gap-1.5">
-        <span>🔁</span> Ad-Hoc API Workbench
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-500/30">
+      <span class="text-emerald-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔁</span> The QA Repeater Advantage
       </span>
-      <span class="text-[11px] font-mono text-emerald-300/80 bg-emerald-900/40 px-2 py-0.5 rounded">Cmd+R / Ctrl+R</span>
+      <span class="text-[10px] font-mono text-emerald-300/90 bg-emerald-900/40 px-2 py-0.5 rounded">Cmd+R / Ctrl+R</span>
     </div>
-    <ul class="space-y-1.5 text-xs text-slate-300 leading-snug">
-      <li>• <strong>Instant Handoff:</strong> Select any request in Proxy or Logger and press <code>Cmd+R</code> to clone it into Repeater.</li>
-      <li>• <strong>Isolated Re-Execution:</strong> Tweak headers, JSON fields, or auth tokens and hit <strong>Send</strong> without re-running the browser or test scripts.</li>
-      <li>• <strong>Tab Grouping:</strong> Organize tabs by microservice (e.g. <code>Transfer - Happy</code>, <code>Transfer - Timeout</code>, <code>Transfer - Fraud</code>).</li>
+    <ul class="space-y-1 text-[11px] text-slate-300 leading-snug">
+      <li>• <strong>1-Click Live Clone (<code>Cmd+R</code>):</strong> Clone any captured request from Proxy or Logger with all headers, cookies, and tokens intact.</li>
+      <li>• <strong>Bypass Client-Side Validation:</strong> Test raw backend guards directly—no disabled submit buttons, input masks, or UI restrictions.</li>
+      <li>• <strong>Byte-Level Protocol Control:</strong> Manipulate malformed headers, custom verbs, invalid JSON types, or edge-case Unicode.</li>
+      <li>• <strong>Total Isolation:</strong> Re-issue requests 100 times in seconds without resetting browser sessions or re-running full test suites.</li>
     </ul>
   </div>
-  <div class="mt-2 pt-1 border-t border-emerald-500/30 text-[11px] text-emerald-300 font-mono">
-    ⚡ Fast-feedback loop for debugging API edge cases &amp; negative scenarios.
+  <div class="mt-1.5 pt-1 border-t border-emerald-500/30 text-[10.5px] text-emerald-300 font-mono flex items-center justify-between">
+    <span>⚡ Sub-second feedback loop for edge cases</span>
+    <span class="text-[9.5px] bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">Zero-UI</span>
   </div>
 </div>
-
-<div class="slide-card p-3 border border-slate-700/60 bg-slate-900/40 flex flex-col justify-between">
+<div class="slide-card p-2.5 border border-slate-700/60 bg-slate-900/60 flex flex-col justify-between">
   <div>
     <div class="flex items-center justify-between mb-1 pb-1 border-b border-slate-700/60">
-      <span class="text-slate-100 font-bold text-sm flex items-center gap-1.5">
-        <span>📨</span> Repeater Tab: Tampered Transfer
+      <span class="text-slate-100 font-bold text-xs flex items-center gap-1.5">
+        <span>🖥️</span> Dual-Pane Workbench Anatomy
       </span>
-      <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded">POST :8080</span>
+      <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded">Live Editor</span>
     </div>
-
-```http
-POST /api/v1/transfers HTTP/1.1
-Host: localhost:8080
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOi...
-Mock-Scenario: TRANSFER:FAIL,OTP:EXPIRED
-
-{
-  "fromAccount": "ACC-001",
-  "toAccount": "ACC-002",
-  "amount": 9999999.00
-}
-```
-
+    <div class="bg-slate-950/90 border border-slate-800 rounded px-2 py-0.5 text-[9.5px] font-mono flex items-center justify-between mb-1">
+      <div class="flex items-center gap-1.5">
+        <span class="text-emerald-400 font-bold bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.2 rounded">▶ Send</span>
+        <span class="text-slate-500">|</span>
+        <span class="text-slate-300 bg-slate-900 px-1 py-0.2 rounded border border-slate-800">◀</span>
+        <span class="text-slate-300 bg-slate-900 px-1 py-0.2 rounded border border-slate-800">▶</span>
+        <span class="text-slate-400 text-[8.5px]">(History)</span>
+      </div>
+      <div class="text-[9px] text-slate-400">Target: <span class="text-cyan-300 font-mono">127.0.0.1:8080</span></div>
+    </div>
+    <div class="grid grid-cols-2 gap-1.5 font-mono text-[9px] leading-tight">
+      <div class="bg-slate-950/95 border border-slate-800 rounded p-1.5 space-y-0.5">
+        <div class="text-slate-400 pb-0.5 border-b border-slate-800 font-bold text-[8.5px]">Request (Editable)</div>
+        <div class="text-purple-300">POST <span class="text-slate-200">/api/transfers</span></div>
+        <div class="text-slate-400">Host: localhost:8080</div>
+        <div class="text-amber-300 font-semibold">Mock-Scenario: FAIL</div>
+        <div class="text-slate-400">Content-Type: json</div>
+        <div class="text-slate-500 pt-0.5">{"amount": -50.00}</div>
+      </div>
+      <div class="bg-slate-950/95 border border-slate-800 rounded p-1.5 space-y-0.5">
+        <div class="text-slate-400 pb-0.5 border-b border-slate-800 font-bold text-[8.5px] flex justify-between">
+          <span>Response</span>
+          <span class="text-rose-400 font-bold">400 Bad Req</span>
+        </div>
+        <div class="text-slate-400">Time: <span class="text-emerald-300">12ms</span> | 142B</div>
+        <div class="text-slate-400">Content-Type: json</div>
+        <div class="text-rose-300 pt-0.5">{"error":"INVALID"}</div>
+        <div class="text-slate-500">{"code":"ERR_400"}</div>
+      </div>
+    </div>
   </div>
-  <div class="mt-1 pt-1 border-t border-slate-700/60 text-[11px] text-slate-300 font-mono">
-    ➔ Response: HTTP/1.1 403 Forbidden {"error":"LIMIT_EXCEEDED"}
+  <div class="mt-1.5 pt-1 border-t border-slate-700/60 text-[10px] text-slate-400 flex items-center justify-between">
+    <span>View Modes: <strong class="text-slate-200">Pretty</strong> · Raw · Hex · Render</span>
+    <span class="text-[9px] font-mono text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">Dual-Pane</span>
   </div>
 </div>
-
 </div>
 
-<div class="slide-card text-xs mt-2 p-1.5 bg-slate-900/70 border-emerald-500/40 flex items-center justify-between">
-  <span class="text-slate-200">💡 <strong>Productivity Tip:</strong> Use Repeater history to step backward/forward through request mutations and inspect response variations.</span>
-  <span class="text-emerald-300 font-mono text-[10px] bg-emerald-950/60 px-2 py-0.5 rounded">Zero-UI Replay</span>
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11px] text-slate-200">💡 <strong>Why Not Postman?</strong> Postman normalizes headers and runs pre-scripts. Repeater sends the <em>exact raw socket bytes</em> you type, exposing true backend validation crashes.</span>
+  <span class="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Raw Socket Power</span>
 </div>
+
+<!--
+Presenter Notes:
+- Introduce Repeater as the #1 daily driver for developers and QA engineers: An isolated HTTP/S scratchpad.
+- Contrast with Postman: Postman is great for saved collections, but Burp Repeater gives 100% control over raw byte payloads and malformed headers.
+- Highlight the 1-click clone: Cmd+R instantly copies any captured request from Proxy or Logger without manual setup.
+-->
+
+---
+class: pt-2 pb-1.5 px-8
+---
+
+# 🔬 Burp Suite — Repeater: Advanced Triage &amp; QA Workflow
+
+<h3 class="text-slate-300 text-xs mb-1.5">Sidecar Inspector, Tab Organization, Iterative Mutation &amp; Tool Handoffs</h3>
+
+<div class="grid grid-cols-2 gap-3 mt-0.5 flex-1">
+<div class="slide-card p-2.5 border border-cyan-500/40 bg-cyan-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-cyan-500/30">
+      <span class="text-cyan-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🛠️</span> Workbench Superpowers
+      </span>
+      <span class="text-[10px] font-mono text-cyan-300/90 bg-cyan-900/40 px-2 py-0.5 rounded">Power Features</span>
+    </div>
+    <ul class="space-y-1 text-[11px] text-slate-300 leading-snug">
+      <li>• <strong>Tab Groups &amp; Color Coding:</strong> Organize requests by microservice or scenario (e.g. <span class="text-emerald-300 font-semibold">Auth [Green]</span>, <span class="text-amber-300 font-semibold">Transfer [Amber]</span>, <span class="text-rose-300 font-semibold">Fraud [Red]</span>).</li>
+      <li>• <strong>Sidecar Inspector:</strong> Real-time decoding of URL parameters, JSON fields, cookies, and Base64/JWT tokens directly in the right sidebar.</li>
+      <li>• <strong>History Undo/Redo (<code>◀</code> <code>▶</code>):</strong> Every click of <em>Send</em> snapshots the request/response pair. Step backward and forward to review previous variations.</li>
+      <li>• <strong>Target Switching:</strong> Change destination host/port on the fly (e.g. switch between local container <code>:8081</code> and staging gateway).</li>
+    </ul>
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-cyan-500/30 text-[10.5px] text-cyan-300 font-mono flex items-center justify-between">
+    <span>🔍 Built-in JWT &amp; parameter inspection</span>
+    <span class="text-[9.5px] bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30">Inspector</span>
+  </div>
+</div>
+<div class="slide-card p-2.5 border border-amber-500/40 bg-amber-950/20 flex flex-col justify-between">
+  <div>
+    <div class="flex items-center justify-between mb-1 pb-1 border-b border-amber-500/30">
+      <span class="text-amber-300 font-bold text-xs flex items-center gap-1.5">
+        <span>🔄</span> The 4-Step QA Tampering Loop
+      </span>
+      <span class="text-[10px] font-mono text-amber-300/90 bg-amber-900/40 px-2 py-0.5 rounded">Triage Seam</span>
+    </div>
+    <div class="space-y-1 text-xs text-slate-300">
+      <div class="bg-slate-950/90 border border-slate-800 rounded p-1 flex items-start gap-1.5">
+        <span class="text-cyan-400 font-bold font-mono text-[10.5px]">1. Capture:</span>
+        <span class="text-[11px] text-slate-300">Intercept live request from Playwright/curl ➔ press <code class="text-cyan-300 font-mono text-[9.5px]">Cmd+R</code>.</span>
+      </div>
+      <div class="bg-slate-950/90 border border-slate-800 rounded p-1 flex items-start gap-1.5">
+        <span class="text-amber-400 font-bold font-mono text-[10.5px]">2. Steer:</span>
+        <span class="text-[11px] text-slate-300">Add <code class="text-amber-300 font-mono text-[9.5px]">Mock-Scenario: OTP:EXPIRED</code> to steer WireMock.</span>
+      </div>
+      <div class="bg-slate-950/90 border border-slate-800 rounded p-1 flex items-start gap-1.5">
+        <span class="text-rose-400 font-bold font-mono text-[10.5px]">3. Mutate:</span>
+        <span class="text-[11px] text-slate-300">Tweak boundary fields (negative amounts, nulls, long strings).</span>
+      </div>
+      <div class="bg-slate-950/90 border border-slate-800 rounded p-1 flex items-start gap-1.5">
+        <span class="text-purple-400 font-bold font-mono text-[10.5px]">4. Handoff:</span>
+        <span class="text-[11px] text-slate-300">Right-click ➔ <strong>Send to Intruder</strong> (fuzz) or <strong>Comparer</strong> (diff).</span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-1.5 pt-1 border-t border-amber-500/30 text-[10.5px] text-amber-300 font-mono flex items-center justify-between">
+    <span>⚡ Instant handoff to Intruder &amp; Comparer</span>
+    <span class="text-[9.5px] bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30">Handoff</span>
+  </div>
+</div>
+</div>
+
+<div class="slide-card py-1 px-3 flex items-center justify-between text-xs mt-1 border border-slate-700/60 bg-slate-900/70 rounded-lg">
+  <span class="text-[11px] text-slate-200">🛡️ <strong>The 5-Second Triage:</strong> Reproduce a failing CI integration test in Repeater in 5 seconds without waiting for a 2-minute build and browser run.</span>
+  <span class="text-[9.5px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded whitespace-nowrap ml-2">Fast Feedback</span>
+</div>
+
+<!--
+Presenter Notes:
+- Walk through the 4-step loop: Capture from live traffic, inject WireMock steering headers, mutate boundary parameters, and hand off to Intruder or Comparer.
+- Show the Inspector: Point out how it decodes parameters and JWTs on the fly so testers don't paste secrets into third-party websites like jwt.io.
+-->
 
 ---
 class: pt-2 pb-2 px-8

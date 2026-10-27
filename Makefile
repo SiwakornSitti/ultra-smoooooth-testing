@@ -1,4 +1,4 @@
-.PHONY: all build clean deps deps-go deps-node deps-playwright sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides fmt vet lint check slides diagram
+.PHONY: all build clean deps deps-go deps-node deps-playwright sync tidy setup setup-dev docker-start destroy migrate seed test test-unit test-integration test-e2e test-all build-slides export-pdf export-pptx fmt vet lint check slides diagram
 
 all: build
 
@@ -101,6 +101,14 @@ test-all: test test-integration test-e2e
 build-slides:
 	@echo "Building static Slidev presentation..."
 	cd slides && npx @slidev/cli build --base /
+
+export-pdf:
+	@echo "Exporting slides to PDF..."
+	cd slides && npm run export
+
+export-pptx:
+	@echo "Exporting slides to PowerPoint PPTX..."
+	cd slides && npm run export:pptx
 
 fmt:
 	@echo "Formatting Go files..."
