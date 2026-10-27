@@ -18,6 +18,7 @@ deps-node:
 
 deps-playwright:
 	@echo "Installing Playwright browser binaries..."
+	@cd slides && npx playwright install chromium
 	@cd tests && npx playwright install
 
 build:
