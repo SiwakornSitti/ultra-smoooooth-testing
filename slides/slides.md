@@ -2987,11 +2987,13 @@ curl -s -X POST \
 
 </div>
 
-<div v-pre class="slide-card py-2 px-3 flex items-center justify-between text-xs border border-emerald-500/30 bg-slate-900/70 rounded-lg">
-  <span class="text-emerald-200 text-xs flex items-center gap-2">
-    <span class="text-base">🌐</span> <strong>Web UI Verification:</strong> Open <code class="text-emerald-300 font-mono text-[11px]">http://localhost:8088/__admin/webapp</code> ➔ Inspect <strong>Matched Stubs</strong> tab.
-  </span>
-  <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded whitespace-nowrap ml-2">Matched Tab</span>
+<div v-pre class="slide-card py-1.5 px-3 text-xs border border-emerald-500/30 bg-slate-900/70 rounded-lg space-y-1">
+  <div class="text-cyan-200 leading-snug">
+    <strong>📦 Container technology:</strong> Packages WireMock with its dependencies in an isolated runtime; Docker maps its port <code>8080</code> to <code>localhost:8088</code> for this lab.
+  </div>
+  <div class="text-emerald-200 leading-snug">
+    <strong>🌐 Web UI Verification:</strong> Open <code class="text-emerald-300 font-mono text-[11px]">http://localhost:8088/__admin/webapp</code> ➔ Inspect <strong>Matched Stubs</strong> tab.
+  </div>
 </div>
 
 <!--
@@ -5487,12 +5489,12 @@ layout: section
     <div class="w-52 flex-shrink-0">
       <div class="flex items-center gap-2">
         <span class="text-base">📦</span>
-        <span class="font-mono text-emerald-400 font-bold text-sm">Code-Driven Containers</span>
+        <span class="font-mono text-emerald-400 font-bold text-sm">Container Technology</span>
       </div>
-      <div class="text-[11px] text-slate-400 pl-6">Real Docker Fixtures</div>
+      <div class="text-[11px] text-slate-400 pl-6">Portable, isolated runtime</div>
     </div>
     <div class="flex-grow text-xs text-slate-300">
-      Provisions <strong>real Docker containers</strong> (PostgreSQL, WireMock, Redis) directly as code fixtures in TypeScript.
+      An image packages an app and its dependencies. The container isolates its process, filesystem, and network while sharing the host OS kernel.
     </div>
     <div class="w-[380px] flex-shrink-0 bg-slate-950/90 rounded border border-slate-700/60 px-3 py-2 font-mono text-xs text-left">
       <span class="text-cyan-400">new</span> <span class="text-amber-300">PostgreSqlContainer</span>(<span class="text-emerald-400">"postgres:16"</span>)
@@ -5538,6 +5540,36 @@ layout: section
   <span class="text-slate-300">
     <strong>Production Parity</strong>: No in-memory approximations (H2/SQLite) — tests run against the exact PostgreSQL image, extensions, and schema scripts deployed to production.
   </span>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 📦 What Container Technology Provides
+
+### Package a dependency once, then run it in an isolated, disposable environment
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/70">
+    <div class="text-2xl mb-2">🧱</div>
+    <h3 class="text-cyan-300 text-base font-bold mb-1">Image</h3>
+    <p class="text-slate-300 text-sm">A template containing the application, runtime, and required files. Example: <code>postgres:16</code>.</p>
+  </div>
+  <div class="slide-card p-4 border border-emerald-500/40 bg-slate-900/70">
+    <div class="text-2xl mb-2">📦</div>
+    <h3 class="text-emerald-300 text-base font-bold mb-1">Container</h3>
+    <p class="text-slate-300 text-sm">A running instance with isolated processes, filesystem, and network. It shares the host OS kernel.</p>
+  </div>
+  <div class="slide-card p-4 border border-violet-500/40 bg-slate-900/70">
+    <div class="text-2xl mb-2">🧪</div>
+    <h3 class="text-violet-300 text-base font-bold mb-1">Test</h3>
+    <p class="text-slate-300 text-sm">Testcontainers starts the dependency, exposes a temporary host port, then removes it after use.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-4 p-3 text-sm border border-amber-500/40 bg-amber-950/20 text-slate-200">
+  <strong class="text-amber-300">In this suite:</strong> PostgreSQL and WireMock run as real services for the test, without installing either service directly on the developer's machine.
 </div>
 
 ---
@@ -5596,56 +5628,92 @@ class: pt-2 pb-1 px-8
 
 # 🧪 Testcontainers — Network Isolation & Dynamic Ports
 
-<h3 class="text-slate-300 text-xs mb-1">Code-Driven Container Helper Architecture (<code>tests/specs/support/containers.ts</code>)</h3>
+<h3 class="text-slate-300 text-xs mb-1">Integration Fixture: Internal Aliases &amp; Dynamic Host Ports (<code>tests/specs/integration/bff.spec.ts</code>)</h3>
 
 <div class="hermetic-code-wrapper">
 
 ```typescript
-// 1. Create isolated Docker bridge network for the test session
-export const startHermeticNetwork = () => new Network().start();
+// From tests/specs/integration/bff.spec.ts
+const network = await startNetwork();
+const db = await startPostgres(network); // Internal alias: db:5432
+const wiremock = await startWiremock(network, "wiremock", [
+  wiremockMapping("paotang", { flat: true }),
+]);
+const user = await startUserService(network, db, {
+  PAOTANG_SERVICE_URL: "http://wiremock:8080",
+});
 
-// 2. Start PostgreSQL & retrieve dynamic random host port
-export const startPostgres = (network: StartedNetwork) =>
-  new PostgreSqlContainer("postgres:18-alpine")
-    .withNetwork(network)
-    .withNetworkAliases("postgres")
-    .withDatabase("ultrasmooth")
-    .start();
-
-// 3. Inject dynamic connection URLs into application runtime
-process.env.DB_URL = postgres.getConnectionString();
-process.env.WIREMOCK_URL = `http://localhost:${wiremock.getMappedPort(8080)}`;
+// The test runner reaches exposed service ports through mapped host ports.
+const host = user.getHost();
+const port = user.getMappedPort(8080);
 ```
 
 </div>
 
 <div class="slide-card text-xs mt-1 p-1.5 mb-0">
-  🔌 <strong>Dynamic Resolution</strong>: Containers communicate internally via network aliases (<code>postgres:5432</code>), while test runners talk via randomized external mapped ports—guaranteeing zero port collisions in CI.
+  🔌 <strong>Dynamic Resolution</strong>: Containers communicate internally via network aliases (<code>db:5432</code>, <code>wiremock:8080</code>), while the test runner reaches exposed ports through randomized host mappings.
 </div>
 
 ---
 class: pt-2 pb-1 px-8
 ---
 
-# 🗄️ Testcontainers — Database Migration Schema & Seeds
+# ⏳ Testcontainers — Wait Until Services Are Ready
 
-<h3 class="text-slate-300 text-xs mb-1">Running Production DDL Scripts in Ephemeral Containers (<code>tests/specs/support/containers.ts</code>)</h3>
+### A running container process does not guarantee that its service can accept requests
+
+<div class="slide-card p-2 mt-2 border border-violet-500/40 bg-violet-950/20 text-xs text-slate-200">
+  <strong class="text-violet-300">A container</strong> is a running instance of an image: an app process with an isolated filesystem and network that shares the host OS kernel.
+</div>
+
+<div class="grid grid-cols-2 gap-3 mt-3 items-stretch">
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-sm font-bold mb-2">Wait for an HTTP health route</h3>
+
+```typescript
+new GenericContainer(`${SERVICE_NAME.USER}:test`)
+  .withExposedPorts(PORT)
+  .withWaitStrategy(Wait.forHttp(HEALTH_PATH, PORT))
+  .start();
+```
+
+    <p class="text-slate-300 text-xs mt-2">The helper resolves only after the service health endpoint responds.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <h3 class="text-emerald-300 text-sm font-bold mb-2">Use the right readiness check</h3>
+    <div class="space-y-2 text-slate-300 text-xs">
+      <p><strong class="text-emerald-300">Application services:</strong> wait for their configured health path.</p>
+      <p><strong class="text-emerald-300">WireMock:</strong> this fixture waits for <code>/__admin/health</code>.</p>
+      <p><strong class="text-emerald-300">Startup failures:</strong> inspect container logs and dependency order before increasing timeouts.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-2.5 border border-amber-500/40 bg-amber-950/20 text-sm text-slate-200">
+  <strong class="text-amber-300">In this repo:</strong> service containers use <code>Wait.forHttp(HEALTH_PATH, PORT)</code>; WireMock uses <code>Wait.forHttp("/__admin/health", PORT)</code> in <code>tests/specs/support/containers.ts</code>.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🗄️ Testcontainers — Database Migrations & Test Data
+
+<h3 class="text-slate-300 text-xs mb-1">Apply Service SQL Migrations; Seed Test Records Separately (<code>tests/specs/support/containers.ts</code>)</h3>
 
 <div class="hermetic-code-wrapper">
 
 ```typescript
-// 1. Service migration directories to execute in container
-const SERVICES = ["user-service", "bank-account-service", "ekyc-service", "transfer-service"];
-
-// 2. Execute SQL migrations via container exec
-export async function runMigrations(db: StartedPostgreSqlContainer) {
-  for (const name of SERVICES) {
-    await db.exec(["sh", "-c",
-      `for f in /test-data/migration/${name}/*.sql; do ` +
-      `PGPASSWORD=${db.getPassword()} psql -v ON_ERROR_STOP=1 ` +
-      `-U ${db.getUsername()} -d ${db.getDatabase()} -f "$f"; done`
-    ]);
-  }
+// Inside runDatabaseScripts(...) in containers.ts
+const result = await database.exec([
+  "sh",
+  "-c",
+  `for file in /test-data/${directory}/${name}/*.sql; do [ -e "$file" ] || continue; ` +
+    `PGPASSWORD=${database.getPassword()} psql -v ON_ERROR_STOP=1 ` +
+    `-U ${database.getUsername()} -d ${database.getDatabase()} -f "$file"; done`,
+]);
+if (result.exitCode !== 0) {
+  throw new Error(`${directory} failed for ${name}: ${result.stderr || result.output}`);
 }
 ```
 
@@ -5654,16 +5722,88 @@ export async function runMigrations(db: StartedPostgreSqlContainer) {
 <div class="grid grid-cols-3 gap-2 mt-1 text-[11px]">
   <div class="slide-card p-1.5 mb-0 border-indigo-500/30">
     <strong class="text-indigo-400 font-bold block text-[11px]">📁 Migration DDL</strong>
-    <p class="text-slate-300 leading-tight text-[10px]">Executes identical production <code>001-*.sql</code> scripts.</p>
+    <p class="text-slate-300 leading-tight text-[10px]">Creates the tables and constraints services expect, so tests can run real queries and catch schema mismatches.</p>
   </div>
   <div class="slide-card p-1.5 mb-0 border-emerald-500/30">
     <strong class="text-emerald-400 font-bold block text-[11px]">🛡️ Strict Abort</strong>
-    <p class="text-slate-300 leading-tight text-[10px]"><code>ON_ERROR_STOP=1</code> aborts immediately on syntax errors.</p>
+    <p class="text-slate-300 leading-tight text-[10px]"><code>ON_ERROR_STOP=1</code> plus the exit-code check fails setup on SQL errors.</p>
   </div>
   <div class="slide-card p-1.5 mb-0 border-cyan-500/30">
-    <strong class="text-cyan-400 font-bold block text-[11px]">🌱 Fresh Seeds</strong>
-    <p class="text-slate-300 leading-tight text-[10px]">Loads deterministic baseline data with zero state bleed.</p>
+    <strong class="text-cyan-400 font-bold block text-[11px]">🌱 Test Data</strong>
+    <p class="text-slate-300 leading-tight text-[10px]">API seeding is default; <code>SEED_MODE=direct</code> uses SQL inserts.</p>
   </div>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🗄️ Why Run Database Migrations in Tests?
+
+### A fresh database is empty; migrations build the schema the service expects
+
+<div class="grid grid-cols-4 gap-2 mt-4 items-stretch">
+  <div class="slide-card p-3 border border-slate-600/60 bg-slate-900/70">
+    <div class="text-cyan-300 font-bold text-sm mb-2">1 · Fresh database</div>
+    <p class="text-slate-300 text-xs">Each test run starts with a clean PostgreSQL instance.</p>
+  </div>
+  <div class="slide-card p-3 border border-indigo-500/40 bg-slate-900/70">
+    <div class="text-indigo-300 font-bold text-sm mb-2">2 · Apply migrations</div>
+    <p class="text-slate-300 text-xs">Run the same ordered SQL changes used to create and evolve the service schema.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <div class="text-emerald-300 font-bold text-sm mb-2">3 · Seed test records</div>
+    <p class="text-slate-300 text-xs">Add only the records needed for this scenario, separately from schema setup.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <div class="text-violet-300 font-bold text-sm mb-2">4 · Exercise real queries</div>
+    <p class="text-slate-300 text-xs">Run service code against the real database structure and constraints.</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-3 gap-2 mt-3">
+  <div class="slide-card p-2 border border-rose-500/30 bg-rose-950/20 text-xs text-slate-200"><strong class="text-rose-300">Catch migration failures</strong><br />Invalid SQL stops test setup immediately.</div>
+  <div class="slide-card p-2 border border-amber-500/30 bg-amber-950/20 text-xs text-slate-200"><strong class="text-amber-300">Catch schema mismatches</strong><br />Missing columns or constraints surface in integration tests.</div>
+  <div class="slide-card p-2 border border-cyan-500/30 bg-cyan-950/20 text-xs text-slate-200"><strong class="text-cyan-300">Keep runs repeatable</strong><br />Every run follows the same schema setup sequence.</div>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🗄️ Database Migration Tools
+
+### Choose a runner to version, order, and apply schema changes
+
+<div class="grid grid-cols-3 gap-2 mt-4">
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-sm font-bold mb-1">This repo: Testcontainers + <code>psql</code></h3>
+    <p class="text-slate-300 text-xs">Starts clean PostgreSQL and runs service SQL files with fail-fast error handling.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <h3 class="text-emerald-300 text-sm font-bold mb-1"><a href="https://documentation.red-gate.com/flyway/flyway-concepts/migrations" target="_blank">Flyway</a></h3>
+    <p class="text-slate-300 text-xs">Applies ordered, versioned SQL migrations and records applied versions.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <h3 class="text-violet-300 text-sm font-bold mb-1"><a href="https://docs.liquibase.com/concepts/changelogs/changeset.html" target="_blank">Liquibase</a></h3>
+    <p class="text-slate-300 text-xs">Tracks schema changes as changesets in a changelog.</p>
+  </div>
+  <div class="slide-card p-3 border border-amber-500/40 bg-slate-900/70">
+    <h3 class="text-amber-300 text-sm font-bold mb-1"><a href="https://github.com/golang-migrate/migrate" target="_blank">golang-migrate</a> / <a href="https://pressly.github.io/goose/" target="_blank">Goose</a></h3>
+    <p class="text-slate-300 text-xs">Go-friendly migration runners; Goose supports SQL files and Go migration functions.</p>
+  </div>
+  <div class="slide-card p-3 border border-sky-500/40 bg-slate-900/70">
+    <h3 class="text-sky-300 text-sm font-bold mb-1"><a href="https://atlasgo.io/docs" target="_blank">Atlas</a></h3>
+    <p class="text-slate-300 text-xs">Plans, lints, and applies declarative or versioned schema changes.</p>
+  </div>
+  <div class="slide-card p-3 border border-blue-500/40 bg-slate-900/70">
+    <h3 class="text-blue-300 text-sm font-bold mb-1"><a href="https://www.prisma.io/docs/orm/v7/prisma-migrate" target="_blank">Prisma Migrate</a></h3>
+    <p class="text-slate-300 text-xs">Generates customizable SQL migration files from a Prisma schema and tracks migration history.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">Test the migration files against the production database engine.</strong> Here, Testcontainers provides PostgreSQL and <code>psql</code> executes the service SQL files; the other tools add migration history and workflow management.
 </div>
 
 ---
@@ -5677,17 +5817,24 @@ class: pt-2 pb-1 px-8
 <div class="hermetic-code-wrapper">
 
 ```typescript
-// tests/specs/integration/bff.spec.ts
+// tests/specs/integration/bff.spec.ts (lifecycle excerpt)
 test.beforeAll(async () => {
-  const network = await startHermeticNetwork();
-  const db = await startPostgres(network);
-  const wm = await startWiremock(network, "wiremock", [wiremockMapping("paotang")]);
-  await runMigrations(db);
-  await runSeedData(db);
+  network = await startNetwork();
+  dbContainer = await startPostgres(network);
+  wiremockContainer = await startWiremock(network, "wiremock", [
+    wiremockMapping("paotang", { flat: true }),
+    wiremockMapping("sms", { flat: true }),
+  ]);
+  // Other service starts are omitted; migrations and API seeding follow.
+  await runMigrations(dbContainer);
 });
 
 test.afterAll(async () => {
-  await stopHermeticSuite(); // Guaranteed Auto-Ryuk cleanup
+  await stopAll(
+    [bffContainer, otpServiceContainer, ekycServiceContainer, transferServiceContainer,
+      bankAccountServiceContainer, userServiceContainer, wiremockContainer, dbContainer],
+    network
+  );
 });
 ```
 
@@ -5783,6 +5930,293 @@ layout: section
   <span class="text-slate-300">
     <strong>Web-First Auto-Waiting</strong>: Playwright automatically waits for elements to be actionable (visible, stable, enabled) before clicking, eliminating flaky <code>sleep()</code> delays.
   </span>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎭 Reliable UI Tests Without Fixed Sleeps
+
+### Playwright waits for actionable elements and retries web assertions
+
+<div class="grid grid-cols-2 gap-3 mt-4 items-stretch">
+  <div class="slide-card p-4 border border-emerald-500/40 bg-slate-900/70">
+    <h3 class="text-emerald-300 text-base font-bold mb-2">Before an action</h3>
+    <p class="text-slate-300 text-sm">A click waits until the target is visible, stable, enabled, and able to receive events.</p>
+  </div>
+  <div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-base font-bold mb-2">For an assertion</h3>
+    <p class="text-slate-300 text-sm">A web-first assertion checks again until the expected state appears or times out.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">Why it helps:</strong> tests wait for the UI condition they need instead of guessing with fixed delays. <a class="text-indigo-300 underline" href="https://playwright.dev/docs/actionability" target="_blank">Auto-waiting docs</a>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎭 Test Browser Journeys and APIs Together
+
+### Use one test flow to prepare server state and verify what the user sees
+
+<div class="grid grid-cols-3 gap-3 mt-4 items-stretch">
+  <div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/70">
+    <div class="text-cyan-300 font-bold text-base mb-2">1 · Arrange</div>
+    <p class="text-slate-300 text-sm">Send an API request to create or inspect the server-side state.</p>
+  </div>
+  <div class="slide-card p-4 border border-violet-500/40 bg-slate-900/70">
+    <div class="text-violet-300 font-bold text-base mb-2">2 · Act</div>
+    <p class="text-slate-300 text-sm">Use the browser to follow the user's real interface flow.</p>
+  </div>
+  <div class="slide-card p-4 border border-emerald-500/40 bg-slate-900/70">
+    <div class="text-emerald-300 font-bold text-base mb-2">3 · Verify</div>
+    <p class="text-slate-300 text-sm">Assert both the visible result and any important API post-condition.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">Why it helps:</strong> API calls can set up or verify data without replacing the browser checks that prove the user experience. <a class="text-indigo-300 underline" href="https://playwright.dev/docs/api-testing" target="_blank">API testing docs</a>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎭 Reuse Tests Across Browser Projects
+
+### Configure a project for each browser or device you need to support
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-4 border border-amber-500/40 bg-slate-900/70 text-center">
+    <div class="text-3xl mb-2">🟦</div>
+    <h3 class="text-amber-300 text-base font-bold">Chromium</h3>
+    <p class="text-slate-400 text-xs mt-1">Chrome and Edge engine</p>
+  </div>
+  <div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/70 text-center">
+    <div class="text-3xl mb-2">🟧</div>
+    <h3 class="text-cyan-300 text-base font-bold">Firefox</h3>
+    <p class="text-slate-400 text-xs mt-1">Firefox engine</p>
+  </div>
+  <div class="slide-card p-4 border border-violet-500/40 bg-slate-900/70 text-center">
+    <div class="text-3xl mb-2">🧭</div>
+    <h3 class="text-violet-300 text-base font-bold">WebKit</h3>
+    <p class="text-slate-400 text-xs mt-1">Safari engine</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">Why it helps:</strong> the same test can reveal browser-specific behavior; projects also support device emulation. <a class="text-indigo-300 underline" href="https://playwright.dev/docs/test-projects" target="_blank">Project configuration docs</a>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎭 Debug Failures with Trace Viewer
+
+### Review each test action and the page state around it
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-base font-bold mb-2">Action timeline</h3>
+    <p class="text-slate-300 text-sm">See what Playwright did and where it waited or failed.</p>
+  </div>
+  <div class="slide-card p-4 border border-violet-500/40 bg-slate-900/70">
+    <h3 class="text-violet-300 text-base font-bold mb-2">Page snapshots</h3>
+    <p class="text-slate-300 text-sm">Inspect the DOM and visible page before and after an action.</p>
+  </div>
+  <div class="slide-card p-4 border border-amber-500/40 bg-slate-900/70">
+    <h3 class="text-amber-300 text-base font-bold mb-2">Network activity</h3>
+    <p class="text-slate-300 text-sm">Review requests and responses captured during the test.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">Why it helps:</strong> a failed CI run can leave evidence to inspect instead of relying on a local reproduction. <a class="text-indigo-300 underline" href="https://playwright.dev/docs/trace-viewer" target="_blank">Trace Viewer docs</a>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎭 Playwright Limitations: Know What It Doesn’t Prove
+
+### Use browser tests for user-visible behavior, and other checks for the risks they cannot see
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <h3 class="text-violet-300 text-base font-bold mb-2">📱 Mobile web: yes · Native hardware: no</h3>
+    <p class="text-slate-300 text-sm">Playwright can emulate mobile browser settings such as viewport, user agent, and touch. It does not verify native app code, biometrics, or physical sensors.</p>
+    <p class="text-xs mt-2"><a class="text-violet-300 underline" href="https://playwright.dev/docs/emulation" target="_blank">Playwright emulation docs</a></p>
+  </div>
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-base font-bold mb-2">🧪 E2E is a broad check</h3>
+    <p class="text-slate-300 text-sm">A failing browser journey crosses many components and can be slower to diagnose. Keep unit and integration tests for fast, focused feedback.</p>
+  </div>
+  <div class="slide-card p-3 border border-amber-500/40 bg-slate-900/70">
+    <h3 class="text-amber-300 text-base font-bold mb-2">🌐 Third parties can change</h3>
+    <p class="text-slate-300 text-sm">A browser test cannot control a partner’s uptime or data. Stub external calls for repeatable tests, then verify partner contracts separately.</p>
+    <p class="text-xs mt-2"><a class="text-amber-300 underline" href="https://playwright.dev/docs/best-practices#avoid-testing-third-party-dependencies" target="_blank">Playwright guidance</a></p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">In this deck:</strong> Playwright tests browser journeys, WireMock controls partner behavior, and the mobile bridge example mocks native APIs.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 📱 Choosing a Mobile Testing Tool
+
+### Match the tool to the part of the mobile experience you need to verify
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-base font-bold mb-2">🌐 Playwright</h3>
+    <p class="text-slate-300 text-sm">Best fit for mobile websites: emulate phone browsers, touch, and viewport settings in the existing web test suite.</p>
+    <p class="text-xs mt-2 text-cyan-200">Use for responsive UI and browser journeys.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <h3 class="text-violet-300 text-base font-bold mb-2">📲 Appium</h3>
+    <p class="text-slate-300 text-sm">Code-first automation for native and hybrid Android or iOS apps, using platform drivers.</p>
+    <p class="text-xs mt-2 text-violet-200">Use when tests must interact with the installed app.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <h3 class="text-emerald-300 text-base font-bold mb-2">🧰 Katalon</h3>
+    <p class="text-slate-300 text-sm">A visual test authoring option for mobile apps; Studio uses Appium, and TestCloud can run tests on real devices.</p>
+    <p class="text-xs mt-2 text-emerald-200">Use for low-code workflows and managed device coverage.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">For this workshop:</strong> keep Playwright for web and mobile web; choose Katalon or Appium when native app behavior needs real-device coverage.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 📱 Start by Identifying the App Type
+
+### The test target determines which tool and device coverage you need
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-base font-bold mb-2">🌐 Mobile website</h3>
+    <p class="text-slate-300 text-sm">Runs in a phone browser. Check responsive layout, touch interactions, and browser behavior with Playwright.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <h3 class="text-violet-300 text-base font-bold mb-2">🔗 Hybrid app</h3>
+    <p class="text-slate-300 text-sm">Combines native screens with web content in a WebView. Decide which layer owns each behavior before writing the test.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <h3 class="text-emerald-300 text-base font-bold mb-2">📲 Native app</h3>
+    <p class="text-slate-300 text-sm">Installed iOS or Android app. Use native mobile automation such as Appium or Katalon for app-level flows.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-indigo-500/40 bg-indigo-950/20 text-sm text-slate-200">
+  <strong class="text-indigo-300">Device coverage:</strong> emulators and simulators are fast for routine checks; run important flows on real devices to catch hardware and OS-specific behavior.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# ✅ Reliable UI Test Habits: Web &amp; Native
+
+### The principles are shared; selectors and commands depend on the tool
+
+<div class="grid grid-cols-2 gap-3 mt-4">
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <h3 class="text-cyan-300 text-base font-bold mb-1">1. Find elements by meaning</h3>
+    <p class="text-slate-300 text-sm">Prefer accessibility labels or stable test IDs over screen coordinates that break when layouts move.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <h3 class="text-violet-300 text-base font-bold mb-1">2. Wait for a real condition</h3>
+    <p class="text-slate-300 text-sm">Wait for a screen or control to appear; avoid fixed sleeps that make tests slow and flaky.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <h3 class="text-emerald-300 text-base font-bold mb-1">3. Assert the user outcome</h3>
+    <p class="text-slate-300 text-sm">Check that sign-in succeeds or an error is shown, not only that a tap was performed.</p>
+  </div>
+  <div class="slide-card p-3 border border-amber-500/40 bg-slate-900/70">
+    <h3 class="text-amber-300 text-base font-bold mb-1">4. Keep each run independent</h3>
+    <p class="text-slate-300 text-sm">Start from known app and account state so one test does not depend on another test's leftovers.</p>
+  </div>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎭 Your First Playwright Test
+
+### Navigate to a page and assert the behavior a visitor should see
+
+<div class="grid grid-cols-2 gap-3 mt-3 items-stretch">
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+
+```typescript
+import { test, expect } from "@playwright/test";
+
+test("redirects visitors to sign in", async ({ page }) => {
+  await page.goto(websiteUrl);
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.getByTestId("btn-paotang-login")).toBeVisible();
+});
+```
+
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70 space-y-2">
+    <p class="text-slate-200 text-sm"><strong class="text-cyan-300">page</strong> is the isolated browser page supplied by Playwright.</p>
+    <p class="text-slate-200 text-sm"><strong class="text-cyan-300">websiteUrl</strong> points to the website container's mapped host port.</p>
+    <p class="text-slate-200 text-sm"><strong class="text-cyan-300">expect</strong> checks the URL and button visibility.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-2 border border-amber-500/40 bg-amber-950/20 text-sm text-slate-200">
+  <strong class="text-amber-300">Run it:</strong> from <code>tests/</code>, use <code>bun run test:e2e</code>. The suite starts its containers in <code>beforeAll</code>.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎭 Fill a Form and Assert the Feedback
+
+### Playwright can check both the action and the form's response
+
+<div class="grid grid-cols-2 gap-3 mt-3 items-stretch">
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+
+```typescript
+const setScenario = mockScenario(page);
+await page.goto(`${websiteUrl}/login`);
+setScenario(MOCK_SCENARIO.PAOTANG.SUCCESS);
+
+await page.getByTestId("btn-paotang-login").click();
+await expect(page.getByTestId("result-paotang"))
+  .toContainText("successfully");
+await page.getByTestId("input-phone").fill("0800000000");
+
+await expect(page.getByTestId("phone-validation-error")).toBeVisible();
+await expect(page.getByTestId("btn-verify-otp")).toBeDisabled();
+```
+
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70 space-y-2">
+    <p class="text-slate-200 text-sm"><strong class="text-violet-300">Arrange:</strong> set a predictable partner response and open the login page.</p>
+    <p class="text-slate-200 text-sm"><strong class="text-violet-300">Act:</strong> click login and fill the phone field.</p>
+    <p class="text-slate-200 text-sm"><strong class="text-violet-300">Assert:</strong> show the validation message and keep OTP verification disabled.</p>
+    <p class="text-slate-400 text-xs">The existing e2e fixture provides <code>page</code>, <code>websiteUrl</code>, and the running service stack.</p>
+  </div>
 </div>
 
 ---
@@ -6095,78 +6529,6 @@ export default defineConfig({
 </div>
 
 ---
-
-# 🪝 WireMock — Admin API & Testing Cheat Sheet
-
-### Dynamic Stubs, State Resets & Verification Endpoints
-
-<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
-
-<div class="slide-card p-3">
-  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
-    <span>🔄</span> State Management &amp; Stub Control
-  </h3>
-  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
-    <div><code class="text-emerald-300">POST /__admin/scenarios/reset</code><br/><span class="text-slate-400 font-sans">Resets all state machines back to Started state.</span></div>
-    <div><code class="text-emerald-300">PUT /__admin/scenarios/{name}/state</code><br/><span class="text-slate-400 font-sans">Resets or sets a specific scenario state.</span></div>
-    <div><code class="text-emerald-300">POST /__admin/mappings/reset</code><br/><span class="text-slate-400 font-sans">Restores stubs to initial JSON files on disk.</span></div>
-    <div><code class="text-emerald-300">POST /__admin/mappings</code><br/><span class="text-slate-400 font-sans">Dynamically creates a new stub at runtime.</span></div>
-  </div>
-</div>
-
-<div class="slide-card p-3">
-  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
-    <span>🔍</span> Request Verification &amp; Diagnostics
-  </h3>
-  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
-    <div><code class="text-emerald-300">GET /__admin/requests</code><br/><span class="text-slate-400 font-sans">Fetch journal of all incoming requests received.</span></div>
-    <div><code class="text-emerald-300">GET /__admin/requests/unmatched</code><br/><span class="text-slate-400 font-sans">Find requests that received 404 unmatched errors.</span></div>
-    <div><code class="text-emerald-300">POST /__admin/requests/reset</code><br/><span class="text-slate-400 font-sans">Clears the request log journal between test runs.</span></div>
-  </div>
-</div>
-
-</div>
-
-<div class="slide-card text-xs mt-2 p-2 mb-0 flex items-center justify-between">
-  <span>🖥️ <strong>WireMock Web UI Dashboard</strong>: <code>http://localhost:8088/__admin/webapp</code></span>
-  <span class="text-slate-400 font-mono text-xs">Default Auth: <code>admin</code> / <code>password</code></span>
-</div>
-
----
-
-# 🐳 Testcontainers & Local Dev — Command Cheat Sheet
-
-### Everyday Monorepo, Build & Hermetic Test Commands
-
-<div class="grid grid-cols-2 gap-3 mt-1 text-sm">
-
-<div class="slide-card p-3">
-  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
-    <span>🚀</span> Monorepo &amp; Local Services
-  </h3>
-  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
-    <div><code class="text-emerald-300">make build</code><br/><span class="text-slate-400 font-sans">Compiles all 6 Go service binaries into <code>./bin/</code>.</span></div>
-    <div><code class="text-emerald-300">make test</code><br/><span class="text-slate-400 font-sans">Runs fast isolated Go unit tests across workspace.</span></div>
-    <div><code class="text-emerald-300">make sync</code><br/><span class="text-slate-400 font-sans">Synchronizes Go multi-module workspace (<code>go.work</code>).</span></div>
-    <div><code class="text-emerald-300">make slides</code><br/><span class="text-slate-400 font-sans">Starts Slidev presentation on <code>http://localhost:3030</code>.</span></div>
-  </div>
-</div>
-
-<div class="slide-card p-3">
-  <h3 class="text-emerald-400 font-bold mb-1.5 text-sm flex items-center gap-1.5">
-    <span>🧪</span> Integration &amp; E2E Testing
-  </h3>
-  <div class="space-y-1.5 text-slate-300 font-mono text-[11px]">
-    <div><code class="text-emerald-300">make test-integration</code><br/><span class="text-slate-400 font-sans">Runs hermetic BFF integration suite with Testcontainers.</span></div>
-    <div><code class="text-emerald-300">make test-e2e</code><br/><span class="text-slate-400 font-sans">Executes full browser E2E tests with Playwright.</span></div>
-    <div><code class="text-emerald-300">docker ps --filter "label=org.testcontainers=true"</code><br/><span class="text-slate-400 font-sans">Inspect active ephemeral test containers.</span></div>
-    <div><code class="text-emerald-300">bun test tests/specs/e2e/website.spec.ts</code><br/><span class="text-slate-400 font-sans">Run a single targeted test file directly.</span></div>
-  </div>
-</div>
-
-</div>
-
----
 layout: center
 class: text-center
 ---
@@ -6186,6 +6548,156 @@ class: text-center
   <span class="cover-tag">🎭 Playwright</span>
 </div>
 
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎯 Choose the Fastest Test That Can Catch the Risk
+
+### Put each check at the narrowest boundary that still sees the failure
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-4 border border-emerald-500/40 bg-slate-900/70">
+    <div class="text-emerald-300 font-bold text-base mb-2">Unit · many</div>
+    <p class="text-slate-300 text-sm mb-2">A single function or business rule.</p>
+    <p class="text-slate-400 text-xs">Example: map a partner result to the correct payment status.</p>
+  </div>
+  <div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/70">
+    <div class="text-cyan-300 font-bold text-base mb-2">Integration · some</div>
+    <p class="text-slate-300 text-sm mb-2">A service working with its real database or controlled dependency.</p>
+    <p class="text-slate-400 text-xs">Example: verify a handler writes the expected row in PostgreSQL.</p>
+  </div>
+  <div class="slide-card p-4 border border-violet-500/40 bg-slate-900/70">
+    <div class="text-violet-300 font-bold text-base mb-2">End to end · few</div>
+    <p class="text-slate-300 text-sm mb-2">A critical journey through the browser and services.</p>
+    <p class="text-slate-400 text-xs">Example: sign in, verify OTP, and reach the home page.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 text-sm border border-amber-500/40 bg-amber-950/20 text-slate-200">
+  <strong class="text-amber-300">Rule of thumb:</strong> Keep most checks fast; use end-to-end tests for risks only the full journey can reveal.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🧪 Make Test Data Explicit and Isolated
+
+### Each scenario should create the state it needs and avoid depending on another test
+
+<div class="grid grid-cols-4 gap-2 mt-4">
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <div class="text-cyan-300 font-bold text-sm mb-2">1 · Start clean</div>
+    <p class="text-slate-300 text-xs">Use a fresh database or reset the state this scenario owns.</p>
+  </div>
+  <div class="slide-card p-3 border border-indigo-500/40 bg-slate-900/70">
+    <div class="text-indigo-300 font-bold text-sm mb-2">2 · Seed the case</div>
+    <p class="text-slate-300 text-xs">Create only the records needed to make the expected path clear.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <div class="text-emerald-300 font-bold text-sm mb-2">3 · Assert behavior</div>
+    <p class="text-slate-300 text-xs">Check the response and important persisted changes.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <div class="text-violet-300 font-bold text-sm mb-2">4 · Clean up</div>
+    <p class="text-slate-300 text-xs">Stop containers and clear state so the next run starts predictably.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-rose-500/40 bg-rose-950/20 text-sm text-slate-200">
+  <strong class="text-rose-300">Avoid shared mutable fixtures:</strong> tests that rely on execution order or leftover rows become hard to reproduce and unsafe to run in parallel.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🎲 Remove the Sources of Flaky Tests
+
+### Control time, randomness, network calls, and shared state instead of waiting and hoping
+
+<div class="grid grid-cols-2 gap-3 mt-4">
+  <div class="slide-card p-3 border border-amber-500/40 bg-slate-900/70">
+    <strong class="text-amber-300 text-sm">⏱️ Time and scheduling</strong>
+    <p class="text-slate-300 text-xs mt-1">Prefer observable conditions and bounded timeouts over fixed sleeps.</p>
+  </div>
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <strong class="text-cyan-300 text-sm">🌐 External services</strong>
+    <p class="text-slate-300 text-xs mt-1">Stub partner APIs with explicit responses and scenarios.</p>
+  </div>
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <strong class="text-emerald-300 text-sm">🔌 Ports and infrastructure</strong>
+    <p class="text-slate-300 text-xs mt-1">Use isolated containers and dynamic ports instead of shared fixed ports.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <strong class="text-violet-300 text-sm">🧹 Mutable state</strong>
+    <p class="text-slate-300 text-xs mt-1">Reset WireMock scenarios and create test data per scenario.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 text-sm border border-emerald-500/40 bg-emerald-950/20 text-slate-200">
+  <strong class="text-emerald-300">Stable tests are designed:</strong> retries can hide timing defects, so first remove the uncontrolled dependency.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🔎 Turn a Test Failure into Useful Evidence
+
+### Collect the request, service, and browser evidence before changing the test
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+  <div class="slide-card p-4 border border-cyan-500/40 bg-slate-900/70">
+    <div class="text-cyan-300 font-bold text-base mb-2">1 · Reproduce</div>
+    <p class="text-slate-300 text-sm">Keep the same inputs, scenario state, and test boundary.</p>
+  </div>
+  <div class="slide-card p-4 border border-amber-500/40 bg-slate-900/70">
+    <div class="text-amber-300 font-bold text-base mb-2">2 · Inspect evidence</div>
+    <p class="text-slate-300 text-sm">Check service logs, WireMock request history, database state, or a Playwright trace.</p>
+  </div>
+  <div class="slide-card p-4 border border-violet-500/40 bg-slate-900/70">
+    <div class="text-violet-300 font-bold text-base mb-2">3 · Find the broken boundary</div>
+    <p class="text-slate-300 text-sm">Decide whether the failure is in application behavior, setup, or an uncontrolled dependency.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 border border-rose-500/40 bg-rose-950/20 text-sm text-slate-200">
+  <strong class="text-rose-300">In CI:</strong> retain traces and logs for failed runs so the first useful signal is available without rerunning locally.
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 🚦 Build a Fast Feedback Pipeline
+
+### Run cheap checks early, then spend CI time on broader confidence
+
+<div class="grid grid-cols-4 gap-2 mt-4">
+  <div class="slide-card p-3 border border-emerald-500/40 bg-slate-900/70">
+    <div class="text-emerald-300 font-bold text-sm mb-2">1 · Unit</div>
+    <p class="text-slate-300 text-xs">Fast feedback on local logic.</p>
+  </div>
+  <div class="slide-card p-3 border border-cyan-500/40 bg-slate-900/70">
+    <div class="text-cyan-300 font-bold text-sm mb-2">2 · Integration</div>
+    <p class="text-slate-300 text-xs">Real database and service wiring in isolated containers.</p>
+  </div>
+  <div class="slide-card p-3 border border-violet-500/40 bg-slate-900/70">
+    <div class="text-violet-300 font-bold text-sm mb-2">3 · Browser</div>
+    <p class="text-slate-300 text-xs">Critical journeys with traces available on failure.</p>
+  </div>
+  <div class="slide-card p-3 border border-amber-500/40 bg-slate-900/70">
+    <div class="text-amber-300 font-bold text-sm mb-2">4 · Extended checks</div>
+    <p class="text-slate-300 text-xs">Security, load, or exploratory testing for targeted risks.</p>
+  </div>
+</div>
+
+<div class="slide-card mt-3 p-3 text-sm border border-cyan-500/40 bg-cyan-950/20 text-slate-200">
+  <strong class="text-cyan-300">Pipeline goal:</strong> catch common defects quickly; run slower checks where they add distinct confidence.
 </div>
 
 ---
@@ -6227,6 +6739,80 @@ class: text-center
 <div class="slide-card text-xs bg-slate-900/70 border-emerald-500/50 p-2 flex items-center gap-2 shadow-lg">
   <span class="text-base">🎙️</span>
   <span class="text-slate-200 leading-snug"><strong>Floor Open for Questions</strong>: Any thoughts, edge cases, or real-world adoption challenges?</span>
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 💬 Q&amp;A — Where Would You Test It?
+
+### Choose the smallest test boundary that gives you confidence
+
+<div class="multi-col-grid-3 gap-3 mt-3">
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-cyan-500/30">
+  <h3 class="text-cyan-400 text-base">🧩 One Service</h3>
+  <p class="text-slate-200 text-sm">A handler must map a partner response into the right business result.</p>
+  <p class="text-slate-400 text-xs"><strong>Discuss:</strong> What can a fast unit test prove without containers?</p>
+</div>
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-emerald-500/30">
+  <h3 class="text-emerald-400 text-base">🔗 Several Services</h3>
+  <p class="text-slate-200 text-sm">A request crosses the BFF, account service, and database.</p>
+  <p class="text-slate-400 text-xs"><strong>Discuss:</strong> Which real boundaries should the integration test include?</p>
+</div>
+
+<div class="col-card p-3 space-y-2 bg-slate-900/60 border-violet-500/30">
+  <h3 class="text-violet-400 text-base">🖥️ User Journey</h3>
+  <p class="text-slate-200 text-sm">A user signs in, verifies OTP, and reaches the home page.</p>
+  <p class="text-slate-400 text-xs"><strong>Discuss:</strong> What should Playwright assert end to end?</p>
+</div>
+
+</div>
+
+<div class="slide-card text-sm mt-3 bg-slate-900/70 border-cyan-500/40 p-2">
+  🎙️ <strong>Room prompt:</strong> What is the slowest test layer you need to catch this failure reliably?
+</div>
+
+---
+class: pt-2 pb-1 px-8
+---
+
+# 💬 Q&amp;A — What Should Be Real or Simulated?
+
+### Keep the behavior under test real; control dependencies at their boundaries
+
+<div class="grid grid-cols-2 gap-3 mt-3">
+
+<div class="slide-card p-3 border border-cyan-500/30 bg-slate-900/60">
+  <h3 class="text-cyan-400 text-base mb-1">🪝 External Partner API</h3>
+  <p class="text-slate-200 text-sm">The partner sandbox is slow or unavailable during CI.</p>
+  <p class="text-slate-400 text-xs mt-2"><strong>Discuss:</strong> Which request and response cases should a WireMock stub cover?</p>
+</div>
+
+<div class="slide-card p-3 border border-emerald-500/30 bg-slate-900/60">
+  <h3 class="text-emerald-400 text-base mb-1">🐳 Database &amp; Service Wiring</h3>
+  <p class="text-slate-200 text-sm">You need confidence that migrations and service connections work together.</p>
+  <p class="text-slate-400 text-xs mt-2"><strong>Discuss:</strong> What belongs in an isolated Testcontainers fixture?</p>
+</div>
+
+<div class="slide-card p-3 border border-violet-500/30 bg-slate-900/60">
+  <h3 class="text-violet-400 text-base mb-1">🎭 Browser Behavior</h3>
+  <p class="text-slate-200 text-sm">A page must show an error and prevent a second submission.</p>
+  <p class="text-slate-400 text-xs mt-2"><strong>Discuss:</strong> Which user-visible outcomes should Playwright verify?</p>
+</div>
+
+<div class="slide-card p-3 border border-amber-500/30 bg-slate-900/60">
+  <h3 class="text-amber-400 text-base mb-1">🛡️ Live Traffic</h3>
+  <p class="text-slate-200 text-sm">A request behaves differently after a proxy changes or blocks it.</p>
+  <p class="text-slate-400 text-xs mt-2"><strong>Discuss:</strong> When is Burp Suite useful beyond automated tests?</p>
+</div>
+
+</div>
+
+<div class="slide-card text-sm mt-3 bg-slate-900/70 border-emerald-500/40 p-2">
+  🎙️ <strong>Takeaway:</strong> Choose the test boundary from the risk you need to cover, then make its dependencies predictable.
 </div>
 
 ---
